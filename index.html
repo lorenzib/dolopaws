@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DoloPaws</title>
+<meta name="description" content="Find dog-safe trails in the Dolomites — filtered by terrain, shade, water stops and rifugi.">
+<meta name="apple-mobile-web-app-title" content="DoloPaws">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2E4034">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="topnav">
+  <a class="brand" href="index.html">
+    DoloPaws
+  </a>
+  <div class="links">
+    <a href="#finder">Find a trail</a>
+    <a href="safety-guide.html">Dog safety guide</a>
+    <button id="accountBtn" class="account-btn">Log in</button>
+  </div>
+</div>
+
+<!-- Login / sign-up modal -->
+<div id="authModal" class="modal-overlay" hidden>
+  <div class="modal">
+    <button id="authClose" class="modal-close">&times;</button>
+    <h2 id="authTitle">Log in</h2>
+    <p class="hint" id="authHint">Save trails to your account so they follow you across devices.</p>
+
+    <div id="authError" class="auth-error" hidden></div>
+
+    <form id="authForm">
+      <label class="field-label">Email
+        <input type="email" id="authEmail" required autocomplete="email">
+      </label>
+      <label class="field-label">Password
+        <input type="password" id="authPassword" required autocomplete="current-password" minlength="6">
+      </label>
+      <button type="button" id="forgotPasswordBtn" class="forgot-link">Forgot password?</button>
+      <button type="submit" class="auth-submit" id="authSubmit">Log in</button>
+    </form>
+
+    <div class="auth-divider"><span>or</span></div>
+
+    <button id="googleBtn" class="google-btn">Continue with Google</button>
+
+    <p class="auth-toggle">
+      <span id="authToggleText">Don't have an account?</span>
+      <button id="authToggleBtn" type="button">Sign up</button>
+    </p>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">
+      Dolomites, Italy
+    </div>
+    <h1>DoloPaws<br><em>trails that are actually safe for paws.</em></h1>
+    <p class="sub">Filtered by terrain, shade, water stops and rifugi — not just distance and difficulty. Every trail is scored on how safe it is to walk with a dog, first.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="panel" id="finder">
+    <h2 id="finderHeading">Tell me about your dog</h2>
+    <div class="hint" id="finderHint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</div>
+    <div id="personalizedNote" hidden style="background:var(--sage-dim);color:var(--pine);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-top:10px;"></div>
+
+    <!-- PRIMARY: terrain tolerance -->
+    <div class="q-group">
+      <span class="q-label">Terrain your dog can handle</span>
+      <div class="pill-row" data-group="terrain">
+        <button class="pill active" data-value="0">Paved / packed dirt only</button>
+        <button class="pill" data-value="1">Gravel &amp; mixed rocky patches are fine</button>
+        <button class="pill" data-value="2">Comfortable on loose rock / scree</button>
+      </div>
+    </div>
+
+    <!-- PRIMARY: shade need -->
+    <div class="q-group">
+      <span class="q-label">Heat &amp; shade sensitivity</span>
+      <div class="pill-row" data-group="shade">
+        <button class="pill active" data-value="high">Needs mostly shaded routes</button>
+        <button class="pill" data-value="some">Some open meadow is fine</button>
+        <button class="pill" data-value="any">Doesn't matter</button>
+      </div>
+    </div>
+
+    <!-- PRIMARY: stop frequency -->
+    <div class="q-group">
+      <span class="q-label">Water &amp; rest stop frequency</span>
+      <div class="pill-row" data-group="stops">
+        <button class="pill active" data-value="frequent">Frequent — every 1–2 km</button>
+        <button class="pill" data-value="occasional">Occasional is fine</button>
+        <button class="pill" data-value="any">Doesn't matter</button>
+      </div>
+    </div>
+
+    <!-- SECONDARY: distance & exposure -->
+    <div class="q-two-col">
+      <div class="q-group">
+        <span class="q-label">Max distance today</span>
+        <div class="pill-row" data-group="distance">
+          <button class="pill" data-value="5">Up to 5 km</button>
+          <button class="pill active" data-value="10">Up to 10 km</button>
+          <button class="pill" data-value="99">No limit</button>
+        </div>
+      </div>
+      <div class="q-group">
+        <span class="q-label">Comfortable with exposure?</span>
+        <div class="pill-row" data-group="exposure">
+          <button class="pill active" data-value="no">No — keep it wide &amp; safe</button>
+          <button class="pill" data-value="yes">Yes, steady on narrow ledges</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-head">
+    <h2>Your matched trails</h2>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="tips-section">
+    <h2>Before you go — the basics</h2>
+    <ul class="tips-list">
+      <li>Dogs must stay on a lead on Italian trails.</li>
+      <li>Cable cars will usually ask for a muzzle to be carried.</li>
+      <li>Carry more water than you think — routes above the treeline often have none.</li>
+      <li>Weather turns fast above the treeline — start early on busy weekends.</li>
+    </ul>
+    <a class="guide-cta" href="safety-guide.html" style="color:var(--limestone);margin-top:16px;">Read the full dog hiking safety guide →</a>
+  </div>
+
+  <div class="credit">Trail details are a general guide, curated and estimated from public hiking resources — always confirm current conditions, distances, and dog policies locally before you go.</div>
+</div>
+
+<script type="module" src="firebase-init.js"></script>
+<script src="breeds-data.js" defer></script>
+<script src="trails-data.js" defer></script>
+<script src="auth-ui.js" defer></script>
+<script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My account — DoloPaws</title>
+<meta name="description" content="Manage your DoloPaws account and saved trails.">
+<meta name="theme-color" content="#2E4034">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="topnav">
+  <a class="brand" href="index.html">
+    DoloPaws
+  </a>
+  <div class="links">
+    <a href="index.html#finder">Find a trail</a>
+    <a href="safety-guide.html">Dog safety guide</a>
+  </div>
+</div>
+
+<div class="guide-hero">
+  <div class="eyebrow">
+    My account
+  </div>
+  <h1 style="font-size:clamp(28px,5vw,42px);margin-top:14px;">Account settings</h1>
+  <p class="sub" style="margin-top:14px;" id="accountSubline">Checking your login status…</p>
+</div>
+
+<div class="guide-article">
+
+  <div id="loggedOutState" hidden style="text-align:center;padding:40px 20px;">
+    <p style="font-size:15px;color:var(--pine-soft);margin-bottom:16px;">You're not logged in.</p>
+    <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Go to homepage to log in</a>
+  </div>
+
+  <div id="loggedInState" hidden>
+
+    <section class="guide-section">
+      <h2>Account details</h2>
+      <div class="detail-grid" style="margin-bottom:0;">
+        <div><b>Email:</b> <span id="userEmail"></span></div>
+        <div><b>Signed in with:</b> <span id="userProvider"></span></div>
+      </div>
+    </section>
+
+    <section class="guide-section" id="passwordSection">
+      <h2>Password</h2>
+      <p id="passwordHint">Send a password reset link to your email — click it to set a new password.</p>
+      <button id="sendResetBtn" class="auth-submit" style="width:auto;padding:10px 20px;">Send password reset link</button>
+      <p id="resetStatus" style="margin-top:12px;font-size:13px;" hidden></p>
+    </section>
+
+    <section class="guide-section">
+      <h2>Your dog</h2>
+      <p style="color:var(--pine-soft);font-size:13.5px;margin-bottom:16px;">Save your dog's details so the trail finder can start pre-set to their fitness level.</p>
+      <label class="field-label">Dog's name
+        <input type="text" id="dogName" placeholder="Rex">
+      </label>
+      <label class="field-label">Breed
+        <select id="dogBreed" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--limestone);"></select>
+      </label>
+      <label class="field-label" id="dogBreedOtherField" hidden>Tell us the breed
+        <input type="text" id="dogBreedOther" placeholder="e.g. Lagotto Romagnolo">
+      </label>
+      <label class="field-label">Fitness level
+        <select id="dogFitness" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--limestone);">
+          <option value="low">Low — puppy, senior, or just starting out</option>
+          <option value="moderate" selected>Moderate — everyday walker</option>
+          <option value="high">High — mountain-ready</option>
+        </select>
+      </label>
+      <button id="saveDogBtn" class="auth-submit" style="width:auto;padding:10px 20px;margin-top:4px;">Save dog profile</button>
+      <p id="dogStatus" style="margin-top:12px;font-size:13px;" hidden></p>
+    </section>
+
+    <section class="guide-section">
+      <h2>Saved trails</h2>
+      <div id="savedTrailsList">
+        <p style="color:var(--pine-soft);font-size:14px;">Loading your saved trails…</p>
+      </div>
+    </section>
+
+    <section class="guide-section" style="text-align:center;">
+      <button id="logOutBtn" class="fav-btn" style="font-size:13px;padding:9px 22px;">Log out</button>
+    </section>
+
+    <section class="guide-section" style="border-color:#F0997B;">
+      <h2 style="color:#9C3A25;">Delete account</h2>
+      <p style="color:var(--pine-soft);font-size:13.5px;">This permanently deletes your account and all saved trails. This cannot be undone.</p>
+      <button id="showDeleteBtn" class="danger-btn">Delete my account</button>
+
+      <div id="deleteConfirmBox" hidden style="margin-top:16px;padding-top:16px;border-top:1px dashed var(--paper-line);">
+        <p style="font-size:13.5px;color:#9C3A25;font-weight:700;margin-bottom:12px;">Are you sure? This cannot be undone.</p>
+        <label class="field-label" id="deletePasswordField">Confirm your password
+          <input type="password" id="deletePassword" autocomplete="current-password">
+        </label>
+        <p id="deleteGoogleNote" style="font-size:13px;color:var(--pine-soft);margin-bottom:12px;" hidden>You'll be asked to confirm with Google.</p>
+        <div style="display:flex;gap:10px;">
+          <button id="confirmDeleteBtn" class="danger-btn">Permanently delete account</button>
+          <button id="cancelDeleteBtn" class="fav-btn">Cancel</button>
+        </div>
+        <p id="deleteStatus" style="margin-top:12px;font-size:13px;" hidden></p>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+<script type="module" src="firebase-init.js"></script>
+<script src="breeds-data.js" defer></script>
+<script src="trails-data.js" defer></script>
+<script src="account.js" defer></script>
+</body>
+</html>
