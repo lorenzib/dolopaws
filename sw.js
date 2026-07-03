@@ -1,5 +1,5 @@
-const CACHE = "dolopaws-v12";
-const ASSETS = ["./", "./index.html", "./safety-guide.html", "./account.html", "./styles.css", "./breeds-data.js", "./trails-data.js", "./script.js", "./auth-ui.js", "./account.js", "./manifest.json", "./icon-192.png", "./icon-512.png"];
+const CACHE = "dolopaws-v13";
+const ASSETS = ["./", "./index.html", "./safety-guide.html", "./account.html", "./styles.css", "./breeds-data.js", "./trails-data.js", "./map-init.js", "./script.js", "./auth-ui.js", "./account.js", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));

@@ -1,6 +1,6 @@
 const trails = [
   {
-    id:'alpe-siusi', name:'Alpe di Siusi Meadow Loop', area:'Alpe di Siusi / Seiser Alm',
+    id:'alpe-siusi', category:'Kid + dog friendly', lat:46.548, lng:11.612, name:'Alpe di Siusi Meadow Loop', area:'Alpe di Siusi / Seiser Alm',
     distance:6, elevation:150, hours:'1.5–2.5', paid:false, crowds:'busy',
     terrainType:'Packed dirt & grass', terrainRank:0,
     surfaceHazards:[], shadeCoverage:20, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
@@ -10,7 +10,7 @@ const trails = [
     tips:"Multiple entry points; go early to find free parking, or take the cable car up from Ortisei/Siusi."
   },
   {
-    id:'seceda', name:'Seceda Ridge Trail', area:'Val Gardena',
+    id:'seceda', category:'Out & back', lat:46.599, lng:11.68, name:'Seceda Ridge Trail', area:'Val Gardena',
     distance:8, elevation:400, hours:'2.5–4', paid:true, crowds:'busy',
     terrainType:'Packed dirt with rocky steps', terrainRank:1,
     surfaceHazards:['Rocky steps near the ridge'], shadeCoverage:10, heatRisk:'high', safetyLevel:'moderate', exposure:false,
@@ -20,7 +20,7 @@ const trails = [
     tips:"Keep dogs on lead near the ridge edges; the gondola will want a muzzle carried."
   },
   {
-    id:'santa-maddalena', name:'Santa Maddalena Viewpoint', area:'Val di Funes',
+    id:'santa-maddalena', category:'Kid + dog friendly', lat:46.647, lng:11.728, name:'Santa Maddalena Viewpoint', area:'Val di Funes',
     distance:4, elevation:180, hours:'1–1.5', paid:false, crowds:'busy',
     terrainType:'Paved farm road & packed dirt', terrainRank:0,
     surfaceHazards:[], shadeCoverage:30, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
@@ -30,7 +30,7 @@ const trails = [
     tips:"Mostly open meadow with little shade — bring water for warm days. No rifugi on the short route, only village cafes."
   },
   {
-    id:'tre-cime', name:'Tre Cime di Lavaredo Loop', area:'Sesto Dolomites',
+    id:'tre-cime', category:'Loops', lat:46.618, lng:12.301, name:'Tre Cime di Lavaredo Loop', area:'Sesto Dolomites',
     distance:9, elevation:280, hours:'3–4', paid:true, crowds:'busy',
     terrainType:'Wide gravel', terrainRank:1,
     surfaceHazards:['Loose gravel patches near the rifugi'], shadeCoverage:5, heatRisk:'high', safetyLevel:'low-risk', exposure:false,
@@ -40,7 +40,7 @@ const trails = [
     tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early."
   },
   {
-    id:'cadini', name:'Cadini di Misurina Viewpoint', area:'Sesto Dolomites',
+    id:'cadini', category:'Out & back', lat:46.61, lng:12.265, name:'Cadini di Misurina Viewpoint', area:'Sesto Dolomites',
     distance:4, elevation:250, hours:'1.5–2.5', paid:true, crowds:'busy',
     terrainType:'Rocky switchbacks, loose scree', terrainRank:2,
     surfaceHazards:['Sharp limestone','Narrow ledges with drop-offs'], shadeCoverage:10, heatRisk:'high', safetyLevel:'caution', exposure:true,
@@ -50,7 +50,7 @@ const trails = [
     tips:"Skip this one in wet weather or with a dog unsure on narrow terrain."
   },
   {
-    id:'prato-piazza', name:'Prato Piazza (Plätzwiese)', area:'Fanes-Sennes-Prags',
+    id:'prato-piazza', category:'Loops', lat:46.701, lng:12.105, name:'Prato Piazza (Plätzwiese)', area:'Fanes-Sennes-Prags',
     distance:7, elevation:220, hours:'2–3', paid:false, crowds:'quiet',
     terrainType:'Packed dirt & grass, occasional rock', terrainRank:1,
     surfaceHazards:['Occasional loose rock'], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
@@ -60,7 +60,7 @@ const trails = [
     tips:"Rocky in patches but no exposure — a relaxed, scenic option away from the busiest crowds."
   },
   {
-    id:'nuvolau', name:'Passo Giau to Rifugio Nuvolau', area:'Cortina / Ampezzo',
+    id:'nuvolau', category:'Rifugio walks', lat:46.488, lng:12.053, name:'Passo Giau to Rifugio Nuvolau', area:'Cortina / Ampezzo',
     distance:6, elevation:520, hours:'2.5–3.5', paid:false, crowds:'quiet',
     terrainType:'Loose rock mountain path', terrainRank:2,
     surfaceHazards:['Loose rock on the climb'], shadeCoverage:5, heatRisk:'high', safetyLevel:'moderate', exposure:false,
@@ -70,7 +70,7 @@ const trails = [
     tips:"Starts already at altitude — go slow with dogs unused to thin air, and carry all the water you'll need."
   },
   {
-    id:'sassolungo', name:'Sassolungo–Sassopiatto Loop', area:'Val Gardena / Passo Sella',
+    id:'sassolungo', category:'Rifugio walks', lat:46.531, lng:11.753, name:'Sassolungo–Sassopiatto Loop', area:'Val Gardena / Passo Sella',
     distance:14, elevation:750, hours:'5–7', paid:true, crowds:'busy',
     terrainType:'Scree & rock', terrainRank:2,
     surfaceHazards:['Scree fields','Long exposed stretches'], shadeCoverage:10, heatRisk:'high', safetyLevel:'caution', exposure:true,
@@ -80,7 +80,7 @@ const trails = [
     tips:"Only for very fit, trail-hardened dogs — long, rocky, with real elevation."
   },
   {
-    id:'lago-braies', name:'Lago di Braies Loop', area:'Prags Valley',
+    id:'lago-braies', category:'Kid + dog friendly', lat:46.695, lng:12.085, name:'Lago di Braies Loop', area:'Prags Valley',
     distance:3.5, elevation:40, hours:'1', paid:false, crowds:'busy',
     terrainType:'Paved / packed gravel, flat', terrainRank:0,
     surfaceHazards:[], shadeCoverage:50, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
@@ -90,7 +90,7 @@ const trails = [
     tips:"Extremely popular — expect crowds and paid parking; arrive at opening time."
   },
   {
-    id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega",
+    id:'lago-carezza', category:'Kid + dog friendly', lat:46.446, lng:11.598, name:'Lago di Carezza Loop', area:"Val d'Ega",
     distance:1.5, elevation:20, hours:'0.5', paid:false, crowds:'busy',
     terrainType:'Paved, flat', terrainRank:0,
     surfaceHazards:[], shadeCoverage:70, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
@@ -100,7 +100,7 @@ const trails = [
     tips:"Lake is fenced off (no swimming) but it's a lovely easy leg-stretch for older or less mobile dogs."
   },
   {
-    id:'lago-sorapis', name:'Lago di Sorapis Trail', area:"Cortina d'Ampezzo",
+    id:'lago-sorapis', category:'Via ferrata', lat:46.546, lng:12.226, name:'Lago di Sorapis Trail', area:"Cortina d'Ampezzo",
     distance:11, elevation:450, hours:'4–5', paid:false, crowds:'busy',
     terrainType:'Rocky, roots, narrow ledges', terrainRank:2,
     surfaceHazards:['Sharp rock sections','Fixed cables on narrow ledges'], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'caution', exposure:true,
@@ -110,7 +110,7 @@ const trails = [
     tips:"Only for sure-footed, confident dogs — this is not a beginner trail despite how popular it is."
   },
   {
-    id:'valley-view', name:'Valley View Trail (partial)', area:'Near Val di Funes',
+    id:'valley-view', category:'Loops', lat:46.64, lng:11.72, name:'Valley View Trail (partial)', area:'Near Val di Funes',
     distance:8, elevation:150, hours:'2–3', paid:false, crowds:'quiet',
     terrainType:'Packed dirt, meadow', terrainRank:0,
     surfaceHazards:[], shadeCoverage:35, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
@@ -120,7 +120,7 @@ const trails = [
     tips:"Part of a much longer 35 km route; pick one section rather than attempting the whole thing."
   },
   {
-    id:'durrenstein', name:'Plätzwiese to Dürrenstein', area:'Fanes-Sennes-Prags',
+    id:'durrenstein', category:'Via ferrata', lat:46.71, lng:12.13, name:'Plätzwiese to Dürrenstein', area:'Fanes-Sennes-Prags',
     distance:10, elevation:600, hours:'4–5', paid:false, crowds:'quiet',
     terrainType:'Rocky ridge, fixed rope section', terrainRank:2,
     surfaceHazards:['Fixed rope section near the summit','Exposed ridge'], shadeCoverage:5, heatRisk:'high', safetyLevel:'caution', exposure:true,
@@ -130,7 +130,7 @@ const trails = [
     tips:"Stop at the secondary summit if your dog isn't confident on exposed rock — the view is still superb from there."
   },
   {
-    id:'piancavallo', name:'Piancavallo Malghe Loop', area:'Friulian Dolomites, Pordenone',
+    id:'piancavallo', category:'Loops', lat:46.093, lng:12.43, name:'Piancavallo Malghe Loop', area:'Friulian Dolomites, Pordenone',
     distance:8.2, elevation:210, hours:'2–2.5', paid:false, crowds:'quiet',
     terrainType:'Packed dirt & gravel pasture track', terrainRank:1,
     surfaceHazards:[], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
@@ -140,7 +140,7 @@ const trails = [
     tips:"A good pick if you want real mountain scenery without the Val Gardena / Cortina crowds."
   },
   {
-    id:'lago-barcis', name:'Lake Barcis Loop', area:'Friulian Dolomites, Pordenone',
+    id:'lago-barcis', category:'Kid + dog friendly', lat:46.25, lng:12.57, name:'Lake Barcis Loop', area:'Friulian Dolomites, Pordenone',
     distance:5, elevation:60, hours:'1.5', paid:false, crowds:'quiet',
     terrainType:'Paved / packed gravel, flat', terrainRank:0,
     surfaceHazards:[], shadeCoverage:30, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
