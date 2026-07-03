@@ -21,6 +21,19 @@ const FITNESS_DEFAULTS = {
   high:     { terrain:'2', shade:'any',  stops:'any',        distance:'99' },
 };
 
+function loadLocalDogProfile(){
+  try{
+    const saved = localStorage.getItem('dolopaws-dog-profile');
+    return saved ? JSON.parse(saved) : null;
+  }catch(e){ return null; }
+}
+
+function updateDogPromptBanner(){
+  const banner = document.getElementById('dogPromptBanner');
+  if(!banner) return;
+  banner.hidden = !!state.dogName;
+}
+
 function applyDogPersonalization(profile){
   const note = document.getElementById('personalizedNote');
   const heading = document.getElementById('finderHeading');
@@ -28,10 +41,12 @@ function applyDogPersonalization(profile){
 
   if(!profile || !profile.name){
     state.heatSensitiveDog = false;
+    state.dogName = null;
     heading.textContent = 'Tell me about your dog';
     hint.hidden = false;
     hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
     note.hidden = true;
+    updateDogPromptBanner();
     return;
   }
 
@@ -42,19 +57,30 @@ function applyDogPersonalization(profile){
   setPillActive('distance', defaults.distance);
   // exposure is never auto-enabled — that stays an explicit human choice
 
-  const isHeatSensitive = (typeof HEAT_SENSITIVE_BREEDS !== 'undefined')
+  // An explicit answer to "how heat sensitive is your dog?" (from the wizard)
+  // takes priority over inferring it from breed alone.
+  const breedIsHeatSensitive = (typeof HEAT_SENSITIVE_BREEDS !== 'undefined')
     && HEAT_SENSITIVE_BREEDS.includes(profile.breed);
+  const explicitHeatSensitive = profile.heatSensitivity === 'high';
+  const isHeatSensitive = breedIsHeatSensitive || explicitHeatSensitive;
   state.heatSensitiveDog = isHeatSensitive;
+  state.dogName = profile.name;
   if(isHeatSensitive){
     setPillActive('shade', 'high');
+  } else if(profile.heatSensitivity === 'some'){
+    setPillActive('shade', 'some');
+  } else if(profile.heatSensitivity === 'any'){
+    setPillActive('shade', 'any');
   }
 
   heading.textContent = `Trails for ${profile.name}`;
   hint.hidden = true;
   note.hidden = false;
   note.innerHTML = isHeatSensitive
-    ? `🐾 ${profile.breed}s run hot — we've prioritized shadier routes for ${profile.name}.`
+    ? `🐾 ${breedIsHeatSensitive ? profile.breed + 's run hot' : profile.name + ' runs hot'} — we've prioritized shadier routes for ${profile.name}.`
     : `🐾 Matched to ${profile.name}'s fitness level. Edit this anytime in <a href="account.html" style="color:var(--pine);text-decoration:underline;">My account</a>.`;
+
+  updateDogPromptBanner();
 }
 
 function loadLocalFavorites(){
@@ -66,6 +92,10 @@ function loadLocalFavorites(){
 
 state.favorites = loadLocalFavorites();
 
+// Apply any guest dog profile immediately, so a returning guest sees
+// personalization right away without waiting on Firebase auth to resolve.
+applyDogPersonalization(loadLocalDogProfile());
+
 window.addEventListener('dolopaws-auth-changed', async (e) => {
   const user = e.detail.user;
   if(user && window.DoloPawsAuth){
@@ -75,14 +105,33 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     } else {
       state.favorites = cloudFavorites;
     }
-    const profile = await window.DoloPawsAuth.getDogProfile();
+
+    let profile = await window.DoloPawsAuth.getDogProfile();
+    const localProfile = loadLocalDogProfile();
+    if(!profile && localProfile){
+      // first login on this device with a guest-filled dog profile — migrate it up
+      await window.DoloPawsAuth.setDogProfile(localProfile);
+      profile = localProfile;
+    }
     applyDogPersonalization(profile);
   } else {
     state.favorites = loadLocalFavorites();
-    applyDogPersonalization(null);
+    applyDogPersonalization(loadLocalDogProfile());
   }
   render();
 });
+
+window.addEventListener('dolopaws-dog-profile-saved', (e) => {
+  applyDogPersonalization(e.detail.profile);
+  render();
+});
+
+const openWizardBtn = document.getElementById('openWizardBtn');
+if(openWizardBtn){
+  openWizardBtn.addEventListener('click', () => {
+    if(window.DoloPawsWizard) window.DoloPawsWizard.open();
+  });
+}
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {

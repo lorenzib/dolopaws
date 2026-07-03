@@ -76,6 +76,10 @@
 <div class="wrap">
 
   <div class="panel" id="finder">
+    <div id="dogPromptBanner" class="dog-prompt-banner" hidden>
+      <div class="txt">🐾 Tell us about your dog<span>Five quick questions, then a list scored for their exact fitness level.</span></div>
+      <button id="openWizardBtn">Get started</button>
+    </div>
     <div id="personalizedNote" hidden style="background:var(--sage-dim);color:var(--pine);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-bottom:16px;"></div>
     <h2 id="finderHeading">Tell me about your dog</h2>
     <div class="hint" id="finderHint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</div>
@@ -151,9 +155,48 @@
   <div class="credit">Trail details are a general guide, curated and estimated from public hiking resources — always confirm current conditions, distances, and dog policies locally before you go.</div>
 </div>
 
+<!-- DOG WIZARD — full-screen guided setup -->
+<div id="dogWizard" class="wizard-overlay" hidden>
+  <div class="wizard-topbar">
+    <span style="font-family:'Fraunces',serif;font-weight:700;font-size:19px;color:var(--pine);">DoloPaws</span>
+    <button id="wizardCloseBtn" class="wizard-close">&times;</button>
+  </div>
+
+  <div class="wizard-hero">
+    <div class="eyebrow" style="justify-content:center;">Dolomites, Italy</div>
+    <h1>Tell us about your dog. <em>We'll tell you exactly where to walk.</em></h1>
+    <p>Five quick questions, then a ranked list of Dolomite trails scored for paw safety — not just distance and difficulty.</p>
+  </div>
+
+  <div class="wizard-card">
+    <div class="wizard-progress" id="wizardProgress"></div>
+    <div class="wizard-step-label" id="wizardStepLabel">Step 1 of 5</div>
+    <div class="wizard-question" id="wizardQuestion"></div>
+    <div id="wizardStepBody"></div>
+    <div class="wizard-nav">
+      <button class="wizard-back" id="wizardBackBtn">&larr; Back</button>
+      <button class="wizard-continue" id="wizardContinueBtn">Continue</button>
+    </div>
+  </div>
+
+  <div class="wizard-trust-row">
+    <div class="item"><span class="glyph">🐾</span>Scored on paw safety — not just difficulty</div>
+    <div class="item"><span class="glyph">🧭</span>Matched to your dog's exact fitness level</div>
+    <div class="item"><span class="glyph">⛰️</span>Curated for the Dolomites specifically</div>
+  </div>
+
+  <div class="wizard-testimonial">
+    <blockquote>"I stopped guessing which trails were too rocky for his paws. Now I just trust the score."</blockquote>
+    <cite>— Illustrative example, not a real customer yet</cite>
+  </div>
+
+  <div class="wizard-footer">DoloPaws — Dolomites trail guide for dogs</div>
+</div>
+
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>
+<script src="dog-wizard.js" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="script.js" defer></script>
 </body>
