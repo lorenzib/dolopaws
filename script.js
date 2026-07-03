@@ -29,6 +29,7 @@ function applyDogPersonalization(profile){
   if(!profile || !profile.name){
     state.heatSensitiveDog = false;
     heading.textContent = 'Tell me about your dog';
+    hint.hidden = false;
     hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
     note.hidden = true;
     return;
@@ -49,11 +50,11 @@ function applyDogPersonalization(profile){
   }
 
   heading.textContent = `Trails for ${profile.name}`;
-  hint.textContent = `Pre-set from ${profile.name}'s profile — tweak anytime.`;
+  hint.hidden = true;
   note.hidden = false;
-  note.textContent = isHeatSensitive
+  note.innerHTML = isHeatSensitive
     ? `🐾 ${profile.breed}s run hot — we've prioritized shadier routes for ${profile.name}.`
-    : `🐾 Matched to ${profile.name}'s fitness level. Edit this anytime in My account.`;
+    : `🐾 Matched to ${profile.name}'s fitness level. Edit this anytime in <a href="account.html" style="color:var(--pine);text-decoration:underline;">My account</a>.`;
 }
 
 function loadLocalFavorites(){
