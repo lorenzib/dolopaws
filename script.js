@@ -67,24 +67,9 @@ function applyDogPersonalization(profile){
   heading.textContent = `Trails for ${profile.name}`;
   hint.hidden = true;
   note.hidden = false;
-
-  const initial = profile.name.trim().charAt(0).toUpperCase();
-  const subtitleParts = [];
-  if(profile.breed) subtitleParts.push(profile.breed);
-  const fitnessLabels = { low:'Low fitness', moderate:'Moderate fitness', high:'High fitness' };
-  subtitleParts.push(fitnessLabels[profile.fitness] || 'Fitness not set');
-  if(isHeatSensitive) subtitleParts.push('shaded routes prioritized');
-
-  note.innerHTML = `
-    <div class="left">
-      <div class="dog-avatar">${initial}</div>
-      <div>
-        <div class="title">Trails matched for ${profile.name}</div>
-        <div class="subtitle">${subtitleParts.join(' · ')}</div>
-      </div>
-    </div>
-    <a href="account.html" class="edit-btn">Edit</a>
-  `;
+  note.innerHTML = isHeatSensitive
+    ? `🐾 ${breedIsHeatSensitive ? profile.breed + 's run hot' : profile.name + ' runs hot'} — we've prioritized shadier routes for ${profile.name}. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`
+    : `🐾 Matched to ${profile.name}'s fitness level. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`;
 }
 
 function loadLocalFavorites(){
