@@ -37,7 +37,7 @@
 
   function renderDogCard(){
     if(!currentDog || !currentDog.name){
-      accountDogCard.innerHTML = `<div class="add-dog-row" id="addDogRow">+ Add your dog</div>`;
+      accountDogCard.innerHTML = `<button type="button" class="add-dog-row" id="addDogRow">+ Add your dog</button>`;
     } else {
       accountDogCard.innerHTML = `
         <div class="account-dog-row">
