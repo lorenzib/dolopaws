@@ -115,45 +115,58 @@ state.favorites = loadLocalFavorites();
 
 // Apply any guest dog profile immediately, so a returning guest sees
 // personalization right away without waiting on Firebase auth to resolve.
-applyDogPersonalization(loadLocalDogProfile());
+try{
+  applyDogPersonalization(loadLocalDogProfile());
+}catch(e){}
 
 window.addEventListener('dolopaws-auth-changed', async (e) => {
-  const user = e.detail.user;
-  if(user && window.DoloPawsAuth){
-    const cloudFavorites = await window.DoloPawsAuth.getFavorites();
-    if(Object.keys(cloudFavorites).length === 0 && Object.keys(state.favorites).length > 0){
-      await window.DoloPawsAuth.setFavorites(state.favorites);
-    } else {
-      state.favorites = cloudFavorites;
-    }
+  try{
+    const user = e.detail.user;
+    if(user && window.DoloPawsAuth){
+      const cloudFavorites = await window.DoloPawsAuth.getFavorites();
+      if(Object.keys(cloudFavorites).length === 0 && Object.keys(state.favorites).length > 0){
+        await window.DoloPawsAuth.setFavorites(state.favorites);
+      } else {
+        state.favorites = cloudFavorites;
+      }
 
-    let profile = await window.DoloPawsAuth.getDogProfile();
-    const localProfile = loadLocalDogProfile();
-    if(!profile && localProfile){
-      // first login on this device with a guest-filled dog profile — migrate it up
-      await window.DoloPawsAuth.setDogProfile(localProfile);
-      profile = localProfile;
+      let profile = await window.DoloPawsAuth.getDogProfile();
+      const localProfile = loadLocalDogProfile();
+      if(!profile && localProfile){
+        // first login on this device with a guest-filled dog profile — migrate it up
+        await window.DoloPawsAuth.setDogProfile(localProfile);
+        profile = localProfile;
+      }
+      applyDogPersonalization(profile);
+    } else {
+      state.favorites = loadLocalFavorites();
+      applyDogPersonalization(loadLocalDogProfile());
     }
-    applyDogPersonalization(profile);
-  } else {
+  }catch(err){
     state.favorites = loadLocalFavorites();
-    applyDogPersonalization(loadLocalDogProfile());
+    try{ applyDogPersonalization(loadLocalDogProfile()); }catch(e){}
+  }finally{
+    render();
   }
-  render();
 });
 
 // Only fires from the account page (editing an existing profile) —
 // the homepage's own save flow is handled separately, below.
 window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
-  const profile = e.detail.profile;
-  const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-  if(user){
-    await window.DoloPawsAuth.setDogProfile(profile);
-  } else {
-    saveLocalDogProfile(profile);
+  try{
+    const profile = e.detail.profile;
+    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    if(user){
+      await window.DoloPawsAuth.setDogProfile(profile);
+    } else {
+      saveLocalDogProfile(profile);
+    }
+    applyDogPersonalization(profile);
+  }catch(err){
+    try{ applyDogPersonalization(loadLocalDogProfile()); }catch(e){}
+  }finally{
+    render();
   }
-  applyDogPersonalization(profile);
-  render();
 });
 
 // ---------- Homepage "save this profile" flow ----------
@@ -311,19 +324,64 @@ function routeTimeline(t){
   </ol>`;
 }
 
+function ensureResultsNodes(){
+  const results = document.getElementById('results');
+  if(!results) return null;
+
+  let count = document.getElementById('resultsCount');
+  if(!count){
+    count = document.createElement('div');
+    count.id = 'resultsCount';
+    count.className = 'hint';
+    count.style.margin = '0 0 14px';
+    results.prepend(count);
+  }
+
+  let grid = document.getElementById('grid');
+  if(!grid){
+    grid = document.createElement('div');
+    grid.id = 'grid';
+    results.appendChild(grid);
+  }
+
+  return { results, count, grid };
+}
+
+function renderFallbackMessage(message){
+  const nodes = ensureResultsNodes();
+  if(!nodes) return;
+  nodes.count.textContent = '';
+  nodes.grid.innerHTML = `<div class="trail-card-v2"><div class="card-head"><div class="trail-left"><p class="desc">${message}</p></div></div></div>`;
+  if(window.updateMapMarkers) window.updateMapMarkers([]);
+}
+
 function render(){
-  const grid = document.getElementById('grid');
-  const scored = trails.map(t=>({...t, score:scoreTrail(t)}))
-    .sort((a,b)=>b.score-a.score);
+  const nodes = ensureResultsNodes();
+  if(!nodes) return;
 
-  document.getElementById('resultsCount').textContent = `${scored.length} trails, ranked by fit`;
+  let scored = [];
+  try{
+    if(!Array.isArray(trails)) throw new Error('trails data unavailable');
+    scored = trails.map(t=>({...t, score:scoreTrail(t)}))
+      .sort((a,b)=>b.score-a.score);
+  }catch(err){
+    renderFallbackMessage("We couldn't rank trails right now. Please refresh and try again.");
+    return;
+  }
 
-  grid.innerHTML = scored.map(t=>{
+  if(scored.length === 0){
+    renderFallbackMessage('No matching trails right now. Try broadening your preferences.');
+    return;
+  }
+
+  nodes.count.textContent = `${scored.length} trails, ranked by fit`;
+
+  nodes.grid.innerHTML = scored.map(t=>{
     const isFav = !!state.favorites[t.id];
     return `
-    <div class="card" data-id="${t.id}">
-      <div class="card-top">
-        <div>
+    <div class="trail-card-v2 card" data-id="${t.id}">
+      <div class="card-head card-top">
+        <div class="trail-left">
           <div class="card-title-row">
             <span class="safety-badge safety-${t.safetyLevel === 'low-risk' ? 'low' : t.safetyLevel === 'moderate' ? 'moderate' : 'caution'}">
               ${safetyLabel(t.safetyLevel)}
@@ -340,7 +398,7 @@ function render(){
           <div class="hazard-tags">
             ${t.surfaceHazards.length ? t.surfaceHazards.map(h=>`<span class="hazard-tag">${h}</span>`).join('') : `<span class="hazard-tag">No notable surface hazards</span>`}
           </div>
-          <div class="card-desc">${t.desc}</div>
+          <div class="desc card-desc">${t.desc}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
           <button class="fav-btn ${isFav?'active':''}" data-fav="${t.id}">${isFav ? 'Saved' : 'Save'}</button>
@@ -350,7 +408,7 @@ function render(){
           </div>
         </div>
       </div>
-      <div class="detail" id="detail-${t.id}">
+      <div class="detail-wrap detail" id="detail-${t.id}">
         <div class="detail-grid">
           <div><b>Shade coverage:</b> ~${t.shadeCoverage}%</div>
           <div><b>Paid access:</b> ${t.paid ? 'Cable car or rifugio fee' : 'Free'}</div>
@@ -365,7 +423,7 @@ function render(){
     </div>`;
   }).join('');
 
-  grid.querySelectorAll('.card').forEach(card=>{
+  nodes.grid.querySelectorAll('.card').forEach(card=>{
     card.addEventListener('click', e=>{
       if(e.target.closest('.fav-btn')) return;
       const id = card.dataset.id;
@@ -373,7 +431,7 @@ function render(){
     });
   });
 
-  grid.querySelectorAll('.fav-btn').forEach(btn=>{
+  nodes.grid.querySelectorAll('.fav-btn').forEach(btn=>{
     btn.addEventListener('click', async e=>{
       e.stopPropagation();
       const id = btn.dataset.fav;
@@ -389,6 +447,17 @@ function render(){
       render();
     });
   });
+
+  if(window.updateMapMarkers) window.updateMapMarkers(scored);
 }
+
+window.getScoredTrails = function(){
+  if(!Array.isArray(trails)) return [];
+  try{
+    return trails.map(t=>({...t, score:scoreTrail(t)})).sort((a,b)=>b.score-a.score);
+  }catch(e){
+    return [];
+  }
+};
 
 render();
