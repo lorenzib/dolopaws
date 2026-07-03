@@ -117,7 +117,9 @@ state.favorites = loadLocalFavorites();
 // personalization right away without waiting on Firebase auth to resolve.
 try{
   applyDogPersonalization(loadLocalDogProfile());
-}catch(e){}
+}catch(e){
+  console.warn('Failed to apply local dog profile:', e);
+}
 
 window.addEventListener('dolopaws-auth-changed', async (e) => {
   try{
@@ -144,7 +146,11 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     }
   }catch(err){
     state.favorites = loadLocalFavorites();
-    try{ applyDogPersonalization(loadLocalDogProfile()); }catch(e){}
+    try{
+      applyDogPersonalization(loadLocalDogProfile());
+    }catch(e){
+      console.warn('Failed to apply local dog profile:', e);
+    }
   }finally{
     render();
   }
@@ -163,7 +169,11 @@ window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
     }
     applyDogPersonalization(profile);
   }catch(err){
-    try{ applyDogPersonalization(loadLocalDogProfile()); }catch(e){}
+    try{
+      applyDogPersonalization(loadLocalDogProfile());
+    }catch(e){
+      console.warn('Failed to apply local dog profile:', e);
+    }
   }finally{
     render();
   }
@@ -351,13 +361,29 @@ function renderFallbackMessage(message){
   const nodes = ensureResultsNodes();
   if(!nodes) return;
   nodes.count.textContent = '';
-  nodes.grid.innerHTML = `<div class="trail-card-v2"><div class="card-head"><div class="trail-left"><p class="desc">${message}</p></div></div></div>`;
+  nodes.grid.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'trail-card-v2';
+  const head = document.createElement('div');
+  head.className = 'card-head';
+  const left = document.createElement('div');
+  left.className = 'trail-left';
+  const desc = document.createElement('p');
+  desc.className = 'desc';
+  desc.textContent = message;
+  left.appendChild(desc);
+  head.appendChild(left);
+  card.appendChild(head);
+  nodes.grid.appendChild(card);
   if(window.updateMapMarkers) window.updateMapMarkers([]);
 }
 
 function render(){
   const nodes = ensureResultsNodes();
-  if(!nodes) return;
+  if(!nodes){
+    if(window.updateMapMarkers) window.updateMapMarkers([]);
+    return;
+  }
 
   let scored = [];
   try{
@@ -379,7 +405,7 @@ function render(){
   nodes.grid.innerHTML = scored.map(t=>{
     const isFav = !!state.favorites[t.id];
     return `
-    <div class="trail-card-v2 card" data-id="${t.id}">
+    <div class="trail-card-v2" data-id="${t.id}">
       <div class="card-head card-top">
         <div class="trail-left">
           <div class="card-title-row">
@@ -408,7 +434,7 @@ function render(){
           </div>
         </div>
       </div>
-      <div class="detail-wrap detail" id="detail-${t.id}">
+      <div class="detail-wrap" id="detail-${t.id}">
         <div class="detail-grid">
           <div><b>Shade coverage:</b> ~${t.shadeCoverage}%</div>
           <div><b>Paid access:</b> ${t.paid ? 'Cable car or rifugio fee' : 'Free'}</div>
@@ -423,7 +449,7 @@ function render(){
     </div>`;
   }).join('');
 
-  nodes.grid.querySelectorAll('.card').forEach(card=>{
+  nodes.grid.querySelectorAll('.trail-card-v2[data-id]').forEach(card=>{
     card.addEventListener('click', e=>{
       if(e.target.closest('.fav-btn')) return;
       const id = card.dataset.id;
@@ -456,6 +482,7 @@ window.getScoredTrails = function(){
   try{
     return trails.map(t=>({...t, score:scoreTrail(t)})).sort((a,b)=>b.score-a.score);
   }catch(e){
+    console.warn('Failed to score trails:', e);
     return [];
   }
 };
