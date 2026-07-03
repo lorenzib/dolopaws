@@ -23,6 +23,7 @@
 
   let stepIndex = 0;
   let data = { name:'', breed:'', breedOther:'', heatSensitivity:'', ageGroup:'', fitness:'' };
+  let isEditing = false;
 
   const overlay = document.getElementById('dogWizard');
   const progressEl = document.getElementById('wizardProgress');
@@ -95,7 +96,7 @@
     }
 
     backBtn.style.visibility = stepIndex === 0 ? 'hidden' : 'visible';
-    continueBtn.textContent = stepIndex === STEPS.length - 1 ? 'See my matches' : 'Continue';
+    continueBtn.textContent = stepIndex === STEPS.length - 1 ? (isEditing ? 'Save changes' : 'See my matches') : 'Continue';
     updateContinueState();
   }
 
@@ -111,13 +112,6 @@
       ageGroup: data.ageGroup,
       fitness: data.fitness,
     };
-
-    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-    if(user){
-      await window.DoloPawsAuth.setDogProfile(profile);
-    } else {
-      try{ localStorage.setItem('dolopaws-dog-profile', JSON.stringify(profile)); }catch(e){}
-    }
 
     window.dispatchEvent(new CustomEvent('dolopaws-dog-profile-saved', { detail:{ profile } }));
     closeWizard();
@@ -140,9 +134,24 @@
     }
   });
 
-  function openWizard(){
+  // existingDog: pass the current dog object to edit it, or omit/null to add one
+  function openWizard(existingDog){
     stepIndex = 0;
-    data = { name:'', breed:'', breedOther:'', heatSensitivity:'', ageGroup:'', fitness:'' };
+    if(existingDog && existingDog.name){
+      isEditing = true;
+      const isKnownBreed = (typeof DOG_BREEDS !== 'undefined') && DOG_BREEDS.includes(existingDog.breed);
+      data = {
+        name: existingDog.name || '',
+        breed: isKnownBreed ? existingDog.breed : (existingDog.breed ? OTHER_VALUE : ''),
+        breedOther: isKnownBreed ? '' : (existingDog.breed || ''),
+        heatSensitivity: existingDog.heatSensitivity || '',
+        ageGroup: existingDog.ageGroup || '',
+        fitness: existingDog.fitness || '',
+      };
+    } else {
+      isEditing = false;
+      data = { name:'', breed:'', breedOther:'', heatSensitivity:'', ageGroup:'', fitness:'' };
+    }
     renderStep();
     overlay.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -153,7 +162,7 @@
   }
 
   closeBtn.addEventListener('click', closeWizard);
-  if(openBtn) openBtn.addEventListener('click', openWizard);
+  if(openBtn) openBtn.addEventListener('click', () => openWizard());
 
   window.DoloPawsWizard = { open: openWizard };
 })();

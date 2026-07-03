@@ -61,25 +61,8 @@
 
     <section class="guide-section">
       <h2>Your dog</h2>
-      <p style="color:var(--pine-soft);font-size:13.5px;margin-bottom:16px;">Save your dog's details so the trail finder can start pre-set to their fitness level.</p>
-      <label class="field-label">Dog's name
-        <input type="text" id="dogName" placeholder="Rex">
-      </label>
-      <label class="field-label">Breed
-        <select id="dogBreed" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--limestone);"></select>
-      </label>
-      <label class="field-label" id="dogBreedOtherField" hidden>Tell us the breed
-        <input type="text" id="dogBreedOther" placeholder="e.g. Lagotto Romagnolo">
-      </label>
-      <label class="field-label">Fitness level
-        <select id="dogFitness" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--limestone);">
-          <option value="low">Low — puppy, senior, or just starting out</option>
-          <option value="moderate" selected>Moderate — everyday walker</option>
-          <option value="high">High — mountain-ready</option>
-        </select>
-      </label>
-      <button id="saveDogBtn" class="auth-submit" style="width:auto;padding:10px 20px;margin-top:4px;">Save dog profile</button>
-      <p id="dogStatus" style="margin-top:12px;font-size:13px;" hidden></p>
+      <p style="color:var(--pine-soft);font-size:13.5px;margin-bottom:16px;">This is what pre-fills the trail finder on the homepage.</p>
+      <div id="accountDogCard"></div>
     </section>
 
     <section class="guide-section">
@@ -116,9 +99,35 @@
 
 </div>
 
+<!-- DOG WIZARD — full-screen guided add/edit, shared with the homepage -->
+<div id="dogWizard" class="wizard-overlay" hidden>
+  <div class="wizard-topbar">
+    <span style="font-family:'Fraunces',serif;font-weight:700;font-size:19px;color:var(--pine);">DoloPaws</span>
+    <button id="wizardCloseBtn" class="wizard-close">&times;</button>
+  </div>
+
+  <div class="wizard-hero">
+    <div class="eyebrow" style="justify-content:center;">Dolomites, Italy</div>
+    <h1>Tell us about your dog. <em>We'll tell you exactly where to walk.</em></h1>
+    <p>Five quick questions, then a ranked list of Dolomite trails scored for paw safety — not just distance and difficulty.</p>
+  </div>
+
+  <div class="wizard-card">
+    <div class="wizard-progress" id="wizardProgress"></div>
+    <div class="wizard-step-label" id="wizardStepLabel">Step 1 of 5</div>
+    <div class="wizard-question" id="wizardQuestion"></div>
+    <div id="wizardStepBody"></div>
+    <div class="wizard-nav">
+      <button class="wizard-back" id="wizardBackBtn">&larr; Back</button>
+      <button class="wizard-continue" id="wizardContinueBtn">Continue</button>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>
+<script src="dog-wizard.js" defer></script>
 <script src="account.js" defer></script>
 </body>
 </html>

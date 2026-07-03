@@ -5,33 +5,12 @@
   const userEmail = document.getElementById('userEmail');
   const userProvider = document.getElementById('userProvider');
   const passwordSection = document.getElementById('passwordSection');
-  const passwordHint = document.getElementById('passwordHint');
   const sendResetBtn = document.getElementById('sendResetBtn');
   const resetStatus = document.getElementById('resetStatus');
   const savedTrailsList = document.getElementById('savedTrailsList');
   const logOutBtn = document.getElementById('logOutBtn');
-
-  const dogName = document.getElementById('dogName');
-  const dogBreed = document.getElementById('dogBreed');
-  const dogBreedOtherField = document.getElementById('dogBreedOtherField');
-  const dogBreedOther = document.getElementById('dogBreedOther');
-  const dogFitness = document.getElementById('dogFitness');
-  const saveDogBtn = document.getElementById('saveDogBtn');
-  const dogStatus = document.getElementById('dogStatus');
-
-  const OTHER_VALUE = '__other__';
-  function populateBreedOptions(){
-    const list = (typeof DOG_BREEDS !== 'undefined') ? DOG_BREEDS : [];
-    dogBreed.innerHTML =
-      `<option value="">Select a breed…</option>` +
-      list.map(b => `<option value="${b}">${b}</option>`).join('') +
-      `<option value="${OTHER_VALUE}">Other (not listed)</option>`;
-  }
-  populateBreedOptions();
-
-  dogBreed.addEventListener('change', () => {
-    dogBreedOtherField.hidden = dogBreed.value !== OTHER_VALUE;
-  });
+  const accountDogCard = document.getElementById('accountDogCard');
+  let currentDog = null;
 
   const showDeleteBtn = document.getElementById('showDeleteBtn');
   const deleteConfirmBox = document.getElementById('deleteConfirmBox');
@@ -48,6 +27,53 @@
     if(pid === 'password') return 'Email & password';
     return 'Unknown';
   }
+
+  function initial(name){ return (name || '?').trim().charAt(0).toUpperCase(); }
+  function fitnessLabel(f){
+    if(f === 'low') return 'Low fitness';
+    if(f === 'high') return 'High fitness';
+    return 'Moderate fitness';
+  }
+
+  function renderDogCard(){
+    if(!currentDog || !currentDog.name){
+      accountDogCard.innerHTML = `<div class="add-dog-row" id="addDogRow">+ Add your dog</div>`;
+    } else {
+      accountDogCard.innerHTML = `
+        <div class="account-dog-row">
+          <div class="left">
+            <div class="avatar" style="width:34px;height:34px;border-radius:50%;background:var(--pine);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${initial(currentDog.name)}</div>
+            <div>
+              <div class="name" style="font-family:'Fraunces',serif;font-weight:600;font-size:15px;">${currentDog.name}</div>
+              <div class="meta" style="font-size:12px;color:var(--pine-soft);">${currentDog.breed || 'Breed not set'} · ${fitnessLabel(currentDog.fitness)}</div>
+            </div>
+          </div>
+          <a href="#" id="editDogLink" style="font-size:12px;font-weight:700;color:var(--alpenglow);text-decoration:none;">Edit →</a>
+        </div>
+      `;
+    }
+
+    const addRowEl = document.getElementById('addDogRow');
+    if(addRowEl){
+      addRowEl.addEventListener('click', () => {
+        if(window.DoloPawsWizard) window.DoloPawsWizard.open();
+      });
+    }
+    const editLink = document.getElementById('editDogLink');
+    if(editLink){
+      editLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        if(window.DoloPawsWizard) window.DoloPawsWizard.open(currentDog);
+      });
+    }
+  }
+
+  window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
+    if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) return;
+    currentDog = e.detail.profile;
+    await window.DoloPawsAuth.setDogProfile(currentDog);
+    renderDogCard();
+  });
 
   function renderSavedTrails(favorites){
     const ids = Object.keys(favorites || {});
@@ -99,21 +125,8 @@
         deleteGoogleNote.hidden = true;
       }
 
-      const profile = await window.DoloPawsAuth.getDogProfile();
-      if(profile){
-        dogName.value = profile.name || '';
-        dogFitness.value = profile.fitness || 'moderate';
-        const savedBreed = profile.breed || '';
-        const isKnownBreed = (typeof DOG_BREEDS !== 'undefined') && DOG_BREEDS.includes(savedBreed);
-        if(savedBreed && !isKnownBreed){
-          dogBreed.value = OTHER_VALUE;
-          dogBreedOtherField.hidden = false;
-          dogBreedOther.value = savedBreed;
-        } else {
-          dogBreed.value = savedBreed;
-          dogBreedOtherField.hidden = true;
-        }
-      }
+      currentDog = await window.DoloPawsAuth.getDogProfile();
+      renderDogCard();
 
       savedTrailsList.innerHTML = `<p style="color:var(--pine-soft);font-size:14px;">Loading your saved trails…</p>`;
       const favorites = await window.DoloPawsAuth.getFavorites();
@@ -143,25 +156,6 @@
     if(!window.DoloPawsAuth) return;
     await window.DoloPawsAuth.logOut();
     window.location.href = 'index.html';
-  });
-
-  saveDogBtn.addEventListener('click', async () => {
-    if(!window.DoloPawsAuth) return;
-    const finalBreed = dogBreed.value === OTHER_VALUE
-      ? dogBreedOther.value.trim()
-      : dogBreed.value;
-    saveDogBtn.disabled = true;
-    saveDogBtn.textContent = 'Saving…';
-    const ok = await window.DoloPawsAuth.setDogProfile({
-      name: dogName.value.trim(),
-      breed: finalBreed,
-      fitness: dogFitness.value,
-    });
-    saveDogBtn.disabled = false;
-    saveDogBtn.textContent = 'Save dog profile';
-    dogStatus.hidden = false;
-    dogStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
-    dogStatus.textContent = ok ? 'Saved.' : 'Something went wrong — please try again.';
   });
 
   showDeleteBtn.addEventListener('click', () => {

@@ -3,6 +3,7 @@ const state = {
   terrain:'0', shade:'high', stops:'frequent', distance:'10', exposure:'no',
   favorites:{},
   heatSensitiveDog:false,
+  dogName:null,
 };
 
 function setPillActive(group, value){
@@ -21,23 +22,11 @@ const FITNESS_DEFAULTS = {
   high:     { terrain:'2', shade:'any',  stops:'any',        distance:'99' },
 };
 
-function loadLocalDogProfile(){
-  try{
-    const saved = localStorage.getItem('dolopaws-dog-profile');
-    return saved ? JSON.parse(saved) : null;
-  }catch(e){ return null; }
-}
-
-function updateDogPromptBanner(){
-  const banner = document.getElementById('dogPromptBanner');
-  if(!banner) return;
-  banner.hidden = !!state.dogName;
-}
-
 function applyDogPersonalization(profile){
   const note = document.getElementById('personalizedNote');
   const heading = document.getElementById('finderHeading');
   const hint = document.getElementById('finderHint');
+  const banner = document.getElementById('dogPromptBanner');
 
   if(!profile || !profile.name){
     state.heatSensitiveDog = false;
@@ -46,9 +35,11 @@ function applyDogPersonalization(profile){
     hint.hidden = false;
     hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
     note.hidden = true;
-    updateDogPromptBanner();
+    if(banner) banner.hidden = false;
     return;
   }
+
+  if(banner) banner.hidden = true;
 
   const defaults = FITNESS_DEFAULTS[profile.fitness] || FITNESS_DEFAULTS.moderate;
   setPillActive('terrain', defaults.terrain);
@@ -77,10 +68,8 @@ function applyDogPersonalization(profile){
   hint.hidden = true;
   note.hidden = false;
   note.innerHTML = isHeatSensitive
-    ? `🐾 ${breedIsHeatSensitive ? profile.breed + 's run hot' : profile.name + ' runs hot'} — we've prioritized shadier routes for ${profile.name}.`
-    : `🐾 Matched to ${profile.name}'s fitness level. Edit this anytime in <a href="account.html" style="color:var(--pine);text-decoration:underline;">My account</a>.`;
-
-  updateDogPromptBanner();
+    ? `🐾 ${breedIsHeatSensitive ? profile.breed + 's run hot' : profile.name + ' runs hot'} — we've prioritized shadier routes for ${profile.name}. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`
+    : `🐾 Matched to ${profile.name}'s fitness level. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`;
 }
 
 function loadLocalFavorites(){
@@ -88,6 +77,16 @@ function loadLocalFavorites(){
     const saved = localStorage.getItem('dolopaws-favorites');
     return saved ? JSON.parse(saved) : {};
   }catch(e){ return {}; }
+}
+
+function loadLocalDogProfile(){
+  try{
+    const saved = localStorage.getItem('dolopaws-dog-profile');
+    return saved ? JSON.parse(saved) : null;
+  }catch(e){ return null; }
+}
+function saveLocalDogProfile(profile){
+  try{ localStorage.setItem('dolopaws-dog-profile', JSON.stringify(profile)); }catch(e){}
 }
 
 state.favorites = loadLocalFavorites();
@@ -121,8 +120,17 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
   render();
 });
 
-window.addEventListener('dolopaws-dog-profile-saved', (e) => {
-  applyDogPersonalization(e.detail.profile);
+// Only fires from the homepage's "add a dog" banner (no profile yet) —
+// once a profile exists, editing only happens on the account page.
+window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
+  const profile = e.detail.profile;
+  const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+  if(user){
+    await window.DoloPawsAuth.setDogProfile(profile);
+  } else {
+    saveLocalDogProfile(profile);
+  }
+  applyDogPersonalization(profile);
   render();
 });
 

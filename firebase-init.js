@@ -64,7 +64,16 @@ async function getDogProfile() {
   if (!currentUser) return null;
   try {
     const snap = await getDoc(doc(db, "users", currentUser.uid));
-    return snap.exists() ? (snap.data().dog || null) : null;
+    if (!snap.exists()) return null;
+    const data = snap.data();
+    if (data.dog && data.dog.name) return data.dog;
+    // fall back to the old multi-dog array format, if present — use the first dog
+    if (Array.isArray(data.dogs) && data.dogs.length > 0) {
+      const migrated = data.dogs[0];
+      await setDoc(doc(db, "users", currentUser.uid), { dog: migrated }, { merge: true });
+      return migrated;
+    }
+    return null;
   } catch (e) {
     console.error("Failed to load dog profile:", e);
     return null;
