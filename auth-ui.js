@@ -85,6 +85,7 @@
     setMode(mode); // resets button label
     if(result.ok){
       closeModal();
+      window.dispatchEvent(new CustomEvent('dolopaws-auth-success'));
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
@@ -96,6 +97,7 @@
     const result = await window.DoloPawsAuth.signInGoogle();
     if(result.ok){
       closeModal();
+      window.dispatchEvent(new CustomEvent('dolopaws-auth-success'));
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
@@ -118,4 +120,11 @@
       window.dispatchEvent(new CustomEvent('dolopaws-auth-changed', { detail: { user } }));
     });
   });
+
+  window.DoloPawsAuthUI = {
+    openSignup(){
+      setMode('signup');
+      openModal();
+    },
+  };
 })();

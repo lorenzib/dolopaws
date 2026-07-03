@@ -76,10 +76,6 @@
 <div class="wrap">
 
   <div class="panel" id="finder">
-    <div id="dogPromptBanner" class="dog-prompt-banner" hidden>
-      <div class="txt">🐾 Tell us about your dog<span>Five quick questions, then a list scored for their exact fitness level.</span></div>
-      <button id="openWizardBtn">Get started</button>
-    </div>
     <div id="personalizedNote" hidden style="background:var(--sage-dim);color:var(--pine);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-bottom:16px;"></div>
 
     <h2 id="finderHeading">Tell me about your dog</h2>
@@ -133,6 +129,11 @@
         </div>
       </div>
     </div>
+
+    <div id="dogSavePrompt" class="dog-prompt-banner" hidden style="margin-top:22px;margin-bottom:0;">
+      <div class="txt">🐾 Create a free account to save this profile<span>Skip these questions next time you visit.</span></div>
+      <button type="button" id="saveProfileBtn">Save profile</button>
+    </div>
   </div>
 
   <div class="results-head">
@@ -156,48 +157,31 @@
   <div class="credit">Trail details are a general guide, curated and estimated from public hiking resources — always confirm current conditions, distances, and dog policies locally before you go.</div>
 </div>
 
-<!-- DOG WIZARD — full-screen guided setup -->
-<div id="dogWizard" class="wizard-overlay" hidden>
-  <div class="wizard-topbar">
-    <span style="font-family:'Fraunces',serif;font-weight:700;font-size:19px;color:var(--pine);">DoloPaws</span>
-    <button id="wizardCloseBtn" class="wizard-close">&times;</button>
-  </div>
+<!-- Quick follow-up after account creation: just enough to personalize -->
+<div id="nameBreedModal" class="modal-overlay" hidden>
+  <div class="modal">
+    <button type="button" id="nbClose" class="modal-close">&times;</button>
+    <h2>One last thing</h2>
+    <p class="hint">What's your dog's name and breed? This is what personalizes the trail list.</p>
 
-  <div class="wizard-hero">
-    <div class="eyebrow" style="justify-content:center;">Dolomites, Italy</div>
-    <h1>Tell us about your dog. <em>We'll tell you exactly where to walk.</em></h1>
-    <p>Five quick questions, then a ranked list of Dolomite trails scored for paw safety — not just distance and difficulty.</p>
+    <form id="nameBreedForm">
+      <label class="field-label">Dog's name
+        <input type="text" id="nbName" required placeholder="e.g. Eddie">
+      </label>
+      <label class="field-label">Breed
+        <select id="nbBreed" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--limestone);"></select>
+      </label>
+      <label class="field-label" id="nbBreedOtherField" hidden>Tell us the breed
+        <input type="text" id="nbBreedOther" placeholder="e.g. Lagotto Romagnolo">
+      </label>
+      <button type="submit" class="auth-submit" id="nbSubmit">Save profile</button>
+    </form>
   </div>
-
-  <div class="wizard-card">
-    <div class="wizard-progress" id="wizardProgress"></div>
-    <div class="wizard-step-label" id="wizardStepLabel">Step 1 of 5</div>
-    <div class="wizard-question" id="wizardQuestion"></div>
-    <div id="wizardStepBody"></div>
-    <div class="wizard-nav">
-      <button class="wizard-back" id="wizardBackBtn">&larr; Back</button>
-      <button class="wizard-continue" id="wizardContinueBtn">Continue</button>
-    </div>
-  </div>
-
-  <div class="wizard-trust-row">
-    <div class="item"><span class="glyph">🐾</span>Scored on paw safety — not just difficulty</div>
-    <div class="item"><span class="glyph">🧭</span>Matched to your dog's exact fitness level</div>
-    <div class="item"><span class="glyph">⛰️</span>Curated for the Dolomites specifically</div>
-  </div>
-
-  <div class="wizard-testimonial">
-    <blockquote>"I stopped guessing which trails were too rocky for his paws. Now I just trust the score."</blockquote>
-    <cite>— Illustrative example, not a real customer yet</cite>
-  </div>
-
-  <div class="wizard-footer">DoloPaws — Dolomites trail guide for dogs</div>
 </div>
 
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>
-<script src="dog-wizard.js" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="script.js" defer></script>
 </body>

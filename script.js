@@ -4,6 +4,7 @@ const state = {
   favorites:{},
   heatSensitiveDog:false,
   dogName:null,
+  hasInteracted:false,
 };
 
 function setPillActive(group, value){
@@ -22,11 +23,32 @@ const FITNESS_DEFAULTS = {
   high:     { terrain:'2', shade:'any',  stops:'any',        distance:'99' },
 };
 
+// Given the current pill state, find which fitness level it resembles most —
+// used when saving a profile straight from the quiz, without asking again.
+function deriveFitnessFromState(){
+  let best = 'moderate', bestScore = -1;
+  Object.keys(FITNESS_DEFAULTS).forEach(level => {
+    const d = FITNESS_DEFAULTS[level];
+    let score = 0;
+    if(d.terrain === state.terrain) score++;
+    if(d.shade === state.shade) score++;
+    if(d.stops === state.stops) score++;
+    if(d.distance === state.distance) score++;
+    if(score > bestScore){ bestScore = score; best = level; }
+  });
+  return best;
+}
+
+function updateSavePrompt(){
+  const prompt = document.getElementById('dogSavePrompt');
+  if(!prompt) return;
+  prompt.hidden = !(state.hasInteracted && !state.dogName);
+}
+
 function applyDogPersonalization(profile){
   const note = document.getElementById('personalizedNote');
   const heading = document.getElementById('finderHeading');
   const hint = document.getElementById('finderHint');
-  const banner = document.getElementById('dogPromptBanner');
 
   if(!profile || !profile.name){
     state.heatSensitiveDog = false;
@@ -35,11 +57,9 @@ function applyDogPersonalization(profile){
     hint.hidden = false;
     hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
     note.hidden = true;
-    if(banner) banner.hidden = false;
+    updateSavePrompt();
     return;
   }
-
-  if(banner) banner.hidden = true;
 
   const defaults = FITNESS_DEFAULTS[profile.fitness] || FITNESS_DEFAULTS.moderate;
   setPillActive('terrain', defaults.terrain);
@@ -48,8 +68,8 @@ function applyDogPersonalization(profile){
   setPillActive('distance', defaults.distance);
   // exposure is never auto-enabled — that stays an explicit human choice
 
-  // An explicit answer to "how heat sensitive is your dog?" (from the wizard)
-  // takes priority over inferring it from breed alone.
+  // An explicit answer to "how heat sensitive is your dog?" takes priority
+  // over inferring it from breed alone.
   const breedIsHeatSensitive = (typeof HEAT_SENSITIVE_BREEDS !== 'undefined')
     && HEAT_SENSITIVE_BREEDS.includes(profile.breed);
   const explicitHeatSensitive = profile.heatSensitivity === 'high';
@@ -70,6 +90,8 @@ function applyDogPersonalization(profile){
   note.innerHTML = isHeatSensitive
     ? `🐾 ${breedIsHeatSensitive ? profile.breed + 's run hot' : profile.name + ' runs hot'} — we've prioritized shadier routes for ${profile.name}. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`
     : `🐾 Matched to ${profile.name}'s fitness level. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`;
+
+  updateSavePrompt();
 }
 
 function loadLocalFavorites(){
@@ -120,8 +142,8 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
   render();
 });
 
-// Only fires from the homepage's "add a dog" banner (no profile yet) —
-// once a profile exists, editing only happens on the account page.
+// Only fires from the account page (editing an existing profile) —
+// the homepage's own save flow is handled separately, below.
 window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
   const profile = e.detail.profile;
   const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
@@ -134,10 +156,91 @@ window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
   render();
 });
 
-const openWizardBtn = document.getElementById('openWizardBtn');
-if(openWizardBtn){
-  openWizardBtn.addEventListener('click', () => {
-    if(window.DoloPawsWizard) window.DoloPawsWizard.open();
+// ---------- Homepage "save this profile" flow ----------
+// Clicking "Save profile" on the quiz either opens sign-up (if logged out)
+// or, if already logged in with no dog saved yet, jumps straight to the
+// name/breed follow-up.
+let pendingProfileSave = false;
+
+const saveProfileBtn = document.getElementById('saveProfileBtn');
+if(saveProfileBtn){
+  saveProfileBtn.addEventListener('click', () => {
+    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    if(user){
+      openNameBreedModal();
+    } else {
+      pendingProfileSave = true;
+      if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+    }
+  });
+}
+
+window.addEventListener('dolopaws-auth-success', () => {
+  if(pendingProfileSave){
+    pendingProfileSave = false;
+    openNameBreedModal();
+  }
+});
+
+function openNameBreedModal(){
+  const modal = document.getElementById('nameBreedModal');
+  const breedSelect = document.getElementById('nbBreed');
+  const otherField = document.getElementById('nbBreedOtherField');
+  if(!modal || !breedSelect) return;
+
+  const OTHER_VALUE = '__other__';
+  const list = (typeof DOG_BREEDS !== 'undefined') ? DOG_BREEDS : [];
+  breedSelect.innerHTML = `<option value="">Select a breed…</option>` +
+    list.map(b => `<option value="${b}">${b}</option>`).join('') +
+    `<option value="${OTHER_VALUE}">Other (not listed)</option>`;
+  breedSelect.onchange = () => {
+    otherField.hidden = breedSelect.value !== OTHER_VALUE;
+  };
+
+  modal.hidden = false;
+}
+
+const nbCloseBtn = document.getElementById('nbClose');
+if(nbCloseBtn){
+  nbCloseBtn.addEventListener('click', () => {
+    document.getElementById('nameBreedModal').hidden = true;
+  });
+}
+
+const nameBreedForm = document.getElementById('nameBreedForm');
+if(nameBreedForm){
+  nameBreedForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const OTHER_VALUE = '__other__';
+    const nameInput = document.getElementById('nbName');
+    const breedSelect = document.getElementById('nbBreed');
+    const breedOther = document.getElementById('nbBreedOther');
+    const submitBtn = document.getElementById('nbSubmit');
+
+    const profile = {
+      name: nameInput.value.trim(),
+      breed: breedSelect.value === OTHER_VALUE ? breedOther.value.trim() : breedSelect.value,
+      heatSensitivity: state.shade,
+      fitness: deriveFitnessFromState(),
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving…';
+
+    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    if(user){
+      await window.DoloPawsAuth.setDogProfile(profile);
+    } else {
+      saveLocalDogProfile(profile);
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Save profile';
+    document.getElementById('nameBreedModal').hidden = true;
+    nameBreedForm.reset();
+
+    applyDogPersonalization(profile);
+    render();
   });
 }
 
@@ -155,6 +258,8 @@ document.querySelectorAll('.pill-row').forEach(row=>{
     row.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     state[group] = btn.dataset.value;
+    state.hasInteracted = true;
+    updateSavePrompt();
     render();
   });
 });
