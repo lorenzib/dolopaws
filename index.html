@@ -9,26 +9,24 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1F2B20">
+<meta name="theme-color" content="#2E4034">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="page-frame">
-
 <div class="topnav">
-  <a class="brand" href="index.html">DoloPaws</a>
+  <a class="brand" href="index.html">
+    DoloPaws
+  </a>
   <div class="links">
     <a href="#finder">Find a trail</a>
-    <a href="#trailMap">Map</a>
     <a href="safety-guide.html">Dog safety guide</a>
     <button id="accountBtn" class="account-btn">Log in</button>
   </div>
@@ -65,106 +63,80 @@
   </div>
 </div>
 
-<!-- HERO: split, quiz on the left, live map on the right -->
-<div class="hero-split">
-  <div class="hero-left">
-    <div class="eyebrow">Dolomites, Italy</div>
-    <h1 style="font-family:'Fraunces',serif;font-weight:600;font-size:38px;line-height:1.12;margin:14px 0 16px;">
-      Every trail, mapped and <em style="color:var(--alpenglow);">scored for paws.</em>
-    </h1>
-    <p class="sub" style="max-width:420px;">Filtered by terrain, shade, water stops and rifugi — not just distance and difficulty. Every trail is scored on how safe it is to walk with a dog, first.</p>
-
-    <div class="panel" id="finder" style="box-shadow:none;border:1px solid var(--paper-line);margin-top:6px;">
-      <div id="personalizedNote" hidden style="background:var(--sage-dim);color:var(--pine);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-bottom:16px;"></div>
-      <h2 id="finderHeading">Tell me about your dog</h2>
-      <div class="hint" id="finderHint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</div>
-
-      <div class="q-group">
-        <span class="q-label">Terrain your dog can handle</span>
-        <div class="pill-row" data-group="terrain">
-          <button class="pill active" data-value="0">Paved / packed dirt only</button>
-          <button class="pill" data-value="1">Gravel &amp; mixed rocky patches are fine</button>
-          <button class="pill" data-value="2">Comfortable on loose rock / scree</button>
-        </div>
-      </div>
-
-      <div class="q-group">
-        <span class="q-label">Heat &amp; shade sensitivity</span>
-        <div class="pill-row" data-group="shade">
-          <button class="pill active" data-value="high">Needs mostly shaded routes</button>
-          <button class="pill" data-value="some">Some open meadow is fine</button>
-          <button class="pill" data-value="any">Doesn't matter</button>
-        </div>
-      </div>
-
-      <div class="q-group">
-        <span class="q-label">Water &amp; rest stop frequency</span>
-        <div class="pill-row" data-group="stops">
-          <button class="pill active" data-value="frequent">Frequent — every 1–2 km</button>
-          <button class="pill" data-value="occasional">Occasional is fine</button>
-          <button class="pill" data-value="any">Doesn't matter</button>
-        </div>
-      </div>
-
-      <div class="q-two-col">
-        <div class="q-group">
-          <span class="q-label">Max distance today</span>
-          <div class="pill-row" data-group="distance">
-            <button class="pill" data-value="5">Up to 5 km</button>
-            <button class="pill active" data-value="10">Up to 10 km</button>
-            <button class="pill" data-value="99">No limit</button>
-          </div>
-        </div>
-        <div class="q-group">
-          <span class="q-label">Comfortable with exposure?</span>
-          <div class="pill-row" data-group="exposure">
-            <button class="pill active" data-value="no">No — keep it wide &amp; safe</button>
-            <button class="pill" data-value="yes">Yes, steady on narrow ledges</button>
-          </div>
-        </div>
-      </div>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">
+      Dolomites, Italy
     </div>
-
-    <div style="display:flex;align-items:center;gap:14px;margin-top:22px;flex-wrap:wrap;">
-      <button id="showMatchesBtn" style="font-size:14px;font-weight:700;color:#fff;background:var(--forest-btn);border:none;border-radius:999px;padding:13px 26px;cursor:pointer;font-family:'Inter',sans-serif;">Show me matches</button>
-      <span id="heroMatchCount" style="font-size:13px;color:var(--pine-soft);"></span>
-    </div>
+    <h1>DoloPaws<br><em>trails that are actually safe for paws.</em></h1>
+    <p class="sub">Filtered by terrain, shade, water stops and rifugi — not just distance and difficulty. Every trail is scored on how safe it is to walk with a dog, first.</p>
   </div>
-
-  <div class="hero-right">
-    <div id="trailMap"></div>
-  </div>
-</div>
-
-<!-- TRUST STATS — real numbers, not placeholders -->
-<div class="stats-strip">
-  <div class="stat-block"><div class="num">15</div><div class="lbl">trails scored</div></div>
-  <div class="stat-block"><div class="num">6</div><div class="lbl">safety factors per trail</div></div>
-  <div class="stat-block"><div class="num">100%</div><div class="lbl">Dolomites-specific</div></div>
-</div>
-
-<!-- CATEGORY TABS -->
-<div class="category-tabs" id="categoryTabs">
-  <button class="cat-tab active" data-category="All">All trails</button>
-  <button class="cat-tab" data-category="Loops">Loops</button>
-  <button class="cat-tab" data-category="Out & back">Out &amp; back</button>
-  <button class="cat-tab" data-category="Via ferrata">Via ferrata</button>
-  <button class="cat-tab" data-category="Rifugio walks">Rifugio walks</button>
-  <button class="cat-tab" data-category="Kid + dog friendly">Kid + dog friendly</button>
-</div>
-
-<div class="results-header-v2">
-  <h2>Your matched trails</h2>
-  <span class="meta" id="resultsCount"></span>
-</div>
-
-<div class="card-grid-v2" id="grid"></div>
-
-<div class="see-all-wrap">
-  <button id="seeAllBtn" class="see-all-btn" hidden></button>
 </div>
 
 <div class="wrap">
+
+  <div class="panel" id="finder">
+    <div id="personalizedNote" hidden style="background:var(--sage-dim);color:var(--pine);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-bottom:16px;"></div>
+    <h2 id="finderHeading">Tell me about your dog</h2>
+    <div class="hint" id="finderHint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</div>
+
+    <!-- PRIMARY: terrain tolerance -->
+    <div class="q-group">
+      <span class="q-label">Terrain your dog can handle</span>
+      <div class="pill-row" data-group="terrain">
+        <button class="pill active" data-value="0">Paved / packed dirt only</button>
+        <button class="pill" data-value="1">Gravel &amp; mixed rocky patches are fine</button>
+        <button class="pill" data-value="2">Comfortable on loose rock / scree</button>
+      </div>
+    </div>
+
+    <!-- PRIMARY: shade need -->
+    <div class="q-group">
+      <span class="q-label">Heat &amp; shade sensitivity</span>
+      <div class="pill-row" data-group="shade">
+        <button class="pill active" data-value="high">Needs mostly shaded routes</button>
+        <button class="pill" data-value="some">Some open meadow is fine</button>
+        <button class="pill" data-value="any">Doesn't matter</button>
+      </div>
+    </div>
+
+    <!-- PRIMARY: stop frequency -->
+    <div class="q-group">
+      <span class="q-label">Water &amp; rest stop frequency</span>
+      <div class="pill-row" data-group="stops">
+        <button class="pill active" data-value="frequent">Frequent — every 1–2 km</button>
+        <button class="pill" data-value="occasional">Occasional is fine</button>
+        <button class="pill" data-value="any">Doesn't matter</button>
+      </div>
+    </div>
+
+    <!-- SECONDARY: distance & exposure -->
+    <div class="q-two-col">
+      <div class="q-group">
+        <span class="q-label">Max distance today</span>
+        <div class="pill-row" data-group="distance">
+          <button class="pill" data-value="5">Up to 5 km</button>
+          <button class="pill active" data-value="10">Up to 10 km</button>
+          <button class="pill" data-value="99">No limit</button>
+        </div>
+      </div>
+      <div class="q-group">
+        <span class="q-label">Comfortable with exposure?</span>
+        <div class="pill-row" data-group="exposure">
+          <button class="pill active" data-value="no">No — keep it wide &amp; safe</button>
+          <button class="pill" data-value="yes">Yes, steady on narrow ledges</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-head">
+    <h2>Your matched trails</h2>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
   <div class="tips-section">
     <h2>Before you go — the basics</h2>
     <ul class="tips-list">
@@ -175,65 +147,13 @@
     </ul>
     <a class="guide-cta" href="safety-guide.html" style="color:var(--limestone);margin-top:16px;">Read the full dog hiking safety guide →</a>
   </div>
-</div>
 
-<!-- SAFETY GUIDE TEASER -->
-<div class="safety-teaser">
-  <div class="photo">photo — dog paw on trail rock</div>
-  <div class="content">
-    <h3>Not sure what "safe for paws" means?</h3>
-    <p>Our dog safety guide breaks down heat, terrain and exposure risks trail by trail — and how to read a DoloPaws score.</p>
-    <a href="safety-guide.html">Read the safety guide →</a>
-  </div>
+  <div class="credit">Trail details are a general guide, curated and estimated from public hiking resources — always confirm current conditions, distances, and dog policies locally before you go.</div>
 </div>
-
-<!-- TESTIMONIAL — placeholder, clearly flagged, replace before launch -->
-<div class="testimonial">
-  <blockquote>"I stopped guessing which trails were too rocky for his paws. Now I just trust the score."</blockquote>
-  <cite>— Illustrative example, not a real customer yet</cite>
-</div>
-
-<!-- CTA BANNER -->
-<div class="cta-banner">
-  <h3>Ready to see trails matched to your dog?</h3>
-  <button id="ctaShowMatches">Show me matches</button>
-</div>
-
-<!-- FOOTER -->
-<div class="footer-v2">
-  <div>
-    <div class="brand-title">DoloPaws</div>
-    <div class="brand-desc">Dolomites trail guide, scored for paw safety.</div>
-  </div>
-  <div>
-    <div class="col-title">Explore</div>
-    <a href="#trailMap">Trail map</a>
-    <a href="#finder">Matched trails</a>
-    <a href="#" data-category-link="Rifugio walks">Rifugio walks</a>
-    <a href="#" data-category-link="Via ferrata">Via ferrata</a>
-  </div>
-  <div>
-    <div class="col-title">Learn</div>
-    <a href="safety-guide.html">Dog safety guide</a>
-    <a href="safety-guide.html">Reading a paw score</a>
-    <a href="safety-guide.html">Heat &amp; altitude tips</a>
-  </div>
-  <div>
-    <div class="col-title">Account</div>
-    <a href="account.html">My dog's profile</a>
-    <a href="account.html">Saved trails</a>
-    <a href="mailto:hello@dolopaws.com">Contact</a>
-  </div>
-</div>
-<div class="footer-bottom">© 2026 DoloPaws — Dolomites trail guide for dogs. Trail details are a general guide — always confirm current conditions locally before you go.</div>
-
-</div><!-- /page-frame -->
 
 <script type="module" src="firebase-init.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>
-<script src="map-init.js" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="script.js" defer></script>
 </body>
