@@ -415,3 +415,11 @@ img,svg{max-width:100%;height:auto;}
   .topnav{padding:16px 20px;}
   .topnav .links{gap:16px;font-size:12px;}
 }
+
+/* ---------- AREA FILTER (shared: my-trails.html + homepage) ---------- */
+.area-pill{
+  padding:8px 15px;border-radius:999px;border:1.5px solid var(--paper-line);
+  background:var(--card);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;
+}
+.area-pill.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+.area-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}

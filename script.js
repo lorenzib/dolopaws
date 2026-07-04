@@ -108,6 +108,24 @@ function effectiveOverrides(profile){
 }
 
 let showingSavedOnly = false;
+let activeArea = 'all';
+
+function renderAreaFilters(profile){
+  const row = document.getElementById('areaFilterRow');
+  if(!row || typeof trails === 'undefined') return;
+  const areas = Array.from(new Set(trails.map(t => t.area))).sort();
+  const pills = ['all', ...areas];
+  row.innerHTML = pills.map(a => `
+    <div class="area-pill ${a === activeArea ? 'active' : ''}" data-area="${a}">${a === 'all' ? 'All areas' : a}</div>
+  `).join('');
+  row.querySelectorAll('.area-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      activeArea = pill.dataset.area;
+      renderAreaFilters(profile);
+      renderReturningHomepage(profile);
+    });
+  });
+}
 
 async function renderReturningHomepage(profile){
   const heading = document.getElementById('returningHeading');
@@ -115,6 +133,8 @@ async function renderReturningHomepage(profile){
   const countEl = document.getElementById('returningCount');
   const listEl = document.getElementById('returningTrailList');
   if(!heading || typeof trails === 'undefined') return;
+
+  renderAreaFilters(profile);
 
   const name = (profile && profile.name) ? profile.name : 'there';
   const overrides = profile ? effectiveOverrides(profile) : { terrain:'1', distance:'10', heatSensitive:false };
@@ -141,11 +161,16 @@ async function renderReturningHomepage(profile){
     ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
     : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details in Edit profile to personalize this list.';
 
-  const displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
+  let displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
+  if(activeArea !== 'all') displayList = displayList.filter(t => t.area === activeArea);
 
   countEl.innerHTML = showingSavedOnly
-    ? `<button id="backToAllBtn" style="border:none;background:none;color:var(--accent);font-weight:700;font-size:12.5px;cursor:pointer;padding:0;">← Back to all trails</button> &nbsp; ${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
+    ? `<button id="backToAllBtn" style="padding:7px 16px;border-radius:14px;background:var(--accent);border:none;color:#fff;font-size:11.5px;font-weight:700;cursor:pointer;">← Back to all trails</button> <span style="margin-left:10px;color:var(--ink-soft);">${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}</span>`
     : `${displayList.length} trails`;
+
+  if(savedTrailsBtn){
+    savedTrailsBtn.classList.toggle('saved', showingSavedOnly);
+  }
 
   const backBtn = document.getElementById('backToAllBtn');
   if(backBtn){
@@ -155,8 +180,13 @@ async function renderReturningHomepage(profile){
     });
   }
 
-  if(showingSavedOnly && displayList.length === 0){
-    listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">You haven't saved any trails yet. Click "Save" on a trail below to keep it here.</div>`;
+  if(displayList.length === 0){
+    const msg = showingSavedOnly && activeArea !== 'all'
+      ? `No saved trails in ${activeArea}. Try a different area, or go back to all trails.`
+      : showingSavedOnly
+        ? `You haven't saved any trails yet. Click "Save" on a trail below to keep it here.`
+        : `No trails in ${activeArea}. Try a different area.`;
+    listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">${msg}</div>`;
     return;
   }
 
