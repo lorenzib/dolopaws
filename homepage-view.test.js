@@ -9,6 +9,7 @@ function loadHomepageView(search, authUser){
     <section id="newCustomerHomepage" hidden></section>
     <section id="returningCustomerHomepage" hidden></section>
     <span id="returningHeroName"></span>
+    <div id="results"></div>
   `;
 
   window.history.replaceState({}, '', search ? `/${search}` : '/');
@@ -34,6 +35,7 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(true);
     expect(document.getElementById('accountBtn').textContent).toBe('Log in');
+    expect(document.getElementById('results').hidden).toBe(true);
   });
 
   test('shows returning hero when logged in', () => {
@@ -44,6 +46,7 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(true);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('accountBtn').textContent).toBe('My account');
+    expect(document.getElementById('results').hidden).toBe(false);
   });
 
   test('personalises returning hero with the user display name', () => {
@@ -65,6 +68,7 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('defaultHomepageHero').hidden).toBe(true);
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(true);
+    expect(document.getElementById('results').hidden).toBe(true);
   });
 });
 
