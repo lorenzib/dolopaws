@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DoloPaws — Dog-safe hikes in the Dolomites</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DoloPaws — Find dog-safe trails in the Dolomites</title>
 <meta name="description" content="Find dog-safe Dolomite trails filtered by terrain, shade, water and exposure. Built for paws first.">
-<meta name="theme-color" content="#2E4034">
+<meta name="theme-color" content="#1c2420">
 
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-<meta property="og:title" content="DoloPaws — Dog-safe hikes in the Dolomites">
-<meta property="og:description" content="Trail matching for dogs first: terrain, shade, water and safety.">
+<meta property="og:title" content="DoloPaws — Find dog-safe trails in the Dolomites">
+<meta property="og:description" content="DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="social-preview.png">
 
@@ -21,229 +21,116 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif; background: #f2efe7; }
+  .serif { font-family: 'Source Serif 4', serif; }
+</style>
 </head>
 <body>
 
-<div class="topnav">
-  <a class="brand" href="index.html">
-    DoloPaws
-  </a>
-  <div class="links">
-    <a href="trails/">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 3.5l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.8 6.4 20.7l1.1-6.2L3 10.1l6.2-.9L12 3.5z"/>
-      </svg>
-      <span>Browse our trails</span>
-    </a>
-    <a href="safety-guide.html">Dog safety guide</a>
-    <button id="accountBtn" class="account-btn">Log in</button>
-  </div>
-</div>
+<div style="min-height:100vh;background:#f2efe7">
 
-<!-- Login / sign-up modal -->
-<div id="authModal" class="modal-overlay" hidden>
-  <div class="modal">
-    <button id="authClose" class="modal-close">&times;</button>
-    <h2 id="authTitle">Log in</h2>
-    <p class="hint" id="authHint">Save trails to your account so they follow you across devices.</p>
-
-    <div id="authError" class="auth-error" hidden></div>
-
-    <form id="authForm">
-      <label class="field-label">Email
-        <input type="email" id="authEmail" required autocomplete="email">
-      </label>
-      <label class="field-label">Password
-        <input type="password" id="authPassword" required autocomplete="current-password" minlength="6">
-      </label>
-      <button type="button" id="forgotPasswordBtn" class="forgot-link">Forgot password?</button>
-      <button type="submit" class="auth-submit" id="authSubmit">Log in</button>
-    </form>
-
-    <div class="auth-divider"><span>or</span></div>
-
-    <button id="googleBtn" class="google-btn">Continue with Google</button>
-
-    <p class="auth-toggle">
-      <span id="authToggleText">Don't have an account?</span>
-      <button id="authToggleBtn" type="button">Sign up</button>
-    </p>
-  </div>
-</div>
-
-<!-- Legacy hero — superseded by split-hero below; kept hidden by homepage-view.js -->
-<div class="hero" id="defaultHomepageHero" hidden>
-  <div class="hero-inner">
-    <h1>Find dog-safe trails in the Dolomites</h1>
-    <p class="sub">DoloPaws ranks routes by paw safety, shade, water access, and terrain risk—so you can choose safer hikes for your dog in minutes.</p>
-  </div>
-</div>
-
-<!-- NEW-CUSTOMER HERO (logged out / auth unknown — default view) -->
-<section class="homepage-intro-strip" id="newCustomerHomepage">
-  <div class="homepage-intro-strip__body">
-    <span class="homepage-intro-strip__icon" aria-hidden="true">🐾</span>
-    <div class="homepage-intro-strip__text">
-      <h1 class="homepage-intro-strip__heading">Trails scored for your dog's safety, not just yours</h1>
-      <p class="homepage-intro-strip__sub">Ranked by paw safety, shade, water access and terrain risk — matched to your dog's build and tolerance.</p>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 48px;border-bottom:1px solid rgba(28,36,32,.1)">
+    <div class="serif" style="font:700 20px 'Source Serif 4',serif;color:#1c2420">DoloPaws</div>
+    <div style="display:flex;gap:28px;align-items:center;font:500 13px 'Inter',sans-serif;color:#1c2420">
+      <a href="trails/" style="color:#1c2420;text-decoration:none;cursor:pointer">★ Browse our trails</a>
+      <a href="safety-guide.html" style="color:#1c2420;text-decoration:none;cursor:pointer">Dog safety guide</a>
+      <a href="index.html#authModal" id="accountBtn" style="display:inline-flex;align-items:center;padding:9px 18px;border-radius:18px;background:#1c2420;color:#fff;font-weight:700;cursor:pointer;text-decoration:none">Sign in</a>
     </div>
   </div>
-  <div class="homepage-intro-strip__ctas">
-    <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch">
+    <div style="padding:80px 64px;display:flex;flex-direction:column;justify-content:center">
+      <div class="serif" style="font:700 44px/1.2 'Source Serif 4',serif;color:#1c2420;margin-bottom:20px;max-width:520px">The trail guide that asks about your dog before your fitness level</div>
+      <div style="font:15px/1.6 'Inter',sans-serif;color:rgba(28,36,32,.65);margin-bottom:28px;max-width:460px">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</div>
+      <div style="display:flex;gap:14px;margin-bottom:32px">
+        <button id="heroSignupBtn" style="padding:14px 26px;border-radius:24px;border:none;background:#c9633c;color:#fff;font:700 14px 'Inter',sans-serif;cursor:pointer">Create your dog's profile →</button>
+      </div>
+      <div style="display:flex;gap:24px;font:12.5px 'Inter',sans-serif;color:rgba(28,36,32,.6)">
+        <span style="display:flex;align-items:center;gap:6px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3l7 3v5c0 4.5-2.8 8.3-7 10-4.2-1.7-7-5.5-7-10V6l7-3z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          Scored on 6 real safety factors
+        </span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/>
+          </svg>
+          Built by people who hike here
+        </span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-3-6.7"/>
+            <path d="M21 3v6h-6"/>
+          </svg>
+          Updated as conditions change
+        </span>
+      </div>
+    </div>
+    <div style="background:repeating-linear-gradient(135deg,#e3ecdf,#e3ecdf 12px,#d6e2d0 12px,#d6e2d0 24px);display:flex;align-items:center;justify-content:center;font:11px ui-monospace,monospace;color:rgba(28,36,32,.45);min-height:420px">trail preview</div>
   </div>
-</section>
 
-<!-- RETURNING-CUSTOMER HERO (logged in) -->
-<section class="homepage-prototype homepage-prototype--returning" id="returningCustomerHomepage" hidden>
-  <div class="homepage-prototype__banner">
-    <div>
-      <h1>Welcome back, <span id="returningHeroName">you</span> — fresh trail matches are ready</h1>
-      <p class="sub">Conditions shift quickly in the Dolomites. Your saved preferences are still active and new matches have been ranked for your dog.</p>
-    </div>
+  <div style="padding:56px 64px;border-top:1px solid rgba(28,36,32,.1)">
+    <div class="serif" style="font:700 22px 'Source Serif 4',serif;color:#1c2420;margin-bottom:24px;text-align:center">These trails are already scored. Add your dog's details to reveal their exact match.</div>
 
-    <div class="homepage-prototype__actions" aria-label="Quick actions">
-      <a class="homepage-prototype__chip" href="#results"><span role="img" aria-label="bookmark">🔖</span> Saved trails</a>
-      <a class="homepage-prototype__chip" href="#results"><span role="img" aria-label="hiking boot">🥾</span> Past hikes</a>
-      <a class="homepage-prototype__chip" href="account.html"><span role="img" aria-label="dog">🐕</span> Edit profile</a>
-    </div>
-  </div>
-</section>
-
-<div class="wrap">
-
-  <div class="panel" id="finder">
-    <p class="filter-eyebrow">Filter trails</p>
-    <div id="personalizedNote" hidden style="background:var(--sage-dim);color:var(--pine);font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:10px;margin-bottom:16px;"></div>
-
-    <h2 id="finderHeading">Tell us about your dog</h2>
-    <div class="hint" id="finderHint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</div>
-
-    <!-- LOGGED-IN: location filters (hidden for guests via CSS) -->
-    <div class="q-group" id="locationGroup">
-      <span class="q-label">Where are you heading?</span>
-      <div class="pill-row" data-group="province">
-        <button class="pill active" data-value="">All areas</button>
-        <button class="pill" data-value="South Tyrol">South Tyrol</button>
-        <button class="pill" data-value="Veneto">Veneto</button>
-        <button class="pill" data-value="Friuli-Venezia Giulia">Friuli-Venezia Giulia</button>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+      <div style="border:1px solid rgba(28,36,32,.12);border-radius:10px;padding:16px">
+        <div style="height:90px;border-radius:6px;margin-bottom:10px;background:repeating-linear-gradient(135deg,#e7e2d4,#e7e2d4 8px,#ddd7c6 8px,#ddd7c6 16px)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <div class="serif" style="font:700 14px 'Source Serif 4',serif;color:#1c2420">Lago di Braies Loop</div>
+          <div style="font:700 12px 'Inter',sans-serif;color:#2f7a4a;filter:blur(4px);user-select:none;flex:none">94%</div>
+        </div>
+        <div style="font:11px 'Inter',sans-serif;color:rgba(28,36,32,.5);margin-top:4px">Prags Valley · 3.5 km</div>
+      </div>
+      <div style="border:1px solid rgba(28,36,32,.12);border-radius:10px;padding:16px">
+        <div style="height:90px;border-radius:6px;margin-bottom:10px;background:repeating-linear-gradient(135deg,#e7e2d4,#e7e2d4 8px,#ddd7c6 8px,#ddd7c6 16px)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <div class="serif" style="font:700 14px 'Source Serif 4',serif;color:#1c2420">Val di Funes Valley Walk</div>
+          <div style="font:700 12px 'Inter',sans-serif;color:#2f7a4a;filter:blur(4px);user-select:none;flex:none">88%</div>
+        </div>
+        <div style="font:11px 'Inter',sans-serif;color:rgba(28,36,32,.5);margin-top:4px">Funes · 6 km</div>
+      </div>
+      <div style="border:1px solid rgba(28,36,32,.12);border-radius:10px;padding:16px">
+        <div style="height:90px;border-radius:6px;margin-bottom:10px;background:repeating-linear-gradient(135deg,#e7e2d4,#e7e2d4 8px,#ddd7c6 8px,#ddd7c6 16px)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <div class="serif" style="font:700 14px 'Source Serif 4',serif;color:#1c2420">Alpe di Siusi Meadows</div>
+          <div style="font:700 12px 'Inter',sans-serif;color:#2f7a4a;filter:blur(4px);user-select:none;flex:none">81%</div>
+        </div>
+        <div style="font:11px 'Inter',sans-serif;color:rgba(28,36,32,.5);margin-top:4px">Seiser Alm · 8 km</div>
       </div>
     </div>
 
-    <!-- PRIMARY: terrain tolerance -->
-    <div class="q-group" id="dogTerrainGroup">
-      <span class="q-label">Terrain your dog can handle</span>
-      <div class="pill-row" data-group="terrain">
-        <button class="pill active" data-value="0">Paved / packed dirt only</button>
-        <button class="pill" data-value="1">Gravel &amp; mixed rocky patches are fine</button>
-        <button class="pill" data-value="2">Comfortable on loose rock / scree</button>
-      </div>
-    </div>
-
-    <!-- PRIMARY: shade need -->
-    <div class="q-group" id="dogShadeGroup">
-      <span class="q-label">How much shade your dog needs</span>
-      <div class="pill-row" data-group="shade">
-        <button class="pill active" data-value="2">Needs lots of shade</button>
-        <button class="pill" data-value="1">Some sun is okay</button>
-        <button class="pill" data-value="0">Fine in exposed sections</button>
-      </div>
-    </div>
-
-    <!-- PRIMARY: water dependence -->
-    <div class="q-group" id="dogWaterGroup">
-      <span class="q-label">Water access on route</span>
-      <div class="pill-row" data-group="water">
-        <button class="pill active" data-value="2">Frequent water points needed</button>
-        <button class="pill" data-value="1">A couple is enough</button>
-        <button class="pill" data-value="0">Can carry all water</button>
-      </div>
-    </div>
-
-    <!-- SECONDARY: paw sensitivity -->
-    <div class="q-group" id="dogPawsGroup">
-      <span class="q-label">Paw pad sensitivity</span>
-      <div class="pill-row" data-group="pads">
-        <button class="pill active" data-value="2">Very sensitive</button>
-        <button class="pill" data-value="1">Average</button>
-        <button class="pill" data-value="0">Very tough pads</button>
-      </div>
-    </div>
-
-    <!-- SECONDARY: heat tolerance -->
-    <div class="q-group" id="dogHeatGroup">
-      <span class="q-label">Heat tolerance</span>
-      <div class="pill-row" data-group="heat">
-        <button class="pill active" data-value="2">Struggles in heat</button>
-        <button class="pill" data-value="1">Moderate tolerance</button>
-        <button class="pill" data-value="0">Handles warm weather well</button>
-      </div>
-    </div>
-
-    <!-- SECONDARY: exposure -->
-    <div class="q-group" id="dogExposureGroup">
-      <span class="q-label">Comfort with exposure / narrow edges</span>
-      <div class="pill-row" data-group="exposure">
-        <button class="pill active" data-value="2">Avoid exposed sections</button>
-        <button class="pill" data-value="1">Short exposed stretches okay</button>
-        <button class="pill" data-value="0">Comfortable with exposure</button>
-      </div>
-    </div>
-
-    <div class="q-group">
-      <span class="q-label">Planned trip style</span>
-      <div class="pill-row" data-group="tripStyle">
-        <button class="pill active" data-value="day">Single-day hike</button>
-        <button class="pill" data-value="multi">Multi-day hut trek</button>
-      </div>
-    </div>
-
-    <div class="q-group" id="distanceGroup">
-      <span class="q-label">Preferred distance</span>
-      <input type="range" min="4" max="20" step="1" value="10" id="distanceRange" class="slider" />
-      <div class="slider-row"><span>4 km</span><span id="distanceValue">10 km</span><span>20 km</span></div>
-    </div>
-
-    <div class="q-group" id="daysGroup" style="display:none;">
-      <span class="q-label">How many days?</span>
-      <div class="pill-row" data-group="days">
-        <button class="pill active" data-value="2">2 days</button>
-        <button class="pill" data-value="3">3 days</button>
-        <button class="pill" data-value="4">4 days</button>
-      </div>
+    <div style="text-align:center">
+      <a href="trails/" style="display:inline-block;padding:13px 26px;border-radius:22px;border:none;background:#1c2420;color:#fff;font:700 13.5px 'Inter',sans-serif;cursor:pointer;text-decoration:none;">Browse our trails</a>
     </div>
   </div>
 
 </div>
 
-<div id="trailMapWrap">
-  <div id="trailMap" aria-label="Trail map"></div>
-</div>
-
-<div class="results" id="results"></div>
-
-<footer>
-  Made for safer alpine adventures with dogs.
-</footer>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script type="module" src="firebase-init.js"></script>
-<!-- Keep guest-session.js ahead of script.js so guest prompt/context helpers are available on first render. -->
-<script src="guest-session.js" defer></script>
 <script src="auth-ui.js" defer></script>
-<script src="homepage-view.js" defer></script>
-<script src="trails-data.js" defer></script>
-<script src="script.js" defer></script>
-<script src="map-init.js" defer></script>
 <script defer>
-  // Wire the hero sign-up button to the auth modal.
-  (function(){
-    const btn = document.getElementById('heroSignupBtn');
-    if(btn){
-      btn.addEventListener('click', function(){
-        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+  (function () {
+    function openSignup() {
+      if (window.DoloPawsAuthUI && typeof window.DoloPawsAuthUI.openSignup === 'function') {
+        window.DoloPawsAuthUI.openSignup();
+      }
+    }
+
+    const heroSignupBtn = document.getElementById('heroSignupBtn');
+    if (heroSignupBtn) heroSignupBtn.addEventListener('click', openSignup);
+
+    const accountBtn = document.getElementById('accountBtn');
+    if (accountBtn) {
+      accountBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (window.DoloPawsAuthUI && typeof window.DoloPawsAuthUI.openLogin === 'function') {
+          window.DoloPawsAuthUI.openLogin();
+        }
       });
     }
   })();
