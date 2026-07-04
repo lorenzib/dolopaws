@@ -26,6 +26,154 @@
   * { box-sizing: border-box; }
   body { margin: 0; font-family: 'Inter', sans-serif; background: #f2efe7; }
   .serif { font-family: 'Source Serif 4', serif; }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 29, 25, 0.55);
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    z-index: 1000;
+  }
+
+  .modal {
+    width: min(460px, 100%);
+    background: #fffefb;
+    border: 1px solid rgba(28, 36, 32, 0.12);
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    box-shadow: 0 20px 60px rgba(14, 20, 17, 0.22);
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border: 0;
+    background: transparent;
+    color: rgba(28, 36, 32, 0.7);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .modal h2 {
+    margin: 2px 0 8px;
+    font: 700 30px/1.1 'Source Serif 4', serif;
+    color: #1c2420;
+  }
+
+  .hint {
+    margin: 0 0 16px;
+    color: rgba(28, 36, 32, 0.7);
+    font: 14px/1.45 'Inter', sans-serif;
+  }
+
+  .auth-error {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #ffe8e3;
+    color: #7e2d22;
+    font: 600 13px/1.35 'Inter', sans-serif;
+  }
+
+  #authForm {
+    display: grid;
+    gap: 12px;
+  }
+
+  .field-label {
+    display: grid;
+    gap: 6px;
+    color: #1c2420;
+    font: 600 13px/1.2 'Inter', sans-serif;
+  }
+
+  .field-label input {
+    width: 100%;
+    border: 1px solid rgba(28, 36, 32, 0.18);
+    border-radius: 10px;
+    background: #fff;
+    padding: 10px 12px;
+    font: 500 14px/1.2 'Inter', sans-serif;
+    color: #1c2420;
+  }
+
+  .field-label input:focus {
+    outline: 2px solid rgba(201, 99, 60, 0.28);
+    border-color: #c9633c;
+  }
+
+  .forgot-link {
+    justify-self: start;
+    border: 0;
+    background: transparent;
+    color: #47574f;
+    font: 600 12.5px 'Inter', sans-serif;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .auth-submit {
+    border: 0;
+    border-radius: 22px;
+    background: #1c2420;
+    color: #fff;
+    font: 700 14px 'Inter', sans-serif;
+    padding: 11px 16px;
+    cursor: pointer;
+  }
+
+  .auth-divider {
+    margin: 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(28, 36, 32, 0.45);
+    font: 600 11.5px 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: rgba(28, 36, 32, 0.12);
+  }
+
+  .google-btn {
+    width: 100%;
+    border: 1px solid rgba(28, 36, 32, 0.16);
+    border-radius: 22px;
+    background: #fff;
+    color: #1c2420;
+    font: 700 13.5px 'Inter', sans-serif;
+    padding: 11px 16px;
+    cursor: pointer;
+  }
+
+  .auth-toggle {
+    margin: 14px 0 0;
+    color: rgba(28, 36, 32, 0.68);
+    font: 500 13px 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .auth-toggle button {
+    border: 0;
+    background: transparent;
+    color: #1c2420;
+    font: 700 13px 'Inter', sans-serif;
+    padding: 0;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -37,7 +185,7 @@
     <div style="display:flex;gap:28px;align-items:center;font:500 13px 'Inter',sans-serif;color:#1c2420">
       <a href="trails/" style="color:#1c2420;text-decoration:none;cursor:pointer">★ Browse our trails</a>
       <a href="safety-guide.html" style="color:#1c2420;text-decoration:none;cursor:pointer">Dog safety guide</a>
-      <a href="index.html#authModal" id="accountBtn" style="display:inline-flex;align-items:center;padding:9px 18px;border-radius:18px;background:#1c2420;color:#fff;font-weight:700;cursor:pointer;text-decoration:none">Sign in</a>
+      <a href="#" id="accountBtn" style="display:inline-flex;align-items:center;padding:9px 18px;border-radius:18px;background:#1c2420;color:#fff;font-weight:700;cursor:pointer;text-decoration:none">Sign in</a>
     </div>
   </div>
 
@@ -112,25 +260,62 @@
 
 </div>
 
+<div id="authModal" class="modal-overlay" hidden>
+  <div class="modal">
+    <button id="authClose" class="modal-close" aria-label="Close">&times;</button>
+    <h2 id="authTitle">Log in</h2>
+    <p class="hint" id="authHint">Save trails to your account so they follow you across devices.</p>
+
+    <div id="authError" class="auth-error" hidden></div>
+
+    <form id="authForm">
+      <label class="field-label">Email
+        <input type="email" id="authEmail" required autocomplete="email">
+      </label>
+      <label class="field-label">Password
+        <input type="password" id="authPassword" required autocomplete="current-password" minlength="6">
+      </label>
+      <button type="button" id="forgotPasswordBtn" class="forgot-link">Forgot password?</button>
+      <button type="submit" class="auth-submit" id="authSubmit">Log in</button>
+    </form>
+
+    <div class="auth-divider"><span>or</span></div>
+
+    <button id="googleBtn" class="google-btn">Continue with Google</button>
+
+    <p class="auth-toggle">
+      <span id="authToggleText">Don't have an account?</span>
+      <button id="authToggleBtn" type="button">Sign up</button>
+    </p>
+  </div>
+</div>
+
+<script type="module" src="firebase-init.js"></script>
 <script src="auth-ui.js" defer></script>
 <script defer>
   (function () {
-    function openSignup() {
-      if (window.DoloPawsAuthUI && typeof window.DoloPawsAuthUI.openSignup === 'function') {
-        window.DoloPawsAuthUI.openSignup();
-      }
+    function waitForAuthUI(cb, attempts) {
+      if (window.DoloPawsAuthUI) return cb(window.DoloPawsAuthUI);
+      if ((attempts || 0) > 30) return;
+      setTimeout(function () { waitForAuthUI(cb, (attempts || 0) + 1); }, 50);
     }
 
     const heroSignupBtn = document.getElementById('heroSignupBtn');
-    if (heroSignupBtn) heroSignupBtn.addEventListener('click', openSignup);
+    if (heroSignupBtn) {
+      heroSignupBtn.addEventListener('click', function () {
+        waitForAuthUI(function (auth) {
+          if (typeof auth.openSignup === 'function') auth.openSignup();
+        });
+      });
+    }
 
     const accountBtn = document.getElementById('accountBtn');
     if (accountBtn) {
       accountBtn.addEventListener('click', function (event) {
         event.preventDefault();
-        if (window.DoloPawsAuthUI && typeof window.DoloPawsAuthUI.openLogin === 'function') {
-          window.DoloPawsAuthUI.openLogin();
-        }
+        waitForAuthUI(function (auth) {
+          if (typeof auth.openLogin === 'function') auth.openLogin();
+        });
       });
     }
   })();
