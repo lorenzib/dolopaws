@@ -8,7 +8,7 @@ The deployed homepage (`index.html`) renders an auth-based split-hero:
   Compact horizontal strip with a heading, short tagline, and two CTAs (create a dog profile / log in).
 
 - **Logged in** → returning-customer hero (`#returningCustomerHomepage`):
-  Welcome-back banner addressed to the user's display name, with quick-action links (saved trails, past hikes, edit profile).
+  Welcome-back banner addressed to the user's display name, with quick-action links and a toggle for temporary "today conditions" terrain/distance overrides.
 
 ### How auth switching works
 
@@ -27,6 +27,7 @@ The safe fallback is always the new-customer view (no flash of wrong content, no
 |---|---|
 | `index.html` | Deployed homepage — contains both hero sections |
 | `homepage-view.js` | Auth-based view selection + DOM updates |
+| `today-conditions.js` | Returning-view panel toggle/reset behavior for temporary terrain/distance overrides |
 | `homepage-view.test.js` | Jest tests for view switching logic |
 | `styles.css` | Shared styles including split-hero preview panel |
 | `guest-session.js` | Guest analytics + pending auth/restore helpers |
