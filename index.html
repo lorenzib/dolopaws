@@ -83,108 +83,18 @@
 </div>
 
 <!-- NEW-CUSTOMER HERO (logged out / auth unknown — default view) -->
-<section class="guest-homepage" id="newCustomerHomepage">
-  <div class="guest-homepage__hero">
-    <div class="guest-homepage__copy">
-      <span class="eyebrow">Paw-first trail planning</span>
-      <h1>Find Dolomite trails that match your dog before the hike gets hard.</h1>
-      <p class="sub">Try the trail rankings first, then sign in only if you want to save, sync, or pick up where you left off later.</p>
-      <div class="hero-ctas">
-        <a class="btn-primary" href="#results" id="heroTryBtn">Try trail matches — no account needed</a>
-        <a class="btn-secondary" href="account.html" id="heroLoginBtn">Sign in to save &amp; sync</a>
-      </div>
-      <ul class="guest-homepage__value-points" aria-label="Why DoloPaws is different">
-        <li>Browse as a guest</li>
-        <li>Save later if it helps</li>
-        <li>Pick up where you left off</li>
-      </ul>
-    </div>
-
-    <div class="guest-homepage__visual" aria-label="Preview of dog-safe trail matching">
-      <div class="guest-homepage__visual-head">
-        <p>Today's tailored preview</p>
-        <span>Guests can explore first — accounts are for saving and syncing</span>
-      </div>
-      <div class="guest-homepage__visual-canvas" aria-hidden="true">
-        <div class="guest-homepage__visual-glow"></div>
-        <div class="guest-homepage__visual-route"></div>
-        <div class="guest-homepage__visual-card guest-homepage__visual-card--primary">
-          <strong>Alta Badia forest loop</strong>
-          <span>87% match · shaded climbs · stream access</span>
-        </div>
-        <div class="guest-homepage__visual-card guest-homepage__visual-card--secondary">
-          <strong>Heat-aware route notes</strong>
-          <span>Cooler start windows and paw-friendly terrain cues</span>
-        </div>
-      </div>
-      <div class="guest-homepage__visual-stats">
-        <div>
-          <strong>3 filters</strong>
-          <span>terrain, shade, water</span>
-        </div>
-        <div>
-          <strong>Live cues</strong>
-          <span>surface, heat, exposure</span>
-        </div>
-        <div>
-          <strong>Safer picks</strong>
-          <span>ranked for your dog</span>
-        </div>
-      </div>
+<section class="homepage-intro-strip" id="newCustomerHomepage">
+  <div class="homepage-intro-strip__body">
+    <span class="homepage-intro-strip__icon" aria-hidden="true">🐾</span>
+    <div class="homepage-intro-strip__text">
+      <h1 class="homepage-intro-strip__heading">Trails scored for your dog's safety, not just yours</h1>
+      <p class="homepage-intro-strip__sub">Ranked by paw safety, shade, water access and terrain risk — matched to your dog's build and tolerance.</p>
     </div>
   </div>
-
-  <section class="guest-homepage__preview" aria-labelledby="guestPreviewTitle">
-    <div class="guest-homepage__preview-head">
-      <span class="eyebrow">Preview the matching experience</span>
-      <h2 id="guestPreviewTitle">See how your future trail matches are structured</h2>
-      <p>Guests can browse the ranked preview right away. Sign in only when you want saved matches, synced progress, or an account-specific shortlist.</p>
-    </div>
-
-    <div class="guest-homepage__preview-grid">
-      <article class="guest-preview-card">
-        <span class="guest-preview-card__badge">Top match</span>
-        <h3>Shaded valley warm-up</h3>
-        <p>Woodland start, stream refill points, and gentler footing for sensitive paws.</p>
-        <ul class="guest-preview-card__meta" aria-label="Sample trail cues">
-          <li>Easy terrain</li>
-          <li>Morning shade</li>
-          <li>Water nearby</li>
-        </ul>
-      </article>
-      <article class="guest-preview-card">
-        <span class="guest-preview-card__badge">Balanced</span>
-        <h3>Rifugio approach with backups</h3>
-        <p>Mixed surfaces, moderate sun exposure, and backup options if the heat climbs.</p>
-        <ul class="guest-preview-card__meta" aria-label="Sample trail cues">
-          <li>Mixed terrain</li>
-          <li>Moderate heat</li>
-          <li>Rest stops</li>
-        </ul>
-      </article>
-      <article class="guest-preview-card">
-        <span class="guest-preview-card__badge">Caution</span>
-        <h3>High exposure alpine traverse</h3>
-        <p>Steeper scree, exposed edges, and more technical footing that may not suit every dog.</p>
-        <ul class="guest-preview-card__meta" aria-label="Sample trail cues">
-          <li>Loose rock</li>
-          <li>High sun</li>
-          <li>Narrow ledges</li>
-        </ul>
-      </article>
-    </div>
-
-    <div class="guest-homepage__preview-cta">
-      <div>
-        <strong>Start with the public trail preview</strong>
-        <p>Try the ranked list now, then create an account later if you want your saved trails and dog profile to follow you across devices.</p>
-      </div>
-      <div class="guest-homepage__preview-actions">
-        <a class="btn-primary" href="#results" id="previewTryBtn">See guest trail matches</a>
-        <a class="btn-secondary" href="account.html" id="previewLoginBtn">I already have an account</a>
-      </div>
-    </div>
-  </section>
+  <div class="homepage-intro-strip__ctas">
+    <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
+    <a class="btn-secondary" href="account.html" id="heroLoginBtn">Log in</a>
+  </div>
 </section>
 
 <!-- RETURNING-CUSTOMER HERO (logged in) -->
@@ -318,21 +228,21 @@
 <script src="script.js" defer></script>
 <script src="map-init.js" defer></script>
 <script defer>
-  // Keep homepage sign-in links inside the contextual auth modal.
+  // Wire the hero sign-up button to the auth modal.
   (function(){
-    ['heroLoginBtn', 'previewLoginBtn'].forEach(function(id){
-      const loginBtn = document.getElementById(id);
-      if(loginBtn){
-        loginBtn.addEventListener('click', function(e){
-          e.preventDefault();
-          if(window.DoloPawsAuthUI){
-            window.DoloPawsAuthUI.openLogin({
-              hint: 'Sign in to save your guest progress, sync your dog profile, and unlock account-only tools.'
-            });
-          }
-        });
-      }
-    });
+    const btn = document.getElementById('heroSignupBtn');
+    if(btn){
+      btn.addEventListener('click', function(){
+        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+      });
+    }
+    const loginBtn = document.getElementById('heroLoginBtn');
+    if(loginBtn){
+      loginBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      });
+    }
   })();
 </script>
 </body>
