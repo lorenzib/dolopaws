@@ -37,26 +37,9 @@
   }
 
   function updateFloatingCard(topTrail){
-    let box = document.getElementById('mapFloatingCard');
-    if(!topTrail){
-      if(box) box.remove();
-      return;
-    }
-    if(!box){
-      box = document.createElement('div');
-      box.id = 'mapFloatingCard';
-      box.className = 'map-floating-card';
-      document.querySelector('.hero-right').appendChild(box);
-      box.addEventListener('click', () => focusTrail(box.dataset.id));
-    }
-    box.dataset.id = topTrail.id;
-    const safetyClass = topTrail.safetyLevel === 'low-risk' ? 'low' : topTrail.safetyLevel === 'moderate' ? 'moderate' : 'caution';
-    const safetyText = topTrail.safetyLevel === 'low-risk' ? 'Low-risk terrain' : topTrail.safetyLevel === 'moderate' ? 'Moderate — some caution' : 'Caution — exposed sections';
-    box.innerHTML = `
-      <span class="safety-badge safety-${safetyClass}">${safetyText}</span>
-      <h4>${topTrail.name}</h4>
-      <div class="meta">${topTrail.distance} km · ${topTrail.elevation} m gain · <b>${topTrail.score}% match</b></div>
-    `;
+    // Floating summary card removed — the ranked trails list below shows full details.
+    const box = document.getElementById('mapFloatingCard');
+    if(box) box.remove();
   }
 
   window.updateMapMarkers = function(scored){

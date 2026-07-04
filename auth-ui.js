@@ -126,5 +126,9 @@
       setMode('signup');
       openModal();
     },
+    openLogin(){
+      setMode('login');
+      openModal();
+    },
   };
 })();
