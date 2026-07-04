@@ -95,9 +95,9 @@
       </div>
 
       <ul class="hero-trust">
-        <li>🐾 Dog-first trail scoring</li>
-        <li>☀️ Heat, water, and terrain risk checks</li>
-        <li>⚡ Matched to your dog in under a minute</li>
+        <li><span role="img" aria-label="paw print">🐾</span> Dog-first trail scoring</li>
+        <li><span role="img" aria-label="sun">☀️</span> Heat, water, and terrain risk checks</li>
+        <li><span role="img" aria-label="lightning bolt">⚡</span> Matched to your dog in under a minute</li>
       </ul>
     </div>
 
@@ -143,9 +143,9 @@
     </div>
 
     <div class="homepage-prototype__actions" aria-label="Quick actions">
-      <a class="homepage-prototype__chip" href="#results">🔖 Saved trails</a>
-      <a class="homepage-prototype__chip" href="#results">🥾 Past hikes</a>
-      <a class="homepage-prototype__chip" href="account.html">🐕 Edit profile</a>
+      <a class="homepage-prototype__chip" href="#results"><span role="img" aria-label="bookmark">🔖</span> Saved trails</a>
+      <a class="homepage-prototype__chip" href="#results"><span role="img" aria-label="hiking boot">🥾</span> Past hikes</a>
+      <a class="homepage-prototype__chip" href="account.html"><span role="img" aria-label="dog">🐕</span> Edit profile</a>
     </div>
   </div>
 </section>
@@ -265,7 +265,7 @@
   // Wire the split-hero sign-up buttons to the auth modal.
   (function(){
     function bindSignupBtn(id){
-      var btn = document.getElementById(id);
+      const btn = document.getElementById(id);
       if(btn){
         btn.addEventListener('click', function(){
           if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();

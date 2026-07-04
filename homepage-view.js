@@ -62,8 +62,7 @@
 
     // Personalise the returning hero with the signed-in user's display name.
     if(returningName && view === 'returning'){
-      const auth = currentWindow.DoloPawsAuth;
-      const name = auth && auth.currentUser && auth.currentUser.displayName;
+      const name = currentWindow.DoloPawsAuth?.currentUser?.displayName;
       returningName.textContent = name || 'you';
     }
 
