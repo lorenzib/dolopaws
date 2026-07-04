@@ -91,6 +91,17 @@ describe('auth ui contextual prompts', () => {
     expect(modal.style.display).toBe('none');
   });
 
+  test('click inside modal content does not hide the auth modal', () => {
+    loadAuthUi();
+
+    window.DoloPawsAuthUI.openLogin();
+    const modal = document.getElementById('authModal');
+    expect(modal.hidden).toBe(false);
+
+    document.getElementById('authTitle').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(modal.hidden).toBe(false);
+  });
+
   test('Escape key hides the auth modal', () => {
     loadAuthUi();
 

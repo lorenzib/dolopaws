@@ -2,6 +2,7 @@
   let mode = 'login'; // 'login' | 'signup'
   const DEFAULT_HINT = 'Save trails to your account so they follow you across devices.';
   let pendingContext = null;
+  let escapeKeyListenerController = null;
 
   const modal = document.getElementById('authModal');
   const accountBtn = document.getElementById('accountBtn');
@@ -40,10 +41,19 @@
     errorBox.hidden = true;
     form.reset();
     setModalOpenState(true);
+    if(escapeKeyListenerController){
+      escapeKeyListenerController.abort();
+    }
+    escapeKeyListenerController = new AbortController();
+    document.addEventListener('keydown', onEscapeKeyDown, { signal: escapeKeyListenerController.signal });
   }
 
   function closeModal(){
     setModalOpenState(false);
+    if(escapeKeyListenerController){
+      escapeKeyListenerController.abort();
+      escapeKeyListenerController = null;
+    }
   }
 
   function setMode(newMode){
@@ -67,11 +77,11 @@
   accountBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
-  document.addEventListener('keydown', (e) => {
+  const onEscapeKeyDown = (e) => {
     if(e.key === 'Escape' && !modal.hidden){
       closeModal();
     }
-  });
+  };
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
 
   forgotBtn.addEventListener('click', async () => {
