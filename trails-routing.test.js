@@ -74,42 +74,28 @@ describe('Browse our trails routing', () => {
     expect(legacyHtml).toContain("window.location.replace('trails/')");
   });
 
-  test('logged-out homepage includes a guest landing hero with preview CTA section', () => {
+  test('logged-out homepage shows a simple guest landing strip with sign-up and log-in CTAs', () => {
     const indexHtml = loadHtml('index.html');
 
     document.documentElement.innerHTML = indexHtml;
 
     const guestHomepage = document.getElementById('newCustomerHomepage');
-    const hero = guestHomepage.querySelector('.guest-homepage__hero');
-    const preview = guestHomepage.querySelector('.guest-homepage__preview');
-    const primaryCta = document.getElementById('heroTryBtn');
-    const previewCta = document.getElementById('previewTryBtn');
+    const signupBtn = document.getElementById('heroSignupBtn');
+    const loginBtn = document.getElementById('heroLoginBtn');
 
     expect(guestHomepage).not.toBeNull();
-    expect(hero).not.toBeNull();
-    expect(preview).not.toBeNull();
-    expect(primaryCta).not.toBeNull();
-    expect(previewCta).not.toBeNull();
-    expect(primaryCta.getAttribute('href')).toBe('#results');
-    expect(previewCta.getAttribute('href')).toBe('#results');
-    expect(preview.querySelectorAll('.guest-preview-card')).toHaveLength(3);
-    expect(guestHomepage.textContent).toContain('Try trail matches — no account needed');
-    expect(preview.textContent).toContain('Start with the public trail preview');
+    expect(guestHomepage.classList.contains('homepage-intro-strip')).toBe(true);
+    expect(signupBtn).not.toBeNull();
+    expect(loginBtn).not.toBeNull();
+    expect(guestHomepage.textContent).toContain("Trails scored for your dog's safety");
   });
 
-  test('guest landing keeps concise value points for first-time visitors', () => {
+  test('guest landing strip does not include the complex preview card section', () => {
     const indexHtml = loadHtml('index.html');
 
     document.documentElement.innerHTML = indexHtml;
 
-    const valuePoints = Array.from(
-      document.querySelectorAll('#newCustomerHomepage .guest-homepage__value-points li')
-    ).map((item) => item.textContent.trim());
-
-    expect(valuePoints).toEqual([
-      'Browse as a guest',
-      'Save later if it helps',
-      'Pick up where you left off',
-    ]);
+    expect(document.querySelector('.guest-homepage__preview')).toBeNull();
+    expect(document.querySelectorAll('.guest-preview-card')).toHaveLength(0);
   });
 });
