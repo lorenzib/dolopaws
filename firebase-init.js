@@ -1,9 +1,3 @@
-// ============================================================
-// FIREBASE CONFIG — replace this whole object with the one from
-// Firebase Console → Project settings → General → Your apps → Web app
-// It will look like the shape below, just with real values instead
-// of the placeholder strings.
-// ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDnEJKnoDltKwpl4QdhA-qLH3a4ugLd68M",
   authDomain: "dolopaws.firebaseapp.com",
@@ -67,7 +61,6 @@ async function getDogProfile() {
     if (!snap.exists()) return null;
     const data = snap.data();
     if (data.dog && data.dog.name) return data.dog;
-    // fall back to the old multi-dog array format, if present — use the first dog
     if (Array.isArray(data.dogs) && data.dogs.length > 0) {
       const migrated = data.dogs[0];
       await setDoc(doc(db, "users", currentUser.uid), { dog: migrated }, { merge: true });
@@ -87,6 +80,28 @@ async function setDogProfile(dogObj) {
     return true;
   } catch (e) {
     console.error("Failed to save dog profile:", e);
+    return false;
+  }
+}
+
+async function getLastMatches() {
+  if (!currentUser) return null;
+  try {
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    if (!snap.exists()) return null;
+    return Array.isArray(snap.data().lastMatches) ? snap.data().lastMatches : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function setLastMatches(trailIds) {
+  if (!currentUser) return false;
+  try {
+    await setDoc(doc(db, "users", currentUser.uid), { lastMatches: trailIds }, { merge: true });
+    return true;
+  } catch (e) {
+    console.error("Failed to save last matches:", e);
     return false;
   }
 }
@@ -131,6 +146,8 @@ window.DoloPawsAuth = {
   setFavorites,
   getDogProfile,
   setDogProfile,
+  getLastMatches,
+  setLastMatches,
   deleteAccount,
   async signUp(email, password) {
     try {

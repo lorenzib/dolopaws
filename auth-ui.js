@@ -1,8 +1,5 @@
 (function(){
   let mode = 'login'; // 'login' | 'signup'
-  const DEFAULT_HINT = 'Save trails to your account so they follow you across devices.';
-  let pendingContext = null;
-  let escapeKeyListenerController = null;
 
   const modal = document.getElementById('authModal');
   const accountBtn = document.getElementById('accountBtn');
@@ -19,42 +16,16 @@
   const toggleBtn = document.getElementById('authToggleBtn');
   const forgotBtn = document.getElementById('forgotPasswordBtn');
 
-  function setModalOpenState(isOpen){
-    modal.hidden = !isOpen;
-    modal.style.display = isOpen ? '' : 'none';
-    modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-  }
-
-  function applyPromptContext(context){
-    pendingContext = context || null;
-    hint.textContent = pendingContext && pendingContext.hint
-      ? pendingContext.hint
-      : DEFAULT_HINT;
-  }
-
-  function openModal(context){
+  function openModal(){
     if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
       window.location.href = 'account.html';
       return;
     }
-    applyPromptContext(context);
     errorBox.hidden = true;
     form.reset();
-    setModalOpenState(true);
-    if(escapeKeyListenerController){
-      escapeKeyListenerController.abort();
-    }
-    escapeKeyListenerController = new AbortController();
-    document.addEventListener('keydown', onEscapeKeyDown, { signal: escapeKeyListenerController.signal });
+    modal.hidden = false;
   }
-
-  function closeModal(){
-    setModalOpenState(false);
-    if(escapeKeyListenerController){
-      escapeKeyListenerController.abort();
-      escapeKeyListenerController = null;
-    }
-  }
+  function closeModal(){ modal.hidden = true; }
 
   function setMode(newMode){
     mode = newMode;
@@ -74,16 +45,9 @@
     }
   }
 
-  if(accountBtn){
-    accountBtn.addEventListener('click', openModal);
-  }
+  if(accountBtn) accountBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
-  const onEscapeKeyDown = (e) => {
-    if(e.key === 'Escape' && !modal.hidden){
-      closeModal();
-    }
-  };
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
 
   forgotBtn.addEventListener('click', async () => {
@@ -118,11 +82,9 @@
       ? await window.DoloPawsAuth.signIn(email, password)
       : await window.DoloPawsAuth.signUp(email, password);
     submitBtn.disabled = false;
-    setMode(mode); // resets button label
+    setMode(mode);
     if(result.ok){
       closeModal();
-      window.dispatchEvent(new CustomEvent('dolopaws-auth-success', { detail: { context: pendingContext } }));
-      pendingContext = null;
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
@@ -134,13 +96,18 @@
     const result = await window.DoloPawsAuth.signInGoogle();
     if(result.ok){
       closeModal();
-      window.dispatchEvent(new CustomEvent('dolopaws-auth-success', { detail: { context: pendingContext } }));
-      pendingContext = null;
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
     }
   });
+
+  // Expose a way for other scripts (e.g. the homepage teaser CTA) to open
+  // the modal already in signup mode.
+  window.DoloPawsAuthUI = {
+    openSignup(){ setMode('signup'); openModal(); },
+    openLogin(){ setMode('login'); openModal(); },
+  };
 
   function waitForAuth(cb){
     if(window.DoloPawsAuth){ cb(); return; }
@@ -150,25 +117,9 @@
   waitForAuth(() => {
     window.DoloPawsAuth.onChange((user) => {
       if(accountBtn){
-        if(user){
-          accountBtn.textContent = 'My account';
-        } else {
-          accountBtn.textContent = 'Log in';
-        }
+        accountBtn.textContent = user ? 'My account' : 'Log in';
       }
       window.dispatchEvent(new CustomEvent('dolopaws-auth-changed', { detail: { user } }));
     });
   });
-
-  window.DoloPawsAuthUI = {
-    openSignup(context){
-      setMode('signup');
-      openModal(context);
-    },
-    openLogin(context){
-      setMode('login');
-      openModal(context);
-    },
-    closeModal,
-  };
 })();

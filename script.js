@@ -1,425 +1,25 @@
 
-const state = {
-  terrain:'0', shade:'high', stops:'frequent', distance:'10', exposure:'no',
-  province:'',
-  favorites:{},
-  heatSensitiveDog:false,
-  dogName:null,
-  hasInteracted:false,
-};
-
-function getGuestSessionApi(){
-  return window.DoloPawsGuestSession || null;
-}
-
-function trackGuestEvent(name, detail){
-  const session = getGuestSessionApi();
-  if(session && typeof session.track === 'function'){
-    session.track(name, detail);
-  }
-}
-
-function trackFirstGuestAction(action, detail){
-  const session = getGuestSessionApi();
-  if(session && typeof session.trackFirstGuestAction === 'function'){
-    return session.trackFirstGuestAction(action, detail);
-  }
-  return false;
-}
-
-function rememberPendingAuthAction(action){
-  const session = getGuestSessionApi();
-  if(session && typeof session.rememberPendingAuthAction === 'function'){
-    session.rememberPendingAuthAction(action);
-  }
-}
-
-function consumePendingAuthAction(){
-  const session = getGuestSessionApi();
-  if(session && typeof session.consumePendingAuthAction === 'function'){
-    return session.consumePendingAuthAction();
-  }
-  return null;
-}
-
-function rememberGuestTrailContext(context){
-  const session = getGuestSessionApi();
-  if(session && typeof session.rememberGuestTrailContext === 'function'){
-    session.rememberGuestTrailContext(context);
-  }
-}
-
-function loadGuestTrailContext(){
-  const session = getGuestSessionApi();
-  if(session && typeof session.loadGuestTrailContext === 'function'){
-    return session.loadGuestTrailContext();
-  }
-  return null;
-}
-
-function openContextualAuth(mode, actionType, hint, extraDetail){
-  const action = {
-    type: actionType,
-    ...(extraDetail || {}),
-  };
-
-  rememberPendingAuthAction(action);
-  trackGuestEvent('auth_prompt_shown', { action: actionType, mode });
-
-  if(!window.DoloPawsAuthUI) return;
-  if(mode === 'signup'){
-    window.DoloPawsAuthUI.openSignup({ hint });
-  } else {
-    window.DoloPawsAuthUI.openLogin({ hint });
-  }
-}
-
-function setPillActive(group, value){
-  const row = document.querySelector(`.pill-row[data-group="${group}"]`);
-  if(!row) return;
-  const btn = row.querySelector(`.pill[data-value="${value}"]`);
-  if(!btn) return;
-  row.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  state[group] = value;
-}
-
+// ============================================================
+// FITNESS DEFAULTS — used both to derive the guest teaser scores
+// and to score the real returning-user list against a saved profile.
+// ============================================================
 const FITNESS_DEFAULTS = {
-  low:      { terrain:'0', shade:'high', stops:'frequent',   distance:'5'  },
-  moderate: { terrain:'1', shade:'some', stops:'occasional', distance:'10' },
-  high:     { terrain:'2', shade:'any',  stops:'any',        distance:'99' },
+  low:      { terrain:'0', distance:'5'  },
+  moderate: { terrain:'1', distance:'10' },
+  high:     { terrain:'2', distance:'99' },
 };
 
-// Given the current pill state, find which fitness level it resembles most —
-// used when saving a profile straight from the quiz, without asking again.
-function deriveFitnessFromState(){
-  let best = 'moderate', bestScore = -1;
-  Object.keys(FITNESS_DEFAULTS).forEach(level => {
-    const d = FITNESS_DEFAULTS[level];
-    let score = 0;
-    if(d.terrain === state.terrain) score++;
-    if(d.shade === state.shade) score++;
-    if(d.stops === state.stops) score++;
-    if(d.distance === state.distance) score++;
-    if(score > bestScore){ bestScore = score; best = level; }
-  });
-  return best;
-}
-
-function updateSavePrompt(){
-  const prompt = document.getElementById('dogSavePrompt');
-  if(!prompt) return;
-  prompt.hidden = !(state.hasInteracted && !state.dogName);
-}
-
-function applyDogPersonalization(profile){
-  const note = document.getElementById('personalizedNote');
-  const heading = document.getElementById('finderHeading');
-  const hint = document.getElementById('finderHint');
-  const loggedIn = !!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
-
-  if(!profile || !profile.name){
-    state.heatSensitiveDog = false;
-    state.dogName = null;
-    if(loggedIn){
-      heading.textContent = 'Plan your next hike';
-      hint.hidden = false;
-      hint.textContent = 'Filter by location and trip style to find trails that suit your plans.';
-    } else {
-      heading.textContent = 'Tell me about your dog';
-      hint.hidden = false;
-      hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
-    }
-    note.hidden = true;
-    updateSavePrompt();
-    return;
-  }
-
-  const defaults = FITNESS_DEFAULTS[profile.fitness] || FITNESS_DEFAULTS.moderate;
-  setPillActive('terrain', defaults.terrain);
-  setPillActive('shade', defaults.shade);
-  setPillActive('stops', defaults.stops);
-  setPillActive('distance', defaults.distance);
-  // exposure is never auto-enabled — that stays an explicit human choice
-
-  // An explicit answer to "how heat sensitive is your dog?" takes priority
-  // over inferring it from breed alone.
-  const breedIsHeatSensitive = (typeof HEAT_SENSITIVE_BREEDS !== 'undefined')
-    && HEAT_SENSITIVE_BREEDS.includes(profile.breed);
-  const explicitHeatSensitive = profile.heatSensitivity === 'high';
-  const isHeatSensitive = breedIsHeatSensitive || explicitHeatSensitive;
-  state.heatSensitiveDog = isHeatSensitive;
-  state.dogName = profile.name;
-  if(isHeatSensitive){
-    setPillActive('shade', 'high');
-  } else if(profile.heatSensitivity === 'some'){
-    setPillActive('shade', 'some');
-  } else if(profile.heatSensitivity === 'any'){
-    setPillActive('shade', 'any');
-  }
-
-  heading.textContent = `Trails for ${profile.name}`;
-  hint.hidden = true;
-  note.hidden = false;
-  note.innerHTML = isHeatSensitive
-    ? `🐾 ${breedIsHeatSensitive ? profile.breed + 's run hot' : profile.name + ' runs hot'} — we've prioritized shadier routes for ${profile.name}. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`
-    : `🐾 Matched to ${profile.name}'s fitness level. <a href="account.html" style="color:var(--pine);text-decoration:underline;">Edit dog profile →</a>`;
-
-  updateSavePrompt();
-}
-
-function loadLocalFavorites(){
-  try{
-    const saved = localStorage.getItem('dolopaws-favorites');
-    return saved ? JSON.parse(saved) : {};
-  }catch(e){ return {}; }
-}
-
-function loadLocalDogProfile(){
-  try{
-    const saved = localStorage.getItem('dolopaws-dog-profile');
-    return saved ? JSON.parse(saved) : null;
-  }catch(e){ return null; }
-}
-function saveLocalDogProfile(profile){
-  try{ localStorage.setItem('dolopaws-dog-profile', JSON.stringify(profile)); }catch(e){}
-}
-
-state.favorites = loadLocalFavorites();
-
-// Apply any guest dog profile immediately, so a returning guest sees
-// personalization right away without waiting on Firebase auth to resolve.
-try{
-  applyDogPersonalization(loadLocalDogProfile());
-}catch(e){
-  console.warn('Failed to apply local dog profile:', e);
-}
-
-window.addEventListener('dolopaws-auth-changed', async (e) => {
-  try{
-    const user = e.detail.user;
-    if(user && window.DoloPawsAuth){
-      const cloudFavorites = await window.DoloPawsAuth.getFavorites();
-      if(Object.keys(cloudFavorites).length === 0 && Object.keys(state.favorites).length > 0){
-        await window.DoloPawsAuth.setFavorites(state.favorites);
-      } else {
-        state.favorites = cloudFavorites;
-      }
-
-      let profile = await window.DoloPawsAuth.getDogProfile();
-      const localProfile = loadLocalDogProfile();
-      if(!profile && localProfile){
-        // first login on this device with a guest-filled dog profile — migrate it up
-        await window.DoloPawsAuth.setDogProfile(localProfile);
-        profile = localProfile;
-      }
-      applyDogPersonalization(profile);
-    } else {
-      state.favorites = loadLocalFavorites();
-      applyDogPersonalization(loadLocalDogProfile());
-    }
-  }catch(err){
-    state.favorites = loadLocalFavorites();
-    try{
-      applyDogPersonalization(loadLocalDogProfile());
-    }catch(e){
-      console.warn('Failed to apply local dog profile:', e);
-    }
-  }finally{
-    render();
-  }
-});
-
-// Only fires from the account page (editing an existing profile) —
-// the homepage's own save flow is handled separately, below.
-window.addEventListener('dolopaws-dog-profile-saved', async (e) => {
-  try{
-    const profile = e.detail.profile;
-    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-    if(user){
-      await window.DoloPawsAuth.setDogProfile(profile);
-    } else {
-      saveLocalDogProfile(profile);
-    }
-    applyDogPersonalization(profile);
-  }catch(err){
-    try{
-      applyDogPersonalization(loadLocalDogProfile());
-    }catch(e){
-      console.warn('Failed to apply local dog profile:', e);
-    }
-  }finally{
-    render();
-  }
-});
-
-// ---------- Homepage "save this profile" flow ----------
-// Clicking "Save profile" on the quiz either opens sign-up (if logged out)
-// or, if already logged in with no dog saved yet, jumps straight to the
-// name/breed follow-up.
-let pendingProfileSave = false;
-
-const saveProfileBtn = document.getElementById('saveProfileBtn');
-if(saveProfileBtn){
-  saveProfileBtn.addEventListener('click', () => {
-    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-    if(user){
-      openNameBreedModal();
-    } else {
-      pendingProfileSave = true;
-      openContextualAuth(
-        'signup',
-        'save-profile',
-        'Create a free account to save this dog profile and keep your trail matches synced.',
-        { returnTo: 'name-breed-modal' }
-      );
-    }
-  });
-}
-
-window.addEventListener('dolopaws-auth-success', () => {
-  const pendingAction = consumePendingAuthAction();
-  if(pendingAction){
-    trackGuestEvent('auth_prompt_accepted', { action: pendingAction.type });
-    trackGuestEvent('anonymous_to_authenticated_conversion', { action: pendingAction.type });
-  }
-
-  if(pendingProfileSave || (pendingAction && pendingAction.type === 'save-profile')){
-    pendingProfileSave = false;
-    openNameBreedModal();
-    return;
-  }
-
-  if(pendingAction && pendingAction.type === 'unlock-results'){
-    const results = document.getElementById('resultsCount') || document.getElementById('results');
-    if(results){
-      results.setAttribute('tabindex', '-1');
-      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      try{
-        results.focus({ preventScroll: true });
-      }catch(err){
-        results.focus();
-      }
-    }
-  }
-});
-
-function openNameBreedModal(){
-  const modal = document.getElementById('nameBreedModal');
-  const breedSelect = document.getElementById('nbBreed');
-  const otherField = document.getElementById('nbBreedOtherField');
-  if(!modal || !breedSelect) return;
-
-  const OTHER_VALUE = '__other__';
-  const list = (typeof DOG_BREEDS !== 'undefined') ? DOG_BREEDS : [];
-  breedSelect.innerHTML = `<option value="">Select a breed…</option>` +
-    list.map(b => `<option value="${b}">${b}</option>`).join('') +
-    `<option value="${OTHER_VALUE}">Other (not listed)</option>`;
-  breedSelect.onchange = () => {
-    otherField.hidden = breedSelect.value !== OTHER_VALUE;
-  };
-
-  modal.hidden = false;
-}
-
-const nbCloseBtn = document.getElementById('nbClose');
-if(nbCloseBtn){
-  nbCloseBtn.addEventListener('click', () => {
-    document.getElementById('nameBreedModal').hidden = true;
-  });
-}
-
-const nameBreedForm = document.getElementById('nameBreedForm');
-if(nameBreedForm){
-  nameBreedForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const OTHER_VALUE = '__other__';
-    const nameInput = document.getElementById('nbName');
-    const breedSelect = document.getElementById('nbBreed');
-    const breedOther = document.getElementById('nbBreedOther');
-    const submitBtn = document.getElementById('nbSubmit');
-
-    const profile = {
-      name: nameInput.value.trim(),
-      breed: breedSelect.value === OTHER_VALUE ? breedOther.value.trim() : breedSelect.value,
-      heatSensitivity: state.shade,
-      fitness: deriveFitnessFromState(),
-    };
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Saving…';
-
-    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-    if(user){
-      await window.DoloPawsAuth.setDogProfile(profile);
-    } else {
-      saveLocalDogProfile(profile);
-    }
-
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Save profile';
-    document.getElementById('nameBreedModal').hidden = true;
-    nameBreedForm.reset();
-
-    applyDogPersonalization(profile);
-    render();
-  });
-}
-
-if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
-  });
-}
-
-document.querySelectorAll('.pill-row').forEach(row=>{
-  row.addEventListener('click', e=>{
-    const btn = e.target.closest('.pill');
-    if(!btn) return;
-    const group = row.dataset.group;
-    row.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    state[group] = btn.dataset.value;
-    state.hasInteracted = true;
-    if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
-      trackFirstGuestAction('trail_criteria_updated', { group });
-    }
-    updateSavePrompt();
-    render();
-  });
-});
-
-['heroTryBtn', 'previewTryBtn'].forEach((id) => {
-  const cta = document.getElementById(id);
-  if(!cta) return;
-  cta.addEventListener('click', () => {
-    if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
-      trackFirstGuestAction('try_trails_clicked', { source: id });
-    }
-  });
-});
-
-function scoreTrail(t){
+function scoreTrail(t, overrides){
   let score = 100;
+  const terrain = parseInt(overrides.terrain, 10);
+  const maxDistance = parseFloat(overrides.distance);
 
-  const userTerrain = parseInt(state.terrain, 10);
-  if(t.terrainRank > userTerrain) score -= (t.terrainRank - userTerrain) * 35;
+  if(t.terrainRank > terrain) score -= (t.terrainRank - terrain) * 30;
+  if(overrides.heatSensitive && t.heatRisk === 'high') score -= 20;
+  if(t.distance > maxDistance) score -= Math.min(35, (t.distance - maxDistance) * 5);
+  if(t.exposure) score -= 30;
 
-  if(state.shade === 'high' && t.shadeCoverage < 50) score -= 25;
-  if(state.shade === 'some' && t.shadeCoverage < 20) score -= 15;
-
-  if(state.heatSensitiveDog && t.heatRisk === 'high') score -= 20;
-
-  const stopsPerKm = (t.waterSources.length + t.rifugi.length) / t.distance;
-  if(state.stops === 'frequent' && stopsPerKm < 0.5) score -= 22;
-  if(state.stops === 'occasional' && stopsPerKm === 0) score -= 12;
-
-  const maxD = parseFloat(state.distance);
-  if(t.distance > maxD) score -= Math.min(35, (t.distance - maxD) * 5);
-
-  if(t.exposure && state.exposure === 'no') score -= 35;
-
-  return Math.max(2, Math.round(score));
+  return Math.max(5, Math.round(score));
 }
 
 function safetyLabel(level){
@@ -427,253 +27,208 @@ function safetyLabel(level){
   if(level === 'moderate') return 'Moderate — some caution';
   return 'Caution — exposed sections';
 }
-
-function routeTimeline(t){
-  const stops = [
-    ...t.waterSources.map(s => ({...s, type:'water'})),
-    ...t.rifugi.map(s => ({...s, type:'rifugio', label:s.name})),
-  ].sort((a,b) => a.km - b.km);
-
-  if(stops.length === 0){
-    return `<p class="none">No reliable water or rifugi on this route — carry everything you need.</p>`;
-  }
-
-  return `<ol class="timeline">${stops.map(s => `
-    <li data-type="${s.type}">
-      <span class="dot"></span>
-      <span class="km">km ${s.km}</span>${s.label} <span style="opacity:.65;">(${s.type === 'water' ? 'water' : 'rifugio'})</span>
-    </li>`).join('')}
-  </ol>`;
+function safetyClass(level){
+  if(level === 'low-risk') return 'safety-low';
+  if(level === 'moderate') return 'safety-moderate';
+  return 'safety-caution';
 }
 
-function ensureResultsNodes(){
-  const results = document.getElementById('results');
-  if(!results) return null;
+// ============================================================
+// GUEST TEASER — generic default profile, illustrative blurred scores
+// ============================================================
+function renderTeaser(){
+  const grid = document.getElementById('teaserGrid');
+  if(!grid || typeof trails === 'undefined') return;
 
-  let count = document.getElementById('resultsCount');
-  if(!count){
-    count = document.createElement('div');
-    count.id = 'resultsCount';
-    count.className = 'hint';
-    count.style.margin = '0 0 14px';
-    results.prepend(count);
-  }
+  const generic = { terrain:'1', distance:'10', heatSensitive:false };
+  const picks = ['lago-braies', 'alpe-siusi', 'santa-maddalena']
+    .map(id => trails.find(t => t.id === id))
+    .filter(Boolean);
 
-  let grid = document.getElementById('grid');
-  if(!grid){
-    grid = document.createElement('div');
-    grid.id = 'grid';
-    results.appendChild(grid);
-  }
-
-  return { results, count, grid };
-}
-
-function renderFallbackMessage(message){
-  const nodes = ensureResultsNodes();
-  if(!nodes) return;
-  nodes.count.textContent = '';
-  nodes.grid.innerHTML = '';
-  const card = document.createElement('div');
-  card.className = 'trail-card-v2';
-  const head = document.createElement('div');
-  head.className = 'card-head';
-  const left = document.createElement('div');
-  left.className = 'trail-left';
-  const desc = document.createElement('p');
-  desc.className = 'desc';
-  desc.textContent = message;
-  left.appendChild(desc);
-  head.appendChild(left);
-  card.appendChild(head);
-  nodes.grid.appendChild(card);
-  if(window.updateMapMarkers) window.updateMapMarkers([]);
-}
-
-// Number of trail cards shown to guests before the login CTA.
-const GUEST_TRAIL_LIMIT = 5;
-
-function render(){
-  const nodes = ensureResultsNodes();
-  if(!nodes){
-    if(window.updateMapMarkers) window.updateMapMarkers([]);
-    return;
-  }
-
-  let scored = [];
-  try{
-    if(!Array.isArray(trails)) throw new Error('trails data unavailable');
-    scored = trails.map(t=>({...t, score:scoreTrail(t)}))
-      .sort((a,b)=>b.score-a.score);
-  }catch(err){
-    renderFallbackMessage("We couldn't rank trails right now. Please refresh and try again.");
-    return;
-  }
-
-  if(scored.length === 0){
-    renderFallbackMessage('No matching trails right now. Try broadening your preferences.');
-    return;
-  }
-
-  const loggedIn = !!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
-
-  // Apply province filter for logged-in users.
-  const filteredByLocation = (loggedIn && state.province)
-    ? scored.filter(t => t.province === state.province)
-    : scored;
-
-  const visible = loggedIn ? filteredByLocation : scored.slice(0, GUEST_TRAIL_LIMIT);
-  const hiddenCount = loggedIn ? 0 : Math.max(0, scored.length - GUEST_TRAIL_LIMIT);
-
-  if(loggedIn && filteredByLocation.length === 0){
-    renderFallbackMessage('No trails found for this location. Try a different area or clear the location filter.');
-    return;
-  }
-
-  if(loggedIn){
-    const trailWord = filteredByLocation.length === 1 ? 'trail' : 'trails';
-    const locationSuffix = state.province ? ' in ' + state.province : '';
-    nodes.count.textContent = `${filteredByLocation.length} ${trailWord}${locationSuffix}, ranked by fit`;
-  } else {
-    nodes.count.textContent = `${scored.length} trails found — showing top ${visible.length}`;
-  }
-
-  nodes.grid.innerHTML = visible.map((t, index)=>{
-    const isFav = !!state.favorites[t.id];
-    const showNewMatch = loggedIn && index < 2;
-    return `
-    <div class="trail-card-v2" data-id="${t.id}">
-      <div class="card-head card-top">
-        <div class="trail-left">
-          <div class="card-title-row">
-            <span class="safety-badge safety-${t.safetyLevel === 'low-risk' ? 'low' : t.safetyLevel === 'moderate' ? 'moderate' : 'caution'}">
-              ${safetyLabel(t.safetyLevel)}
-            </span>
-            ${showNewMatch ? '<span class="new-match-badge">New match</span>' : ''}
-          </div>
-          <h3 style="margin-top:8px;">${t.name}</h3>
-          <span class="area-tag">${t.area}</span>
-          <div class="stat-row">
-            <span class="stat">${t.distance} km</span>
-            <span class="stat">${t.elevation} m gain</span>
-            <span class="stat">${t.hours} h</span>
-            <span class="diff-badge-sm">${t.terrainType}</span>
-          </div>
-          <div class="hazard-tags">
-            ${t.surfaceHazards.length ? t.surfaceHazards.map(h=>`<span class="hazard-tag">${h}</span>`).join('') : `<span class="hazard-tag">No notable surface hazards</span>`}
-          </div>
-          <div class="desc card-desc">${t.desc}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-          <button class="fav-btn ${isFav?'active':''}" data-fav="${t.id}">${isFav ? 'Saved' : 'Save'}</button>
-          <div class="match-badge">
-            <div class="match-num">${t.score}%</div>
-            <div class="match-lbl">match</div>
-          </div>
-        </div>
+  grid.innerHTML = picks.map(t => `
+    <div class="teaser-card">
+      <div class="photo"></div>
+      <div class="row">
+        <div class="name">${t.name}</div>
+        <div class="match">${scoreTrail(t, generic)}%</div>
       </div>
-      <div class="detail-wrap" id="detail-${t.id}">
-        <div class="detail-grid">
-          <div><b>Shade coverage:</b> ~${t.shadeCoverage}%</div>
-          <div><b>Paid access:</b> ${t.paid ? 'Cable car or rifugio fee' : 'Free'}</div>
+      <div class="meta">${t.area} · ${t.distance} km</div>
+    </div>
+  `).join('');
+}
+
+function goToProfileCreation(){
+  const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+  if(user){
+    window.location.href = 'account.html';
+  } else if(window.DoloPawsAuthUI){
+    window.DoloPawsAuthUI.openSignup();
+  }
+}
+
+renderTeaser();
+const createProfileBtn = document.getElementById('createProfileBtn');
+if(createProfileBtn) createProfileBtn.addEventListener('click', goToProfileCreation);
+const unlockBtn = document.getElementById('unlockBtn');
+if(unlockBtn) unlockBtn.addEventListener('click', goToProfileCreation);
+
+// ============================================================
+// RETURNING VISITOR — real profile, real scoring, real favorites,
+// genuine "new since last visit" detection (not a decorative badge).
+// ============================================================
+const NEW_MATCH_THRESHOLD = 70; // trails scoring at/above this count as "a match" for new-match tracking
+let adjustOverride = null; // session-only override, never saved to the profile
+let currentFavorites = {};
+
+function effectiveOverrides(profile){
+  if(adjustOverride) return adjustOverride;
+  const defaults = FITNESS_DEFAULTS[profile.fitness] || FITNESS_DEFAULTS.moderate;
+  const breedIsHeatSensitive = (typeof HEAT_SENSITIVE_BREEDS !== 'undefined')
+    && HEAT_SENSITIVE_BREEDS.includes(profile.breed);
+  return { terrain: defaults.terrain, distance: defaults.distance, heatSensitive: breedIsHeatSensitive };
+}
+
+async function renderReturningHomepage(profile){
+  const heading = document.getElementById('returningHeading');
+  const subline = document.getElementById('returningSubline');
+  const countEl = document.getElementById('returningCount');
+  const listEl = document.getElementById('returningTrailList');
+  if(!heading || typeof trails === 'undefined') return;
+
+  const name = (profile && profile.name) ? profile.name : 'there';
+  const overrides = profile ? effectiveOverrides(profile) : { terrain:'1', distance:'10', heatSensitive:false };
+
+  const scored = trails.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
+
+  // Genuine new-match detection: compare today's strong matches against
+  // what was stored on the account the last time they visited.
+  let newIds = new Set();
+  if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
+    const previous = await window.DoloPawsAuth.getLastMatches();
+    const currentTopIds = scored.filter(t => t.score >= NEW_MATCH_THRESHOLD).map(t => t.id);
+    if(Array.isArray(previous)){
+      newIds = new Set(currentTopIds.filter(id => !previous.includes(id)));
+    }
+    // Store today's snapshot for next visit — after comparing, not before.
+    await window.DoloPawsAuth.setLastMatches(currentTopIds);
+  }
+
+  heading.textContent = profile && profile.name ? `Welcome back — trail matches for ${name}` : 'Welcome back';
+  subline.textContent = newIds.size > 0
+    ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
+    : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details in Edit profile to personalize this list.';
+  countEl.textContent = `${scored.length} trails, ranked${profile && profile.name ? ' for ' + name : ''}`;
+
+  listEl.innerHTML = scored.map(t => {
+    const isFav = !!currentFavorites[t.id];
+    const isNew = newIds.has(t.id);
+    return `
+    <div class="trail-card" data-id="${t.id}">
+      <div class="photo"></div>
+      <div class="body">
+        <div class="top-row">
+          <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
+          ${isNew ? `<span style="font-size:10px;font-weight:700;color:#fff;background:var(--accent);padding:3px 8px;border-radius:10px;">NEW MATCH</span>` : ''}
+          <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
         </div>
-        <div class="heat-row heat-${t.heatRisk}">
-          <span class="heat-dot"></span> Heat risk: <b style="text-transform:capitalize;">${t.heatRisk}</b>
+        <div class="name" style="margin-top:8px;">${t.name}</div>
+        <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
+        <span class="tag">${t.terrainType}</span>
+        <div style="margin-top:10px;">
+          <button class="fav-btn save-btn" data-id="${t.id}" style="font-size:12px;padding:6px 16px;">${isFav ? 'Saved' : 'Save'}</button>
         </div>
-        <h4 style="margin:16px 0 4px;font-size:13.5px;color:var(--pine);">Water &amp; rifugi along the route</h4>
-        ${routeTimeline(t)}
-        <div class="tip-line">${t.tips}</div>
       </div>
     </div>`;
   }).join('');
 
-  // Append login CTA for guests after the visible subset.
-  if(!loggedIn){
-    const guestTrailContext = loadGuestTrailContext();
-    const cta = document.createElement('div');
-    cta.className = 'trail-teaser-cta';
-    const hiddenMsg = hiddenCount > 0
-      ? `<strong>${hiddenCount} more trail${hiddenCount === 1 ? '' : 's'}</strong> are ready when you want to save and unlock the full ranked list.`
-      : `Sign in when you want to save your shortlist and unlock the full ranked list.`;
-    cta.innerHTML = `
-      <p class="trail-teaser-cta__msg">🐾 ${hiddenMsg}</p>
-      <button class="btn-primary trail-teaser-cta__btn" id="teaserLoginBtn">Sign in to save & unlock more →</button>
-      <p class="trail-teaser-cta__sub">You can keep browsing as a guest. <button class="trail-teaser-cta__link" id="teaserSignupBtn">Create a free account</button> only when you want saved matches on every device.</p>
-    `;
-    nodes.grid.appendChild(cta);
-
-    const loginBtn = cta.querySelector('#teaserLoginBtn');
-    if(loginBtn){
-      loginBtn.addEventListener('click', () => {
-        openContextualAuth(
-          'login',
-          'unlock-results',
-          'Sign in to save your guest shortlist and unlock the full ranked trail list.',
-          { returnTo: 'results' }
-        );
-      });
-    }
-    const signupBtn = cta.querySelector('#teaserSignupBtn');
-    if(signupBtn){
-      signupBtn.addEventListener('click', () => {
-        openContextualAuth(
-          'signup',
-          'unlock-results',
-          'Create a free account to save your guest shortlist and unlock the full ranked trail list.',
-          { returnTo: 'results' }
-        );
-      });
-    }
-
-    if(guestTrailContext && guestTrailContext.trailId){
-      const rememberedDetail = document.getElementById(`detail-${guestTrailContext.trailId}`);
-      if(rememberedDetail){
-        rememberedDetail.classList.add('open');
-      }
-    }
-  }
-
-  nodes.grid.querySelectorAll('.trail-card-v2[data-id]').forEach(card=>{
-    card.addEventListener('click', e=>{
-      if(e.target.closest('.fav-btn')) return;
-      const id = card.dataset.id;
-      document.getElementById(`detail-${id}`).classList.toggle('open');
-      if(!loggedIn){
-        rememberGuestTrailContext({ trailId: id });
-        trackFirstGuestAction('trail_opened', { trailId: id });
-      }
+  listEl.querySelectorAll('.save-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      if(currentFavorites[id]) delete currentFavorites[id];
+      else currentFavorites[id] = true;
+      if(window.DoloPawsAuth) await window.DoloPawsAuth.setFavorites(currentFavorites);
+      renderReturningHomepage(profile);
     });
   });
-
-  nodes.grid.querySelectorAll('.fav-btn').forEach(btn=>{
-    btn.addEventListener('click', async e=>{
-      e.stopPropagation();
-      const id = btn.dataset.fav;
-      if(state.favorites[id]) delete state.favorites[id];
-      else state.favorites[id] = true;
-
-      const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-      if(user){
-        await window.DoloPawsAuth.setFavorites(state.favorites);
-      } else {
-        try{ localStorage.setItem('dolopaws-favorites', JSON.stringify(state.favorites)); }catch(err){}
-        trackFirstGuestAction('trail_saved', { trailId: id });
-      }
-      render();
-    });
-  });
-
-  if(window.updateMapMarkers) window.updateMapMarkers(visible);
 }
 
-window.getScoredTrails = function(){
-  if(!Array.isArray(trails)) return [];
-  try{
-    return trails.map(t=>({...t, score:scoreTrail(t)})).sort((a,b)=>b.score-a.score);
-  }catch(e){
-    console.warn('Failed to score trails:', e);
-    return [];
-  }
-};
+// Adjust-for-today panel wiring
+const adjustToggle = document.getElementById('adjustToggle');
+const adjustPanel = document.getElementById('adjustPanel');
+const adjustCloseBtn = document.getElementById('adjustCloseBtn');
+let currentProfileForAdjust = null;
 
-render();
+if(adjustToggle){
+  adjustToggle.addEventListener('click', () => {
+    adjustPanel.hidden = false;
+    adjustToggle.hidden = true;
+  });
+}
+if(adjustCloseBtn){
+  adjustCloseBtn.addEventListener('click', () => {
+    adjustPanel.hidden = true;
+    adjustToggle.hidden = false;
+    adjustOverride = null;
+    renderReturningHomepage(currentProfileForAdjust);
+  });
+}
+document.querySelectorAll('.adj-pill-row').forEach(row => {
+  row.addEventListener('click', (e) => {
+    const pill = e.target.closest('.adj-pill');
+    if(!pill) return;
+    row.querySelectorAll('.adj-pill').forEach(p => {
+      p.style.background = 'none';
+      p.style.color = 'var(--ink)';
+      p.style.borderColor = 'var(--paper-line)';
+      p.classList.remove('active');
+    });
+    pill.style.background = 'var(--ink)';
+    pill.style.color = '#fff';
+    pill.style.borderColor = 'var(--ink)';
+    pill.classList.add('active');
+
+    const group = row.dataset.group;
+    if(!adjustOverride){
+      const base = currentProfileForAdjust ? effectiveOverrides(currentProfileForAdjust) : { terrain:'1', distance:'10', heatSensitive:false };
+      adjustOverride = {...base};
+    }
+    adjustOverride[group] = pill.dataset.value;
+    renderReturningHomepage(currentProfileForAdjust);
+  });
+});
+document.querySelectorAll('.adj-pill').forEach(p => {
+  p.style.padding = '8px 14px';
+  p.style.borderRadius = '14px';
+  p.style.border = '1.5px solid var(--paper-line)';
+  p.style.fontSize = '12px';
+  p.style.fontWeight = '600';
+  p.style.color = 'var(--ink)';
+  p.style.cursor = 'pointer';
+  p.style.fontFamily = "'Inter',sans-serif";
+});
+
+// ============================================================
+// AUTH STATE — switch between guest and returning homepage
+// ============================================================
+window.addEventListener('dolopaws-auth-changed', async (e) => {
+  const user = e.detail.user;
+  const newHome = document.getElementById('newCustomerHomepage');
+  const returningHome = document.getElementById('returningCustomerHomepage');
+  const browseNavLink = document.getElementById('browseNavLink');
+  if(browseNavLink) browseNavLink.href = user ? 'my-trails.html' : 'browse-trails.html';
+  if(!newHome || !returningHome) return;
+
+  if(user && window.DoloPawsAuth){
+    newHome.hidden = true;
+    returningHome.hidden = false;
+    adjustOverride = null;
+
+    const profile = await window.DoloPawsAuth.getDogProfile();
+    currentProfileForAdjust = profile;
+    currentFavorites = await window.DoloPawsAuth.getFavorites();
+    renderReturningHomepage(profile);
+  } else {
+    newHome.hidden = false;
+    returningHome.hidden = true;
+  }
+});
