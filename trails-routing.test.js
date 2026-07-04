@@ -98,4 +98,52 @@ describe('Browse our trails routing', () => {
     expect(document.querySelector('.guest-homepage__preview')).toBeNull();
     expect(document.querySelectorAll('.guest-preview-card')).toHaveLength(0);
   });
+
+  test('logged-in homepage finder contains location filter group', () => {
+    const indexHtml = loadHtml('index.html');
+
+    document.documentElement.innerHTML = indexHtml;
+
+    expect(document.getElementById('locationGroup')).not.toBeNull();
+    const provinceRow = document.querySelector('#locationGroup .pill-row[data-group="province"]');
+    expect(provinceRow).not.toBeNull();
+  });
+
+  test('dog-specific question groups have IDs for CSS-based hiding in logged-in view', () => {
+    const indexHtml = loadHtml('index.html');
+
+    document.documentElement.innerHTML = indexHtml;
+
+    expect(document.getElementById('dogTerrainGroup')).not.toBeNull();
+    expect(document.getElementById('dogShadeGroup')).not.toBeNull();
+    expect(document.getElementById('dogWaterGroup')).not.toBeNull();
+    expect(document.getElementById('dogPawsGroup')).not.toBeNull();
+    expect(document.getElementById('dogHeatGroup')).not.toBeNull();
+    expect(document.getElementById('dogExposureGroup')).not.toBeNull();
+  });
+
+  test('map is in #trailMapWrap after .wrap and before #results in the HTML', () => {
+    const indexHtml = loadHtml('index.html');
+
+    document.documentElement.innerHTML = indexHtml;
+
+    const wrap = document.querySelector('.wrap');
+    const trailMapWrap = document.getElementById('trailMapWrap');
+    const trailMap = document.getElementById('trailMap');
+    const results = document.getElementById('results');
+
+    expect(trailMapWrap).not.toBeNull();
+    expect(trailMap).not.toBeNull();
+    expect(trailMap.parentElement).toBe(trailMapWrap);
+
+    // trailMapWrap comes after .wrap
+    expect(
+      wrap.compareDocumentPosition(trailMapWrap) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+
+    // trailMapWrap comes before #results
+    expect(
+      trailMapWrap.compareDocumentPosition(results) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  });
 });

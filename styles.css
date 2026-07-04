@@ -425,9 +425,6 @@ a{color:inherit;}
   max-width:1180px;
   margin:0 auto;
   padding:0 24px 30px;
-  display:grid;
-  grid-template-columns:minmax(290px,430px) minmax(380px,1fr);
-  gap:26px;
 }
 .panel{
   background:var(--card);
@@ -498,10 +495,14 @@ h2{
 #distanceValue{font-weight:700;color:var(--pine);}
 
 /* ---------- MAP ---------- */
-.hero-right{position:relative;}
+#trailMapWrap{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 24px 26px;
+}
 #trailMap{
   width:100%;
-  min-height:530px;
+  min-height:420px;
   border-radius:20px;
   border:1px solid var(--paper-line);
   box-shadow:var(--soft-shadow);
@@ -1014,11 +1015,26 @@ footer{
   padding:10px 20px 30px;
 }
 
+/* ---------- LOGGED-IN (returning) UX ---------- */
+/* Hide dog-characteristic questions for logged-in users;
+   profile data already drives those filter values. */
+body[data-homepage-view="returning"] #dogTerrainGroup,
+body[data-homepage-view="returning"] #dogShadeGroup,
+body[data-homepage-view="returning"] #dogWaterGroup,
+body[data-homepage-view="returning"] #dogPawsGroup,
+body[data-homepage-view="returning"] #dogHeatGroup,
+body[data-homepage-view="returning"] #dogExposureGroup { display:none; }
+
+/* Location filter is only meaningful when the finder is visible (logged-in). */
+body:not([data-homepage-view="returning"]) #locationGroup { display:none; }
+
+/* Constrain filter panel width in the logged-in layout. */
+body[data-homepage-view="returning"] #finder { max-width:640px; }
+
 /* ---------- MOBILE ---------- */
 @media (max-width:980px){
-  .wrap{grid-template-columns:1fr;}
   .homepage-prototype__inner{grid-template-columns:1fr;}
-  #trailMap{min-height:420px;}
+  #trailMap{min-height:320px;}
   .card-head{flex-direction:column;}
   .score-badge{align-self:flex-start;}
   .detail-grid{grid-template-columns:1fr;}

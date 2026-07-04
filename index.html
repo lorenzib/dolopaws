@@ -122,8 +122,19 @@
     <h2 id="finderHeading">Tell us about your dog</h2>
     <div class="hint" id="finderHint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</div>
 
+    <!-- LOGGED-IN: location filters (hidden for guests via CSS) -->
+    <div class="q-group" id="locationGroup">
+      <span class="q-label">Where are you heading?</span>
+      <div class="pill-row" data-group="province">
+        <button class="pill active" data-value="">All areas</button>
+        <button class="pill" data-value="South Tyrol">South Tyrol</button>
+        <button class="pill" data-value="Veneto">Veneto</button>
+        <button class="pill" data-value="Friuli-Venezia Giulia">Friuli-Venezia Giulia</button>
+      </div>
+    </div>
+
     <!-- PRIMARY: terrain tolerance -->
-    <div class="q-group">
+    <div class="q-group" id="dogTerrainGroup">
       <span class="q-label">Terrain your dog can handle</span>
       <div class="pill-row" data-group="terrain">
         <button class="pill active" data-value="0">Paved / packed dirt only</button>
@@ -133,7 +144,7 @@
     </div>
 
     <!-- PRIMARY: shade need -->
-    <div class="q-group">
+    <div class="q-group" id="dogShadeGroup">
       <span class="q-label">How much shade your dog needs</span>
       <div class="pill-row" data-group="shade">
         <button class="pill active" data-value="2">Needs lots of shade</button>
@@ -143,7 +154,7 @@
     </div>
 
     <!-- PRIMARY: water dependence -->
-    <div class="q-group">
+    <div class="q-group" id="dogWaterGroup">
       <span class="q-label">Water access on route</span>
       <div class="pill-row" data-group="water">
         <button class="pill active" data-value="2">Frequent water points needed</button>
@@ -153,7 +164,7 @@
     </div>
 
     <!-- SECONDARY: paw sensitivity -->
-    <div class="q-group">
+    <div class="q-group" id="dogPawsGroup">
       <span class="q-label">Paw pad sensitivity</span>
       <div class="pill-row" data-group="pads">
         <button class="pill active" data-value="2">Very sensitive</button>
@@ -163,7 +174,7 @@
     </div>
 
     <!-- SECONDARY: heat tolerance -->
-    <div class="q-group">
+    <div class="q-group" id="dogHeatGroup">
       <span class="q-label">Heat tolerance</span>
       <div class="pill-row" data-group="heat">
         <button class="pill active" data-value="2">Struggles in heat</button>
@@ -173,7 +184,7 @@
     </div>
 
     <!-- SECONDARY: exposure -->
-    <div class="q-group">
+    <div class="q-group" id="dogExposureGroup">
       <span class="q-label">Comfort with exposure / narrow edges</span>
       <div class="pill-row" data-group="exposure">
         <button class="pill active" data-value="2">Avoid exposed sections</button>
@@ -206,10 +217,10 @@
     </div>
   </div>
 
-  <div class="hero-right">
-    <div id="trailMap" aria-label="Trail map"></div>
-  </div>
+</div>
 
+<div id="trailMapWrap">
+  <div id="trailMap" aria-label="Trail map"></div>
 </div>
 
 <div class="results" id="results"></div>
