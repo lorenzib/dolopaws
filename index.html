@@ -60,24 +60,24 @@
       <div class="returning-home__copy">
         <p class="returning-home__eyebrow">Returning account</p>
         <h1 class="returning-home__title">Welcome back, <span id="returningHeroName">you</span>.</h1>
-        <p class="returning-home__sub">Your saved profile is loaded. Use quick actions or apply temporary trail overrides for today's plan.</p>
+        <p class="returning-home__sub">Your saved profile is loaded. Refine today’s route fit and jump into your account actions in one place.</p>
       </div>
+
       <div class="returning-home__actions">
         <a class="returning-pill" href="account.html">My profile</a>
         <a class="returning-pill" href="trails/">Saved trails</a>
         <a class="returning-pill" href="trails/">Past hikes</a>
       </div>
-      <button id="todayConditionsToggle" class="btn-secondary returning-home__toggle" type="button" aria-expanded="false" aria-controls="todayConditionsPanel">
-        Adjust for today’s conditions
-      </button>
-    </section>
 
-    <div class="wrap">
-      <section class="panel" id="finder">
+      <section class="returning-home__filters" aria-label="Filter trails for returning account">
         <p class="filter-eyebrow">Filter trails</p>
-        <h2 id="finderHeading">Tell me about your dog</h2>
-        <p id="finderHint" class="hint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</p>
+        <h2 id="finderHeading">Trails for your dog</h2>
+        <p id="finderHint" class="hint">Matched to your saved profile. Apply temporary overrides for today and update anytime.</p>
         <p id="personalizedNote" class="hint" hidden></p>
+
+        <button id="todayConditionsToggle" class="btn-secondary returning-home__toggle" type="button" aria-expanded="false" aria-controls="todayConditionsPanel">
+          Adjust for today’s conditions
+        </button>
 
         <section id="todayConditionsPanel" class="today-conditions-panel" aria-label="Today conditions adjustments">
           <div class="today-conditions-panel__head">
@@ -151,6 +151,14 @@
           Save this profile to reuse your dog's preferred defaults.
           <button id="saveProfileBtn" class="btn-secondary" type="button">Save profile</button>
         </p>
+      </section>
+    </section>
+
+    <div class="wrap" id="guestFinderWrap">
+      <section class="panel" id="finder">
+        <p class="filter-eyebrow">Filter trails</p>
+        <h2>Tell me about your dog</h2>
+        <p class="hint">Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.</p>
       </section>
     </div>
 
