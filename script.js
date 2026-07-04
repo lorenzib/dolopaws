@@ -14,10 +14,29 @@ function scoreTrail(t, overrides){
   const terrain = parseInt(overrides.terrain, 10);
   const maxDistance = parseFloat(overrides.distance);
 
+  // Terrain difficulty
   if(t.terrainRank > terrain) score -= (t.terrainRank - terrain) * 30;
-  if(overrides.heatSensitive && t.heatRisk === 'high') score -= 20;
+
+  // Distance
   if(t.distance > maxDistance) score -= Math.min(35, (t.distance - maxDistance) * 5);
+
+  // Exposure — narrow ledges / drop-offs are a caution regardless of breed
   if(t.exposure) score -= 30;
+
+  // Heat risk — a baseline penalty applies to every dog; heat-sensitive
+  // breeds take a heavier hit on top of that.
+  if(t.heatRisk === 'high') score -= overrides.heatSensitive ? 25 : 12;
+  else if(t.heatRisk === 'moderate') score -= overrides.heatSensitive ? 10 : 4;
+
+  // Shade coverage — low shade compounds heat risk for every dog, not
+  // just breeds flagged as heat-sensitive.
+  if(t.shadeCoverage < 20) score -= 10;
+  else if(t.shadeCoverage < 40) score -= 5;
+
+  // Surface hazards — sharp rock, loose scree, fixed cables, etc.
+  if(t.surfaceHazards && t.surfaceHazards.length > 0){
+    score -= Math.min(20, t.surfaceHazards.length * 8);
+  }
 
   return Math.max(5, Math.round(score));
 }
@@ -88,6 +107,8 @@ function effectiveOverrides(profile){
   return { terrain: defaults.terrain, distance: defaults.distance, heatSensitive: breedIsHeatSensitive };
 }
 
+let showingSavedOnly = false;
+
 async function renderReturningHomepage(profile){
   const heading = document.getElementById('returningHeading');
   const subline = document.getElementById('returningSubline');
@@ -101,7 +122,9 @@ async function renderReturningHomepage(profile){
   const scored = trails.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
 
   // Genuine new-match detection: compare today's strong matches against
-  // what was stored on the account the last time they visited.
+  // what was stored on the account the last time they visited. This is
+  // computed against the FULL list, regardless of which view is showing,
+  // so a saved trail's NEW MATCH badge stays accurate either way.
   let newIds = new Set();
   if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
     const previous = await window.DoloPawsAuth.getLastMatches();
@@ -117,9 +140,27 @@ async function renderReturningHomepage(profile){
   subline.textContent = newIds.size > 0
     ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
     : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details in Edit profile to personalize this list.';
-  countEl.textContent = `${scored.length} trails, ranked${profile && profile.name ? ' for ' + name : ''}`;
 
-  listEl.innerHTML = scored.map(t => {
+  const displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
+
+  countEl.innerHTML = showingSavedOnly
+    ? `<button id="backToAllBtn" style="border:none;background:none;color:var(--accent);font-weight:700;font-size:12.5px;cursor:pointer;padding:0;">← Back to all trails</button> &nbsp; ${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
+    : `${displayList.length} trails`;
+
+  const backBtn = document.getElementById('backToAllBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', () => {
+      showingSavedOnly = false;
+      renderReturningHomepage(profile);
+    });
+  }
+
+  if(showingSavedOnly && displayList.length === 0){
+    listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">You haven't saved any trails yet. Click "Save" on a trail below to keep it here.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = displayList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
     return `
@@ -129,14 +170,14 @@ async function renderReturningHomepage(profile){
         <div class="top-row">
           <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
           ${isNew ? `<span style="font-size:10px;font-weight:700;color:#fff;background:var(--accent);padding:3px 8px;border-radius:10px;">NEW MATCH</span>` : ''}
-          <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
+          <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+            <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
+            <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>
+          </div>
         </div>
-        <div class="name" style="margin-top:8px;">${t.name}</div>
+        <div class="name" style="margin-top:6px;">${t.name}</div>
         <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
-        <div style="margin-top:10px;">
-          <button class="fav-btn save-btn" data-id="${t.id}" style="font-size:12px;padding:6px 16px;">${isFav ? 'Saved' : 'Save'}</button>
-        </div>
       </div>
     </div>`;
   }).join('');
@@ -157,6 +198,15 @@ const adjustToggle = document.getElementById('adjustToggle');
 const adjustPanel = document.getElementById('adjustPanel');
 const adjustCloseBtn = document.getElementById('adjustCloseBtn');
 let currentProfileForAdjust = null;
+
+const savedTrailsBtn = document.getElementById('savedTrailsBtn');
+if(savedTrailsBtn){
+  savedTrailsBtn.addEventListener('click', () => {
+    showingSavedOnly = true;
+    renderReturningHomepage(currentProfileForAdjust);
+    document.getElementById('returningResults').scrollIntoView({ behavior: 'smooth' });
+  });
+}
 
 if(adjustToggle){
   adjustToggle.addEventListener('click', () => {
