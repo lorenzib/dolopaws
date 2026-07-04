@@ -58,10 +58,8 @@
     if(newHomepage) newHomepage.hidden = view !== 'new';
     if(returningHomepage) returningHomepage.hidden = view !== 'returning';
     if(trailMap) trailMap.hidden = false;
-    if(results) results.hidden = view === 'new';
-
-    // Hide the trail results list for guests — the map remains visible.
-    if(results) results.hidden = view !== 'returning';
+    // Results are always shown; script.js limits the visible trail count for guests.
+    if(results) results.hidden = false;
 
     if(accountBtn){
       accountBtn.textContent = view === 'returning' ? 'My account' : 'Log in';

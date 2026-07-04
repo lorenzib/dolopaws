@@ -37,7 +37,8 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(true);
     expect(document.getElementById('accountBtn').textContent).toBe('Log in');
     expect(document.getElementById('trailMap').hidden).toBe(false);
-    expect(document.getElementById('results').hidden).toBe(true);
+    // Results are shown for guests (script.js limits visible trails to a teaser subset).
+    expect(document.getElementById('results').hidden).toBe(false);
   });
 
   test('shows returning hero when logged in', () => {
@@ -71,7 +72,8 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('defaultHomepageHero').hidden).toBe(true);
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(true);
-    expect(document.getElementById('results').hidden).toBe(true);
+    // Results are shown for guests (script.js handles the teaser limit).
+    expect(document.getElementById('results').hidden).toBe(false);
   });
 });
 

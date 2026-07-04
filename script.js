@@ -378,6 +378,9 @@ function renderFallbackMessage(message){
   if(window.updateMapMarkers) window.updateMapMarkers([]);
 }
 
+// Number of trail cards shown to guests before the login CTA.
+const GUEST_TRAIL_LIMIT = 5;
+
 function render(){
   const nodes = ensureResultsNodes();
   if(!nodes){
@@ -400,9 +403,15 @@ function render(){
     return;
   }
 
-  nodes.count.textContent = `${scored.length} trails, ranked by fit`;
+  const loggedIn = !!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
+  const visible = loggedIn ? scored : scored.slice(0, GUEST_TRAIL_LIMIT);
+  const hidden = loggedIn ? 0 : Math.max(0, scored.length - GUEST_TRAIL_LIMIT);
 
-  nodes.grid.innerHTML = scored.map(t=>{
+  nodes.count.textContent = loggedIn
+    ? `${scored.length} trails, ranked by fit`
+    : `${scored.length} trails found — showing top ${visible.length}`;
+
+  nodes.grid.innerHTML = visible.map(t=>{
     const isFav = !!state.favorites[t.id];
     return `
     <div class="trail-card-v2" data-id="${t.id}">
@@ -448,6 +457,34 @@ function render(){
       </div>
     </div>`;
   }).join('');
+
+  // Append login CTA for guests after the visible subset.
+  if(!loggedIn){
+    const cta = document.createElement('div');
+    cta.className = 'trail-teaser-cta';
+    const hiddenMsg = hidden > 0
+      ? `<strong>${hidden} more trail${hidden === 1 ? '' : 's'}</strong> scored for your dog's safety are waiting.`
+      : `Log in to unlock personalised scores for your dog.`;
+    cta.innerHTML = `
+      <p class="trail-teaser-cta__msg">🐾 ${hiddenMsg}</p>
+      <button class="btn-primary trail-teaser-cta__btn" id="teaserLoginBtn">Log in to see more →</button>
+      <p class="trail-teaser-cta__sub">New here? <button class="trail-teaser-cta__link" id="teaserSignupBtn">Create a free dog profile</button> for personalised trail matching.</p>
+    `;
+    nodes.grid.appendChild(cta);
+
+    const loginBtn = cta.querySelector('#teaserLoginBtn');
+    if(loginBtn){
+      loginBtn.addEventListener('click', () => {
+        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      });
+    }
+    const signupBtn = cta.querySelector('#teaserSignupBtn');
+    if(signupBtn){
+      signupBtn.addEventListener('click', () => {
+        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+      });
+    }
+  }
 
   nodes.grid.querySelectorAll('.trail-card-v2[data-id]').forEach(card=>{
     card.addEventListener('click', e=>{
