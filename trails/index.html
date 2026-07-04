@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Dog-safe Trails — DoloPaws</title>
+<meta name="description" content="Browse and rank dog-safe Dolomite trails by terrain, shade, and max distance.">
+<meta name="theme-color" content="#2E4034">
+
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+
+<style>
+  :root {
+    --panel: #fffefb;
+    --line: #ece8dc;
+    --muted: #8a8f8a;
+    --text: #223227;
+    --pill-bg: #ffffff;
+    --pill-active-bg: #2f4035;
+    --pill-active-text: #f7f7f2;
+    --card-border: #efeee8;
+    --placeholder-bg: repeating-linear-gradient(135deg, #efecdf 0 12px, #e8e4d5 12px 24px);
+  }
+
+  body {
+    background: #f7f6f1;
+  }
+
+  .browse-wrap {
+    max-width: 1040px;
+    margin: 26px auto 40px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(0,0,0,.04);
+  }
+
+  .browse-head {
+    padding: 28px 34px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .browse-head h1 {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-size: clamp(1.8rem, 2.8vw, 2.55rem);
+    line-height: 1.1;
+    color: #16251d;
+  }
+
+  .browse-head p {
+    margin: 10px 0 0;
+    max-width: 760px;
+    color: #687067;
+    font-size: 1.12rem;
+    line-height: 1.45;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    padding: 18px 34px 20px;
+    border-bottom: 1px solid var(--line);
+    background: #fbfaf5;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .filter-group h3 {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: .8rem;
+    color: var(--muted);
+  }
+
+  .pill-row-compact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+
+  .chip {
+    border: 1px solid #d9dccc;
+    background: var(--pill-bg);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: .15s ease;
+  }
+
+  .chip:hover {
+    border-color: #c2c8b3;
+    transform: translateY(-1px);
+  }
+
+  .chip.active {
+    background: var(--pill-active-bg);
+    color: var(--pill-active-text);
+    border-color: var(--pill-active-bg);
+  }
+
+  .result-meta {
+    margin: 18px 34px 0;
+    color: #6f756e;
+    font-size: 2rem;
+    font-family: "Fraunces", serif;
+    line-height: 1.2;
+  }
+
+  .trail-list {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0 20px 28px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .trail-card {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 15px;
+    align-items: center;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px;
+    background: #fff;
+  }
+
+  .trail-photo {
+    width: 78px;
+    height: 62px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: .78rem;
+    color: rgba(54, 62, 56, .55);
+    background: var(--placeholder-bg);
+    border: 1px solid #e2dfd2;
+    text-transform: lowercase;
+  }
+
+  .trail-title {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-size: 1.9rem;
+    line-height: 1.1;
+    color: #15231b;
+  }
+
+  .trail-sub {
+    margin-top: 5px;
+    color: #7a8079;
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 980px) {
+    .filters {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .trail-title {
+      font-size: 1.2rem;
+    }
+
+    .trail-sub {
+      font-size: .98rem;
+    }
+
+    .result-meta {
+      font-size: 1.35rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .browse-wrap {
+      margin: 10px 10px 28px;
+    }
+
+    .browse-head,
+    .filters {
+      padding-inline: 16px;
+    }
+
+    .trail-list {
+      padding-inline: 12px;
+    }
+
+    .trail-card {
+      grid-template-columns: 74px 1fr;
+      gap: 11px;
+      padding: 11px;
+    }
+
+    .trail-photo {
+      width: 62px;
+      height: 52px;
+      font-size: .68rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="brand" href="../index.html">DoloPaws</a>
+  <div class="links">
+    <a href="index.html" aria-current="page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3.5l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.8 6.4 20.7l1.1-6.2L3 10.1l6.2-.9L12 3.5z"/>
+      </svg>
+      <span>Browse our trails</span>
+    </a>
+    <a href="../safety-guide.html">Dog safety guide</a>
+    <a href="../index.html#finder">Dog match finder</a>
+  </div>
+</div>
+
+<main class="browse-wrap">
+  <section class="browse-head">
+    <h1>Find dog-safe trails in the Dolomites</h1>
+    <p>Answer three quick things and we’ll rank routes by paw safety, shade, and terrain — no account needed.</p>
+  </section>
+
+  <section class="filters" aria-label="Trail filters">
+    <div class="filter-group" data-filter-group="terrain">
+      <h3>TERRAIN</h3>
+      <div class="pill-row-compact">
+        <button class="chip active" data-value="paved">Paved</button>
+        <button class="chip" data-value="gravel">Gravel</button>
+        <button class="chip" data-value="rocky">Rocky</button>
+      </div>
+    </div>
+
+    <div class="filter-group" data-filter-group="shade">
+      <h3>SHADE</h3>
+      <div class="pill-row-compact">
+        <button class="chip active" data-value="lots">Lots of shade</button>
+        <button class="chip" data-value="some">Some sun ok</button>
+        <button class="chip" data-value="exposed">Exposed ok</button>
+      </div>
+    </div>
+
+    <div class="filter-group" data-filter-group="distance">
+      <h3>MAX DISTANCE</h3>
+      <div class="pill-row-compact">
+        <button class="chip active" data-value="12">≤ 12 km</button>
+        <button class="chip" data-value="20">≤ 20 km</button>
+      </div>
+    </div>
+  </section>
+
+  <p id="resultMeta" class="result-meta">0 trails, ranked by fit</p>
+  <ul id="trailList" class="trail-list" aria-live="polite"></ul>
+</main>
+
+<footer>
+  Made for safer alpine adventures with dogs.
+</footer>
+
+<script>
+  const trails = [
+    {
+      name: "Lago di Braies Loop",
+      area: "Prags Valley",
+      distanceKm: 3.5,
+      terrain: "paved",
+      shade: "lots",
+      risk: "Low-risk terrain"
+    },
+    {
+      name: "Val di Funes Valley Walk",
+      area: "Funes",
+      distanceKm: 6,
+      terrain: "gravel",
+      shade: "some",
+      risk: "Low-risk terrain"
+    },
+    {
+      name: "Tre Cime Circuit",
+      area: "Sesto Dolomites",
+      distanceKm: 10,
+      terrain: "rocky",
+      shade: "exposed",
+      risk: "Exposed sections"
+    },
+    {
+      name: "Seceda Ridge Trail",
+      area: "Val Gardena",
+      distanceKm: 14,
+      terrain: "rocky",
+      shade: "exposed",
+      risk: "Exposed sections"
+    }
+  ];
+
+  const state = {
+    terrain: "paved",
+    shade: "lots",
+    distance: 12
+  };
+
+  const terrainScore = { paved: 0, gravel: 1, rocky: 2 };
+  const shadeScore = { lots: 0, some: 1, exposed: 2 };
+
+  const trailList = document.getElementById("trailList");
+  const resultMeta = document.getElementById("resultMeta");
+
+  function setupSingleSelect(groupKey) {
+    const group = document.querySelector(`[data-filter-group="${groupKey}"]`);
+    const chips = Array.from(group.querySelectorAll(".chip"));
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        chips.forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+
+        const value = chip.getAttribute("data-value");
+        state[groupKey] = groupKey === "distance" ? Number(value) : value;
+        render();
+      });
+    });
+  }
+
+  function formatDistance(value) {
+    return Number.isInteger(value) ? `${value} km` : `${value.toFixed(1)} km`;
+  }
+
+  function rankTrails() {
+    return trails
+      .map((trail) => {
+        const terrainPenalty = Math.abs(terrainScore[trail.terrain] - terrainScore[state.terrain]) * 2;
+        const shadePenalty = Math.abs(shadeScore[trail.shade] - shadeScore[state.shade]) * 2;
+        const distancePenalty = trail.distanceKm > state.distance ? (trail.distanceKm - state.distance) * 1.5 : 0;
+        const score = terrainPenalty + shadePenalty + distancePenalty;
+
+        return { trail, score };
+      })
+      .sort((a, b) => a.score - b.score)
+      .map((item) => item.trail);
+  }
+
+  function render() {
+    const ranked = rankTrails();
+
+    resultMeta.textContent = `${ranked.length} trails, ranked by fit`;
+
+    trailList.innerHTML = ranked.map((trail) => `
+      <li class="trail-card">
+        <div class="trail-photo" aria-hidden="true">photo</div>
+        <div>
+          <h2 class="trail-title">${trail.name}</h2>
+          <div class="trail-sub">${trail.area} · ${formatDistance(trail.distanceKm)} · ${trail.risk}</div>
+        </div>
+      </li>
+    `).join("");
+  }
+
+  setupSingleSelect("terrain");
+  setupSingleSelect("shade");
+  setupSingleSelect("distance");
+  render();
+</script>
+
+</body>
+</html>
