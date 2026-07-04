@@ -538,8 +538,9 @@ function render(){
     nodes.count.textContent = `${scored.length} trails found — showing top ${visible.length}`;
   }
 
-  nodes.grid.innerHTML = visible.map(t=>{
+  nodes.grid.innerHTML = visible.map((t, index)=>{
     const isFav = !!state.favorites[t.id];
+    const showNewMatch = loggedIn && index < 2;
     return `
     <div class="trail-card-v2" data-id="${t.id}">
       <div class="card-head card-top">
@@ -548,6 +549,7 @@ function render(){
             <span class="safety-badge safety-${t.safetyLevel === 'low-risk' ? 'low' : t.safetyLevel === 'moderate' ? 'moderate' : 'caution'}">
               ${safetyLabel(t.safetyLevel)}
             </span>
+            ${showNewMatch ? '<span class="new-match-badge">New match</span>' : ''}
           </div>
           <h3 style="margin-top:8px;">${t.name}</h3>
           <span class="area-tag">${t.area}</span>

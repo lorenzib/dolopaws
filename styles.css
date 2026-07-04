@@ -21,6 +21,15 @@ body{
     radial-gradient(1200px 600px at 80% -10%, #ECEADF 0%, transparent 60%),
     var(--bg);
 }
+.top-note{
+  margin:0;
+  padding:9px 24px;
+  text-align:center;
+  font-size:12px;
+  font-weight:600;
+  color:#fff;
+  background:var(--pine);
+}
 a{color:inherit;}
 .icon{
   width:16px;
@@ -380,6 +389,58 @@ a{color:inherit;}
   align-items:center;
 }
 
+.returning-home{
+  margin:18px auto 18px;
+  max-width:1180px;
+  border:1px solid var(--paper-line);
+  border-radius:20px;
+  background:linear-gradient(180deg,#edf1e7 0%,#f6f3ea 100%);
+  box-shadow:var(--soft-shadow);
+  padding:24px;
+  display:grid;
+  gap:14px;
+}
+.returning-home__eyebrow{
+  margin:0;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  color:var(--pine-soft);
+}
+.returning-home__title{
+  margin:2px 0 6px;
+  font-family:'Fraunces',serif;
+  color:var(--pine);
+  font-size:clamp(28px,4vw,42px);
+}
+.returning-home__sub{
+  margin:0;
+  color:var(--pine-soft);
+  font-size:14px;
+  line-height:1.5;
+}
+.returning-home__actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.returning-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  border:1px solid rgba(46,64,52,.16);
+  background:#fff;
+  color:var(--pine);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:700;
+  padding:9px 14px;
+}
+.returning-pill:hover{border-color:var(--alpenglow);color:var(--alpenglow);}
+.returning-home__toggle{justify-self:start;}
+
 /* ---------- TRAIL TEASER CTA (guest login prompt after limited trail list) ---------- */
 .trail-teaser-cta{
   padding:32px 20px 24px;
@@ -449,6 +510,42 @@ h2{
   border:1px solid var(--paper-line);
   border-radius:14px;
 }
+.today-conditions-panel{
+  margin:0 0 16px;
+  border:1px solid #d9dfd2;
+  border-radius:14px;
+  background:#f3f6ef;
+  padding:12px;
+}
+.today-conditions-panel__head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.today-conditions-panel__head h3{
+  margin:0;
+  font-size:13px;
+  color:var(--pine);
+}
+.today-conditions-panel__actions{
+  display:flex;
+  gap:4px;
+}
+.today-conditions-link{
+  border:none;
+  background:transparent;
+  color:var(--pine-soft);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:underline;
+}
+.today-conditions-panel__sub{
+  margin:4px 0 10px;
+  font-size:12px;
+  color:var(--pine-soft);
+}
 .q-label{
   display:block;
   margin-bottom:10px;
@@ -502,6 +599,12 @@ h2{
   border:1px solid var(--paper-line);
   box-shadow:var(--soft-shadow);
   overflow:hidden;
+  display:grid;
+  place-items:center;
+  color:var(--pine-soft);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
 }
 .leaflet-container{font-family:'Inter',sans-serif;}
 .leaflet-marker-pin{
@@ -552,6 +655,25 @@ h2{
   padding:20px 20px 14px;
 }
 .card-top{align-items:flex-start;}
+.card-title-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+.new-match-badge{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  background:#fff2dc;
+  border:1px solid #ebc586;
+  color:#7d5922;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  padding:4px 8px;
+}
 .trail-left{flex:1;min-width:0;}
 .trail-left h3{
   margin:6px 0 4px;
@@ -1013,7 +1135,6 @@ footer{
 /* ---------- LOGGED-IN (returning) UX ---------- */
 /* Hide dog-characteristic questions for logged-in users;
    profile data already drives those filter values. */
-body[data-homepage-view="returning"] #dogTerrainGroup,
 body[data-homepage-view="returning"] #dogShadeGroup,
 body[data-homepage-view="returning"] #dogWaterGroup,
 body[data-homepage-view="returning"] #dogPawsGroup,
@@ -1036,8 +1157,11 @@ body[data-homepage-view="returning"] #finder { max-width:640px; }
   .match-badge{align-self:flex-start;}
 }
 @media (max-width:640px){
+  .top-note{padding:8px 12px;font-size:11px;}
   .topnav{padding:10px 14px;}
   .topnav .links a{display:none;}
+  .topnav .links .account-btn{display:inline-flex;}
+  .returning-home{margin:12px 16px;padding:16px;}
   .hero{padding:56px 16px 40px;}
   .hero-ctas{flex-direction:column;align-items:flex-start;gap:10px;}
   .wrap,.results,.homepage-prototype{padding-left:16px;padding-right:16px;}
