@@ -88,22 +88,22 @@
     <div class="guest-homepage__copy">
       <span class="eyebrow">Paw-first trail planning</span>
       <h1>Find Dolomite trails that match your dog before the hike gets hard.</h1>
-      <p class="sub">DoloPaws ranks hikes for paw safety, heat, water access, and challenging terrain so first-time visitors can quickly spot safer options for their dog.</p>
+      <p class="sub">Try the trail rankings first, then sign in only if you want to save, sync, or pick up where you left off later.</p>
       <div class="hero-ctas">
-        <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
-        <a class="btn-secondary" href="account.html" id="heroLoginBtn">Log in</a>
+        <a class="btn-primary" href="#results" id="heroTryBtn">Try trail matches — no account needed</a>
+        <a class="btn-secondary" href="account.html" id="heroLoginBtn">Sign in to save &amp; sync</a>
       </div>
       <ul class="guest-homepage__value-points" aria-label="Why DoloPaws is different">
-        <li>Dog-first scoring</li>
-        <li>Terrain &amp; heat factors</li>
-        <li>Fast matching in minutes</li>
+        <li>Browse as a guest</li>
+        <li>Save later if it helps</li>
+        <li>Pick up where you left off</li>
       </ul>
     </div>
 
     <div class="guest-homepage__visual" aria-label="Preview of dog-safe trail matching">
       <div class="guest-homepage__visual-head">
         <p>Today's tailored preview</p>
-        <span>Locked until you add your dog</span>
+        <span>Guests can explore first — accounts are for saving and syncing</span>
       </div>
       <div class="guest-homepage__visual-canvas" aria-hidden="true">
         <div class="guest-homepage__visual-glow"></div>
@@ -138,7 +138,7 @@
     <div class="guest-homepage__preview-head">
       <span class="eyebrow">Preview the matching experience</span>
       <h2 id="guestPreviewTitle">See how your future trail matches are structured</h2>
-      <p>Guests get a glimpse of the scoring layout before unlocking personalized matches for their dog's build, heat tolerance, and trail comfort.</p>
+      <p>Guests can browse the ranked preview right away. Sign in only when you want saved matches, synced progress, or an account-specific shortlist.</p>
     </div>
 
     <div class="guest-homepage__preview-grid">
@@ -176,11 +176,11 @@
 
     <div class="guest-homepage__preview-cta">
       <div>
-        <strong>Unlock matches for your dog</strong>
-        <p>Create a dog profile to reveal full trail rankings, safer timing cues, and better-fit routes.</p>
+        <strong>Start with the public trail preview</strong>
+        <p>Try the ranked list now, then create an account later if you want your saved trails and dog profile to follow you across devices.</p>
       </div>
       <div class="guest-homepage__preview-actions">
-        <button class="btn-primary" id="previewSignupBtn">Create profile to unlock matches</button>
+        <a class="btn-primary" href="#results" id="previewTryBtn">See guest trail matches</a>
         <a class="btn-secondary" href="account.html" id="previewLoginBtn">I already have an account</a>
       </div>
     </div>
@@ -310,28 +310,26 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module" src="firebase-init.js"></script>
+<!-- Keep guest-session.js ahead of script.js so guest prompt/context helpers are available on first render. -->
+<script src="guest-session.js" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="homepage-view.js" defer></script>
 <script src="trails-data.js" defer></script>
 <script src="script.js" defer></script>
 <script src="map-init.js" defer></script>
 <script defer>
-  // Wire the hero sign-up button to the auth modal.
+  // Keep homepage sign-in links inside the contextual auth modal.
   (function(){
-    ['heroSignupBtn', 'previewSignupBtn'].forEach(function(id){
-      const btn = document.getElementById(id);
-      if(btn){
-        btn.addEventListener('click', function(){
-          if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
-        });
-      }
-    });
     ['heroLoginBtn', 'previewLoginBtn'].forEach(function(id){
       const loginBtn = document.getElementById(id);
       if(loginBtn){
         loginBtn.addEventListener('click', function(e){
           e.preventDefault();
-          if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+          if(window.DoloPawsAuthUI){
+            window.DoloPawsAuthUI.openLogin({
+              hint: 'Sign in to save your guest progress, sync your dog profile, and unlock account-only tools.'
+            });
+          }
         });
       }
     });

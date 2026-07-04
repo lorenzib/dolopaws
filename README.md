@@ -5,7 +5,7 @@
 The deployed homepage (`index.html`) renders an auth-based split-hero:
 
 - **Logged out / auth unavailable (default)** → new-customer hero (`#newCustomerHomepage`):
-  Editorial landing layout with a serif headline, signup/login CTAs, concise value points, a locked preview panel, and a 3-card teaser section for first-time visitors.
+  Editorial landing layout with a serif headline, a primary guest CTA into public trail results, secondary sign-in, concise value points, and a 3-card teaser section for first-time visitors.
 
 - **Logged in** → returning-customer hero (`#returningCustomerHomepage`):
   Welcome-back banner addressed to the user's display name, with quick-action links (saved trails, past hikes, edit profile).
@@ -29,7 +29,8 @@ The safe fallback is always the new-customer view (no flash of wrong content, no
 | `homepage-view.js` | Auth-based view selection + DOM updates |
 | `homepage-view.test.js` | Jest tests for view switching logic |
 | `styles.css` | Shared styles including split-hero preview panel |
-| `auth-ui.js` | Auth modal + dispatches `dolopaws-auth-changed` |
+| `guest-session.js` | Guest analytics + pending auth/restore helpers |
+| `auth-ui.js` | Auth modal + dispatches `dolopaws-auth-changed` and contextual success events |
 | `firebase-init.js` | Firebase init + exposes `window.DoloPawsAuth` |
 
 ### Prior prototype file
@@ -40,9 +41,10 @@ The safe fallback is always the new-customer view (no flash of wrong content, no
 
 | Scenario | Expected |
 |---|---|
-| Open site while logged out | New-customer split-hero is shown; account button reads "Log in" |
+| Open site while logged out | New-customer split-hero is shown with a primary guest CTA into public trail results; account button reads "Log in" |
 | Open site while logged in | Returning-customer banner shows with your display name; account button reads "My account" |
 | Log out via account page | Page re-renders to new-customer hero on next visit |
+| Click a guest teaser auth prompt and sign in | The auth prompt explains the benefit (save/sync/unlock), then returns focus to the trail results after login |
 | Open `/?view=returning` while logged out | Returning hero shown (dev override) |
 | Open `/?view=new` while logged in | New-customer hero shown (dev override) |
 | JavaScript disabled or auth load fails | New-customer hero remains visible (safe default) |
