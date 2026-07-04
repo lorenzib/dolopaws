@@ -2,9 +2,10 @@ const path = require('path');
 
 const modulePath = path.join(__dirname, 'auth-ui.js');
 
-function loadAuthUi(){
+function loadAuthUi(options = {}){
+  const { includeAccountBtn = true } = options;
   document.body.innerHTML = `
-    <button id="accountBtn">Log in</button>
+    ${includeAccountBtn ? '<button id="accountBtn">Log in</button>' : ''}
     <div id="authModal" hidden>
       <button id="authClose" type="button">Close</button>
       <h2 id="authTitle">Log in</h2>
@@ -112,5 +113,12 @@ describe('auth ui contextual prompts', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(modal.hidden).toBe(true);
     expect(modal.style.display).toBe('none');
+  });
+
+  test('openLogin still works when account button is not present', () => {
+    loadAuthUi({ includeAccountBtn: false });
+
+    expect(() => window.DoloPawsAuthUI.openLogin()).not.toThrow();
+    expect(document.getElementById('authModal').hidden).toBe(false);
   });
 });

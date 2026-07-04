@@ -74,7 +74,9 @@
     }
   }
 
-  accountBtn.addEventListener('click', openModal);
+  if(accountBtn){
+    accountBtn.addEventListener('click', openModal);
+  }
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
   const onEscapeKeyDown = (e) => {
@@ -147,10 +149,12 @@
 
   waitForAuth(() => {
     window.DoloPawsAuth.onChange((user) => {
-      if(user){
-        accountBtn.textContent = 'My account';
-      } else {
-        accountBtn.textContent = 'Log in';
+      if(accountBtn){
+        if(user){
+          accountBtn.textContent = 'My account';
+        } else {
+          accountBtn.textContent = 'Log in';
+        }
       }
       window.dispatchEvent(new CustomEvent('dolopaws-auth-changed', { detail: { user } }));
     });
