@@ -60,6 +60,9 @@
     if(trailMap) trailMap.hidden = false;
     if(results) results.hidden = view === 'new';
 
+    // Hide the trail results list for guests — the map remains visible.
+    if(results) results.hidden = view !== 'returning';
+
     if(accountBtn){
       accountBtn.textContent = view === 'returning' ? 'My account' : 'Log in';
     }
