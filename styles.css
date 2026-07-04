@@ -337,19 +337,14 @@ a{color:inherit;}
 }
 
 
-/* ---------- HOMEPAGE INTRO STRIP (logged-out horizontal banner) ---------- */
+/* ---------- HOMEPAGE INTRO STRIP (logged-out header section) ---------- */
 .homepage-intro-strip{
-  max-width:1180px;
-  margin:24px auto 0;
-  padding:18px 28px;
+  padding:32px 24px 36px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:20px;
-  background:var(--card);
-  border:1px solid var(--paper-line);
-  border-radius:20px;
-  box-shadow:var(--soft-shadow);
+  border-bottom:1px solid var(--paper-line);
   flex-wrap:wrap;
 }
 .homepage-intro-strip__body{
@@ -364,18 +359,18 @@ a{color:inherit;}
   flex-shrink:0;
 }
 .homepage-intro-strip__heading{
-  margin:0 0 3px;
+  margin:0 0 6px;
   font-family:'Fraunces',serif;
   font-weight:600;
-  font-size:clamp(15px,2vw,18px);
-  line-height:1.25;
+  font-size:clamp(22px,3.5vw,34px);
+  line-height:1.2;
   color:var(--pine);
 }
 .homepage-intro-strip__sub{
   margin:0;
-  font-size:13px;
+  font-size:14px;
   color:var(--pine-soft);
-  line-height:1.5;
+  line-height:1.55;
 }
 .homepage-intro-strip__ctas{
   display:flex;
