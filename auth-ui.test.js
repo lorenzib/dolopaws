@@ -69,6 +69,17 @@ describe('auth ui contextual prompts', () => {
     ]);
   });
 
+  test('clicking logged-out Log in button opens auth modal with email/password and Google options', () => {
+    loadAuthUi();
+
+    document.getElementById('accountBtn').click();
+
+    expect(document.getElementById('authModal').hidden).toBe(false);
+    expect(document.getElementById('authEmail')).not.toBeNull();
+    expect(document.getElementById('authPassword')).not.toBeNull();
+    expect(document.getElementById('googleBtn')).not.toBeNull();
+  });
+
   test('close button hides the auth modal', () => {
     loadAuthUi();
 
