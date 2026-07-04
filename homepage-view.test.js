@@ -123,7 +123,7 @@ describe('homepage view switching — dev override via ?view=', () => {
   });
 });
 
-describe('returning view — map-first layout hooks', () => {
+describe('returning view — layout hooks', () => {
   function loadReturningWithLayout(authUser) {
     document.body.innerHTML = `
       <button id="accountBtn">Log in</button>
@@ -134,9 +134,12 @@ describe('returning view — map-first layout hooks', () => {
       <div class="wrap">
         <div class="panel" id="finder">
           <p class="filter-eyebrow">Filter trails</p>
+          <div class="q-group" id="locationGroup"></div>
+          <div class="q-group" id="dogTerrainGroup"></div>
+          <div class="q-group" id="dogShadeGroup"></div>
         </div>
-        <div class="hero-right"><div id="trailMap" aria-label="Trail map"></div></div>
       </div>
+      <div id="trailMapWrap"><div id="trailMap" aria-label="Trail map"></div></div>
       <div id="results"></div>
     `;
 
@@ -148,27 +151,34 @@ describe('returning view — map-first layout hooks', () => {
     require(modulePath);
   }
 
-  test('body carries data-homepage-view="returning" enabling map-first CSS layout when logged in', () => {
+  test('body carries data-homepage-view="returning" when logged in', () => {
     loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
 
     expect(document.body.dataset.homepageView).toBe('returning');
     expect(document.getElementById('finder').hidden).toBe(false);
   });
 
-  test('map element is inside .hero-right sibling to #finder for CSS ordering to apply', () => {
+  test('map element is in #trailMapWrap after .wrap and before #results', () => {
     loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
 
     const trailMap = document.getElementById('trailMap');
-    const finder = document.getElementById('finder');
+    const trailMapWrap = document.getElementById('trailMapWrap');
     const wrap = document.querySelector('.wrap');
+    const results = document.getElementById('results');
 
     expect(trailMap).not.toBeNull();
-    expect(finder).not.toBeNull();
-    // Both must be direct children of .wrap for CSS order to affect their visual position
-    expect(trailMap.closest('.wrap')).toBe(wrap);
-    expect(finder.parentElement).toBe(wrap);
-    // Map is inside .hero-right which gets order:-1 via CSS in returning view
-    expect(trailMap.closest('.hero-right')).not.toBeNull();
+    expect(trailMapWrap).not.toBeNull();
+    expect(trailMap.parentElement).toBe(trailMapWrap);
+
+    // trailMapWrap must come after .wrap in the DOM
+    expect(
+      wrap.compareDocumentPosition(trailMapWrap) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+
+    // trailMapWrap must come before #results in the DOM
+    expect(
+      trailMapWrap.compareDocumentPosition(results) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   });
 
   test('filter-eyebrow element is present inside #finder for returning-view label', () => {
@@ -190,6 +200,19 @@ describe('returning view — map-first layout hooks', () => {
     expect(
       wrap.compareDocumentPosition(results) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
+  });
+
+  test('location filter group is present in #finder', () => {
+    loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
+
+    expect(document.getElementById('locationGroup')).not.toBeNull();
+  });
+
+  test('dog-specific question groups are present in the DOM (visibility controlled via CSS)', () => {
+    loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
+
+    expect(document.getElementById('dogTerrainGroup')).not.toBeNull();
+    expect(document.getElementById('dogShadeGroup')).not.toBeNull();
   });
 
   test('body has data-homepage-view="new" (not returning) when logged out — layout not affected', () => {

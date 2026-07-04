@@ -1,6 +1,7 @@
 
 const state = {
   terrain:'0', shade:'high', stops:'frequent', distance:'10', exposure:'no',
+  province:'',
   favorites:{},
   heatSensitiveDog:false,
   dogName:null,
@@ -115,13 +116,20 @@ function applyDogPersonalization(profile){
   const note = document.getElementById('personalizedNote');
   const heading = document.getElementById('finderHeading');
   const hint = document.getElementById('finderHint');
+  const loggedIn = !!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
 
   if(!profile || !profile.name){
     state.heatSensitiveDog = false;
     state.dogName = null;
-    heading.textContent = 'Tell me about your dog';
-    hint.hidden = false;
-    hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
+    if(loggedIn){
+      heading.textContent = 'Plan your next hike';
+      hint.hidden = false;
+      hint.textContent = 'Filter by location and trip style to find trails that suit your plans.';
+    } else {
+      heading.textContent = 'Tell me about your dog';
+      hint.hidden = false;
+      hint.textContent = 'Terrain, shade and water shape the match first — distance and exposure are secondary. Change anything anytime.';
+    }
     note.hidden = true;
     updateSavePrompt();
     return;
@@ -508,12 +516,27 @@ function render(){
   }
 
   const loggedIn = !!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
-  const visible = loggedIn ? scored : scored.slice(0, GUEST_TRAIL_LIMIT);
+
+  // Apply province filter for logged-in users.
+  const filteredByLocation = (loggedIn && state.province)
+    ? scored.filter(t => t.province === state.province)
+    : scored;
+
+  const visible = loggedIn ? filteredByLocation : scored.slice(0, GUEST_TRAIL_LIMIT);
   const hiddenCount = loggedIn ? 0 : Math.max(0, scored.length - GUEST_TRAIL_LIMIT);
 
-  nodes.count.textContent = loggedIn
-    ? `${scored.length} trails, ranked by fit`
-    : `${scored.length} trails found — showing top ${visible.length}`;
+  if(loggedIn && filteredByLocation.length === 0){
+    renderFallbackMessage('No trails found for this location. Try a different area or clear the location filter.');
+    return;
+  }
+
+  if(loggedIn){
+    const trailWord = filteredByLocation.length === 1 ? 'trail' : 'trails';
+    const locationSuffix = state.province ? ' in ' + state.province : '';
+    nodes.count.textContent = `${filteredByLocation.length} ${trailWord}${locationSuffix}, ranked by fit`;
+  } else {
+    nodes.count.textContent = `${scored.length} trails found — showing top ${visible.length}`;
+  }
 
   nodes.grid.innerHTML = visible.map(t=>{
     const isFav = !!state.favorites[t.id];
@@ -638,7 +661,7 @@ function render(){
     });
   });
 
-  if(window.updateMapMarkers) window.updateMapMarkers(scored);
+  if(window.updateMapMarkers) window.updateMapMarkers(visible);
 }
 
 window.getScoredTrails = function(){
