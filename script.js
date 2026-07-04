@@ -107,6 +107,8 @@ function effectiveOverrides(profile){
   return { terrain: defaults.terrain, distance: defaults.distance, heatSensitive: breedIsHeatSensitive };
 }
 
+let showingSavedOnly = false;
+
 async function renderReturningHomepage(profile){
   const heading = document.getElementById('returningHeading');
   const subline = document.getElementById('returningSubline');
@@ -120,7 +122,9 @@ async function renderReturningHomepage(profile){
   const scored = trails.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
 
   // Genuine new-match detection: compare today's strong matches against
-  // what was stored on the account the last time they visited.
+  // what was stored on the account the last time they visited. This is
+  // computed against the FULL list, regardless of which view is showing,
+  // so a saved trail's NEW MATCH badge stays accurate either way.
   let newIds = new Set();
   if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
     const previous = await window.DoloPawsAuth.getLastMatches();
@@ -136,9 +140,27 @@ async function renderReturningHomepage(profile){
   subline.textContent = newIds.size > 0
     ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
     : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details in Edit profile to personalize this list.';
-  countEl.textContent = `${scored.length} trails`;
 
-  listEl.innerHTML = scored.map(t => {
+  const displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
+
+  countEl.innerHTML = showingSavedOnly
+    ? `<button id="backToAllBtn" style="border:none;background:none;color:var(--accent);font-weight:700;font-size:12.5px;cursor:pointer;padding:0;">← Back to all trails</button> &nbsp; ${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
+    : `${displayList.length} trails`;
+
+  const backBtn = document.getElementById('backToAllBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', () => {
+      showingSavedOnly = false;
+      renderReturningHomepage(profile);
+    });
+  }
+
+  if(showingSavedOnly && displayList.length === 0){
+    listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">You haven't saved any trails yet. Click "Save" on a trail below to keep it here.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = displayList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
     return `
@@ -176,6 +198,15 @@ const adjustToggle = document.getElementById('adjustToggle');
 const adjustPanel = document.getElementById('adjustPanel');
 const adjustCloseBtn = document.getElementById('adjustCloseBtn');
 let currentProfileForAdjust = null;
+
+const savedTrailsBtn = document.getElementById('savedTrailsBtn');
+if(savedTrailsBtn){
+  savedTrailsBtn.addEventListener('click', () => {
+    showingSavedOnly = true;
+    renderReturningHomepage(currentProfileForAdjust);
+    document.getElementById('returningResults').scrollIntoView({ behavior: 'smooth' });
+  });
+}
 
 if(adjustToggle){
   adjustToggle.addEventListener('click', () => {
