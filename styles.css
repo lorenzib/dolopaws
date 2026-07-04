@@ -5,17 +5,17 @@
 ============================================================= */
 
 :root{
-  --bg:#F7F1E8;
+  --bg:#F5F2E8;
   --card:#FFFFFF;
-  --ink:#2B2320;
-  --ink-soft:#6B5D52;
-  --accent:#C9522E;
-  --accent-hover:#B0431F;
+  --ink:#2E4034;
+  --ink-soft:#6B7A6E;
+  --accent:#D6A038;
+  --accent-hover:#C08F2E;
   --success:#4A7856;
-  --success-dim:#E9EDE3;
-  --sage-dim:#E9EDE3;
-  --paper-line:#E5DDD0;
-  --shadow:0 8px 26px rgba(43,35,32,.08);
+  --success-dim:#E4EADF;
+  --sage-dim:#E4EADF;
+  --paper-line:#DEDDD0;
+  --shadow:0 8px 26px rgba(46,64,52,.08);
   --radius-lg:20px;
   --radius-md:12px;
   --radius-pill:999px;
