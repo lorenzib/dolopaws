@@ -83,54 +83,17 @@
 </div>
 
 <!-- NEW-CUSTOMER HERO (logged out / auth unknown — default view) -->
-<section class="homepage-prototype homepage-prototype--new" id="newCustomerHomepage">
-  <div class="homepage-prototype__inner">
-    <div class="homepage-prototype__copy">
-      <h1>Trails scored for your dog's safety, not just yours</h1>
-      <p class="sub">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</p>
-
-      <div class="hero-ctas">
-        <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
-        <a class="btn-secondary" href="#finder">Browse without an account</a>
-      </div>
-
-      <ul class="hero-trust">
-        <li><span role="img" aria-label="paw print">🐾</span> Dog-first trail scoring</li>
-        <li><span role="img" aria-label="sun">☀️</span> Heat, water, and terrain risk checks</li>
-        <li><span role="img" aria-label="lightning bolt">⚡</span> Matched to your dog in under a minute</li>
-      </ul>
+<section class="homepage-intro-strip" id="newCustomerHomepage">
+  <div class="homepage-intro-strip__body">
+    <span class="homepage-intro-strip__icon" aria-hidden="true">🐾</span>
+    <div class="homepage-intro-strip__text">
+      <h1 class="homepage-intro-strip__heading">Trails scored for your dog's safety, not just yours</h1>
+      <p class="homepage-intro-strip__sub">Ranked by paw safety, shade, water access and terrain risk — matched to your dog's build and tolerance.</p>
     </div>
-
-    <div class="homepage-prototype__panel split-hero-preview" aria-hidden="true">
-      <p class="split-hero-preview__label">Trails ranked for your dog</p>
-      <div class="split-hero-preview__card">
-        <div class="split-hero-preview__photo"></div>
-        <div class="split-hero-preview__info">
-          <div class="split-hero-preview__name">Val di Funes Valley Walk</div>
-          <div class="split-hero-preview__meta">Funes · 6 km</div>
-        </div>
-        <div class="split-hero-preview__match">94%</div>
-      </div>
-      <div class="split-hero-preview__card">
-        <div class="split-hero-preview__photo"></div>
-        <div class="split-hero-preview__info">
-          <div class="split-hero-preview__name">Alpe di Siusi Meadows</div>
-          <div class="split-hero-preview__meta">Seiser Alm · 8 km</div>
-        </div>
-        <div class="split-hero-preview__match">90%</div>
-      </div>
-      <div class="split-hero-preview__card">
-        <div class="split-hero-preview__photo"></div>
-        <div class="split-hero-preview__info">
-          <div class="split-hero-preview__name">Cinque Torri Loop</div>
-          <div class="split-hero-preview__meta">Cortina · 5.5 km</div>
-        </div>
-        <div class="split-hero-preview__match">85%</div>
-      </div>
-      <div class="split-hero-preview__overlay">
-        <button class="btn-primary" id="heroSignupPreviewBtn">Unlock matches for your dog →</button>
-      </div>
-    </div>
+  </div>
+  <div class="homepage-intro-strip__ctas">
+    <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
+    <a class="btn-secondary" href="account.html" id="heroLoginBtn">Log in</a>
   </div>
 </section>
 
@@ -263,18 +226,21 @@
 <script src="script.js" defer></script>
 <script src="map-init.js" defer></script>
 <script defer>
-  // Wire the split-hero sign-up buttons to the auth modal.
+  // Wire the hero sign-up button to the auth modal.
   (function(){
-    function bindSignupBtn(id){
-      const btn = document.getElementById(id);
-      if(btn){
-        btn.addEventListener('click', function(){
-          if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
-        });
-      }
+    const btn = document.getElementById('heroSignupBtn');
+    if(btn){
+      btn.addEventListener('click', function(){
+        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+      });
     }
-    bindSignupBtn('heroSignupBtn');
-    bindSignupBtn('heroSignupPreviewBtn');
+    const loginBtn = document.getElementById('heroLoginBtn');
+    if(loginBtn){
+      loginBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      });
+    }
   })();
 </script>
 </body>

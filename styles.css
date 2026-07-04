@@ -330,6 +330,90 @@ a{color:inherit;}
 }
 
 
+/* ---------- HOMEPAGE INTRO STRIP (logged-out horizontal banner) ---------- */
+.homepage-intro-strip{
+  max-width:1180px;
+  margin:24px auto 0;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  background:var(--card);
+  border:1px solid var(--paper-line);
+  border-radius:20px;
+  box-shadow:var(--soft-shadow);
+  flex-wrap:wrap;
+}
+.homepage-intro-strip__body{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex:1;
+  min-width:0;
+}
+.homepage-intro-strip__icon{
+  font-size:26px;
+  flex-shrink:0;
+}
+.homepage-intro-strip__heading{
+  margin:0 0 3px;
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(15px,2vw,18px);
+  line-height:1.25;
+  color:var(--pine);
+}
+.homepage-intro-strip__sub{
+  margin:0;
+  font-size:13px;
+  color:var(--pine-soft);
+  line-height:1.5;
+}
+.homepage-intro-strip__ctas{
+  display:flex;
+  gap:8px;
+  flex-shrink:0;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+/* ---------- TRAIL TEASER CTA (guest login prompt after limited trail list) ---------- */
+.trail-teaser-cta{
+  padding:32px 20px 24px;
+  text-align:center;
+  background:linear-gradient(180deg, transparent 0%, rgba(255,255,255,.9) 35%);
+  border-radius:0 0 20px 20px;
+  margin-top:-8px;
+}
+.trail-teaser-cta__msg{
+  margin:0 0 16px;
+  font-size:15px;
+  color:var(--pine-soft);
+}
+.trail-teaser-cta__btn{
+  font-size:15px;
+  padding:13px 28px;
+}
+.trail-teaser-cta__sub{
+  margin:14px 0 0;
+  font-size:13px;
+  color:var(--pine-soft);
+}
+.trail-teaser-cta__link{
+  background:none;
+  border:none;
+  padding:0;
+  font:inherit;
+  font-size:13px;
+  color:var(--pine);
+  text-decoration:underline;
+  cursor:pointer;
+}
+.trail-teaser-cta__link:hover{
+  color:var(--alpenglow);
+}
+
 .wrap{
   max-width:1180px;
   margin:0 auto;
@@ -948,6 +1032,8 @@ footer{
   .trail-left h3{font-size:19px;}
   .card-head{padding:16px 16px 12px;gap:14px;}
   .match-num{font-size:22px;}
+  .homepage-intro-strip{padding:14px 16px;flex-direction:column;align-items:flex-start;margin:12px 16px 0;}
+  .homepage-intro-strip__ctas{width:100%;}
 }
 
 /* ---------- ADD-DOG BUTTON ---------- */
