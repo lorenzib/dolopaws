@@ -99,29 +99,28 @@
 
 </div>
 
-<!-- DOG WIZARD — full-screen guided add/edit, shared with the homepage -->
-<div id="dogWizard" class="wizard-overlay" hidden>
-  <div class="wizard-topbar">
-    <span style="font-family:'Fraunces',serif;font-weight:700;font-size:19px;color:var(--pine);">DoloPaws</span>
-    <button id="wizardCloseBtn" class="wizard-close">&times;</button>
-  </div>
-
-  <div class="wizard-hero">
-    <h1>Tell us about your dog. <em>We'll tell you exactly where to walk.</em></h1>
-    <p>Five quick questions, then a ranked list of Dolomite trails scored for paw safety — not just distance and difficulty.</p>
-  </div>
-
-  <div class="wizard-card">
-    <div class="wizard-progress" id="wizardProgress"></div>
-    <div class="wizard-step-label" id="wizardStepLabel">Step 1 of 5</div>
-    <div class="wizard-question" id="wizardQuestion"></div>
-    <div id="wizardStepBody"></div>
-    <div class="wizard-nav">
-      <button class="wizard-back" id="wizardBackBtn">&larr; Back</button>
-      <button class="wizard-continue" id="wizardContinueBtn">Continue</button>
+<!-- Dog Wizard — centered modal dialog -->
+<div id="dogWizard" class="dw-overlay" hidden
+     role="dialog" aria-modal="true" aria-labelledby="dwTitle" aria-describedby="dwSubtitle">
+  <div class="dw-modal">
+    <div class="dw-header">
+      <div class="dw-header-text">
+        <h2 id="dwTitle" class="dw-title">Add a dog</h2>
+        <p id="dwSubtitle" class="dw-subtitle">Tell us about your dog to personalize trail recommendations.</p>
+      </div>
+      <button class="dw-close" id="dwCloseBtn" aria-label="Close dialog">&times;</button>
+    </div>
+    <nav class="dw-stepper" id="dwStepper" aria-label="Form progress" role="list"></nav>
+    <div class="dw-body" id="dwBody" tabindex="-1"></div>
+    <div class="dw-footer" id="dwFooter">
+      <button class="dw-btn-ghost" id="dwBackBtn" aria-label="Go to previous step">&#8592; Back</button>
+      <button class="dw-btn-primary" id="dwNextBtn">Next &#8594;</button>
     </div>
   </div>
 </div>
+
+<!-- Success toast -->
+<div id="dwToast" class="dw-toast" hidden role="status" aria-live="polite"></div>
 
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
