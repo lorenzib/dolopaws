@@ -1267,7 +1267,6 @@ footer{
   .homepage-prototype__inner{grid-template-columns:1fr;}
   .guest-homepage__hero,
   .guest-homepage__preview-grid{grid-template-columns:1fr;}
-  .guest-homepage__visual-stats{grid-template-columns:1fr 1fr 1fr;}
   .guest-homepage__preview-cta{flex-direction:column;align-items:flex-start;}
   .guest-homepage__preview-actions{justify-content:flex-start;}
   #trailMap{min-height:420px;}
