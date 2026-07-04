@@ -345,7 +345,7 @@ a{color:inherit;}
 }
 .guest-homepage__hero{
   display:grid;
-  grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr);
+  grid-template-columns:minmax(0,1fr) minmax(320px,1fr);
   gap:28px;
   align-items:stretch;
 }
@@ -483,7 +483,7 @@ a{color:inherit;}
 .guest-homepage__visual-card--secondary{
   margin-top:18px;
   margin-left:auto;
-  filter:blur(.1px);
+  filter:blur(1px);
 }
 .guest-homepage__visual-stats{
   display:grid;

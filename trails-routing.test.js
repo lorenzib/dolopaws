@@ -74,7 +74,7 @@ describe('Browse our trails routing', () => {
     expect(legacyHtml).toContain("window.location.replace('trails/')");
   });
 
-  test('logged-out homepage includes a two-column guest landing hero and preview CTA section', () => {
+  test('logged-out homepage includes a guest landing hero with preview CTA section', () => {
     const indexHtml = loadHtml('index.html');
 
     document.documentElement.innerHTML = indexHtml;
