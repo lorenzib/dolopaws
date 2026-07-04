@@ -18,6 +18,12 @@
   const toggleBtn = document.getElementById('authToggleBtn');
   const forgotBtn = document.getElementById('forgotPasswordBtn');
 
+  function setModalOpenState(isOpen){
+    modal.hidden = !isOpen;
+    modal.style.display = isOpen ? '' : 'none';
+    modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  }
+
   function applyPromptContext(context){
     pendingContext = context || null;
     hint.textContent = pendingContext && pendingContext.hint
@@ -33,11 +39,11 @@
     applyPromptContext(context);
     errorBox.hidden = true;
     form.reset();
-    modal.hidden = false;
+    setModalOpenState(true);
   }
 
   function closeModal(){
-    modal.hidden = true;
+    setModalOpenState(false);
   }
 
   function setMode(newMode){
@@ -61,6 +67,11 @@
   accountBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && !modal.hidden){
+      closeModal();
+    }
+  });
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
 
   forgotBtn.addEventListener('click', async () => {
