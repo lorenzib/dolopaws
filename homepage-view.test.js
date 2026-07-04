@@ -9,6 +9,7 @@ function loadHomepageView(search, authUser){
     <section id="newCustomerHomepage" hidden></section>
     <section id="returningCustomerHomepage" hidden></section>
     <span id="returningHeroName"></span>
+    <div id="finder"></div>
     <div id="trailMap"></div>
     <div id="results"></div>
   `;
@@ -36,6 +37,7 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(true);
     expect(document.getElementById('accountBtn').textContent).toBe('Log in');
+    expect(document.getElementById('finder').hidden).toBe(true);
     expect(document.getElementById('trailMap').hidden).toBe(false);
     expect(document.getElementById('results').hidden).toBe(true);
   });
@@ -48,6 +50,7 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(true);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('accountBtn').textContent).toBe('My account');
+    expect(document.getElementById('finder').hidden).toBe(false);
     expect(document.getElementById('trailMap').hidden).toBe(false);
     expect(document.getElementById('results').hidden).toBe(false);
   });
@@ -71,6 +74,7 @@ describe('homepage view switching — auth-based', () => {
     expect(document.getElementById('defaultHomepageHero').hidden).toBe(true);
     expect(document.getElementById('newCustomerHomepage').hidden).toBe(false);
     expect(document.getElementById('returningCustomerHomepage').hidden).toBe(true);
+    expect(document.getElementById('finder').hidden).toBe(true);
     expect(document.getElementById('results').hidden).toBe(true);
   });
 });
@@ -147,6 +151,7 @@ describe('returning view — map-first layout hooks', () => {
     loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
 
     expect(document.body.dataset.homepageView).toBe('returning');
+    expect(document.getElementById('finder').hidden).toBe(false);
   });
 
   test('map element is inside .hero-right sibling to #finder for CSS ordering to apply', () => {
@@ -190,5 +195,6 @@ describe('returning view — map-first layout hooks', () => {
     loadReturningWithLayout(null);
 
     expect(document.body.dataset.homepageView).toBe('new');
+    expect(document.getElementById('finder').hidden).toBe(true);
   });
 });

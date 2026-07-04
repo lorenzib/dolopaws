@@ -46,6 +46,7 @@
     const returningHomepage = doc.getElementById('returningCustomerHomepage');
     const accountBtn = doc.getElementById('accountBtn');
     const returningName = doc.getElementById('returningHeroName');
+    const finder = doc.getElementById('finder');
     const trailMap = doc.getElementById('trailMap');
     const results = doc.getElementById('results');
 
@@ -57,6 +58,7 @@
     if(defaultHero) defaultHero.hidden = true;
     if(newHomepage) newHomepage.hidden = view !== 'new';
     if(returningHomepage) returningHomepage.hidden = view !== 'returning';
+    if(finder) finder.hidden = view !== 'returning';
     if(trailMap) trailMap.hidden = false;
     if(results) results.hidden = view === 'new';
 
