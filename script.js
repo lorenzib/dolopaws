@@ -287,12 +287,10 @@ window.addEventListener('dolopaws-auth-success', () => {
     if(results){
       results.setAttribute('tabindex', '-1');
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if(typeof results.focus === 'function'){
-        try{
-          results.focus({ preventScroll: true });
-        }catch(err){
-          results.focus();
-        }
+      try{
+        results.focus({ preventScroll: true });
+      }catch(err){
+        results.focus();
       }
     }
   }
@@ -376,7 +374,7 @@ document.querySelectorAll('.pill-row').forEach(row=>{
     state[group] = btn.dataset.value;
     state.hasInteracted = true;
     if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
-      trackFirstGuestAction('finder_updated', { group });
+      trackFirstGuestAction('trail_criteria_updated', { group });
     }
     updateSavePrompt();
     render();

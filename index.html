@@ -310,6 +310,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module" src="firebase-init.js"></script>
+<!-- Keep guest-session.js ahead of script.js so guest prompt/context helpers are available on first render. -->
 <script src="guest-session.js" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="homepage-view.js" defer></script>
