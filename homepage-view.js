@@ -1,10 +1,38 @@
 (function(global){
   const VALID_VIEWS = new Set(['new', 'returning']);
 
-  function getHomepageView(search){
+  /**
+   * Returns the ?view= dev-override value if present and valid, otherwise null.
+   * This param is intended for development/testing only. In production the
+   * homepage view is driven by auth state (see resolveView).
+   */
+  function getDevOverrideView(search){
     const params = new URLSearchParams(typeof search === 'string' ? search : global.location.search);
     const view = params.get('view');
     return VALID_VIEWS.has(view) ? view : null;
+  }
+
+  /**
+   * Resolves the homepage view to display.
+   *
+   * Priority:
+   *   1. ?view= URL param — dev override (for testing without an account).
+   *   2. DoloPawsAuth.currentUser — logged in → 'returning', logged out → 'new'.
+   *   3. Safe fallback: 'new' when auth is unavailable or state is unknown.
+   */
+  function resolveView(win){
+    const currentWindow = win || global;
+
+    const devView = getDevOverrideView(
+      currentWindow.location ? currentWindow.location.search : ''
+    );
+    if(devView) return devView;
+
+    const auth = currentWindow.DoloPawsAuth;
+    if(auth && auth.currentUser){
+      return 'returning';
+    }
+    return 'new';
   }
 
   function applyHomepageView(win){
@@ -12,29 +40,42 @@
     const doc = currentWindow.document;
     if(!doc) return null;
 
-    const view = getHomepageView(currentWindow.location.search);
+    const view = resolveView(currentWindow);
     const defaultHero = doc.getElementById('defaultHomepageHero');
     const newHomepage = doc.getElementById('newCustomerHomepage');
     const returningHomepage = doc.getElementById('returningCustomerHomepage');
     const accountBtn = doc.getElementById('accountBtn');
+    const returningName = doc.getElementById('returningHeroName');
 
     if(doc.body){
-      doc.body.dataset.homepageView = view || 'default';
+      doc.body.dataset.homepageView = view;
     }
-    if(defaultHero) defaultHero.hidden = !!view;
+
+    // The legacy defaultHomepageHero is superseded by the split-hero; keep it hidden.
+    if(defaultHero) defaultHero.hidden = true;
     if(newHomepage) newHomepage.hidden = view !== 'new';
     if(returningHomepage) returningHomepage.hidden = view !== 'returning';
 
-    if(accountBtn && view){
-      accountBtn.textContent = view === 'new' ? 'Sign in' : 'My account';
+    if(accountBtn){
+      accountBtn.textContent = view === 'returning' ? 'My account' : 'Log in';
+    }
+
+    // Personalise the returning hero with the signed-in user's display name.
+    if(returningName && view === 'returning'){
+      const auth = currentWindow.DoloPawsAuth;
+      const name = auth && auth.currentUser && auth.currentUser.displayName;
+      returningName.textContent = name || 'you';
     }
 
     return view;
   }
 
   const api = {
-    getHomepageView,
+    getDevOverrideView,
+    resolveView,
     applyHomepageView,
+    // Legacy alias retained for any existing callers.
+    getHomepageView: getDevOverrideView,
   };
 
   global.DoloPawsHomepageView = api;
@@ -44,7 +85,6 @@
   }
 
   if(global.document){
-    // Temporary test hook: `/`, `/?view=new`, and `/?view=returning`.
     applyHomepageView(global);
     global.addEventListener('dolopaws-auth-changed', function(){
       applyHomepageView(global);

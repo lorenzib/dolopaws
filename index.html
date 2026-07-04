@@ -74,105 +74,78 @@
   </div>
 </div>
 
-<div class="hero" id="defaultHomepageHero">
+<!-- Legacy hero — superseded by split-hero below; kept hidden by homepage-view.js -->
+<div class="hero" id="defaultHomepageHero" hidden>
   <div class="hero-inner">
     <h1>Find dog-safe trails in the Dolomites</h1>
     <p class="sub">DoloPaws ranks routes by paw safety, shade, water access, and terrain risk—so you can choose safer hikes for your dog in minutes.</p>
-
-    <div class="hero-ctas">
-      <a class="btn-primary" href="#finder">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 3.5l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.8 6.4 20.7l1.1-6.2L3 10.1l6.2-.9L12 3.5z"/>
-        </svg>
-        <span>Browse our trails</span>
-      </a>
-      <a class="btn-secondary" href="safety-guide.html">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 3l7 3v5c0 4.5-2.8 8.3-7 10-4.2-1.7-7-5.5-7-10V6l7-3z"/>
-          <path d="M9 12l2 2 4-4"/>
-        </svg>
-        <span>Read dog safety guide</span>
-      </a>
-    </div>
-
-    <ul class="hero-trust">
-      <li>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 14c2.3 0 4 1.5 4 3.5V20H8v-2.5C8 15.5 9.7 14 12 14z"/>
-          <circle cx="7" cy="10" r="2"/>
-          <circle cx="12" cy="8" r="2.2"/>
-          <circle cx="17" cy="10" r="2"/>
-        </svg>
-        <span>Dog-first trail scoring</span>
-      </li>
-      <li>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="17" cy="7" r="3"/>
-          <path d="M5 19c2.5-3.5 4.5-5.3 7-7.2"/>
-          <path d="M4 19h16"/>
-        </svg>
-        <span>Heat, terrain, and exposure factors</span>
-      </li>
-      <li>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M3 18c3.5-2 5.2-4 7-7 1.8 2.2 3.7 3.8 7 5"/>
-          <circle cx="18" cy="16" r="3"/>
-        </svg>
-        <span>Fast matching based on your dog</span>
-      </li>
-    </ul>
   </div>
 </div>
 
-<section class="homepage-prototype homepage-prototype--new" id="newCustomerHomepage" hidden>
+<!-- NEW-CUSTOMER HERO (logged out / auth unknown — default view) -->
+<section class="homepage-prototype homepage-prototype--new" id="newCustomerHomepage">
   <div class="homepage-prototype__inner">
     <div class="homepage-prototype__copy">
-      <div class="eyebrow">Prototype · new customer view</div>
       <h1>Trails scored for your dog's safety, not just yours</h1>
       <p class="sub">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</p>
 
       <div class="hero-ctas">
-        <a class="btn-primary" href="#finder">Create your dog's profile</a>
+        <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
         <a class="btn-secondary" href="#finder">Browse without an account</a>
       </div>
 
       <ul class="hero-trust">
-        <li>Dog-first trail scoring</li>
-        <li>Heat, water, and terrain risk checks</li>
-        <li>Saved preferences once you create a profile</li>
+        <li>🐾 Dog-first trail scoring</li>
+        <li>☀️ Heat, water, and terrain risk checks</li>
+        <li>⚡ Matched to your dog in under a minute</li>
       </ul>
     </div>
 
-    <div class="homepage-prototype__panel" aria-label="New customer homepage preview">
-      <p class="homepage-prototype__panel-label">What the prototype adds</p>
-      <div class="homepage-prototype__panel-card">
-        <strong>Safer matching</strong>
-        <span>Start with your dog's tolerance, then rank trails by fit.</span>
+    <div class="homepage-prototype__panel split-hero-preview" aria-hidden="true">
+      <p class="split-hero-preview__label">Trails ranked for your dog</p>
+      <div class="split-hero-preview__card">
+        <div class="split-hero-preview__photo"></div>
+        <div class="split-hero-preview__info">
+          <div class="split-hero-preview__name">Val di Funes Valley Walk</div>
+          <div class="split-hero-preview__meta">Funes · 6 km</div>
+        </div>
+        <div class="split-hero-preview__match">94%</div>
       </div>
-      <div class="homepage-prototype__panel-card">
-        <strong>Faster planning</strong>
-        <span>Create a profile once, then reuse it across future visits.</span>
+      <div class="split-hero-preview__card">
+        <div class="split-hero-preview__photo"></div>
+        <div class="split-hero-preview__info">
+          <div class="split-hero-preview__name">Alpe di Siusi Meadows</div>
+          <div class="split-hero-preview__meta">Seiser Alm · 8 km</div>
+        </div>
+        <div class="split-hero-preview__match">90%</div>
       </div>
-      <div class="homepage-prototype__panel-card">
-        <strong>Clear fallback</strong>
-        <span>Remove <code>?view=...</code> to return to the current homepage.</span>
+      <div class="split-hero-preview__card">
+        <div class="split-hero-preview__photo"></div>
+        <div class="split-hero-preview__info">
+          <div class="split-hero-preview__name">Cinque Torri Loop</div>
+          <div class="split-hero-preview__meta">Cortina · 5.5 km</div>
+        </div>
+        <div class="split-hero-preview__match">85%</div>
+      </div>
+      <div class="split-hero-preview__overlay">
+        <button class="btn-primary" id="heroSignupPreviewBtn">Unlock matches for your dog →</button>
       </div>
     </div>
   </div>
 </section>
 
+<!-- RETURNING-CUSTOMER HERO (logged in) -->
 <section class="homepage-prototype homepage-prototype--returning" id="returningCustomerHomepage" hidden>
   <div class="homepage-prototype__banner">
     <div>
-      <div class="eyebrow">Prototype · returning customer view</div>
-      <h1>Welcome back — fresh trail matches are ready</h1>
-      <p class="sub">Conditions shift quickly in the Dolomites, so this returning-customer view brings saved planning actions and refreshed trail suggestions to the top.</p>
+      <h1>Welcome back, <span id="returningHeroName">you</span> — fresh trail matches are ready</h1>
+      <p class="sub">Conditions shift quickly in the Dolomites. Your saved preferences are still active and new matches have been ranked for your dog.</p>
     </div>
 
-    <div class="homepage-prototype__actions" aria-label="Returning customer quick actions">
-      <a class="homepage-prototype__chip" href="#results">Saved trails</a>
-      <a class="homepage-prototype__chip" href="#results">Past hikes</a>
-      <a class="homepage-prototype__chip" href="account.html">Edit profile</a>
+    <div class="homepage-prototype__actions" aria-label="Quick actions">
+      <a class="homepage-prototype__chip" href="#results">🔖 Saved trails</a>
+      <a class="homepage-prototype__chip" href="#results">🥾 Past hikes</a>
+      <a class="homepage-prototype__chip" href="account.html">🐕 Edit profile</a>
     </div>
   </div>
 </section>
@@ -288,5 +261,20 @@
 <script src="trails-data.js" defer></script>
 <script src="script.js" defer></script>
 <script src="map-init.js" defer></script>
+<script defer>
+  // Wire the split-hero sign-up buttons to the auth modal.
+  (function(){
+    function bindSignupBtn(id){
+      var btn = document.getElementById(id);
+      if(btn){
+        btn.addEventListener('click', function(){
+          if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+        });
+      }
+    }
+    bindSignupBtn('heroSignupBtn');
+    bindSignupBtn('heroSignupPreviewBtn');
+  })();
+</script>
 </body>
 </html>
