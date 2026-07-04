@@ -74,19 +74,18 @@ describe('Browse our trails routing', () => {
     expect(legacyHtml).toContain("window.location.replace('trails/')");
   });
 
-  test('logged-out homepage shows a simple guest landing strip with sign-up and log-in CTAs', () => {
+  test('logged-out homepage shows a guest landing strip with a sign-up CTA', () => {
     const indexHtml = loadHtml('index.html');
 
     document.documentElement.innerHTML = indexHtml;
 
     const guestHomepage = document.getElementById('newCustomerHomepage');
     const signupBtn = document.getElementById('heroSignupBtn');
-    const loginBtn = document.getElementById('heroLoginBtn');
 
     expect(guestHomepage).not.toBeNull();
     expect(guestHomepage.classList.contains('homepage-intro-strip')).toBe(true);
     expect(signupBtn).not.toBeNull();
-    expect(loginBtn).not.toBeNull();
+    expect(document.getElementById('heroLoginBtn')).toBeNull();
     expect(guestHomepage.textContent).toContain("Trails scored for your dog's safety");
   });
 

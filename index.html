@@ -93,7 +93,6 @@
   </div>
   <div class="homepage-intro-strip__ctas">
     <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
-    <a class="btn-secondary" href="account.html" id="heroLoginBtn">Log in</a>
   </div>
 </section>
 
@@ -245,13 +244,6 @@
     if(btn){
       btn.addEventListener('click', function(){
         if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
-      });
-    }
-    const loginBtn = document.getElementById('heroLoginBtn');
-    if(loginBtn){
-      loginBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
       });
     }
   })();
