@@ -82,17 +82,19 @@ describe('Browse our trails routing', () => {
     const guestHomepage = document.getElementById('newCustomerHomepage');
     const hero = guestHomepage.querySelector('.guest-homepage__hero');
     const preview = guestHomepage.querySelector('.guest-homepage__preview');
-    const primaryCta = document.getElementById('heroSignupBtn');
-    const previewCta = document.getElementById('previewSignupBtn');
+    const primaryCta = document.getElementById('heroTryBtn');
+    const previewCta = document.getElementById('previewTryBtn');
 
     expect(guestHomepage).not.toBeNull();
     expect(hero).not.toBeNull();
     expect(preview).not.toBeNull();
     expect(primaryCta).not.toBeNull();
     expect(previewCta).not.toBeNull();
+    expect(primaryCta.getAttribute('href')).toBe('#results');
+    expect(previewCta.getAttribute('href')).toBe('#results');
     expect(preview.querySelectorAll('.guest-preview-card')).toHaveLength(3);
-    expect(guestHomepage.textContent).toContain('Find Dolomite trails that match your dog before the hike gets hard.');
-    expect(preview.textContent).toContain('Unlock matches for your dog');
+    expect(guestHomepage.textContent).toContain('Try trail matches — no account needed');
+    expect(preview.textContent).toContain('Start with the public trail preview');
   });
 
   test('guest landing keeps concise value points for first-time visitors', () => {
@@ -105,9 +107,9 @@ describe('Browse our trails routing', () => {
     ).map((item) => item.textContent.trim());
 
     expect(valuePoints).toEqual([
-      'Dog-first scoring',
-      'Terrain & heat factors',
-      'Fast matching in minutes',
+      'Browse as a guest',
+      'Save later if it helps',
+      'Pick up where you left off',
     ]);
   });
 });

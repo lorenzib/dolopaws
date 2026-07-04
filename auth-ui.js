@@ -1,5 +1,7 @@
 (function(){
   let mode = 'login'; // 'login' | 'signup'
+  const DEFAULT_HINT = 'Save trails to your account so they follow you across devices.';
+  let pendingContext = null;
 
   const modal = document.getElementById('authModal');
   const accountBtn = document.getElementById('accountBtn');
@@ -16,11 +18,19 @@
   const toggleBtn = document.getElementById('authToggleBtn');
   const forgotBtn = document.getElementById('forgotPasswordBtn');
 
-  function openModal(){
+  function applyPromptContext(context){
+    pendingContext = context || null;
+    hint.textContent = pendingContext && pendingContext.hint
+      ? pendingContext.hint
+      : DEFAULT_HINT;
+  }
+
+  function openModal(context){
     if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
       window.location.href = 'account.html';
       return;
     }
+    applyPromptContext(context);
     errorBox.hidden = true;
     form.reset();
     modal.hidden = false;
@@ -85,7 +95,8 @@
     setMode(mode); // resets button label
     if(result.ok){
       closeModal();
-      window.dispatchEvent(new CustomEvent('dolopaws-auth-success'));
+      window.dispatchEvent(new CustomEvent('dolopaws-auth-success', { detail: { context: pendingContext } }));
+      pendingContext = null;
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
@@ -97,7 +108,8 @@
     const result = await window.DoloPawsAuth.signInGoogle();
     if(result.ok){
       closeModal();
-      window.dispatchEvent(new CustomEvent('dolopaws-auth-success'));
+      window.dispatchEvent(new CustomEvent('dolopaws-auth-success', { detail: { context: pendingContext } }));
+      pendingContext = null;
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
@@ -122,13 +134,13 @@
   });
 
   window.DoloPawsAuthUI = {
-    openSignup(){
+    openSignup(context){
       setMode('signup');
-      openModal();
+      openModal(context);
     },
-    openLogin(){
+    openLogin(context){
       setMode('login');
-      openModal();
+      openModal(context);
     },
   };
 })();

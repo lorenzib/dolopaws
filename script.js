@@ -7,6 +7,72 @@ const state = {
   hasInteracted:false,
 };
 
+function getGuestSessionApi(){
+  return window.DoloPawsGuestSession || null;
+}
+
+function trackGuestEvent(name, detail){
+  const session = getGuestSessionApi();
+  if(session && typeof session.track === 'function'){
+    session.track(name, detail);
+  }
+}
+
+function trackFirstGuestAction(action, detail){
+  const session = getGuestSessionApi();
+  if(session && typeof session.trackFirstGuestAction === 'function'){
+    return session.trackFirstGuestAction(action, detail);
+  }
+  return false;
+}
+
+function rememberPendingAuthAction(action){
+  const session = getGuestSessionApi();
+  if(session && typeof session.rememberPendingAuthAction === 'function'){
+    session.rememberPendingAuthAction(action);
+  }
+}
+
+function consumePendingAuthAction(){
+  const session = getGuestSessionApi();
+  if(session && typeof session.consumePendingAuthAction === 'function'){
+    return session.consumePendingAuthAction();
+  }
+  return null;
+}
+
+function rememberGuestTrailContext(context){
+  const session = getGuestSessionApi();
+  if(session && typeof session.rememberGuestTrailContext === 'function'){
+    session.rememberGuestTrailContext(context);
+  }
+}
+
+function loadGuestTrailContext(){
+  const session = getGuestSessionApi();
+  if(session && typeof session.loadGuestTrailContext === 'function'){
+    return session.loadGuestTrailContext();
+  }
+  return null;
+}
+
+function openContextualAuth(mode, actionType, hint, extraDetail){
+  const action = {
+    type: actionType,
+    ...(extraDetail || {}),
+  };
+
+  rememberPendingAuthAction(action);
+  trackGuestEvent('auth_prompt_shown', { action: actionType, mode });
+
+  if(!window.DoloPawsAuthUI) return;
+  if(mode === 'signup'){
+    window.DoloPawsAuthUI.openSignup({ hint });
+  } else {
+    window.DoloPawsAuthUI.openLogin({ hint });
+  }
+}
+
 function setPillActive(group, value){
   const row = document.querySelector(`.pill-row[data-group="${group}"]`);
   if(!row) return;
@@ -193,15 +259,42 @@ if(saveProfileBtn){
       openNameBreedModal();
     } else {
       pendingProfileSave = true;
-      if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+      openContextualAuth(
+        'signup',
+        'save-profile',
+        'Create a free account to save this dog profile and keep your trail matches synced.',
+        { returnTo: 'name-breed-modal' }
+      );
     }
   });
 }
 
 window.addEventListener('dolopaws-auth-success', () => {
-  if(pendingProfileSave){
+  const pendingAction = consumePendingAuthAction();
+  if(pendingAction){
+    trackGuestEvent('auth_prompt_accepted', { action: pendingAction.type });
+    trackGuestEvent('anonymous_to_authenticated_conversion', { action: pendingAction.type });
+  }
+
+  if(pendingProfileSave || (pendingAction && pendingAction.type === 'save-profile')){
     pendingProfileSave = false;
     openNameBreedModal();
+    return;
+  }
+
+  if(pendingAction && pendingAction.type === 'unlock-results'){
+    const results = document.getElementById('resultsCount') || document.getElementById('results');
+    if(results){
+      results.setAttribute('tabindex', '-1');
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if(typeof results.focus === 'function'){
+        try{
+          results.focus({ preventScroll: true });
+        }catch(err){
+          results.focus();
+        }
+      }
+    }
   }
 });
 
@@ -282,8 +375,21 @@ document.querySelectorAll('.pill-row').forEach(row=>{
     btn.classList.add('active');
     state[group] = btn.dataset.value;
     state.hasInteracted = true;
+    if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
+      trackFirstGuestAction('finder_updated', { group });
+    }
     updateSavePrompt();
     render();
+  });
+});
+
+['heroTryBtn', 'previewTryBtn'].forEach((id) => {
+  const cta = document.getElementById(id);
+  if(!cta) return;
+  cta.addEventListener('click', () => {
+    if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
+      trackFirstGuestAction('try_trails_clicked', { source: id });
+    }
   });
 });
 
@@ -460,29 +566,47 @@ function render(){
 
   // Append login CTA for guests after the visible subset.
   if(!loggedIn){
+    const guestTrailContext = loadGuestTrailContext();
     const cta = document.createElement('div');
     cta.className = 'trail-teaser-cta';
     const hiddenMsg = hiddenCount > 0
-      ? `<strong>${hiddenCount} more trail${hiddenCount === 1 ? '' : 's'}</strong> scored for your dog's safety are waiting.`
-      : `Log in to unlock personalized scores for your dog.`;
+      ? `<strong>${hiddenCount} more trail${hiddenCount === 1 ? '' : 's'}</strong> are ready when you want to save and unlock the full ranked list.`
+      : `Sign in when you want to save your shortlist and unlock the full ranked list.`;
     cta.innerHTML = `
       <p class="trail-teaser-cta__msg">🐾 ${hiddenMsg}</p>
-      <button class="btn-primary trail-teaser-cta__btn" id="teaserLoginBtn">Log in to see more →</button>
-      <p class="trail-teaser-cta__sub">New here? <button class="trail-teaser-cta__link" id="teaserSignupBtn">Create a free dog profile</button> for personalized trail matching.</p>
+      <button class="btn-primary trail-teaser-cta__btn" id="teaserLoginBtn">Sign in to save & unlock more →</button>
+      <p class="trail-teaser-cta__sub">You can keep browsing as a guest. <button class="trail-teaser-cta__link" id="teaserSignupBtn">Create a free account</button> only when you want saved matches on every device.</p>
     `;
     nodes.grid.appendChild(cta);
 
     const loginBtn = cta.querySelector('#teaserLoginBtn');
     if(loginBtn){
       loginBtn.addEventListener('click', () => {
-        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+        openContextualAuth(
+          'login',
+          'unlock-results',
+          'Sign in to save your guest shortlist and unlock the full ranked trail list.',
+          { returnTo: 'results' }
+        );
       });
     }
     const signupBtn = cta.querySelector('#teaserSignupBtn');
     if(signupBtn){
       signupBtn.addEventListener('click', () => {
-        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+        openContextualAuth(
+          'signup',
+          'unlock-results',
+          'Create a free account to save your guest shortlist and unlock the full ranked trail list.',
+          { returnTo: 'results' }
+        );
       });
+    }
+
+    if(guestTrailContext && guestTrailContext.trailId){
+      const rememberedDetail = document.getElementById(`detail-${guestTrailContext.trailId}`);
+      if(rememberedDetail){
+        rememberedDetail.classList.add('open');
+      }
     }
   }
 
@@ -491,6 +615,10 @@ function render(){
       if(e.target.closest('.fav-btn')) return;
       const id = card.dataset.id;
       document.getElementById(`detail-${id}`).classList.toggle('open');
+      if(!loggedIn){
+        rememberGuestTrailContext({ trailId: id });
+        trackFirstGuestAction('trail_opened', { trailId: id });
+      }
     });
   });
 
@@ -506,6 +634,7 @@ function render(){
         await window.DoloPawsAuth.setFavorites(state.favorites);
       } else {
         try{ localStorage.setItem('dolopaws-favorites', JSON.stringify(state.favorites)); }catch(err){}
+        trackFirstGuestAction('trail_saved', { trailId: id });
       }
       render();
     });

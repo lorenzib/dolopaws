@@ -102,7 +102,7 @@
   waitForAuth(() => {
     window.DoloPawsAuth.onChange(async (user) => {
       if(!user){
-        subline.textContent = "You're not logged in.";
+        subline.textContent = 'Browse trails as a guest, or sign in when you want saved trails and synced dog profiles.';
         loggedOutState.hidden = false;
         loggedInState.hidden = true;
         return;
