@@ -157,27 +157,30 @@ async function renderReturningHomepage(profile){
   }
 
   heading.textContent = profile && profile.name ? `Welcome back — trail matches for ${name}` : 'Welcome back';
-  subline.textContent = newIds.size > 0
+  const baseSubline = newIds.size > 0
     ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
-    : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details in Edit profile to personalize this list.';
+    : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details to personalize this list.';
+  subline.innerHTML = `${baseSubline} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">Edit profile →</a>`;
 
   let displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
   if(activeArea !== 'all') displayList = displayList.filter(t => t.area === activeArea);
 
-  countEl.innerHTML = showingSavedOnly
-    ? `<button id="backToAllBtn" style="padding:7px 16px;border-radius:14px;background:var(--accent);border:none;color:#fff;font-size:11.5px;font-weight:700;cursor:pointer;">← Back to all trails</button> <span style="margin-left:10px;color:var(--ink-soft);">${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}</span>`
+  countEl.textContent = showingSavedOnly
+    ? `${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
     : `${displayList.length} trails`;
 
   if(savedTrailsBtn){
-    savedTrailsBtn.classList.toggle('saved', showingSavedOnly);
-  }
-
-  const backBtn = document.getElementById('backToAllBtn');
-  if(backBtn){
-    backBtn.addEventListener('click', () => {
-      showingSavedOnly = false;
-      renderReturningHomepage(profile);
-    });
+    if(showingSavedOnly){
+      savedTrailsBtn.textContent = '← All trails';
+      savedTrailsBtn.style.background = 'var(--accent)';
+      savedTrailsBtn.style.borderColor = 'var(--accent)';
+      savedTrailsBtn.style.color = '#fff';
+    } else {
+      savedTrailsBtn.textContent = 'Saved trails';
+      savedTrailsBtn.style.background = 'var(--card)';
+      savedTrailsBtn.style.borderColor = 'var(--paper-line)';
+      savedTrailsBtn.style.color = 'var(--ink)';
+    }
   }
 
   if(displayList.length === 0){
@@ -232,9 +235,8 @@ let currentProfileForAdjust = null;
 const savedTrailsBtn = document.getElementById('savedTrailsBtn');
 if(savedTrailsBtn){
   savedTrailsBtn.addEventListener('click', () => {
-    showingSavedOnly = true;
+    showingSavedOnly = !showingSavedOnly;
     renderReturningHomepage(currentProfileForAdjust);
-    document.getElementById('returningResults').scrollIntoView({ behavior: 'smooth' });
   });
 }
 
