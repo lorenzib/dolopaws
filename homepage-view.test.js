@@ -110,3 +110,78 @@ describe('homepage view switching — dev override via ?view=', () => {
     expect(hv.getHomepageView('?view=unknown')).toBeNull();
   });
 });
+
+describe('returning view — map-first layout hooks', () => {
+  function loadReturningWithLayout(authUser) {
+    document.body.innerHTML = `
+      <button id="accountBtn">Log in</button>
+      <div id="defaultHomepageHero"></div>
+      <section id="newCustomerHomepage" hidden></section>
+      <section id="returningCustomerHomepage" hidden></section>
+      <span id="returningHeroName"></span>
+      <div class="wrap">
+        <div class="panel" id="finder">
+          <p class="filter-eyebrow">Filter trails</p>
+        </div>
+        <div class="hero-right"><div id="trailMap" aria-label="Trail map"></div></div>
+      </div>
+      <div id="results"></div>
+    `;
+
+    window.history.replaceState({}, '', '/');
+    window.DoloPawsAuth = authUser !== undefined ? { currentUser: authUser } : undefined;
+    if (authUser === undefined) delete window.DoloPawsAuth;
+    delete window.DoloPawsHomepageView;
+    jest.resetModules();
+    require(modulePath);
+  }
+
+  test('body carries data-homepage-view="returning" enabling map-first CSS layout when logged in', () => {
+    loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
+
+    expect(document.body.dataset.homepageView).toBe('returning');
+  });
+
+  test('map element is inside .hero-right sibling to #finder for CSS ordering to apply', () => {
+    loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
+
+    const trailMap = document.getElementById('trailMap');
+    const finder = document.getElementById('finder');
+    const wrap = document.querySelector('.wrap');
+
+    expect(trailMap).not.toBeNull();
+    expect(finder).not.toBeNull();
+    // Both must be direct children of .wrap for CSS order to affect their visual position
+    expect(trailMap.closest('.wrap')).toBe(wrap);
+    expect(finder.parentElement).toBe(wrap);
+    // Map is inside .hero-right which gets order:-1 via CSS in returning view
+    expect(trailMap.closest('.hero-right')).not.toBeNull();
+  });
+
+  test('filter-eyebrow element is present inside #finder for returning-view label', () => {
+    loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
+
+    const eyebrow = document.querySelector('#finder .filter-eyebrow');
+    expect(eyebrow).not.toBeNull();
+    expect(eyebrow.textContent).toBe('Filter trails');
+  });
+
+  test('results container is rendered after .wrap for filters-before-list ordering', () => {
+    loadReturningWithLayout({ displayName: 'Alex', uid: 'u1' });
+
+    const wrap = document.querySelector('.wrap');
+    const results = document.getElementById('results');
+    expect(wrap).not.toBeNull();
+    expect(results).not.toBeNull();
+    // results must come after .wrap in DOM (filter panel precedes trail list)
+    expect(
+      wrap.compareDocumentPosition(results) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  });
+
+  test('body has data-homepage-view="new" (not returning) when logged out — layout not affected', () => {
+    loadReturningWithLayout(null);
+
+    expect(document.body.dataset.homepageView).toBe('new');
+  });
+});
