@@ -83,18 +83,108 @@
 </div>
 
 <!-- NEW-CUSTOMER HERO (logged out / auth unknown — default view) -->
-<section class="homepage-intro-strip" id="newCustomerHomepage">
-  <div class="homepage-intro-strip__body">
-    <span class="homepage-intro-strip__icon" aria-hidden="true">🐾</span>
-    <div class="homepage-intro-strip__text">
-      <h1 class="homepage-intro-strip__heading">Trails scored for your dog's safety, not just yours</h1>
-      <p class="homepage-intro-strip__sub">Ranked by paw safety, shade, water access and terrain risk — matched to your dog's build and tolerance.</p>
+<section class="guest-homepage" id="newCustomerHomepage">
+  <div class="guest-homepage__hero">
+    <div class="guest-homepage__copy">
+      <span class="eyebrow">Paw-first trail planning</span>
+      <h1>Find Dolomite trails that match your dog before the hike gets hard.</h1>
+      <p class="sub">DoloPaws ranks hikes for paw safety, heat, water access, and rough terrain so first-time visitors can quickly spot safer options for their dog.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
+        <a class="btn-secondary" href="account.html" id="heroLoginBtn">Log in</a>
+      </div>
+      <ul class="guest-homepage__value-points" aria-label="Why DoloPaws is different">
+        <li>Dog-first scoring</li>
+        <li>Terrain &amp; heat factors</li>
+        <li>Fast matching in minutes</li>
+      </ul>
+    </div>
+
+    <div class="guest-homepage__visual" aria-label="Preview of dog-safe trail matching">
+      <div class="guest-homepage__visual-head">
+        <p>Today's tailored preview</p>
+        <span>Locked until you add your dog</span>
+      </div>
+      <div class="guest-homepage__visual-canvas" aria-hidden="true">
+        <div class="guest-homepage__visual-glow"></div>
+        <div class="guest-homepage__visual-route"></div>
+        <div class="guest-homepage__visual-card guest-homepage__visual-card--primary">
+          <strong>Alta Badia forest loop</strong>
+          <span>87% match · shaded climbs · stream access</span>
+        </div>
+        <div class="guest-homepage__visual-card guest-homepage__visual-card--secondary">
+          <strong>Heat-aware route notes</strong>
+          <span>Cooler start windows and paw-friendly terrain cues</span>
+        </div>
+      </div>
+      <div class="guest-homepage__visual-stats">
+        <div>
+          <strong>3 filters</strong>
+          <span>terrain, shade, water</span>
+        </div>
+        <div>
+          <strong>Live cues</strong>
+          <span>surface, heat, exposure</span>
+        </div>
+        <div>
+          <strong>Safer picks</strong>
+          <span>ranked for your dog</span>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="homepage-intro-strip__ctas">
-    <button class="btn-primary" id="heroSignupBtn">Create your dog's profile</button>
-    <a class="btn-secondary" href="account.html" id="heroLoginBtn">Log in</a>
-  </div>
+
+  <section class="guest-homepage__preview" aria-labelledby="guestPreviewTitle">
+    <div class="guest-homepage__preview-head">
+      <span class="eyebrow">Preview the matching experience</span>
+      <h2 id="guestPreviewTitle">See how your future trail matches are structured</h2>
+      <p>Guests get a glimpse of the scoring layout before unlocking personalized matches for their dog's build, heat tolerance, and trail comfort.</p>
+    </div>
+
+    <div class="guest-homepage__preview-grid">
+      <article class="guest-preview-card">
+        <span class="guest-preview-card__badge">Top match</span>
+        <h3>Shaded valley warm-up</h3>
+        <p>Woodland start, stream refill points, and gentler footing for sensitive paws.</p>
+        <ul class="guest-preview-card__meta" aria-label="Sample trail cues">
+          <li>Easy terrain</li>
+          <li>Morning shade</li>
+          <li>Water nearby</li>
+        </ul>
+      </article>
+      <article class="guest-preview-card">
+        <span class="guest-preview-card__badge">Balanced</span>
+        <h3>Rifugio approach with backups</h3>
+        <p>Mixed surfaces, moderate sun exposure, and backup options if the heat climbs.</p>
+        <ul class="guest-preview-card__meta" aria-label="Sample trail cues">
+          <li>Mixed terrain</li>
+          <li>Moderate heat</li>
+          <li>Rest stops</li>
+        </ul>
+      </article>
+      <article class="guest-preview-card">
+        <span class="guest-preview-card__badge">Caution</span>
+        <h3>High exposure alpine traverse</h3>
+        <p>Steeper scree, exposed edges, and more technical footing that may not suit every dog.</p>
+        <ul class="guest-preview-card__meta" aria-label="Sample trail cues">
+          <li>Loose rock</li>
+          <li>High sun</li>
+          <li>Narrow ledges</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="guest-homepage__preview-cta">
+      <div>
+        <strong>Unlock matches for your dog</strong>
+        <p>Create a dog profile to reveal full trail rankings, safer timing cues, and better-fit routes.</p>
+      </div>
+      <div class="guest-homepage__preview-actions">
+        <button class="btn-primary" id="previewSignupBtn">Unlock matches for your dog</button>
+        <a class="btn-secondary" href="account.html" id="previewLoginBtn">I already have an account</a>
+      </div>
+    </div>
+  </section>
 </section>
 
 <!-- RETURNING-CUSTOMER HERO (logged in) -->
@@ -228,19 +318,23 @@
 <script defer>
   // Wire the hero sign-up button to the auth modal.
   (function(){
-    const btn = document.getElementById('heroSignupBtn');
-    if(btn){
-      btn.addEventListener('click', function(){
-        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
-      });
-    }
-    const loginBtn = document.getElementById('heroLoginBtn');
-    if(loginBtn){
-      loginBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
-      });
-    }
+    ['heroSignupBtn', 'previewSignupBtn'].forEach(function(id){
+      const btn = document.getElementById(id);
+      if(btn){
+        btn.addEventListener('click', function(){
+          if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openSignup();
+        });
+      }
+    });
+    ['heroLoginBtn', 'previewLoginBtn'].forEach(function(id){
+      const loginBtn = document.getElementById(id);
+      if(loginBtn){
+        loginBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+        });
+      }
+    });
   })();
 </script>
 </body>

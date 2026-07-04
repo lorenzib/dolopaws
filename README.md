@@ -5,7 +5,7 @@
 The deployed homepage (`index.html`) renders an auth-based split-hero:
 
 - **Logged out / auth unavailable (default)** → new-customer hero (`#newCustomerHomepage`):
-  Two-column layout with headline, CTAs (create a dog profile / browse), and a blurred trail-teaser panel.
+  Editorial landing layout with a serif headline, signup/login CTAs, concise value points, a locked preview panel, and a 3-card teaser section for first-time visitors.
 
 - **Logged in** → returning-customer hero (`#returningCustomerHomepage`):
   Welcome-back banner addressed to the user's display name, with quick-action links (saved trails, past hikes, edit profile).
