@@ -35,7 +35,10 @@
     form.reset();
     modal.hidden = false;
   }
-  function closeModal(){ modal.hidden = true; }
+
+  function closeModal(){
+    modal.hidden = true;
+  }
 
   function setMode(newMode){
     mode = newMode;
@@ -128,7 +131,6 @@
       } else {
         accountBtn.textContent = 'Log in';
       }
-      // let script.js know so it can reload favorites from the right source
       window.dispatchEvent(new CustomEvent('dolopaws-auth-changed', { detail: { user } }));
     });
   });
@@ -142,5 +144,6 @@
       setMode('login');
       openModal(context);
     },
+    closeModal,
   };
 })();

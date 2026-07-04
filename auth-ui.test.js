@@ -67,4 +67,14 @@ describe('auth ui contextual prompts', () => {
       },
     ]);
   });
+
+  test('close button hides the auth modal', () => {
+    loadAuthUi();
+
+    window.DoloPawsAuthUI.openLogin();
+    expect(document.getElementById('authModal').hidden).toBe(false);
+
+    document.getElementById('authClose').click();
+    expect(document.getElementById('authModal').hidden).toBe(true);
+  });
 });
