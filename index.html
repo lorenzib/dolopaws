@@ -74,7 +74,7 @@
   </div>
 </div>
 
-<div class="hero">
+<div class="hero" id="defaultHomepageHero">
   <div class="hero-inner">
     <h1>Find dog-safe trails in the Dolomites</h1>
     <p class="sub">DoloPaws ranks routes by paw safety, shade, water access, and terrain risk—so you can choose safer hikes for your dog in minutes.</p>
@@ -123,6 +123,59 @@
     </ul>
   </div>
 </div>
+
+<section class="homepage-prototype homepage-prototype--new" id="newCustomerHomepage" hidden>
+  <div class="homepage-prototype__inner">
+    <div class="homepage-prototype__copy">
+      <div class="eyebrow">Prototype · new customer view</div>
+      <h1>Trails scored for your dog's safety, not just yours</h1>
+      <p class="sub">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</p>
+
+      <div class="hero-ctas">
+        <a class="btn-primary" href="#finder">Create your dog's profile</a>
+        <a class="btn-secondary" href="#finder">Browse without an account</a>
+      </div>
+
+      <ul class="hero-trust">
+        <li>Dog-first trail scoring</li>
+        <li>Heat, water, and terrain risk checks</li>
+        <li>Saved preferences once you create a profile</li>
+      </ul>
+    </div>
+
+    <div class="homepage-prototype__panel" aria-label="New customer homepage preview">
+      <p class="homepage-prototype__panel-label">What the prototype adds</p>
+      <div class="homepage-prototype__panel-card">
+        <strong>Safer matching</strong>
+        <span>Start with your dog's tolerance, then rank trails by fit.</span>
+      </div>
+      <div class="homepage-prototype__panel-card">
+        <strong>Faster planning</strong>
+        <span>Create a profile once, then reuse it across future visits.</span>
+      </div>
+      <div class="homepage-prototype__panel-card">
+        <strong>Clear fallback</strong>
+        <span>Remove <code>?view=...</code> to return to the current homepage.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="homepage-prototype homepage-prototype--returning" id="returningCustomerHomepage" hidden>
+  <div class="homepage-prototype__banner">
+    <div>
+      <div class="eyebrow">Prototype · returning customer view</div>
+      <h1>Welcome back — fresh trail matches are ready</h1>
+      <p class="sub">Conditions shift quickly in the Dolomites, so this returning-customer view brings saved planning actions and refreshed trail suggestions to the top.</p>
+    </div>
+
+    <div class="homepage-prototype__actions" aria-label="Returning customer quick actions">
+      <a class="homepage-prototype__chip" href="#results">Saved trails</a>
+      <a class="homepage-prototype__chip" href="#results">Past hikes</a>
+      <a class="homepage-prototype__chip" href="account.html">Edit profile</a>
+    </div>
+  </div>
+</section>
 
 <div class="wrap">
 
@@ -231,6 +284,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="auth-ui.js" defer></script>
+<script src="homepage-view.js" defer></script>
 <script src="trails-data.js" defer></script>
 <script src="script.js" defer></script>
 <script src="map-init.js" defer></script>
