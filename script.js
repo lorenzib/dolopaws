@@ -530,9 +530,13 @@ function render(){
     return;
   }
 
-  nodes.count.textContent = loggedIn
-    ? `${filteredByLocation.length} trail${filteredByLocation.length === 1 ? '' : 's'}${state.province ? ' in ' + state.province : ''}, ranked by fit`
-    : `${scored.length} trails found — showing top ${visible.length}`;
+  if(loggedIn){
+    const trailWord = filteredByLocation.length === 1 ? 'trail' : 'trails';
+    const locationSuffix = state.province ? ' in ' + state.province : '';
+    nodes.count.textContent = `${filteredByLocation.length} ${trailWord}${locationSuffix}, ranked by fit`;
+  } else {
+    nodes.count.textContent = `${scored.length} trails found — showing top ${visible.length}`;
+  }
 
   nodes.grid.innerHTML = visible.map(t=>{
     const isFav = !!state.favorites[t.id];
