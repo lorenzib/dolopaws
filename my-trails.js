@@ -10,9 +10,15 @@
     const terrain = parseInt(overrides.terrain, 10);
     const maxDistance = parseFloat(overrides.distance);
     if(t.terrainRank > terrain) score -= (t.terrainRank - terrain) * 30;
-    if(overrides.heatSensitive && t.heatRisk === 'high') score -= 20;
     if(t.distance > maxDistance) score -= Math.min(35, (t.distance - maxDistance) * 5);
     if(t.exposure) score -= 30;
+    if(t.heatRisk === 'high') score -= overrides.heatSensitive ? 25 : 12;
+    else if(t.heatRisk === 'moderate') score -= overrides.heatSensitive ? 10 : 4;
+    if(t.shadeCoverage < 20) score -= 10;
+    else if(t.shadeCoverage < 40) score -= 5;
+    if(t.surfaceHazards && t.surfaceHazards.length > 0){
+      score -= Math.min(20, t.surfaceHazards.length * 8);
+    }
     return Math.max(5, Math.round(score));
   }
 
@@ -72,14 +78,14 @@
         <div class="body">
           <div class="top-row">
             <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
-            <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
+            <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+              <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
+              <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>
+            </div>
           </div>
-          <div class="name" style="margin-top:8px;">${t.name}</div>
+          <div class="name" style="margin-top:6px;">${t.name}</div>
           <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
           <span class="tag">${t.terrainType}</span>
-          <div style="margin-top:10px;">
-            <button class="fav-btn save-btn" data-id="${t.id}" style="font-size:12px;padding:6px 16px;">${isFav ? 'Saved' : 'Save'}</button>
-          </div>
         </div>
       </div>`;
     }).join('');
