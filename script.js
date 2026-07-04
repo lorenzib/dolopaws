@@ -405,7 +405,7 @@ function render(){
 
   const loggedIn = !!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
   const visible = loggedIn ? scored : scored.slice(0, GUEST_TRAIL_LIMIT);
-  const hidden = loggedIn ? 0 : Math.max(0, scored.length - GUEST_TRAIL_LIMIT);
+  const hiddenCount = loggedIn ? 0 : Math.max(0, scored.length - GUEST_TRAIL_LIMIT);
 
   nodes.count.textContent = loggedIn
     ? `${scored.length} trails, ranked by fit`
@@ -462,13 +462,13 @@ function render(){
   if(!loggedIn){
     const cta = document.createElement('div');
     cta.className = 'trail-teaser-cta';
-    const hiddenMsg = hidden > 0
-      ? `<strong>${hidden} more trail${hidden === 1 ? '' : 's'}</strong> scored for your dog's safety are waiting.`
-      : `Log in to unlock personalised scores for your dog.`;
+    const hiddenMsg = hiddenCount > 0
+      ? `<strong>${hiddenCount} more trail${hiddenCount === 1 ? '' : 's'}</strong> scored for your dog's safety are waiting.`
+      : `Log in to unlock personalized scores for your dog.`;
     cta.innerHTML = `
       <p class="trail-teaser-cta__msg">🐾 ${hiddenMsg}</p>
       <button class="btn-primary trail-teaser-cta__btn" id="teaserLoginBtn">Log in to see more →</button>
-      <p class="trail-teaser-cta__sub">New here? <button class="trail-teaser-cta__link" id="teaserSignupBtn">Create a free dog profile</button> for personalised trail matching.</p>
+      <p class="trail-teaser-cta__sub">New here? <button class="trail-teaser-cta__link" id="teaserSignupBtn">Create a free dog profile</button> for personalized trail matching.</p>
     `;
     nodes.grid.appendChild(cta);
 
