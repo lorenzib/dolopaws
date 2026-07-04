@@ -27,7 +27,7 @@ a{color:inherit;}
   height:16px;
   flex-shrink:0;
   stroke:currentColor;
-  stroke-width:1.9;
+  stroke-width:2;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
@@ -57,7 +57,7 @@ a{color:inherit;}
 .topnav .links a{
   display:inline-flex;
   align-items:center;
-  gap:7px;
+  gap:8px;
   text-decoration:none;
   color:var(--pine-soft);
   font-size:13.5px;
