@@ -1,6 +1,4 @@
-const path = require('path');
-
-const modulePath = path.join(__dirname, 'today-conditions.js');
+const modulePath = './today-conditions.js';
 
 function loadWithMarkup(view){
   document.body.dataset.homepageView = view;
