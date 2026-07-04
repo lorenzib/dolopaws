@@ -46,6 +46,7 @@
     const returningHomepage = doc.getElementById('returningCustomerHomepage');
     const accountBtn = doc.getElementById('accountBtn');
     const returningName = doc.getElementById('returningHeroName');
+    const results = doc.getElementById('results');
 
     if(doc.body){
       doc.body.dataset.homepageView = view;
@@ -55,6 +56,9 @@
     if(defaultHero) defaultHero.hidden = true;
     if(newHomepage) newHomepage.hidden = view !== 'new';
     if(returningHomepage) returningHomepage.hidden = view !== 'returning';
+
+    // Hide the trail results list for guests — the map remains visible.
+    if(results) results.hidden = view !== 'returning';
 
     if(accountBtn){
       accountBtn.textContent = view === 'returning' ? 'My account' : 'Log in';
