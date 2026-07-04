@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your trails — DoloPaws</title>
+<meta name="description" content="All Dolomites trails, filtered by area and matched to your dog.">
+<meta name="theme-color" content="#2B2320">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .area-pill{
+    padding:8px 15px;border-radius:999px;border:1.5px solid var(--paper-line);
+    background:var(--card);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;
+  }
+  .area-pill.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .area-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="brand" href="index.html">DoloPaws</a>
+  <div class="links">
+    <a href="my-trails.html">Browse our trails</a>
+    <a href="safety-guide.html">Dog safety guide</a>
+    <button id="accountBtn" class="account-btn">My account</button>
+  </div>
+</div>
+
+<div class="guide-hero">
+  <div class="eyebrow">Your trails</div>
+  <h1 style="font-size:clamp(28px,5vw,38px);margin-top:14px;">All 15 trails, filtered by area</h1>
+  <p class="sub" id="pageSubline" style="margin-top:14px;">Checking your login status…</p>
+</div>
+
+<div id="loggedOutState" hidden style="text-align:center;padding:40px 20px;">
+  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">This page is available to logged-in accounts only.</p>
+  <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Go to homepage to log in</a>
+</div>
+
+<div id="loggedInState" hidden>
+  <div class="wrap" style="padding-bottom:60px;">
+    <div class="area-filter-row" id="areaFilterRow"></div>
+    <div id="filteredTrailsList"></div>
+  </div>
+</div>
+
+<footer class="site-footer">DoloPaws — Dolomites trail guide for dogs.</footer>
+
+<script type="module" src="firebase-init.js"></script>
+<script src="breeds-data.js" defer></script>
+<script src="trails-data.js" defer></script>
+<script src="auth-ui.js" defer></script>
+<script src="my-trails.js" defer></script>
+</body>
+</html>

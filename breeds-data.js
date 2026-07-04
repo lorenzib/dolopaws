@@ -1,5 +1,4 @@
 // Curated list of breeds commonly seen on Dolomite trails, plus generic options.
-// Order: popular hiking/mountain breeds first, then alphabetical general list.
 const DOG_BREEDS = [
   "Border Collie", "Australian Shepherd", "Siberian Husky", "Bernese Mountain Dog",
   "German Shepherd", "Labrador Retriever", "Golden Retriever", "Vizsla",
