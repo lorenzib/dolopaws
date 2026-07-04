@@ -2,6 +2,7 @@
   let mode = 'login'; // 'login' | 'signup'
   const DEFAULT_HINT = 'Save trails to your account so they follow you across devices.';
   let pendingContext = null;
+  let escapeKeyListenerController = null;
 
   const modal = document.getElementById('authModal');
   const accountBtn = document.getElementById('accountBtn');
@@ -18,6 +19,12 @@
   const toggleBtn = document.getElementById('authToggleBtn');
   const forgotBtn = document.getElementById('forgotPasswordBtn');
 
+  function setModalOpenState(isOpen){
+    modal.hidden = !isOpen;
+    modal.style.display = isOpen ? '' : 'none';
+    modal.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  }
+
   function applyPromptContext(context){
     pendingContext = context || null;
     hint.textContent = pendingContext && pendingContext.hint
@@ -33,11 +40,20 @@
     applyPromptContext(context);
     errorBox.hidden = true;
     form.reset();
-    modal.hidden = false;
+    setModalOpenState(true);
+    if(escapeKeyListenerController){
+      escapeKeyListenerController.abort();
+    }
+    escapeKeyListenerController = new AbortController();
+    document.addEventListener('keydown', onEscapeKeyDown, { signal: escapeKeyListenerController.signal });
   }
 
   function closeModal(){
-    modal.hidden = true;
+    setModalOpenState(false);
+    if(escapeKeyListenerController){
+      escapeKeyListenerController.abort();
+      escapeKeyListenerController = null;
+    }
   }
 
   function setMode(newMode){
@@ -61,6 +77,11 @@
   accountBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+  const onEscapeKeyDown = (e) => {
+    if(e.key === 'Escape' && !modal.hidden){
+      closeModal();
+    }
+  };
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
 
   forgotBtn.addEventListener('click', async () => {

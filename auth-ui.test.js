@@ -76,5 +76,41 @@ describe('auth ui contextual prompts', () => {
 
     document.getElementById('authClose').click();
     expect(document.getElementById('authModal').hidden).toBe(true);
+    expect(document.getElementById('authModal').style.display).toBe('none');
+  });
+
+  test('backdrop click hides the auth modal', () => {
+    loadAuthUi();
+
+    window.DoloPawsAuthUI.openLogin();
+    const modal = document.getElementById('authModal');
+    expect(modal.hidden).toBe(false);
+
+    modal.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(modal.hidden).toBe(true);
+    expect(modal.style.display).toBe('none');
+  });
+
+  test('click inside modal content does not hide the auth modal', () => {
+    loadAuthUi();
+
+    window.DoloPawsAuthUI.openLogin();
+    const modal = document.getElementById('authModal');
+    expect(modal.hidden).toBe(false);
+
+    document.getElementById('authTitle').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(modal.hidden).toBe(false);
+  });
+
+  test('Escape key hides the auth modal', () => {
+    loadAuthUi();
+
+    window.DoloPawsAuthUI.openLogin();
+    const modal = document.getElementById('authModal');
+    expect(modal.hidden).toBe(false);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(modal.hidden).toBe(true);
+    expect(modal.style.display).toBe('none');
   });
 });
