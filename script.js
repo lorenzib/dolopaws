@@ -109,6 +109,48 @@ function effectiveOverrides(profile){
 
 let showingSavedOnly = false;
 let activeArea = 'all';
+let trailMapInstance = null;
+let trailMarkers = {};
+
+function initTrailMap(){
+  if(trailMapInstance || typeof L === 'undefined') return;
+  const el = document.getElementById('trailMap');
+  if(!el) return;
+  trailMapInstance = L.map('trailMap', { scrollWheelZoom: false }).setView([46.55, 12.05], 9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 16,
+    attribution: '&copy; OpenStreetMap contributors',
+  }).addTo(trailMapInstance);
+}
+
+function updateMapMarkers(list){
+  if(!trailMapInstance) return;
+  const visibleIds = new Set(list.map(t => t.id));
+
+  // Remove markers for trails no longer in the filtered view
+  Object.keys(trailMarkers).forEach(id => {
+    if(!visibleIds.has(id)){
+      trailMapInstance.removeLayer(trailMarkers[id]);
+      delete trailMarkers[id];
+    }
+  });
+
+  // Add markers for newly-visible trails
+  list.forEach(t => {
+    if(trailMarkers[t.id] || typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
+    const marker = L.marker([t.lat, t.lng]).addTo(trailMapInstance);
+    marker.bindPopup(`<b>${t.name}</b><br>${t.score}% match`);
+    trailMarkers[t.id] = marker;
+  });
+
+  // Fit the view to whatever's currently visible, so filtering the list
+  // also re-frames the map instead of leaving it zoomed to the wrong area.
+  const validList = list.filter(t => typeof t.lat === 'number' && typeof t.lng === 'number');
+  if(validList.length > 0){
+    const bounds = L.latLngBounds(validList.map(t => [t.lat, t.lng]));
+    trailMapInstance.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
+  }
+}
 
 function renderAreaFilters(profile){
   const row = document.getElementById('areaFilterRow');
@@ -169,18 +211,11 @@ async function renderReturningHomepage(profile){
     ? `${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
     : `${displayList.length} trails`;
 
+  updateMapMarkers(displayList);
+
   if(savedTrailsBtn){
-    if(showingSavedOnly){
-      savedTrailsBtn.textContent = '← All trails';
-      savedTrailsBtn.style.background = 'var(--accent)';
-      savedTrailsBtn.style.borderColor = 'var(--accent)';
-      savedTrailsBtn.style.color = '#fff';
-    } else {
-      savedTrailsBtn.textContent = 'Saved trails';
-      savedTrailsBtn.style.background = 'var(--card)';
-      savedTrailsBtn.style.borderColor = 'var(--paper-line)';
-      savedTrailsBtn.style.color = 'var(--ink)';
-    }
+    savedTrailsBtn.textContent = showingSavedOnly ? '← All trails' : 'Saved trails';
+    savedTrailsBtn.classList.toggle('active', showingSavedOnly);
   }
 
   if(displayList.length === 0){
@@ -304,6 +339,7 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     newHome.hidden = true;
     returningHome.hidden = false;
     adjustOverride = null;
+    initTrailMap();
 
     const profile = await window.DoloPawsAuth.getDogProfile();
     currentProfileForAdjust = profile;

@@ -14,12 +14,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body>
 
 <div class="topnav">
-  <a class="brand" href="index.html">DoloPaws</a>
+  <a class="brand" href="index.html"><img src="icon-192.png" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
+    <a href="index.html">Home</a>
     <a href="browse-trails.html" id="browseNavLink">
       <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M12 3.5l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.8 6.4 20.7l1.1-6.2L3 10.1l6.2-.9L12 3.5z"/>
@@ -120,14 +122,16 @@
   <div class="wrap" id="returningResults" style="padding-top:24px;padding-bottom:60px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <button id="savedTrailsBtn" style="padding:7px 16px;border-radius:14px;background:var(--card);border:1.5px solid var(--paper-line);color:var(--ink);font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;">Saved trails</button>
+        <button id="savedTrailsBtn" class="area-pill">Saved trails</button>
         <span style="font-size:12.5px;color:var(--ink-soft);" id="returningCount"></span>
       </div>
-      <div id="adjustToggle" style="padding:7px 14px;border-radius:14px;background:var(--accent);border:none;font-size:11.5px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;">Adjust for today's conditions →</div>
+      <div id="adjustToggle" style="font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;white-space:nowrap;">Adjust for today's conditions →</div>
     </div>
 
     <!-- TEMPORARY OVERRIDE PANEL — session-only, never touches the saved profile -->
     <div class="area-filter-row" id="areaFilterRow"></div>
+
+    <div id="trailMap" style="width:100%;height:340px;border-radius:16px;border:1px solid var(--paper-line);margin-bottom:20px;background:var(--sage-dim);"></div>
 
     <div id="adjustPanel" hidden style="background:#FBF3E4;border:1.5px dashed var(--accent);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -159,12 +163,13 @@
 </div>
 
 
-<footer class="site-footer">DoloPaws — Dolomites trail guide for dogs.</footer>
+<footer class="site-footer">DoloPaws &#124; Dolomites trail guide for dogs and their humans.</footer>
 
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>
 <script src="auth-ui.js" defer></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="script.js" defer></script>
 </body>
 </html>
