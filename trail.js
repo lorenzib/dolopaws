@@ -147,6 +147,43 @@ function init(){
   document.getElementById('trailTips').textContent = t.tips ? `Tip: ${t.tips}` : '';
   document.getElementById('trailDetailContent').innerHTML = renderTrailDetailContent(t);
 
+  // Build turn-by-turn directions for trails stitched from more than one
+  // numbered route, or a simpler start-only note for single-path loops
+  // (a lake loop doesn't need "switch trails" instructions, but it still
+  // deserves a clear "start here" pointer).
+  if(Array.isArray(t.path) && ((Array.isArray(t.decisionPoints) && t.decisionPoints.length > 0) || t.startPoint)){
+    const totalKm = t.distance;
+    const firstStep = t.startPoint
+      ? `${t.startPoint.label} (km 0).`
+      : `Start at ${(t.rifugi || []).find(r => r.km === 0)?.name || t.area} (km 0).`;
+    const steps = [firstStep];
+
+    if(Array.isArray(t.decisionPoints) && t.decisionPoints.length > 0){
+      // Merge rifugi and decision points that share a km value into one step,
+      // rather than listing "pass X" and "switch trails at X" separately when
+      // they're literally the same spot.
+      const byKm = new Map();
+      (t.rifugi || []).filter(r => r.km > 0).forEach(r => {
+        byKm.set(r.km, [...(byKm.get(r.km) || []), { text: `pass ${r.name}`, name: r.name }]);
+      });
+      t.decisionPoints.forEach(d => {
+        const existing = byKm.get(d.km) || [];
+        const instructionText = d.instruction.charAt(0).toLowerCase() + d.instruction.slice(1);
+        // If a rifugio at this exact km is already named inside the decision
+        // instruction, drop the separate "pass X" so the name isn't repeated.
+        const deduped = existing.filter(e => !instructionText.toLowerCase().includes(e.name.toLowerCase()));
+        byKm.set(d.km, [...deduped, { text: instructionText }]);
+      });
+      const events = [...byKm.entries()].sort((a, b) => a[0] - b[0]);
+      events.forEach(([km, items]) => steps.push(`Km ${km}: ${items.map(i => i.text).join(', then ')}.`));
+    }
+
+    steps.push(`Continue back to the start, completing the loop at km ${totalKm}.`);
+
+    document.getElementById('trailDirections').innerHTML = steps.map(s => `<li>${s}</li>`).join('');
+    document.getElementById('directionsWrap').hidden = false;
+  }
+
   // Map
   if(typeof maplibregl !== 'undefined' && typeof t.lat === 'number' && typeof t.lng === 'number'){
     const map = new maplibregl.Map({
@@ -235,6 +272,28 @@ function init(){
             .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${w.label}</b><br>Km ${w.km}`))
             .addTo(map);
         });
+
+        // Decision points — where a hiker needs to switch from one numbered
+        // route onto another. Always real, verified coordinates (these come
+        // from actual confirmed junctions between two GPX tracks, never
+        // interpolated) so no fallback branch is needed here.
+        (t.decisionPoints || []).forEach(d => {
+          new maplibregl.Marker({ element: makeIconEl('🔀', '#D6A038'), offset: [14, -14] })
+            .setLngLat([d.lng, d.lat])
+            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>Km ${d.km}</b><br>${d.instruction}`))
+            .addTo(map);
+        });
+
+        // Recommended starting point — a loop can technically be walked
+        // from anywhere on it, but a real, well-marked access/parking point
+        // is worth calling out explicitly rather than leaving people to
+        // guess where to begin.
+        if(t.startPoint){
+          new maplibregl.Marker({ element: makeIconEl('🚩', '#2E4034'), offset: [-14, -14] })
+            .setLngLat([t.startPoint.lng, t.startPoint.lat])
+            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${t.startPoint.label}</b>`))
+            .addTo(map);
+        }
       } else {
         new maplibregl.Marker({ color: '#D6A038' }).setLngLat([t.lng, t.lat]).addTo(map);
         const legend = document.getElementById('mapLegend');

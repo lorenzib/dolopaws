@@ -7,6 +7,10 @@ const trails = [
     elevationProfile:[{km:0, elev:1850}, {km:2, elev:1800}, {km:4, elev:1900}, {km:6, elev:1950}, {km:7.5, elev:1850}],
     surfaceHazards:[], shadeCoverage:20, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
     waterSources:[{km:0,label:'Compatsch trailhead fountain'}],
+    decisionPoints:[
+      {km:2.31,lat:46.5321524,lng:11.6295947,instruction:"Switch from trail 7 onto trail 6"},
+      {km:4.23,lat:46.5366853,lng:11.6447916,instruction:"Switch from trail 6 onto trail 30"}
+    ],
     rifugi:[],
     desc:"A real, GPS-verified loop from Compatsch using trails 7, 6, and 30 — confirmed by multiple independent hiking guides as wide gravel and paved paths, suitable even for all-terrain strollers. Europe's largest high-alpine meadow, gently rolling and wide open.",
     tips:"Multiple entry points; go early to find free parking, or take the cable car up from Ortisei/Siusi. This loop skips the longer Saltria detour some guides include via trail 9 — it's the shorter, easier variant of that bigger circuit."
@@ -36,12 +40,13 @@ const trails = [
   {
     id:'tre-cime', name:'Tre Cime di Lavaredo Loop', area:'Sesto Dolomites', lat:46.618, lng:12.301,
     path:[[46.61222,12.29641],[46.6133,12.29665],[46.6136,12.29764],[46.61365,12.29915],[46.61426,12.30163],[46.61416,12.30416],[46.61359,12.30496],[46.61363,12.30544],[46.61347,12.30666],[46.61351,12.3073],[46.6139,12.30832],[46.61408,12.30849],[46.61488,12.3087],[46.61558,12.3095],[46.61658,12.30997],[46.61723,12.31065],[46.61779,12.311],[46.61852,12.31203],[46.61945,12.31188],[46.62045,12.31204],[46.62071,12.31311],[46.62054,12.31419],[46.62089,12.31448],[46.62133,12.31436],[46.62153,12.31489],[46.62181,12.31516],[46.62276,12.31348],[46.62268,12.31245],[46.62238,12.31176],[46.62245,12.31147],[46.62327,12.31184],[46.62451,12.31297],[46.62488,12.31303],[46.6262,12.31273],[46.62725,12.31171],[46.62749,12.31173],[46.62809,12.31136],[46.62832,12.31135],[46.62827,12.31109],[46.6285,12.31095],[46.62954,12.31104],[46.63031,12.31057],[46.6316,12.31066],[46.63228,12.31109],[46.634,12.31188],[46.6342,12.31188],[46.63467,12.31157],[46.63495,12.31096],[46.63505,12.31098],[46.63501,12.31124],[46.63512,12.31113],[46.63513,12.31127],[46.63526,12.31103],[46.63531,12.31118],[46.63555,12.31095],[46.6356,12.31106],[46.63624,12.31112],[46.63653,12.31091],[46.63653,12.31111],[46.6369,12.31084],[46.63653,12.31111],[46.63653,12.31091],[46.63624,12.31112],[46.6356,12.31106],[46.63555,12.31095],[46.63529,12.31118],[46.63526,12.31103],[46.63515,12.31126],[46.6351,12.31114],[46.63471,12.31151],[46.63491,12.31099],[46.63473,12.31115],[46.63455,12.31037],[46.63469,12.30942],[46.63459,12.30814],[46.63484,12.30775],[46.63495,12.3068],[46.63469,12.30697],[46.63464,12.3062],[46.63419,12.30678],[46.63399,12.30682],[46.63421,12.30628],[46.63402,12.30647],[46.6337,12.30639],[46.63403,12.30599],[46.63409,12.3057],[46.63382,12.30571],[46.63366,12.30473],[46.63316,12.30405],[46.63268,12.30388],[46.63214,12.30396],[46.63171,12.30422],[46.63106,12.30422],[46.63041,12.30336],[46.63034,12.30246],[46.63012,12.30167],[46.63015,12.30017],[46.62992,12.29927],[46.62999,12.29875],[46.62986,12.29771],[46.62935,12.29614],[46.62899,12.29551],[46.62898,12.295],[46.62849,12.29437],[46.62812,12.29427],[46.62793,12.29403],[46.62737,12.29264],[46.62701,12.29244],[46.62681,12.29187],[46.62583,12.29058],[46.62507,12.29019],[46.6247,12.29018],[46.62458,12.28991],[46.62419,12.28978],[46.62396,12.2895],[46.62385,12.28806],[46.62413,12.28736],[46.62313,12.2861],[46.62279,12.28589],[46.62243,12.2857],[46.62108,12.28581],[46.62037,12.2852],[46.61953,12.28485],[46.61936,12.28495],[46.61788,12.28504],[46.61753,12.28473],[46.61752,12.28425],[46.61706,12.2844],[46.61637,12.28542],[46.61583,12.28675],[46.61584,12.28708],[46.61562,12.28729],[46.61545,12.28726],[46.6151,12.28784],[46.61495,12.28935],[46.61428,12.29103],[46.61375,12.29164],[46.61311,12.29292],[46.61213,12.29421],[46.61211,12.29492],[46.61187,12.29606],[46.61201,12.29635],[46.61222,12.29641]],
-    distance:9, elevation:430, hours:'3–4', paid:true,
+    distance:11.8, elevation:430, hours:'3–4', paid:true,
     terrainType:'Wide gravel', terrainRank:1,
-    elevationProfile:[{km:0, elev:2320}, {km:1.8, elev:2344}, {km:3.2, elev:2454}, {km:5.5, elev:2405}, {km:7.5, elev:2240}, {km:9, elev:2320}],
+    elevationProfile:[{km:0, elev:2320}, {km:2.4, elev:2344}, {km:4.2, elev:2454}, {km:7.2, elev:2405}, {km:9.8, elev:2240}, {km:11.8, elev:2320}],
     surfaceHazards:['Loose gravel patches near the rifugi'], shadeCoverage:5, heatRisk:'high', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:0,label:'Rifugio Auronzo fountain',lat:46.612205,lng:12.296095},{km:4,label:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:7,label:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
-    rifugi:[{km:0,name:'Rifugio Auronzo',lat:46.612205,lng:12.296095},{km:4,name:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:7,name:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
+    waterSources:[{km:0,label:'Rifugio Auronzo fountain',lat:46.612205,lng:12.296095},{km:2.1,label:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:5.3,label:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
+    decisionPoints:[{km:5.3,lat:46.636902,lng:12.31056,instruction:"Switch from trail 101 onto trail 105, right at Rifugio Locatelli"}],
+    rifugi:[{km:0,name:'Rifugio Auronzo',lat:46.612205,lng:12.296095},{km:2.1,name:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:5.3,name:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
     desc:"The classic loop around the iconic three peaks. Wide, well-graded path — one of the friendliest big-name hikes for dogs.",
     tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early."
   },
@@ -98,6 +103,7 @@ const trails = [
     surfaceHazards:[], shadeCoverage:50, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
     waterSources:[{km:0,label:'Lakeside fountain',lat:46.69932,lng:12.08516}],
     rifugi:[{km:0,name:'Lakeside hotel café',lat:46.69932,lng:12.08516}],
+    startPoint:{lat:46.69932,lng:12.08516,label:'Start here — main lake access & parking, by Hotel Lago di Braies'},
     desc:"A flat, easy circuit around one of the Dolomites' most photographed lakes. Gentle enough for any dog.",
     tips:"Extremely popular — expect crowds and paid parking; arrive at opening time."
   },
@@ -110,6 +116,7 @@ const trails = [
     surfaceHazards:[], shadeCoverage:70, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
     waterSources:[{km:0,label:'Trailhead fountain',lat:46.41032,lng:11.57585}],
     rifugi:[],
+    startPoint:{lat:46.41032,lng:11.57585,label:'Start here — main parking area at Lago di Carezza'},
     desc:"A short, flat, mostly forested path around a small, vividly colored lake — a perfect low-effort stop.",
     tips:"Lake is fenced off (no swimming) but it's a lovely easy leg-stretch for older or less mobile dogs."
   },
@@ -167,5 +174,18 @@ const trails = [
     rifugi:[],
     desc:"An easy loop around an emerald-green lake with mountain views — relaxed and dog-friendly start to finish.",
     tips:"The nearby Dint Skywalk viewing platform may not allow dogs — plan to skip it if hiking with yours."
+  },
+  {
+    id:'geotrail-bulla', name:'Geotrail Bula / Pufels / Bulla', area:'Val Gardena', lat:46.5789, lng:11.6031,
+    path:[[46.58025,11.62282],[46.58021,11.62267],[46.5793,11.62314],[46.57882,11.62323],[46.5787,11.6229],[46.57883,11.62278],[46.57885,11.62249],[46.57866,11.62199],[46.57828,11.62151],[46.57819,11.62088],[46.5783,11.62006],[46.57827,11.61879],[46.57816,11.61945],[46.57791,11.61983],[46.57736,11.62028],[46.57704,11.62028],[46.57692,11.62049],[46.57672,11.62059],[46.57641,11.62054],[46.57619,11.62029],[46.57602,11.62025],[46.57579,11.61969],[46.57565,11.6196],[46.57547,11.61974],[46.57506,11.61985],[46.57475,11.61924],[46.57462,11.61919],[46.57443,11.61927],[46.57405,11.61922],[46.57368,11.61945],[46.57264,11.62075],[46.57253,11.62141],[46.57231,11.62182],[46.57242,11.62215],[46.57225,11.62291],[46.57207,11.623],[46.57197,11.62319],[46.57186,11.62318],[46.57176,11.62332],[46.5715,11.6234],[46.57131,11.62366],[46.57108,11.62367],[46.57066,11.62387],[46.57041,11.62367],[46.57027,11.62376],[46.57014,11.62371],[46.57001,11.62391],[46.57016,11.6245],[46.57008,11.62479],[46.57023,11.62563],[46.57014,11.62584],[46.56982,11.62608],[46.56981,11.62696],[46.56961,11.62737],[46.56967,11.62815],[46.56956,11.62876],[46.56927,11.62993],[46.56893,11.63039],[46.56892,11.63102],[46.56914,11.63187],[46.56894,11.63265],[46.56822,11.63464],[46.5677,11.63436],[46.56722,11.63371],[46.56746,11.63442],[46.56743,11.6346],[46.56701,11.63441],[46.56685,11.63459],[46.56676,11.63459],[46.56622,11.63405],[46.56595,11.63352],[46.56537,11.6332],[46.56484,11.63322],[46.56429,11.6335],[46.56395,11.63356],[46.56425,11.63406],[46.56454,11.63411],[46.56482,11.6346],[46.56513,11.6355],[46.56594,11.63687],[46.5663,11.63704],[46.56667,11.63708],[46.56742,11.63686],[46.56793,11.63682],[46.56843,11.63636],[46.56887,11.63561],[46.56908,11.63493],[46.56891,11.6344],[46.56969,11.63185],[46.56977,11.63125],[46.56974,11.63065],[46.57014,11.63006],[46.57019,11.62955],[46.57041,11.62932],[46.5707,11.62876],[46.57078,11.62792],[46.57124,11.62777],[46.57128,11.62726],[46.57158,11.62718],[46.57202,11.62691],[46.57162,11.62627],[46.57145,11.62616],[46.57088,11.6245],[46.57064,11.6243],[46.57038,11.62428],[46.57047,11.62414],[46.57032,11.62409],[46.57054,11.62383],[46.57066,11.62387],[46.57108,11.62367],[46.57131,11.62366],[46.5715,11.6234],[46.57176,11.62332],[46.57186,11.62318],[46.57197,11.62319],[46.57207,11.623],[46.57225,11.62291],[46.57242,11.62215],[46.57231,11.62182],[46.57253,11.62141],[46.57264,11.62075],[46.57368,11.61945],[46.57405,11.61922],[46.57443,11.61927],[46.57462,11.61919],[46.57475,11.61924],[46.57506,11.61985],[46.57547,11.61974],[46.57565,11.6196],[46.57579,11.61969],[46.57602,11.62025],[46.57619,11.62029],[46.57641,11.62054],[46.57672,11.62059],[46.57692,11.62049],[46.57704,11.62028],[46.57736,11.62028],[46.57791,11.61983],[46.57816,11.61945],[46.57827,11.61879],[46.5783,11.62006],[46.57819,11.62088],[46.57828,11.62151],[46.57866,11.62199],[46.57885,11.62249],[46.57883,11.62278],[46.5787,11.6229],[46.57882,11.62323],[46.5793,11.62314],[46.58021,11.62267],[46.58025,11.62282]],
+    startPoint:{lat:46.5802,lng:11.6228,label:'Start here — Passo Pinei (Panider Sattel), near Hotel Panider Sattel'},
+    distance:8.8, elevation:340, hours:'2.5–3', paid:false,
+    terrainType:'Forest road & meadow path', terrainRank:1,
+    elevationProfile:[{km:0, elev:1437}, {km:2.2, elev:1530}, {km:4.4, elev:1440}, {km:6.6, elev:1500}, {km:8.8, elev:1437}],
+    surfaceHazards:[], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'moderate', exposure:false,
+    waterSources:[],
+    rifugi:[],
+    desc:"A real, GPS-verified geological education trail between Passo Pinei and the village of Bulla — 8 information panels explain how the Dolomites formed, including a spot where you physically cross the 252-million-year-old Permian-Triassic boundary. Confirmed dog-friendly (leashed, off-leash in some areas) by multiple independent trail guides.",
+    tips:"Reachable by bus (line 172) from Ortisei, or park at Passo Pinei. Best June through October. Moderate terrain with some real ascent/descent — not the flattest option on this list, but not technical either."
   },
 ];
