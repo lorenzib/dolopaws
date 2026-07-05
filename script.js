@@ -125,7 +125,7 @@ function initGuestMap(){
   });
 
   guestMapInstance.on('load', () => {
-    addTerrainToMap(guestMapInstance, { exaggeration: 1.3 });
+    addTerrainSource(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
@@ -189,7 +189,7 @@ function initTrailMap(){
   trailMapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
 
   trailMapInstance.on('load', () => {
-    addTerrainToMap(trailMapInstance, { exaggeration: 1.3 });
+    addTerrainSource(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     trailMapInstance.addSource('trail-paths', {
       type: 'geojson',
@@ -275,45 +275,41 @@ function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
 
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.textContent = 'View flat';
+  btn.textContent = 'View 3D';
   btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
   container.appendChild(btn);
 
-  let is3D = true;
+  let is3D = false; // clean, flat, label-first map by default
   btn.addEventListener('click', () => {
-    if(is3D){
-      map.setTerrain(null);
-      map.easeTo({ pitch: 0, duration: 500 });
-      btn.textContent = 'View 3D';
-    } else {
+    if(!is3D){
       map.setTerrain({ source: 'terrain-dem', exaggeration });
+      if(!map.getLayer('hillshade-layer')){
+        map.addLayer({
+          id: 'hillshade-layer',
+          type: 'hillshade',
+          source: 'terrain-dem',
+          paint: { 'hillshade-exaggeration': 0.3 },
+        }, map.getLayer('trail-paths-line') ? 'trail-paths-line' : undefined);
+      }
       map.easeTo({ pitch: defaultPitch || 0, duration: 500 });
       btn.textContent = 'View flat';
+    } else {
+      map.setTerrain(null);
+      if(map.getLayer('hillshade-layer')) map.removeLayer('hillshade-layer');
+      map.easeTo({ pitch: 0, duration: 500 });
+      btn.textContent = 'View 3D';
     }
     is3D = !is3D;
   });
 }
 
-function addTerrainToMap(map, opts){
-  const withExaggeration = (opts && opts.exaggeration) || 1.3;
+function addTerrainSource(map){
   map.addSource('terrain-dem', {
     type: 'raster-dem',
     tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
     tileSize: 256,
     encoding: 'terrarium',
     maxzoom: 15,
-  });
-  map.setTerrain({ source: 'terrain-dem', exaggeration: withExaggeration });
-  // A 2D hillshade layer too — this is what actually reads as "depth" at a
-  // flat top-down angle, since 3D terrain displacement mostly shows once
-  // the camera is pitched (which the small overview maps generally aren't).
-  // Added here, before any trail-line/marker layers exist, so it
-  // automatically renders underneath them.
-  map.addLayer({
-    id: 'hillshade-layer',
-    type: 'hillshade',
-    source: 'terrain-dem',
-    paint: { 'hillshade-exaggeration': 0.35 },
   });
 }
 

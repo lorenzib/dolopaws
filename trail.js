@@ -75,46 +75,48 @@ function makeIconEl(emoji, bgColor){
   return el;
 }
 
-function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
+function addTerrainToggle(map, containerId, exaggeration, pitch3D){
   const container = document.getElementById(containerId);
   if(!container) return;
   container.style.position = container.style.position || 'relative';
 
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.textContent = 'View flat — easier to read names';
+  btn.textContent = 'View 3D terrain';
   btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
   container.appendChild(btn);
 
-  let is3D = true;
+  let is3D = false; // clean, flat, label-first map by default
   btn.addEventListener('click', () => {
-    if(is3D){
+    if(!is3D){
+      map.setTerrain({ source: 'terrain-dem', exaggeration });
+      if(!map.getLayer('hillshade-layer')){
+        map.addLayer({
+          id: 'hillshade-layer',
+          type: 'hillshade',
+          source: 'terrain-dem',
+          paint: { 'hillshade-exaggeration': 0.3 },
+        }, 'waymarked-hiking-layer'); // keep hillshade below the trail overlay and labels
+      }
+      map.easeTo({ pitch: pitch3D || 0, duration: 500 });
+      btn.textContent = 'View flat map';
+    } else {
       map.setTerrain(null);
+      if(map.getLayer('hillshade-layer')) map.removeLayer('hillshade-layer');
       map.easeTo({ pitch: 0, duration: 500 });
       btn.textContent = 'View 3D terrain';
-    } else {
-      map.setTerrain({ source: 'terrain-dem', exaggeration });
-      map.easeTo({ pitch: defaultPitch || 0, duration: 500 });
-      btn.textContent = 'View flat — easier to read names';
     }
     is3D = !is3D;
   });
 }
 
-function addTerrainToMap(map, exaggeration){
+function addTerrainSource(map){
   map.addSource('terrain-dem', {
     type: 'raster-dem',
     tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
     tileSize: 256,
     encoding: 'terrarium',
     maxzoom: 15,
-  });
-  map.setTerrain({ source: 'terrain-dem', exaggeration: exaggeration || 1.4 });
-  map.addLayer({
-    id: 'hillshade-layer',
-    type: 'hillshade',
-    source: 'terrain-dem',
-    paint: { 'hillshade-exaggeration': 0.35 },
   });
 }
 
@@ -152,12 +154,12 @@ function init(){
       style: 'https://tiles.openfreemap.org/styles/liberty',
       center: [t.lng, t.lat],
       zoom: 14,
-      pitch: 45, // a bit of tilt so the terrain elevation actually reads
+      pitch: 0, // clean, flat, label-first by default — 3D is opt-in via the toggle
     });
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     map.on('load', () => {
-      addTerrainToMap(map, 1.5);
+      addTerrainSource(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
@@ -181,7 +183,7 @@ function init(){
         id: 'waymarked-hiking-layer',
         type: 'raster',
         source: 'waymarked-hiking',
-        paint: { 'raster-opacity': 0.6 },
+        paint: { 'raster-opacity': 0.4 },
       }, firstLabelLayer ? firstLabelLayer.id : undefined);
 
       if(Array.isArray(t.path) && t.path.length > 1){
@@ -201,7 +203,7 @@ function init(){
         });
         const bounds = new maplibregl.LngLatBounds();
         t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
-        map.fitBounds(bounds, { padding: 60, maxZoom: 17, pitch: 45 });
+        map.fitBounds(bounds, { padding: 60, maxZoom: 17 });
 
         // Rifugi and water-source icons — positioned using the REAL GPS
         // path, not guessed coordinates. Km markers were recorded against
