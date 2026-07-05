@@ -54,7 +54,7 @@ async function fetchWithRetries(url, body, options = {}) {
       lastError = error;
       console.warn(`[fetch] Attempt ${attempt} failed: ${error.message}`);
       if (attempt < attempts) {
-        const waitMs = 1000 * Math.pow(2, attempt - 1);
+        const waitMs = 2000 * Math.pow(2, attempt - 1);
         console.log(`[fetch] Waiting ${waitMs}ms before retry...`);
         await new Promise((resolve) => setTimeout(resolve, waitMs));
       }
@@ -80,7 +80,7 @@ async function fetchFromMirrors(query) {
 }
 
 function roundCoord(value) {
-  return Number(value.toFixed(5));
+  return Math.round(value * 100000) / 100000;
 }
 
 function sampleGeometry(geometry) {
@@ -155,7 +155,7 @@ function normalizeElements(elements) {
 
 async function writeOutputFile(payload) {
   await fs.mkdir(path.dirname(OUTPUT_PATH), { recursive: true });
-  const content = `${JSON.stringify(payload, null, 2)}\n`;
+  const content = JSON.stringify(payload, null, 2) + '\n';
   await fs.writeFile(OUTPUT_PATH, content, 'utf8');
   console.log(`[write] ${OUTPUT_PATH} (${payload.trails.length} trails)`);
 }

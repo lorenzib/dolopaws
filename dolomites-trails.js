@@ -4,6 +4,15 @@
   const DATA_URL = './data/dolomites-trails.json';
   const MAX_LIST_ITEMS = 120;
 
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
   function setStatus(message) {
     const el = document.getElementById('osmTrailsStatus');
     if (el) el.textContent = message;
@@ -19,9 +28,9 @@
     }
 
     list.innerHTML = trails.slice(0, MAX_LIST_ITEMS).map((trail) => {
-      const title = trail.name || trail.ref || trail.id;
-      const ref = trail.ref ? ` · ${trail.ref}` : '';
-      const difficulty = trail.difficulty ? ` · ${trail.difficulty}` : '';
+      const title = escapeHtml(trail.name || trail.ref || trail.id);
+      const ref = trail.ref ? ` · ${escapeHtml(trail.ref)}` : '';
+      const difficulty = trail.difficulty ? ` · ${escapeHtml(trail.difficulty)}` : '';
       return `<li><strong>${title}</strong>${ref}${difficulty}</li>`;
     }).join('');
   }
@@ -68,7 +77,7 @@
   async function init() {
     try {
       setStatus('Loading OpenStreetMap trail data…');
-      const response = await fetch(DATA_URL, { cache: 'no-store' });
+      const response = await fetch(DATA_URL);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const payload = await response.json();
       const trails = Array.isArray(payload.trails) ? payload.trails : [];
