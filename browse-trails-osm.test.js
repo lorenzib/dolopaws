@@ -13,4 +13,3 @@ describe('browse-trails OSM integration', () => {
     expect(html).toContain('dolomites-trails.js');
   });
 });
-

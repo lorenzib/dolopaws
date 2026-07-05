@@ -69,4 +69,3 @@ describe('dolomites trails pipeline', () => {
     expect(sampled[sampled.length - 1]).toEqual([11.199, 46.199]);
   });
 });
-
