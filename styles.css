@@ -66,17 +66,17 @@ img,svg{max-width:100%;height:auto;}
 .topnav .brand{
   font-family:'Source Serif 4', serif;
   font-weight:700;
-  font-size:20px;
+  font-size:24px;
   color:var(--ink);
   text-decoration:none;
   display:inline-flex;
   align-items:center;
-  gap:9px;
+  gap:11px;
 }
 .topnav .brand img{
-  width:30px;
-  height:30px;
-  border-radius:8px;
+  width:44px;
+  height:44px;
+  border-radius:10px;
   display:block;
 }
 .topnav .links{display:flex;gap:28px;align-items:center;font-size:13px;font-weight:500;}
@@ -133,12 +133,9 @@ img,svg{max-width:100%;height:auto;}
 }
 .hero-right{
   background:repeating-linear-gradient(135deg,#E9EEE4,#E9EEE4 12px,#DCE4D3 12px,#DCE4D3 24px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
   min-height:420px;
-  font:11px ui-monospace, monospace;
-  color:rgba(43,35,32,.4);
+  border-radius:16px;
+  overflow:hidden;
 }
 
 .btn-primary{

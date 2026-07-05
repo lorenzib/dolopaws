@@ -107,8 +107,56 @@ function effectiveOverrides(profile){
   return { terrain: defaults.terrain, distance: defaults.distance, heatSensitive: breedIsHeatSensitive };
 }
 
+let guestMapInstance = null;
 let showingSavedOnly = false;
 let activeArea = 'all';
+
+function initGuestMap(){
+  if(guestMapInstance || typeof maplibregl === 'undefined' || typeof trails === 'undefined') return;
+  const el = document.getElementById('guestPreviewMap');
+  if(!el) return;
+
+  guestMapInstance = new maplibregl.Map({
+    container: 'guestPreviewMap',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [12.05, 46.55],
+    zoom: 8,
+    scrollZoom: false,
+  });
+
+  guestMapInstance.on('load', () => {
+    // Real route lines for any trail that has one — same data the logged-in map uses.
+    const pathFeatures = trails
+      .filter(t => Array.isArray(t.path) && t.path.length > 1)
+      .map(t => ({
+        type: 'Feature',
+        properties: { name: t.name },
+        geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
+      }));
+    guestMapInstance.addSource('guest-trail-paths', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: pathFeatures },
+    });
+    guestMapInstance.addLayer({
+      id: 'guest-trail-paths-line',
+      type: 'line',
+      source: 'guest-trail-paths',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#2E4034', 'line-width': 2.5 },
+    });
+
+    const bounds = new maplibregl.LngLatBounds();
+    trails.forEach(t => {
+      if(typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
+      const popup = new maplibregl.Popup({ offset: 18 }).setHTML(`<b>${t.name}</b><br>${t.area}`);
+      new maplibregl.Marker({ color: '#D6A038' }).setLngLat([t.lng, t.lat]).setPopup(popup).addTo(guestMapInstance);
+      bounds.extend([t.lng, t.lat]);
+    });
+    guestMapInstance.fitBounds(bounds, { padding: 40, maxZoom: 10 });
+  });
+}
+
+
 let trailMapInstance = null;
 let trailMarkers = {};
 
@@ -495,5 +543,6 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
   } else {
     newHome.hidden = false;
     returningHome.hidden = true;
+    initGuestMap();
   }
 });
