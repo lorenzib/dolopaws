@@ -39,8 +39,8 @@ const trails = [
     terrainType:'Wide gravel', terrainRank:1,
     elevationProfile:[{km:0, elev:2320}, {km:1.8, elev:2344}, {km:3.2, elev:2454}, {km:5.5, elev:2405}, {km:7.5, elev:2240}, {km:9, elev:2320}],
     surfaceHazards:['Loose gravel patches near the rifugi'], shadeCoverage:5, heatRisk:'high', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:0,label:'Rifugio Auronzo fountain'},{km:4,label:'Rifugio Lavaredo'},{km:7,label:'Rifugio Locatelli'}],
-    rifugi:[{km:0,name:'Rifugio Auronzo'},{km:4,name:'Rifugio Lavaredo'},{km:7,name:'Rifugio Locatelli'}],
+    waterSources:[{km:0,label:'Rifugio Auronzo fountain',lat:46.612205,lng:12.296095},{km:4,label:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:7,label:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
+    rifugi:[{km:0,name:'Rifugio Auronzo',lat:46.612205,lng:12.296095},{km:4,name:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:7,name:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
     desc:"The classic loop around the iconic three peaks. Wide, well-graded path — one of the friendliest big-name hikes for dogs.",
     tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early."
   },
@@ -73,7 +73,7 @@ const trails = [
     elevationProfile:[{km:0, elev:2236}, {km:2, elev:2350}, {km:4, elev:2480}, {km:6, elev:2575}],
     surfaceHazards:['Loose rock on the climb'], shadeCoverage:5, heatRisk:'high', safetyLevel:'moderate', exposure:false,
     waterSources:[],
-    rifugi:[{km:3,name:'Rifugio Nuvolau'}],
+    rifugi:[{km:3,name:'Rifugio Nuvolau',lat:46.495231,lng:12.045752}],
     desc:"A steady, rewarding climb from the 2236 m pass up to one of the best 360° viewpoints in the Dolomites.",
     tips:"Starts already at altitude — go slow with dogs unused to thin air, and carry all the water you'll need."
   },
@@ -95,8 +95,8 @@ const trails = [
     terrainType:'Paved / packed gravel, flat', terrainRank:0,
     elevationProfile:[{km:0, elev:1496}, {km:1, elev:1500}, {km:2.5, elev:1496}, {km:4, elev:1496}],
     surfaceHazards:[], shadeCoverage:50, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:0,label:'Lakeside fountain'}],
-    rifugi:[{km:0,name:'Lakeside hotel café'}],
+    waterSources:[{km:0,label:'Lakeside fountain',lat:46.69932,lng:12.08516}],
+    rifugi:[{km:0,name:'Lakeside hotel café',lat:46.69932,lng:12.08516}],
     desc:"A flat, easy circuit around one of the Dolomites' most photographed lakes. Gentle enough for any dog.",
     tips:"Extremely popular — expect crowds and paid parking; arrive at opening time."
   },
@@ -107,7 +107,7 @@ const trails = [
     terrainType:'Paved, flat', terrainRank:0,
     elevationProfile:[{km:0, elev:1534}, {km:0.65, elev:1540}, {km:1.3, elev:1534}],
     surfaceHazards:[], shadeCoverage:70, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:0,label:'Trailhead fountain'}],
+    waterSources:[{km:0,label:'Trailhead fountain',lat:46.41032,lng:11.57585}],
     rifugi:[],
     desc:"A short, flat, mostly forested path around a small, vividly colored lake — a perfect low-effort stop.",
     tips:"Lake is fenced off (no swimming) but it's a lovely easy leg-stretch for older or less mobile dogs."

@@ -126,12 +126,13 @@ function initGuestMap(){
 
   guestMapInstance.on('load', () => {
     addTerrainToMap(guestMapInstance, { exaggeration: 1.3 });
+    addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
       .filter(t => Array.isArray(t.path) && t.path.length > 1)
       .map(t => ({
         type: 'Feature',
-        properties: { name: t.name },
+        properties: { name: t.name, safetyLevel: t.safetyLevel },
         geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
       }));
     guestMapInstance.addSource('guest-trail-paths', {
@@ -143,7 +144,16 @@ function initGuestMap(){
       type: 'line',
       source: 'guest-trail-paths',
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#2E4034', 'line-width': 2.5 },
+      paint: {
+        'line-color': [
+          'match', ['get', 'safetyLevel'],
+          'low-risk', '#2C5C34',
+          'moderate', '#8A5A16',
+          'caution', '#9C3A25',
+          '#2E4034',
+        ],
+        'line-width': 2.5,
+      },
     });
 
     const bounds = new maplibregl.LngLatBounds();
@@ -180,6 +190,7 @@ function initTrailMap(){
 
   trailMapInstance.on('load', () => {
     addTerrainToMap(trailMapInstance, { exaggeration: 1.3 });
+    addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     trailMapInstance.addSource('trail-paths', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
@@ -189,7 +200,16 @@ function initTrailMap(){
       type: 'line',
       source: 'trail-paths',
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#2E4034', 'line-width': 3 },
+      paint: {
+        'line-color': [
+          'match', ['get', 'safetyLevel'],
+          'low-risk', '#2C5C34',
+          'moderate', '#8A5A16',
+          'caution', '#9C3A25',
+          '#2E4034', // fallback if safetyLevel is missing
+        ],
+        'line-width': 3,
+      },
     });
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
@@ -248,6 +268,32 @@ function renderTrailDetailContent(t){
   `;
 }
 
+function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.style.position = container.style.position || 'relative';
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.textContent = 'View flat';
+  btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
+  container.appendChild(btn);
+
+  let is3D = true;
+  btn.addEventListener('click', () => {
+    if(is3D){
+      map.setTerrain(null);
+      map.easeTo({ pitch: 0, duration: 500 });
+      btn.textContent = 'View 3D';
+    } else {
+      map.setTerrain({ source: 'terrain-dem', exaggeration });
+      map.easeTo({ pitch: defaultPitch || 0, duration: 500 });
+      btn.textContent = 'View flat';
+    }
+    is3D = !is3D;
+  });
+}
+
 function addTerrainToMap(map, opts){
   const withExaggeration = (opts && opts.exaggeration) || 1.3;
   map.addSource('terrain-dem', {
@@ -288,7 +334,7 @@ function updatePathLayer(list){
     .filter(t => Array.isArray(t.path) && t.path.length > 1)
     .map(t => ({
       type: 'Feature',
-      properties: { id: t.id, name: t.name },
+      properties: { id: t.id, name: t.name, safetyLevel: t.safetyLevel },
       // GeoJSON is [lng, lat] — our stored path is [lat, lng], so flip each point.
       geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
     }));

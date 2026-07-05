@@ -3,6 +3,12 @@ function safetyLabel(level){
   if(level === 'moderate') return 'Moderate — some caution';
   return 'Caution — exposed sections';
 }
+function safetyColor(level){
+  if(level === 'low-risk') return '#2C5C34';
+  if(level === 'moderate') return '#8A5A16';
+  return '#9C3A25';
+}
+
 function safetyClass(level){
   if(level === 'low-risk') return 'safety-low';
   if(level === 'moderate') return 'safety-moderate';
@@ -35,6 +41,64 @@ function renderTrailDetailContent(t){
       <p style="margin:0;font-style:italic;">Not tracked separately yet — rifugi above often double as rest stops.</p>
     </div>
   `;
+}
+
+function distMeters(a, b){
+  return Math.hypot(a[0]-b[0], a[1]-b[1]) * 111000;
+}
+
+// Finds the real point along an actual GPS path at a given fraction of its
+// total length (0 = start, 1 = end). Used to place rifugi/water icons at
+// their true position on the map, rather than guessing coordinates.
+function pointAtFraction(path, fraction){
+  const total = path.reduce((sum, p, i) => i === 0 ? 0 : sum + distMeters(path[i-1], p), 0);
+  const target = total * Math.max(0, Math.min(1, fraction));
+  let acc = 0;
+  for(let i = 0; i < path.length - 1; i++){
+    const seg = distMeters(path[i], path[i+1]);
+    if(acc + seg >= target){
+      const t = seg > 0 ? (target - acc) / seg : 0;
+      return [
+        path[i][0] + (path[i+1][0] - path[i][0]) * t,
+        path[i][1] + (path[i+1][1] - path[i][1]) * t,
+      ];
+    }
+    acc += seg;
+  }
+  return path[path.length - 1];
+}
+
+function makeIconEl(emoji, bgColor){
+  const el = document.createElement('div');
+  el.style.cssText = `width:28px;height:28px;border-radius:50%;background:${bgColor};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:14px;`;
+  el.textContent = emoji;
+  return el;
+}
+
+function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.style.position = container.style.position || 'relative';
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.textContent = 'View flat — easier to read names';
+  btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
+  container.appendChild(btn);
+
+  let is3D = true;
+  btn.addEventListener('click', () => {
+    if(is3D){
+      map.setTerrain(null);
+      map.easeTo({ pitch: 0, duration: 500 });
+      btn.textContent = 'View 3D terrain';
+    } else {
+      map.setTerrain({ source: 'terrain-dem', exaggeration });
+      map.easeTo({ pitch: defaultPitch || 0, duration: 500 });
+      btn.textContent = 'View flat — easier to read names';
+    }
+    is3D = !is3D;
+  });
 }
 
 function addTerrainToMap(map, exaggeration){
@@ -75,6 +139,8 @@ function init(){
   document.getElementById('trailBadges').innerHTML =
     `<span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>` +
     (t.paid ? `<span class="tag">Paid access</span>` : '');
+  document.getElementById('routeSwatch').style.background = safetyColor(t.safetyLevel);
+  document.getElementById('routeSwatchLabel').textContent = `Trail route (${safetyLabel(t.safetyLevel)})`;
   document.getElementById('trailDesc').textContent = t.desc || '';
   document.getElementById('trailTips').textContent = t.tips ? `Tip: ${t.tips}` : '';
   document.getElementById('trailDetailContent').innerHTML = renderTrailDetailContent(t);
@@ -92,6 +158,7 @@ function init(){
 
     map.on('load', () => {
       addTerrainToMap(map, 1.5);
+      addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
       // data as our base map, but with their dedicated trail-route styling
@@ -122,13 +189,49 @@ function init(){
           type: 'line',
           source: 'single-trail-path',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: { 'line-color': '#D6A038', 'line-width': 4 },
+          paint: { 'line-color': safetyColor(t.safetyLevel), 'line-width': 4 },
         });
         const bounds = new maplibregl.LngLatBounds();
         t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
         map.fitBounds(bounds, { padding: 60, maxZoom: 17, pitch: 45 });
+
+        // Rifugi and water-source icons — positioned using the REAL GPS
+        // path, not guessed coordinates. Km markers were recorded against
+        // the trail's stated distance, so we convert to a fraction of that
+        // distance, then find the matching point on the real path.
+        (t.rifugi || []).forEach(r => {
+          let lat, lng;
+          if(typeof r.lat === 'number' && typeof r.lng === 'number'){
+            lat = r.lat; lng = r.lng; // verified real coordinates
+          } else {
+            const fraction = t.distance > 0 ? r.km / t.distance : 0;
+            [lat, lng] = pointAtFraction(t.path, fraction); // approximate fallback
+          }
+          new maplibregl.Marker({ element: makeIconEl('🏠', '#2E4034') })
+            .setLngLat([lng, lat])
+            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${r.name}</b><br>Km ${r.km}`))
+            .addTo(map);
+        });
+        (t.waterSources || []).forEach(w => {
+          let lat, lng;
+          if(typeof w.lat === 'number' && typeof w.lng === 'number'){
+            lat = w.lat; lng = w.lng; // verified real coordinates
+          } else {
+            const fraction = t.distance > 0 ? w.km / t.distance : 0;
+            [lat, lng] = pointAtFraction(t.path, fraction); // approximate fallback
+          }
+          new maplibregl.Marker({ element: makeIconEl('💧', '#4E90A8') })
+            .setLngLat([lng, lat])
+            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${w.label}</b><br>Km ${w.km}`))
+            .addTo(map);
+        });
       } else {
         new maplibregl.Marker({ color: '#D6A038' }).setLngLat([t.lng, t.lat]).addTo(map);
+        const legend = document.getElementById('mapLegend');
+        if(legend){
+          legend.insertAdjacentHTML('beforeend',
+            '<span style="font-style:italic;">— Rifugi/water map icons need this trail\'s real GPS route, not yet added. See the list below instead.</span>');
+        }
       }
     });
   }
