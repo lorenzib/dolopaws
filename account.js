@@ -7,7 +7,6 @@
   const passwordSection = document.getElementById('passwordSection');
   const sendResetBtn = document.getElementById('sendResetBtn');
   const resetStatus = document.getElementById('resetStatus');
-  const savedTrailsList = document.getElementById('savedTrailsList');
   const logOutBtn = document.getElementById('logOutBtn');
 
   const dogName = document.getElementById('dogName');
@@ -15,6 +14,15 @@
   const dogBreedOtherField = document.getElementById('dogBreedOtherField');
   const dogBreedOther = document.getElementById('dogBreedOther');
   const dogFitness = document.getElementById('dogFitness');
+  const dogAge = document.getElementById('dogAge');
+  const dogWeight = document.getElementById('dogWeight');
+  const dogJointIssues = document.getElementById('dogJointIssues');
+  const dogJointDetailField = document.getElementById('dogJointDetailField');
+  const dogJointDetail = document.getElementById('dogJointDetail');
+  const dogHeatIssues = document.getElementById('dogHeatIssues');
+  const dogHeatDetailField = document.getElementById('dogHeatDetailField');
+  const dogHeatDetail = document.getElementById('dogHeatDetail');
+  const dogHealthNotes = document.getElementById('dogHealthNotes');
   const saveDogBtn = document.getElementById('saveDogBtn');
   const dogStatus = document.getElementById('dogStatus');
 
@@ -48,6 +56,13 @@
     dogBreedOtherField.hidden = dogBreed.value !== OTHER_VALUE;
   });
 
+  dogJointIssues.addEventListener('change', () => {
+    dogJointDetailField.hidden = !dogJointIssues.checked;
+  });
+  dogHeatIssues.addEventListener('change', () => {
+    dogHeatDetailField.hidden = !dogHeatIssues.checked;
+  });
+
   saveDogBtn.addEventListener('click', async () => {
     if(!window.DoloPawsAuth) return;
     const finalBreed = dogBreed.value === OTHER_VALUE
@@ -59,6 +74,13 @@
       name: dogName.value.trim(),
       breed: finalBreed,
       fitness: dogFitness.value,
+      age: dogAge.value ? Number(dogAge.value) : null,
+      weight: dogWeight.value ? Number(dogWeight.value) : null,
+      jointIssues: dogJointIssues.checked,
+      jointDetail: dogJointIssues.checked ? dogJointDetail.value.trim() : '',
+      heatIssues: dogHeatIssues.checked,
+      heatDetail: dogHeatIssues.checked ? dogHeatDetail.value.trim() : '',
+      healthNotes: dogHealthNotes.value.trim(),
     });
     saveDogBtn.disabled = false;
     saveDogBtn.textContent = 'Save dog profile';
@@ -66,25 +88,6 @@
     dogStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
     dogStatus.textContent = ok ? 'Saved.' : 'Something went wrong — please try again.';
   });
-
-  function renderSavedTrails(favorites){
-    const ids = Object.keys(favorites || {});
-    if(ids.length === 0){
-      savedTrailsList.innerHTML = `<p style="color:var(--ink-soft);font-size:14px;">You haven't saved any trails yet. <a href="my-trails.html" style="color:var(--accent);font-weight:700;">Browse trails</a></p>`;
-      return;
-    }
-    const items = ids.map(id => {
-      const trail = (typeof trails !== 'undefined') ? trails.find(t => t.id === id) : null;
-      if(!trail){
-        return `<li style="padding:10px 0;border-bottom:1px solid var(--paper-line);">${id}</li>`;
-      }
-      return `<li style="padding:12px 0;border-bottom:1px solid var(--paper-line);">
-        <a href="my-trails.html" style="color:var(--ink);font-weight:700;text-decoration:none;font-size:14.5px;">${trail.name}</a>
-        <div style="color:var(--ink-soft);font-size:12.5px;margin-top:2px;">${trail.area} · ${trail.distance} km</div>
-      </li>`;
-    }).join('');
-    savedTrailsList.innerHTML = `<ul style="list-style:none;padding:0;margin:0;">${items}</ul>`;
-  }
 
   function waitForAuth(cb){
     if(window.DoloPawsAuth){ cb(); return; }
@@ -131,11 +134,16 @@
           dogBreed.value = savedBreed;
           dogBreedOtherField.hidden = true;
         }
+        dogAge.value = profile.age != null ? profile.age : '';
+        dogWeight.value = profile.weight != null ? profile.weight : '';
+        dogJointIssues.checked = !!profile.jointIssues;
+        dogJointDetailField.hidden = !profile.jointIssues;
+        dogJointDetail.value = profile.jointDetail || '';
+        dogHeatIssues.checked = !!profile.heatIssues;
+        dogHeatDetailField.hidden = !profile.heatIssues;
+        dogHeatDetail.value = profile.heatDetail || '';
+        dogHealthNotes.value = profile.healthNotes || '';
       }
-
-      savedTrailsList.innerHTML = `<p style="color:var(--ink-soft);font-size:14px;">Loading your saved trails…</p>`;
-      const favorites = await window.DoloPawsAuth.getFavorites();
-      renderSavedTrails(favorites);
     });
   });
 

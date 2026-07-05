@@ -75,15 +75,43 @@
           <option value="high">High — mountain-ready</option>
         </select>
       </label>
-      <button id="saveDogBtn" class="auth-submit" style="width:auto;padding:10px 20px;margin-top:4px;">Save dog profile</button>
-      <p id="dogStatus" style="margin-top:12px;font-size:13px;" hidden></p>
     </section>
 
     <section class="guide-section">
-      <h2>Saved trails</h2>
-      <div id="savedTrailsList">
-        <p style="color:var(--ink-soft);font-size:14px;">Loading your saved trails…</p>
+      <h2>Health information</h2>
+      <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:16px;">This helps us flag trails that might not be a good fit — none of this is required.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <label class="field-label">Age (years)
+          <input type="number" id="dogAge" min="0" max="30" placeholder="e.g. 4">
+        </label>
+        <label class="field-label">Weight (kg)
+          <input type="number" id="dogWeight" min="0" max="120" placeholder="e.g. 18">
+        </label>
       </div>
+
+      <label class="field-label" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <input type="checkbox" id="dogJointIssues" style="width:auto;margin:0;">
+        <span>Has joint or mobility issues (e.g. hip dysplasia, arthritis)</span>
+      </label>
+      <label class="field-label" id="dogJointDetailField" hidden>Tell us more
+        <input type="text" id="dogJointDetail" placeholder="e.g. mild hip dysplasia, avoid long descents">
+      </label>
+
+      <label class="field-label" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <input type="checkbox" id="dogHeatIssues" style="width:auto;margin:0;">
+        <span>Sensitive to heat or has breathing difficulty</span>
+      </label>
+      <label class="field-label" id="dogHeatDetailField" hidden>Tell us more
+        <input type="text" id="dogHeatDetail" placeholder="e.g. brachycephalic, overheats quickly">
+      </label>
+
+      <label class="field-label">Anything else worth knowing?
+        <textarea id="dogHealthNotes" rows="3" placeholder="Allergies, medications, recent injuries, vet notes…" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);resize:vertical;"></textarea>
+      </label>
+
+      <button id="saveDogBtn" class="auth-submit" style="width:auto;padding:10px 20px;margin-top:4px;">Save dog profile</button>
+      <p id="dogStatus" style="margin-top:12px;font-size:13px;" hidden></p>
     </section>
 
     <section class="guide-section" style="text-align:center;">
@@ -117,7 +145,6 @@
 
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
-<script src="trails-data.js" defer></script>
 <script src="account.js" defer></script>
 </body>
 </html>
