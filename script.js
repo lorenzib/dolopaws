@@ -113,14 +113,18 @@ let trailMapInstance = null;
 let trailMarkers = {};
 
 function initTrailMap(){
-  if(trailMapInstance || typeof L === 'undefined') return;
+  if(trailMapInstance || typeof maplibregl === 'undefined') return;
   const el = document.getElementById('trailMap');
   if(!el) return;
-  trailMapInstance = L.map('trailMap', { scrollWheelZoom: false }).setView([46.55, 12.05], 9);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 16,
-    attribution: '&copy; OpenStreetMap contributors',
-  }).addTo(trailMapInstance);
+  // Note: MapLibre uses [lng, lat] order — the opposite of Leaflet's [lat, lng].
+  trailMapInstance = new maplibregl.Map({
+    container: 'trailMap',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [12.05, 46.55],
+    zoom: 9,
+    scrollZoom: false,
+  });
+  trailMapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
 }
 
 function updateMapMarkers(list){
@@ -130,7 +134,7 @@ function updateMapMarkers(list){
   // Remove markers for trails no longer in the filtered view
   Object.keys(trailMarkers).forEach(id => {
     if(!visibleIds.has(id)){
-      trailMapInstance.removeLayer(trailMarkers[id]);
+      trailMarkers[id].remove();
       delete trailMarkers[id];
     }
   });
@@ -138,8 +142,11 @@ function updateMapMarkers(list){
   // Add markers for newly-visible trails
   list.forEach(t => {
     if(trailMarkers[t.id] || typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
-    const marker = L.marker([t.lat, t.lng]).addTo(trailMapInstance);
-    marker.bindPopup(`<b>${t.name}</b><br>${t.score}% match`);
+    const popup = new maplibregl.Popup({ offset: 20 }).setHTML(`<b>${t.name}</b><br>${t.score}% match`);
+    const marker = new maplibregl.Marker({ color: '#D6A038' })
+      .setLngLat([t.lng, t.lat])
+      .setPopup(popup)
+      .addTo(trailMapInstance);
     trailMarkers[t.id] = marker;
   });
 
@@ -147,8 +154,9 @@ function updateMapMarkers(list){
   // also re-frames the map instead of leaving it zoomed to the wrong area.
   const validList = list.filter(t => typeof t.lat === 'number' && typeof t.lng === 'number');
   if(validList.length > 0){
-    const bounds = L.latLngBounds(validList.map(t => [t.lat, t.lng]));
-    trailMapInstance.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
+    const bounds = new maplibregl.LngLatBounds();
+    validList.forEach(t => bounds.extend([t.lng, t.lat]));
+    trailMapInstance.fitBounds(bounds, { padding: 40, maxZoom: 12 });
   }
 }
 
