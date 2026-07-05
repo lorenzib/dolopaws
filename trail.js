@@ -114,7 +114,7 @@ function addTerrainToMap(map, exaggeration){
     id: 'hillshade-layer',
     type: 'hillshade',
     source: 'terrain-dem',
-    paint: { 'hillshade-exaggeration': 0.5 },
+    paint: { 'hillshade-exaggeration': 0.35 },
   });
 }
 
@@ -163,6 +163,14 @@ function init(){
       // Waymarked Trails' own public hiking overlay — same underlying OSM
       // data as our base map, but with their dedicated trail-route styling
       // (numbered routes, waymarking) that a general basemap doesn't draw.
+      //
+      // IMPORTANT: adding a layer with no target position stacks it on top
+      // of EVERYTHING in the base style, including all its text labels —
+      // that's what was actually causing the "hard to read" problem, in
+      // both 3D and flat mode. Finding the first text/label layer and
+      // inserting before it keeps the overlay above roads/fills but below
+      // every place name, so labels stay legible either way.
+      const firstLabelLayer = map.getStyle().layers.find(l => l.type === 'symbol');
       map.addSource('waymarked-hiking', {
         type: 'raster',
         tiles: ['https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png'],
@@ -173,8 +181,8 @@ function init(){
         id: 'waymarked-hiking-layer',
         type: 'raster',
         source: 'waymarked-hiking',
-        paint: { 'raster-opacity': 0.85 },
-      });
+        paint: { 'raster-opacity': 0.6 },
+      }, firstLabelLayer ? firstLabelLayer.id : undefined);
 
       if(Array.isArray(t.path) && t.path.length > 1){
         map.addSource('single-trail-path', {

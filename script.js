@@ -313,7 +313,7 @@ function addTerrainToMap(map, opts){
     id: 'hillshade-layer',
     type: 'hillshade',
     source: 'terrain-dem',
-    paint: { 'hillshade-exaggeration': 0.5 },
+    paint: { 'hillshade-exaggeration': 0.35 },
   });
 }
 
