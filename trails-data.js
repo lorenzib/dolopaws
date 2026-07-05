@@ -187,7 +187,10 @@ const trails = [
     elevationProfile:[{km:0, elev:1437}, {km:2.2, elev:1530}, {km:4.4, elev:1440}, {km:6.6, elev:1500}, {km:8.8, elev:1437}],
     surfaceHazards:[], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'moderate', exposure:false,
     waterSources:[],
-    rifugi:[],
+    rifugi:[
+      {km:0,name:'Restaurant Pinei Bar / Hotel Panider Sattel',lat:46.5802,lng:11.6228},
+      {km:4.47,name:'Bulla village (St. Leonard Church)',lat:46.56513,lng:11.6355}
+    ],
     desc:"A real, GPS-verified geological education trail between Passo Pinei and the village of Bulla — 8 information panels explain how the Dolomites formed, including a spot where you physically cross the 252-million-year-old Permian-Triassic boundary. Confirmed dog-friendly (leashed, off-leash in some areas) by multiple independent trail guides.",
     tips:"Reachable by bus (line 172) from Ortisei, or park at Passo Pinei. Best June through October. Moderate terrain with some real ascent/descent — not the flattest option on this list, but not technical either."
   },

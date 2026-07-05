@@ -159,9 +159,17 @@ function initGuestMap(){
     const bounds = new maplibregl.LngLatBounds();
     trails.forEach(t => {
       if(typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
-      const popup = new maplibregl.Popup({ offset: 18 }).setHTML(`<b>${t.name}</b><br>${t.area}`);
-      new maplibregl.Marker({ color: '#D6A038' }).setLngLat([t.lng, t.lat]).setPopup(popup).addTo(guestMapInstance);
-      bounds.extend([t.lng, t.lat]);
+      let markerLat = t.lat, markerLng = t.lng;
+      if(t.startPoint){
+        markerLat = t.startPoint.lat; markerLng = t.startPoint.lng;
+      } else if(Array.isArray(t.path) && t.path.length > 0){
+        [markerLat, markerLng] = t.path[0];
+      }
+      const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
+        `<b>${t.name}</b><br>${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#D6A038;text-decoration:none;">Trail details →</a>`
+      );
+      new maplibregl.Marker({ color: '#D6A038' }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
+      bounds.extend([markerLng, markerLat]);
     });
     guestMapInstance.fitBounds(bounds, { padding: 40, maxZoom: 10 });
   });
@@ -234,38 +242,6 @@ function pathThumbnailSvg(path){
     <rect width="${W}" height="${H}" fill="var(--sage-dim)"/>
     <polyline points="${points}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
   </svg>`;
-}
-
-function renderTrailDetailContent(t){
-  const rifugi = Array.isArray(t.rifugi) ? t.rifugi : [];
-  const water = Array.isArray(t.waterSources) ? t.waterSources : [];
-
-  const rifugiHtml = rifugi.length > 0
-    ? `<ul style="margin:0 0 12px;padding-left:18px;">${rifugi.map(r => `<li>Km ${r.km} — ${r.name}</li>`).join('')}</ul>`
-    : `<p style="margin:0 0 12px;">No rifugi along this route.</p>`;
-
-  const waterHtml = water.length > 0
-    ? `<ul style="margin:0 0 12px;padding-left:18px;">${water.map(w => `<li>Km ${w.km} — ${w.label}</li>`).join('')}</ul>`
-    : `<p style="margin:0 0 12px;">No drinking water sources recorded along this route — bring enough for your dog.</p>`;
-
-  return `
-    <div style="margin-bottom:12px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">🏔️ Rifugi on the way</div>
-      ${rifugiHtml}
-    </div>
-    <div style="margin-bottom:12px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">💧 Drinking water</div>
-      ${waterHtml}
-    </div>
-    <div style="margin-bottom:12px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">🪑 Resting stations</div>
-      <p style="margin:0;font-style:italic;">Not tracked separately yet — rifugi above often double as rest stops.</p>
-    </div>
-    <div>
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">📍 Other landmarks</div>
-      <p style="margin:0;font-style:italic;">${t.desc ? t.desc : 'Not recorded yet for this trail.'}</p>
-    </div>
-  `;
 }
 
 function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
@@ -353,9 +329,21 @@ function updateMapMarkers(list){
   // Add markers for newly-visible trails
   list.forEach(t => {
     if(trailMarkers[t.id] || typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
-    const popup = new maplibregl.Popup({ offset: 20 }).setHTML(`<b>${t.name}</b><br>${t.score}% match`);
+    // Prefer the real, verified starting point over the general reference
+    // coordinate — a trail's own `lat`/`lng` is sometimes just an
+    // approximate area marker, while `startPoint` (or the path's own first
+    // point) is the actual real trailhead when we have real GPS data.
+    let markerLat = t.lat, markerLng = t.lng;
+    if(t.startPoint){
+      markerLat = t.startPoint.lat; markerLng = t.startPoint.lng;
+    } else if(Array.isArray(t.path) && t.path.length > 0){
+      [markerLat, markerLng] = t.path[0];
+    }
+    const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
+      `<b>${t.name}</b><br>${t.score}% match<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#D6A038;text-decoration:none;">Trail details →</a>`
+    );
     const marker = new maplibregl.Marker({ color: '#D6A038' })
-      .setLngLat([t.lng, t.lat])
+      .setLngLat([markerLng, markerLat])
       .setPopup(popup)
       .addTo(trailMapInstance);
     marker.getElement().style.cursor = 'pointer';
@@ -475,22 +463,10 @@ async function renderReturningHomepage(profile){
         <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
         ${thumb ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
-        <div class="details-toggle" data-id="${t.id}" style="margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);cursor:pointer;user-select:none;">Trail details ▾</div>
-        <div class="details-panel" id="details-${t.id}" hidden style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--paper-line);font-size:12.5px;color:var(--ink-soft);">
-          ${renderTrailDetailContent(t)}
-        </div>
+        <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">Trail details →</a>
       </div>
     </div>`;
   }).join('');
-
-  listEl.querySelectorAll('.details-toggle').forEach(el => {
-    el.addEventListener('click', () => {
-      const panel = document.getElementById(`details-${el.dataset.id}`);
-      const nowHidden = !panel.hidden;
-      panel.hidden = !panel.hidden;
-      el.textContent = panel.hidden ? 'Trail details ▾' : 'Trail details ▴';
-    });
-  });
 
   listEl.querySelectorAll('.save-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
