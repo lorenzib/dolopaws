@@ -146,6 +146,34 @@ function initTrailMap(){
   });
 }
 
+function pathThumbnailSvg(path){
+  if(!Array.isArray(path) || path.length < 2) return null;
+  const lats = path.map(p => p[0]), lngs = path.map(p => p[1]);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+  const W = 120, H = 90, pad = 10;
+  const spanLat = (maxLat - minLat) || 0.0001;
+  const spanLng = (maxLng - minLng) || 0.0001;
+  const scale = Math.min((W - pad*2) / spanLng, (H - pad*2) / spanLat);
+  const points = path.map(([lat, lng]) => {
+    const x = pad + (lng - minLng) * scale + (W - pad*2 - spanLng*scale) / 2;
+    const y = pad + (maxLat - lat) * scale + (H - pad*2 - spanLat*scale) / 2; // flip Y (lat increases upward)
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+    <rect width="${W}" height="${H}" fill="var(--sage-dim)"/>
+    <polyline points="${points}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function jumpToCard(trailId){
+  const card = document.getElementById(`trail-card-${trailId}`);
+  if(!card) return;
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.add('highlighted');
+  setTimeout(() => card.classList.remove('highlighted'), 2000);
+}
+
 function updatePathLayer(list){
   if(!trailMapLoaded){
     pendingPathList = list; // apply once the style finishes loading
@@ -183,6 +211,8 @@ function updateMapMarkers(list){
       .setLngLat([t.lng, t.lat])
       .setPopup(popup)
       .addTo(trailMapInstance);
+    marker.getElement().style.cursor = 'pointer';
+    marker.getElement().addEventListener('click', () => jumpToCard(t.id));
     trailMarkers[t.id] = marker;
   });
 
@@ -281,9 +311,10 @@ async function renderReturningHomepage(profile){
   listEl.innerHTML = displayList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
+    const thumb = pathThumbnailSvg(t.path);
     return `
-    <div class="trail-card" data-id="${t.id}">
-      <div class="photo"></div>
+    <div class="trail-card" id="trail-card-${t.id}" data-id="${t.id}">
+      <div class="photo" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
       <div class="body">
         <div class="top-row">
           <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
@@ -296,6 +327,7 @@ async function renderReturningHomepage(profile){
         <div class="name" style="margin-top:6px;">${t.name}</div>
         <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
+        ${thumb ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -309,6 +341,26 @@ async function renderReturningHomepage(profile){
       renderReturningHomepage(profile);
     });
   });
+
+  listEl.querySelectorAll('.photo[data-trail-id]').forEach(el => {
+    el.addEventListener('click', () => focusMapOnTrail(el.dataset.trailId, displayList));
+  });
+}
+
+function focusMapOnTrail(trailId, list){
+  if(!trailMapInstance) return;
+  const t = list.find(x => x.id === trailId);
+  if(!t) return;
+  document.getElementById('trailMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if(Array.isArray(t.path) && t.path.length > 1){
+    const bounds = new maplibregl.LngLatBounds();
+    t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
+    trailMapInstance.fitBounds(bounds, { padding: 60, maxZoom: 15 });
+  } else if(typeof t.lat === 'number' && typeof t.lng === 'number'){
+    trailMapInstance.flyTo({ center: [t.lng, t.lat], zoom: 13 });
+  }
+  const marker = trailMarkers[trailId];
+  if(marker) marker.togglePopup();
 }
 
 // Adjust-for-today panel wiring

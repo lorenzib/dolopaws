@@ -223,6 +223,11 @@ img,svg{max-width:100%;height:auto;}
   border:1px solid var(--paper-line);
   border-radius:var(--radius-md);
   margin-bottom:12px;
+  transition:box-shadow .3s ease, border-color .3s ease;
+}
+.trail-card.highlighted{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(214,160,56,.35);
 }
 .trail-card .photo{
   width:120px;height:90px;flex:none;border-radius:8px;

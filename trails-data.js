@@ -101,10 +101,11 @@ const trails = [
     tips:"Extremely popular — expect crowds and paid parking; arrive at opening time."
   },
   {
-    id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega", lat:46.446, lng:11.598,
-    distance:1.5, elevation:20, hours:'0.5', paid:false,
+    id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega", lat:46.4091, lng:11.5752,
+    path:[[46.41032,11.57585],[46.41024,11.57584],[46.41022,11.57554],[46.40998,11.57483],[46.40973,11.57432],[46.40957,11.57404],[46.40934,11.57381],[46.40923,11.57361],[46.40913,11.57327],[46.40913,11.5728],[46.40878,11.57287],[46.40852,11.57299],[46.40829,11.57316],[46.4081,11.57345],[46.40802,11.574],[46.40804,11.57424],[46.4082,11.57459],[46.40815,11.57514],[46.40832,11.57547],[46.40844,11.5762],[46.40855,11.57631],[46.40883,11.57628],[46.40903,11.57639],[46.40892,11.57677],[46.40895,11.57703],[46.40917,11.57719],[46.40934,11.57739],[46.40941,11.57738],[46.40968,11.57714],[46.40992,11.57686],[46.41018,11.57675],[46.41023,11.57663],[46.41032,11.57585]],
+    distance:1.3, elevation:20, hours:'0.5', paid:false,
     terrainType:'Paved, flat', terrainRank:0,
-    elevationProfile:[{km:0, elev:1534}, {km:0.75, elev:1540}, {km:1.5, elev:1534}],
+    elevationProfile:[{km:0, elev:1534}, {km:0.65, elev:1540}, {km:1.3, elev:1534}],
     surfaceHazards:[], shadeCoverage:70, heatRisk:'low', safetyLevel:'low-risk', exposure:false,
     waterSources:[{km:0,label:'Trailhead fountain'}],
     rifugi:[],
