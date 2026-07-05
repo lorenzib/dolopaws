@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "fetch:dolomites-trails": "node scripts/fetch-dolomites-trails.js",
+    "validate:dolomites-trails": "node scripts/validate-dolomites-trails.js",
+    "build:dolomites-trails": "npm run fetch:dolomites-trails && npm run validate:dolomites-trails"
   },
   "devDependencies": {
     "jest": "^29.7.0",

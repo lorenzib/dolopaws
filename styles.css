@@ -434,3 +434,41 @@ img,svg{max-width:100%;height:auto;}
 }
 .area-pill.active{background:var(--ink);border-color:var(--ink);color:#fff;}
 .area-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+
+/* ---------- OSM trails dataset section ---------- */
+.osm-trails-wrap{padding-bottom:60px;}
+.osm-status{font-size:13px;color:var(--ink-soft);margin:10px 0 14px;}
+.osm-trails-map{
+  width:100%;
+  height:320px;
+  border:1px solid var(--paper-line);
+  border-radius:var(--radius-md);
+  background:var(--sage-dim);
+  overflow:hidden;
+}
+.osm-trails-list{
+  margin:14px 0 0;
+  padding-left:20px;
+  color:var(--ink-soft);
+  font-size:13px;
+  line-height:1.5;
+  columns:2;
+  column-gap:30px;
+}
+.osm-trails-list li{break-inside:avoid;margin-bottom:7px;}
+.osm-empty{
+  padding:10px 12px;
+  border-radius:8px;
+  background:var(--success-dim);
+  color:var(--ink-soft);
+  font-size:12.5px;
+}
+.osm-attribution{
+  margin-top:12px;
+  font-size:12px;
+  color:var(--ink-soft);
+}
+
+@media (max-width:760px){
+  .osm-trails-list{columns:1;}
+}
