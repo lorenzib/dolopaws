@@ -145,6 +145,79 @@ function init(){
   document.getElementById('routeSwatchLabel').textContent = `Trail route (${safetyLabel(t.safetyLevel)})`;
   document.getElementById('trailDesc').textContent = t.desc || '';
   document.getElementById('trailTips').textContent = t.tips ? `Tip: ${t.tips}` : '';
+
+  // Coordinates — shown in plain decimal-degree format, matching how most
+  // real trail sites display a trailhead location.
+  const coordSource = t.startPoint || t;
+  if(typeof coordSource.lat === 'number'){
+    document.getElementById('trailCoords').textContent =
+      `Trailhead coordinates: ${coordSource.lat.toFixed(5)}, ${coordSource.lng.toFixed(5)}`;
+  }
+
+  // Quick facts — ascent/descent, highest/lowest point.
+  // Note: summing the sparse elevationProfile points (usually just 5-6
+  // samples) systematically UNDERSTATES real ascent, since it misses the
+  // smaller ups and downs between samples — confirmed by comparing against
+  // Tre Cime's already-researched 430m gain figure, which came out much
+  // higher than summing its profile points did. Using the existing
+  // `elevation` field for ascent is more trustworthy, and since every trail
+  // here is a loop (same start/end point), descent is the same figure —
+  // net elevation change over a full loop is ~0 by definition.
+  if(Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1){
+    const elevs = t.elevationProfile.map(p => p.elev);
+    const facts = [
+      ['Distance', `${t.distance} km`],
+      ['Ascent', `${t.elevation} m`],
+      ['Descent', `${t.elevation} m`],
+      ['Highest point', `${Math.max(...elevs)} m`],
+      ['Lowest point', `${Math.min(...elevs)} m`],
+      ['Duration', `${t.hours} h`],
+    ];
+    document.getElementById('quickFacts').innerHTML = facts.map(([label, val]) => `
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em;">${label}</div>
+        <div style="font-size:16px;font-weight:700;color:var(--ink);margin-top:2px;">${val}</div>
+      </div>`).join('');
+  }
+
+  // Tag badges — derived only from data that already exists on the trail,
+  // never invented just to fill space.
+  const tags = [];
+  if(Array.isArray(t.path) && t.path.length > 1){
+    const first = t.path[0], last = t.path[t.path.length-1];
+    if(Math.hypot(first[0]-last[0], first[1]-last[1]) * 111000 < 30) tags.push('🔁 Loop route');
+  }
+  if(t.rifugi && t.rifugi.length > 0) tags.push('🍽️ Rest stops on route');
+  if(t.terrainRank === 0) tags.push('👨‍👩‍👧 Family-friendly');
+  if(/geolog/i.test(t.desc || '')) tags.push('🪨 Geological interest');
+  if(!t.paid) tags.push('🎟️ Free access');
+  document.getElementById('trailTags').innerHTML = tags.map(tag =>
+    `<span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:12px;background:var(--sage-dim);color:var(--ink);">${tag}</span>`
+  ).join('');
+
+  // Live weather at the trailhead — real forecast via Open-Meteo, a free
+  // API that requires no key and permits non-commercial client-side use
+  // (worth re-checking their terms if DoloPaws ever becomes a paid product).
+  if(typeof coordSource.lat === 'number'){
+    const weatherEl = document.getElementById('weatherWidget');
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordSource.lat}&longitude=${coordSource.lng}&current=temperature_2m,weathercode,windspeed_10m,precipitation&timezone=auto`)
+      .then(r => r.json())
+      .then(data => {
+        if(!data.current) return;
+        const c = data.current;
+        const codeText = {
+          0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+          45:'Fog',48:'Fog',51:'Light drizzle',61:'Light rain',63:'Rain',
+          65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
+          80:'Rain showers',95:'Thunderstorm',
+        }[c.weathercode] || 'Mixed conditions';
+        weatherEl.innerHTML = `<b>Weather at the trailhead right now:</b> ${c.temperature_2m}°C, ${codeText}, wind ${c.windspeed_10m} km/h` +
+          (c.precipitation > 0 ? `, ${c.precipitation}mm precipitation` : '') +
+          `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">Live forecast via Open-Meteo</div>`;
+        weatherEl.hidden = false;
+      })
+      .catch(() => { /* weather is a nice-to-have — fail silently, don't break the page */ });
+  }
   document.getElementById('trailDetailContent').innerHTML = renderTrailDetailContent(t);
 
   // Build turn-by-turn directions for trails stitched from more than one

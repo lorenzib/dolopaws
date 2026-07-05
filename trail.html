@@ -38,6 +38,12 @@
     </div>
     <button id="detailSaveBtn" class="fav-btn" style="font-size:13px;padding:9px 22px;">Save</button>
   </div>
+
+  <div id="trailTags" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;"></div>
+
+  <div id="quickFacts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-top:18px;padding:16px;background:var(--card);border:1px solid var(--paper-line);border-radius:12px;"></div>
+
+  <div id="weatherWidget" style="margin-top:14px;padding:14px 16px;background:var(--sage-dim);border-radius:12px;font-size:13px;color:var(--ink);" hidden></div>
 </div>
 
 <div class="wrap" style="padding-top:20px;">
@@ -61,6 +67,7 @@
     <h2 style="font-size:18px;margin-bottom:10px;">About this trail</h2>
     <p id="trailDesc" style="color:var(--ink-soft);font-size:14.5px;line-height:1.6;"></p>
     <p id="trailTips" style="color:var(--ink-soft);font-size:13.5px;line-height:1.6;margin-top:12px;font-style:italic;"></p>
+    <p id="trailCoords" style="color:var(--ink-soft);font-size:12px;margin-top:12px;font-family:monospace;"></p>
   </div>
   <div>
     <h2 style="font-size:18px;margin-bottom:10px;">Trail details</h2>
