@@ -24,7 +24,7 @@ npm run build:dolomites-trails
 
 Generated output:
 
-- `/home/runner/work/dolopaws/dolopaws/data/dolomites-trails.json`
+- `data/dolomites-trails.json`
 
 The output is a deterministic, compact JSON subset with normalized trail fields used by the static frontend.
 
