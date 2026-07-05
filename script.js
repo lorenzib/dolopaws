@@ -112,6 +112,9 @@ let activeArea = 'all';
 let trailMapInstance = null;
 let trailMarkers = {};
 
+let trailMapLoaded = false;
+let pendingPathList = null;
+
 function initTrailMap(){
   if(trailMapInstance || typeof maplibregl === 'undefined') return;
   const el = document.getElementById('trailMap');
@@ -125,10 +128,43 @@ function initTrailMap(){
     scrollZoom: false,
   });
   trailMapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+  trailMapInstance.on('load', () => {
+    trailMapInstance.addSource('trail-paths', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    });
+    trailMapInstance.addLayer({
+      id: 'trail-paths-line',
+      type: 'line',
+      source: 'trail-paths',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#2E4034', 'line-width': 3 },
+    });
+    trailMapLoaded = true;
+    if(pendingPathList) updatePathLayer(pendingPathList);
+  });
+}
+
+function updatePathLayer(list){
+  if(!trailMapLoaded){
+    pendingPathList = list; // apply once the style finishes loading
+    return;
+  }
+  const features = list
+    .filter(t => Array.isArray(t.path) && t.path.length > 1)
+    .map(t => ({
+      type: 'Feature',
+      properties: { id: t.id, name: t.name },
+      // GeoJSON is [lng, lat] — our stored path is [lat, lng], so flip each point.
+      geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
+    }));
+  trailMapInstance.getSource('trail-paths').setData({ type: 'FeatureCollection', features });
 }
 
 function updateMapMarkers(list){
   if(!trailMapInstance) return;
+  updatePathLayer(list);
   const visibleIds = new Set(list.map(t => t.id));
 
   // Remove markers for trails no longer in the filtered view
@@ -155,7 +191,13 @@ function updateMapMarkers(list){
   const validList = list.filter(t => typeof t.lat === 'number' && typeof t.lng === 'number');
   if(validList.length > 0){
     const bounds = new maplibregl.LngLatBounds();
-    validList.forEach(t => bounds.extend([t.lng, t.lat]));
+    validList.forEach(t => {
+      if(Array.isArray(t.path) && t.path.length > 1){
+        t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
+      } else {
+        bounds.extend([t.lng, t.lat]);
+      }
+    });
     trailMapInstance.fitBounds(bounds, { padding: 40, maxZoom: 12 });
   }
 }
