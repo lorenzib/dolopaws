@@ -83,7 +83,7 @@
               <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>
             </div>
           </div>
-          <div class="name" style="margin-top:6px;">${t.name}</div>
+          <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
           <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
           <span class="tag">${t.terrainType}</span>
         </div>

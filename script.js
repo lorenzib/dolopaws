@@ -125,6 +125,7 @@ function initGuestMap(){
   });
 
   guestMapInstance.on('load', () => {
+    addTerrainToMap(guestMapInstance, { exaggeration: 1.3 });
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
       .filter(t => Array.isArray(t.path) && t.path.length > 1)
@@ -178,6 +179,7 @@ function initTrailMap(){
   trailMapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
 
   trailMapInstance.on('load', () => {
+    addTerrainToMap(trailMapInstance, { exaggeration: 1.3 });
     trailMapInstance.addSource('trail-paths', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
@@ -244,6 +246,29 @@ function renderTrailDetailContent(t){
       <p style="margin:0;font-style:italic;">${t.desc ? t.desc : 'Not recorded yet for this trail.'}</p>
     </div>
   `;
+}
+
+function addTerrainToMap(map, opts){
+  const withExaggeration = (opts && opts.exaggeration) || 1.3;
+  map.addSource('terrain-dem', {
+    type: 'raster-dem',
+    tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
+    tileSize: 256,
+    encoding: 'terrarium',
+    maxzoom: 15,
+  });
+  map.setTerrain({ source: 'terrain-dem', exaggeration: withExaggeration });
+  // A 2D hillshade layer too — this is what actually reads as "depth" at a
+  // flat top-down angle, since 3D terrain displacement mostly shows once
+  // the camera is pitched (which the small overview maps generally aren't).
+  // Added here, before any trail-line/marker layers exist, so it
+  // automatically renders underneath them.
+  map.addLayer({
+    id: 'hillshade-layer',
+    type: 'hillshade',
+    source: 'terrain-dem',
+    paint: { 'hillshade-exaggeration': 0.5 },
+  });
 }
 
 function jumpToCard(trailId){
@@ -404,7 +429,7 @@ async function renderReturningHomepage(profile){
             <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>
           </div>
         </div>
-        <div class="name" style="margin-top:6px;">${t.name}</div>
+        <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
         <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
         ${thumb ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
