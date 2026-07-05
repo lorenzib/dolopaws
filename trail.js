@@ -85,13 +85,29 @@ function init(){
       container: 'trailDetailMap',
       style: 'https://tiles.openfreemap.org/styles/liberty',
       center: [t.lng, t.lat],
-      zoom: 13,
+      zoom: 14,
       pitch: 45, // a bit of tilt so the terrain elevation actually reads
     });
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     map.on('load', () => {
       addTerrainToMap(map, 1.5);
+
+      // Waymarked Trails' own public hiking overlay — same underlying OSM
+      // data as our base map, but with their dedicated trail-route styling
+      // (numbered routes, waymarking) that a general basemap doesn't draw.
+      map.addSource('waymarked-hiking', {
+        type: 'raster',
+        tiles: ['https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: '© Sarah Hoffmann (CC-BY-SA) — waymarkedtrails.org',
+      });
+      map.addLayer({
+        id: 'waymarked-hiking-layer',
+        type: 'raster',
+        source: 'waymarked-hiking',
+        paint: { 'raster-opacity': 0.85 },
+      });
 
       if(Array.isArray(t.path) && t.path.length > 1){
         map.addSource('single-trail-path', {
@@ -110,7 +126,7 @@ function init(){
         });
         const bounds = new maplibregl.LngLatBounds();
         t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
-        map.fitBounds(bounds, { padding: 60, maxZoom: 15, pitch: 45 });
+        map.fitBounds(bounds, { padding: 60, maxZoom: 17, pitch: 45 });
       } else {
         new maplibregl.Marker({ color: '#D6A038' }).setLngLat([t.lng, t.lat]).addTo(map);
       }
