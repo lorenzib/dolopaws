@@ -166,6 +166,38 @@ function pathThumbnailSvg(path){
   </svg>`;
 }
 
+function renderTrailDetailContent(t){
+  const rifugi = Array.isArray(t.rifugi) ? t.rifugi : [];
+  const water = Array.isArray(t.waterSources) ? t.waterSources : [];
+
+  const rifugiHtml = rifugi.length > 0
+    ? `<ul style="margin:0 0 12px;padding-left:18px;">${rifugi.map(r => `<li>Km ${r.km} — ${r.name}</li>`).join('')}</ul>`
+    : `<p style="margin:0 0 12px;">No rifugi along this route.</p>`;
+
+  const waterHtml = water.length > 0
+    ? `<ul style="margin:0 0 12px;padding-left:18px;">${water.map(w => `<li>Km ${w.km} — ${w.label}</li>`).join('')}</ul>`
+    : `<p style="margin:0 0 12px;">No drinking water sources recorded along this route — bring enough for your dog.</p>`;
+
+  return `
+    <div style="margin-bottom:12px;">
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">🏔️ Rifugi on the way</div>
+      ${rifugiHtml}
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">💧 Drinking water</div>
+      ${waterHtml}
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">🪑 Resting stations</div>
+      <p style="margin:0;font-style:italic;">Not tracked separately yet — rifugi above often double as rest stops.</p>
+    </div>
+    <div>
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">📍 Other landmarks</div>
+      <p style="margin:0;font-style:italic;">${t.desc ? t.desc : 'Not recorded yet for this trail.'}</p>
+    </div>
+  `;
+}
+
 function jumpToCard(trailId){
   const card = document.getElementById(`trail-card-${trailId}`);
   if(!card) return;
@@ -328,9 +360,22 @@ async function renderReturningHomepage(profile){
         <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
         ${thumb ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
+        <div class="details-toggle" data-id="${t.id}" style="margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);cursor:pointer;user-select:none;">Trail details ▾</div>
+        <div class="details-panel" id="details-${t.id}" hidden style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--paper-line);font-size:12.5px;color:var(--ink-soft);">
+          ${renderTrailDetailContent(t)}
+        </div>
       </div>
     </div>`;
   }).join('');
+
+  listEl.querySelectorAll('.details-toggle').forEach(el => {
+    el.addEventListener('click', () => {
+      const panel = document.getElementById(`details-${el.dataset.id}`);
+      const nowHidden = !panel.hidden;
+      panel.hidden = !panel.hidden;
+      el.textContent = panel.hidden ? 'Trail details ▾' : 'Trail details ▴';
+    });
+  });
 
   listEl.querySelectorAll('.save-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
