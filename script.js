@@ -198,7 +198,7 @@ function renderGondolas(map, sourceId){
         'no-summer', '#9C3A25',
         '#5A5548',
       ],
-      'line-width': 2.5,
+      'line-width': 1.5,
       'line-opacity': 0.9,
       'line-dasharray': ['match', ['get', 'status'], 'summer', ['literal', [1, 0]], ['literal', [2, 1]]],
     },
