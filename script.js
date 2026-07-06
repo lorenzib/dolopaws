@@ -877,7 +877,7 @@ function initializeWaterSources(map) {
   if(!hasSource){
     map.addSource('water-sources', {
       type: 'geojson',
-      data: { type: 'FeatureCollection', features: [] },
+      data: './data/drinking-water-all-sources.geojson',
       cluster: true,
       clusterRadius: 50,
       clusterProperties: {
@@ -976,14 +976,14 @@ function initializeWaterSources(map) {
     // Build popup content
     let content = `<b>${waterType}</b>`;
     
-    if (props.name) {
-      content += `<br>${props.name}`;
-    } else if (props.label) {
-      content += `<br>${props.label}`;
-    }
-    
-    if (props.km !== undefined) {
-      content += `<br><small>Km ${props.km}</small>`;
+    const pointLabel = props.name || props.label;
+    const pointDistance = props.km !== undefined ? `Km ${props.km}` : '';
+    if (pointLabel && pointDistance) {
+      content += `<br>${pointLabel} <small>(${pointDistance})</small>`;
+    } else if (pointLabel) {
+      content += `<br>${pointLabel}`;
+    } else if (pointDistance) {
+      content += `<br><small>${pointDistance}</small>`;
     }
     
     if (props.check_date) {

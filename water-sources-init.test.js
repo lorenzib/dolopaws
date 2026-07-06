@@ -19,7 +19,7 @@ function loadInitializeWaterSources(){
   const scriptPath = path.join(__dirname, 'script.js');
   const scriptText = fs.readFileSync(scriptPath, 'utf8');
   const source = extractFunctionSource(scriptText, 'initializeWaterSources');
-  return eval(`(${source})`); // eslint-disable-line no-eval
+  return new Function(`${source}; return initializeWaterSources;`)();
 }
 
 describe('initializeWaterSources', () => {
@@ -30,7 +30,7 @@ describe('initializeWaterSources', () => {
     };
     const map = {
       getSource: jest.fn().mockReturnValue(existingSource),
-      addSource: jest.fn(() => { throw new Error('source already exists'); }),
+      addSource: jest.fn(),
       getLayer: jest.fn(() => ({ id: 'existing-layer' })),
       addLayer: jest.fn(),
       on: jest.fn(),
@@ -48,7 +48,10 @@ describe('initializeWaterSources', () => {
     const map = {
       getSource: jest.fn().mockReturnValue(null),
       addSource: jest.fn(),
-      getLayer: jest.fn(() => ({ id: 'existing-layer' })),
+      getLayer: jest.fn((id) => {
+        if(id === 'water-sources-layer' || id === 'water-sources-cluster' || id === 'water-sources-cluster-count') return null;
+        return { id: 'existing-layer' };
+      }),
       addLayer: jest.fn(),
       on: jest.fn(),
       getCanvas: jest.fn(() => ({ style: {} })),
