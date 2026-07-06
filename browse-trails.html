@@ -14,7 +14,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"/>
 <style>
   .simple-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
   .simple-card{background:var(--card);border:1px solid var(--paper-line);border-radius:var(--radius-md);overflow:hidden;}
@@ -69,23 +68,11 @@
   <div class="simple-grid" id="simpleTrailsList"></div>
 </div>
 
-<div class="wrap osm-trails-wrap">
-  <h2 style="font-size:24px;">OpenStreetMap hiking trails in the Dolomites focus area</h2>
-  <p id="osmTrailsStatus" class="osm-status">Loading OpenStreetMap trail data…</p>
-  <div id="osmTrailsMap" class="osm-trails-map" aria-label="OpenStreetMap hiking trails"></div>
-  <ul id="osmTrailsList" class="osm-trails-list"></ul>
-  <p class="osm-attribution">
-    Trail data: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> (ODbL 1.0), fetched via Overpass API.
-  </p>
-</div>
-
 <footer class="site-footer">DoloPaws &#124; Dolomites trail guide for dogs and their humans.</footer>
 
 <script type="module" src="firebase-init.js"></script>
 <script src="trails-data.js" defer></script>
 <script src="auth-ui.js" defer></script>
-<script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-<script src="dolomites-trails.js" defer></script>
 <script>
   window.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('simpleTrailsList');

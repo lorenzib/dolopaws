@@ -56,6 +56,14 @@
     <span id="routeSwatch" style="width:16px;height:3px;background:#D6A038;display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span id="routeSwatchLabel">Trail route</span>
     <span>➤ Direction of travel</span>
   </div>
+
+  <div id="elevationProfileWrap" style="margin-top:18px;" hidden>
+    <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">
+      <span>Elevation profile</span>
+      <span id="elevReadout" style="color:var(--ink);font-weight:700;">hover the graph →</span>
+    </div>
+    <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
+  </div>
 </div>
 
 <div class="wrap" id="directionsWrap" style="padding-top:20px;" hidden>

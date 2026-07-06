@@ -68,6 +68,100 @@ function pointAtFraction(path, fraction){
   return path[path.length - 1];
 }
 
+// Elevation profile chart with two-way hover sync: hovering the chart moves
+// a cursor dot on the map; hovering near the route on the map highlights
+// the matching point on the chart. Honest note on data granularity: this
+// draws whatever is in t.elevationProfile — currently a sparse 5-6 point
+// sample for hand-built trails, but it'll render just as correctly (and
+// more smoothly) once a trail has real per-vertex elevation from the
+// build-trail.mjs/build-route.mjs pipeline. The chart code doesn't care
+// which source the numbers came from.
+function setupElevationProfile(map, t){
+  if(!Array.isArray(t.elevationProfile) || t.elevationProfile.length < 2 || !Array.isArray(t.path)) return;
+
+  const wrap = document.getElementById('elevationProfileWrap');
+  const svg = document.getElementById('elevProf');
+  const readout = document.getElementById('elevReadout');
+  wrap.hidden = false;
+
+  const profile = t.elevationProfile; // [{km, elev}, ...]
+  const totalKm = t.distance;
+  const elevs = profile.map(p => p.elev);
+  const eMin = Math.min(...elevs), eMax = Math.max(...elevs);
+  const VW = 1000, VH = 170, padL = 6, padR = 6, padT = 14, padB = 20;
+  const x = km => padL + (km / totalKm) * (VW - padL - padR);
+  const y = elev => padT + (1 - (elev - eMin) / ((eMax - eMin) || 1)) * (VH - padT - padB);
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs) => {
+    const el = document.createElementNS(NS, tag);
+    for(const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  };
+
+  let dLine = `M ${x(profile[0].km)} ${y(profile[0].elev)}`;
+  profile.slice(1).forEach(p => { dLine += ` L ${x(p.km)} ${y(p.elev)}`; });
+  const areaD = `${dLine} L ${x(profile[profile.length-1].km)} ${VH-padB} L ${x(profile[0].km)} ${VH-padB} Z`;
+  svg.appendChild(mk('path', { d: areaD, fill: '#2E4034', opacity: '0.1' }));
+  svg.appendChild(mk('path', { d: dLine, fill: 'none', stroke: '#2E4034', 'stroke-width': '2' }));
+
+  [eMin, (eMin+eMax)/2, eMax].forEach(v => {
+    svg.appendChild(mk('line', { x1: padL, x2: VW-padR, y1: y(v), y2: y(v), stroke: 'var(--paper-line)', 'stroke-width': '1' }));
+    const label = mk('text', { x: padL+4, y: y(v)-3, 'font-size': '10', fill: 'var(--ink-soft)' });
+    label.textContent = `${Math.round(v)} m`;
+    svg.appendChild(label);
+  });
+
+  const cursorLine = mk('line', { y1: padT, y2: VH-padB, stroke: '#D6A038', 'stroke-width': '1.5', 'stroke-dasharray': '3 3', opacity: '0' });
+  const cursorDot = mk('circle', { r: '4', fill: '#D6A038', stroke: '#fff', 'stroke-width': '1.5', opacity: '0' });
+  svg.appendChild(cursorLine);
+  svg.appendChild(cursorDot);
+
+  // Map cursor marker
+  map.addSource('elev-cursor', { type: 'geojson', data: { type: 'Point', coordinates: t.path[0].slice().reverse() } });
+  map.addLayer({
+    id: 'elev-cursor-layer', type: 'circle', source: 'elev-cursor',
+    paint: { 'circle-radius': 6, 'circle-color': '#D6A038', 'circle-stroke-color': '#fff', 'circle-stroke-width': 2, 'circle-opacity': 0 },
+  });
+
+  function highlightAtKm(km){
+    cursorLine.setAttribute('x1', x(km)); cursorLine.setAttribute('x2', x(km)); cursorLine.setAttribute('opacity', '1');
+    // interpolate elevation for a smooth readout even between sparse samples
+    let elev = profile[0].elev;
+    for(let i = 1; i < profile.length; i++){
+      if(km <= profile[i].km){
+        const span = profile[i].km - profile[i-1].km;
+        const frac = span > 0 ? (km - profile[i-1].km) / span : 0;
+        elev = profile[i-1].elev + (profile[i].elev - profile[i-1].elev) * frac;
+        break;
+      }
+    }
+    cursorDot.setAttribute('cx', x(km)); cursorDot.setAttribute('cy', y(elev)); cursorDot.setAttribute('opacity', '1');
+    readout.textContent = `${km.toFixed(1)} km · ${Math.round(elev)} m`;
+
+    const [lat, lng] = pointAtFraction(t.path, totalKm > 0 ? km / totalKm : 0);
+    const src = map.getSource('elev-cursor');
+    if(src){ src.setData({ type: 'Point', coordinates: [lng, lat] }); map.setPaintProperty('elev-cursor-layer', 'circle-opacity', 1); }
+  }
+
+  svg.addEventListener('mousemove', (ev) => {
+    const rect = svg.getBoundingClientRect();
+    const px = (ev.clientX - rect.left) / rect.width * VW;
+    const km = Math.max(0, Math.min(totalKm, ((px - padL) / (VW - padL - padR)) * totalKm));
+    highlightAtKm(km);
+  });
+
+  // Map -> chart: hovering near the route line highlights the matching point
+  map.on('mousemove', (e) => {
+    let bestKm = 0, bestDist = Infinity, acc = 0;
+    for(let i = 0; i < t.path.length; i++){
+      const d = distMeters([e.lngLat.lat, e.lngLat.lng], t.path[i]);
+      if(d < bestDist){ bestDist = d; bestKm = (i / (t.path.length - 1)) * totalKm; }
+    }
+    if(bestDist < 80) highlightAtKm(bestKm); // only react when hovering near the actual route
+  });
+}
+
 function makeIconEl(emoji, bgColor){
   const el = document.createElement('div');
   el.style.cssText = `width:28px;height:28px;border-radius:50%;background:${bgColor};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:14px;`;
@@ -304,6 +398,16 @@ function init(){
             geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
           },
         });
+        // Casing — a wider Pine line underneath the safety-colored route.
+        // This is the detail that makes a route line read as intentional/
+        // premium rather than a thin stroke — same visual trick Komoot uses.
+        map.addLayer({
+          id: 'single-trail-path-casing',
+          type: 'line',
+          source: 'single-trail-path',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#2E4034', 'line-width': 7, 'line-opacity': 0.9 },
+        });
         map.addLayer({
           id: 'single-trail-path-line',
           type: 'line',
@@ -342,6 +446,8 @@ function init(){
         const bounds = new maplibregl.LngLatBounds();
         t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
         map.fitBounds(bounds, { padding: 60, maxZoom: 17 });
+
+        setupElevationProfile(map, t);
 
         // Rifugi and water-source icons — positioned using the REAL GPS
         // path, not guessed coordinates. Km markers were recorded against
