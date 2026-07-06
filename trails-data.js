@@ -195,3 +195,16 @@ const trails = [
     tips:"Reachable by bus (line 172) from Ortisei, or park at Passo Pinei. Best June through October. Moderate terrain with some real ascent/descent — not the flattest option on this list, but not technical either."
   },
 ];
+
+// Gondola / cable-car access lines — real, verified station coordinates,
+// rendered as straight lines (aerial cableways run point-to-point, unlike
+// hiking trails which wind, so a straight line between real stations is an
+// honest representation, not an approximation of unknown geometry).
+const gondolas = [
+  {
+    name: 'Seiser Alm Aerial Cableway (Seiser Alm Bahn)',
+    from: { lat:46.5416, lng:11.5648, label:'Valley station — Siusi allo Sciliar (1015m)' },
+    to:   { lat:46.5402, lng:11.6181, label:'Mountain station — Compatsch (1857m)' },
+    note: 'Dogs allowed with a muzzle required in cabins/stations (confirmed by the operator). ~6km, ~842m elevation gain.',
+  },
+];

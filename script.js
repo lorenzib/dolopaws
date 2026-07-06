@@ -111,6 +111,34 @@ let guestMapInstance = null;
 let showingSavedOnly = false;
 let activeArea = 'all';
 
+function renderGondolas(map, sourceId){
+  if(typeof gondolas === 'undefined' || !gondolas.length) return;
+  const features = gondolas.map(g => ({
+    type: 'Feature',
+    properties: { name: g.name, note: g.note },
+    geometry: { type: 'LineString', coordinates: [[g.from.lng, g.from.lat], [g.to.lng, g.to.lat]] },
+  }));
+  map.addSource(sourceId, { type: 'geojson', data: { type: 'FeatureCollection', features } });
+  map.addLayer({
+    id: sourceId + '-line',
+    type: 'line',
+    source: sourceId,
+    layout: { 'line-join': 'round', 'line-cap': 'round' },
+    paint: { 'line-color': '#4E90A8', 'line-width': 2.5, 'line-dasharray': [2, 1.5] },
+  });
+  gondolas.forEach(g => {
+    [g.from, g.to].forEach(station => {
+      const el = document.createElement('div');
+      el.style.cssText = 'width:24px;height:24px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:12px;';
+      el.textContent = '🚡';
+      new maplibregl.Marker({ element: el })
+        .setLngLat([station.lng, station.lat])
+        .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b><br>${station.label}`))
+        .addTo(map);
+    });
+  });
+}
+
 function initGuestMap(){
   if(guestMapInstance || typeof maplibregl === 'undefined' || typeof trails === 'undefined') return;
   const el = document.getElementById('guestPreviewMap');
@@ -127,6 +155,7 @@ function initGuestMap(){
   guestMapInstance.on('load', () => {
     addTerrainSource(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
+    renderGondolas(guestMapInstance, 'guest-gondolas');
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
       .filter(t => Array.isArray(t.path) && t.path.length > 1)
@@ -199,6 +228,7 @@ function initTrailMap(){
   trailMapInstance.on('load', () => {
     addTerrainSource(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
+    renderGondolas(trailMapInstance, 'trailmap-gondolas');
     trailMapInstance.addSource('trail-paths', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
