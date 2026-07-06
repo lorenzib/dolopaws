@@ -336,6 +336,22 @@ function initTrailMap(){
     increaseLabelDensity(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     renderGondolas(trailMapInstance, 'trailmap-gondolas', 'trailMap');
+    
+    // Waymarked Trails hiking overlay — shows route numbers, waymarking, and trail network detail
+    const firstLabelLayer = trailMapInstance.getStyle().layers.find(l => l.type === 'symbol');
+    trailMapInstance.addSource('waymarked-hiking', {
+      type: 'raster',
+      tiles: ['https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      attribution: '© Sarah Hoffmann (CC-BY-SA) — waymarkedtrails.org',
+    });
+    trailMapInstance.addLayer({
+      id: 'waymarked-hiking-layer',
+      type: 'raster',
+      source: 'waymarked-hiking',
+      paint: { 'raster-opacity': 0.4 },
+    }, firstLabelLayer ? firstLabelLayer.id : undefined);
+    
     trailMapInstance.addSource('trail-paths', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
