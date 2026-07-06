@@ -195,7 +195,7 @@ function renderGondolas(map, sourceId, containerId){
   gondolas.filter(g => g.status === 'summer').forEach(g => {
     [g.from, g.to].forEach(station => {
       const el = document.createElement('div');
-      el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;visibility:hidden;';
+      el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;visibility:hidden;';
       el.textContent = '🚡';
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat([station.lng, station.lat])
@@ -214,7 +214,7 @@ function renderGondolas(map, sourceId, containerId){
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = '🚡 Show lifts';
-      btn.style.cssText = 'position:absolute;bottom:10px;right:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
+      btn.style.cssText = 'position:absolute;bottom:10px;right:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
       container.appendChild(btn);
       let visible = false;
       btn.addEventListener('click', () => {
@@ -299,8 +299,9 @@ function initGuestMap(){
       } else if(Array.isArray(t.path) && t.path.length > 0){
         [markerLat, markerLng] = t.path[0];
       }
+      const trailNumber = t.ref ? `Trail ${t.ref}<br>` : '';
       const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
-        `<b>${t.name}</b><br>${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#D6A038;text-decoration:none;">Trail details →</a>`
+        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#D6A038;text-decoration:none;">Trail details →</a>`
       );
       new maplibregl.Marker({ color: '#D6A038' }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
       bounds.extend([markerLng, markerLat]);
@@ -416,7 +417,7 @@ function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.textContent = 'View 3D';
-  btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
+  btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
   container.appendChild(btn);
 
   let is3D = false; // clean, flat, label-first map by default
@@ -580,7 +581,7 @@ async function renderReturningHomepage(profile){
   heading.textContent = profile && profile.name ? `Welcome back — trail matches for ${name}` : 'Welcome back';
   const baseSubline = newIds.size > 0
     ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
-    : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog\u2019s details to personalize this list.';
+    : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog’s details to personalize this list.';
   subline.innerHTML = `${baseSubline} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">Edit profile →</a>`;
 
   let displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
@@ -624,7 +625,7 @@ async function renderReturningHomepage(profile){
           </div>
         </div>
         <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
-        <div class="meta">${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
+        <div class="meta">${t.ref ? `Trail ${t.ref} · ` : ''}${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
         ${thumb ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
         <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">Trail details →</a>
