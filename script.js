@@ -415,6 +415,9 @@ function initTrailMap(){
     // Create overlay toggle controls
     createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers);
     
+    // Initialize comprehensive water sources layer from Overpass API data
+    initializeWaterSources(trailMapInstance);
+    
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
   });
@@ -850,3 +853,215 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     initGuestMap();
   }
 });
+/**
+ * Water Sources Integration for DoloPaws
+ * Adds 12,921 drinking water sources from Overpass API (OpenStreetMap)
+ * 
+ * Add this code to your script.js or trail.js
+ */
+
+// ============================================================
+// WATER SOURCES LAYER
+// ============================================================
+
+/**
+ * Initialize water sources layer on the map
+ * Call this after map is loaded
+ */
+function initializeWaterSources(map) {
+  // Add GeoJSON source
+  map.addSource('water-sources', {
+    type: 'geojson',
+    data: './data/drinking-water-all-sources.geojson',
+    cluster: true,
+    clusterRadius: 50,
+    clusterProperties: {
+      count: ['length']
+    }
+  });
+
+  // Unclustered points layer
+  map.addLayer({
+    id: 'water-sources-layer',
+    type: 'circle',
+    source: 'water-sources',
+    filter: ['!', ['has', 'point_count']],
+    paint: {
+      'circle-radius': 5,
+      'circle-color': [
+        'case',
+        ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',  // Blue - fountains
+        ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',         // Dark blue - fountains
+        ['==', ['get', 'natural'], 'spring'], '#228B22',           // Green - springs
+        ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',       // Deep blue - taps
+        ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',      // Light blue - water points
+        '#5A5548'  // Grey - other
+      ],
+      'circle-opacity': 0.75,
+      'circle-stroke-width': 1,
+      'circle-stroke-color': '#fff'
+    }
+  });
+
+  // Clustered points layer
+  map.addLayer({
+    id: 'water-sources-cluster',
+    type: 'circle',
+    source: 'water-sources',
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-radius': [
+        'step',
+        ['get', 'point_count'],
+        20,
+        5, 25,
+        10, 30
+      ],
+      'circle-color': '#4E90A8',
+      'circle-opacity': 0.7,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#fff'
+    }
+  });
+
+  // Cluster count labels
+  map.addLayer({
+    id: 'water-sources-cluster-count',
+    type: 'symbol',
+    source: 'water-sources',
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field': ['get', 'point_count'],
+      'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+      'text-size': 12
+    },
+    paint: {
+      'text-color': '#fff'
+    }
+  });
+
+  // Interactive hover effect
+  map.on('mouseenter', 'water-sources-layer', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'water-sources-layer', () => {
+    map.getCanvas().style.cursor = '';
+  });
+
+  // Click to show popup
+  map.on('click', 'water-sources-layer', (e) => {
+    const feature = e.features[0];
+    const props = feature.properties;
+    
+    // Determine water type
+    let waterType = 'Water Source';
+    if (props.amenity === 'drinking_water') waterType = '🚰 Drinking Fountain';
+    else if (props.amenity === 'fountain') waterType = '⛲ Fountain';
+    else if (props.natural === 'spring') waterType = '💧 Natural Spring';
+    else if (props.man_made === 'water_tap') waterType = '🚪 Water Tap';
+    else if (props.amenity === 'water_point') waterType = '💦 Water Point';
+
+    // Build popup content
+    let content = `<b>${waterType}</b>`;
+    
+    if (props.name) {
+      content += `<br>${props.name}`;
+    }
+    
+    if (props.check_date) {
+      content += `<br><small>✓ Last verified: ${props.check_date}</small>`;
+    }
+    
+    if (props.seasonal === 'yes') {
+      content += `<br><small>⚠️ Seasonal water source</small>`;
+    }
+
+    new maplibregl.Popup({ offset: 25 })
+      .setLngLat(e.lngLat)
+      .setHTML(content)
+      .addTo(map);
+  });
+
+  // Click cluster to zoom in
+  map.on('click', 'water-sources-cluster', (e) => {
+    const features = map.querySourceFeatures('water-sources', {
+      filter: ['!=', ['get', 'point_count'], null]
+    });
+
+    const clusterId = e.features[0].id;
+    const source = map.getSource('water-sources');
+    
+    source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+      if (err) return;
+      map.easeTo({
+        center: e.lngLat,
+        zoom: zoom
+      });
+    });
+  });
+}
+
+/**
+ * Toggle water sources visibility
+ */
+function toggleWaterSources(map, show) {
+  const layers = ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'];
+  layers.forEach(layerId => {
+    if (map.getLayer(layerId)) {
+      map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
+    }
+  });
+}
+
+/**
+ * Filter water sources by type
+ */
+function filterWaterSources(map, type) {
+  let filter;
+  
+  switch(type) {
+    case 'fountains':
+      filter = ['==', ['get', 'amenity'], 'drinking_water'];
+      break;
+    case 'springs':
+      filter = ['==', ['get', 'natural'], 'spring'];
+      break;
+    case 'taps':
+      filter = ['==', ['get', 'man_made'], 'water_tap'];
+      break;
+    case 'all':
+    default:
+      filter = ['!', ['has', 'point_count']];
+      break;
+  }
+  
+  map.setFilter('water-sources-layer', filter);
+}
+
+// ============================================================
+// USAGE - Add to your map initialization
+// ============================================================
+
+// After map loads:
+// initializeWaterSources(trailMapInstance);
+
+// To toggle visibility:
+// toggleWaterSources(trailMapInstance, true);
+
+// To filter by type:
+// filterWaterSources(trailMapInstance, 'fountains');
+
+// ============================================================
+// LEGEND ENTRY
+// ============================================================
+
+/*
+Add this to your legend:
+
+<span>💧 Drinking water (12,921 sources)</span>
+
+Optional color legend:
+<span><span style="width:12px;height:12px;background:#4E90A8;display:inline-block;border-radius:50%;margin-right:4px;"></span>Fountain</span>
+<span><span style="width:12px;height:12px;background:#228B22;display:inline-block;border-radius:50%;margin-right:4px;"></span>Spring</span>
+<span><span style="width:12px;height:12px;background:#0077BE;display:inline-block;border-radius:50%;margin-right:4px;"></span>Water tap</span>
+*/
