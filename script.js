@@ -111,8 +111,75 @@ let guestMapInstance = null;
 let showingSavedOnly = false;
 let activeArea = 'all';
 
-function renderGondolas(map, sourceId, containerId){
-  if(typeof gondolas === 'undefined' || !gondolas.length) return;
+function createMapOverlayControls(map, containerId, allLiftMarkers){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  
+  container.style.position = container.style.position || 'relative';
+  
+  // Create a button group container
+  const buttonGroup = document.createElement('div');
+  buttonGroup.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;display:flex;flex-direction:column;gap:8px;';
+  container.appendChild(buttonGroup);
+  
+  // Track visibility state
+  const overlayStates = {
+    routes: false,
+    lifts: false,
+    fountains: false,
+  };
+  
+  // Helper function to create a button
+  function createButton(label, overlayKey, sourceIds = []){
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = label;
+    btn.style.cssText = 'padding:7px 14px;border-radius:8px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:all 0.2s ease;';
+    btn.addEventListener('mouseover', () => btn.style.opacity = '0.9');
+    btn.addEventListener('mouseout', () => btn.style.opacity = '1');
+    
+    btn.addEventListener('click', () => {
+      overlayStates[overlayKey] = !overlayStates[overlayKey];
+      const visibility = overlayStates[overlayKey] ? 'visible' : 'none';
+      
+      // Update layer visibility based on overlay type
+      if(overlayKey === 'routes'){
+        map.setLayoutProperty('waymarked-hiking-layer', 'visibility', visibility);
+      } else if(overlayKey === 'lifts'){
+        map.setLayoutProperty('trailmap-gondolas-line', 'visibility', visibility);
+        map.setLayoutProperty('trailmap-gondolas-labels', 'visibility', visibility);
+        if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = visibility; });
+      } else if(overlayKey === 'fountains'){
+        map.setLayoutProperty('water-sources-layer', 'visibility', visibility);
+      }
+      
+      // Update button text and style
+      updateButtonAppearance(btn, overlayKey, overlayStates[overlayKey]);
+    });
+    
+    buttonGroup.appendChild(btn);
+    return btn;
+  }
+  
+  function updateButtonAppearance(btn, overlayKey, isVisible){
+    const labels = {
+      routes: isVisible ? '🥾 Hide trail routes' : '🥾 Show trail routes',
+      lifts: isVisible ? '🚡 Hide lifts' : '🚡 Show lifts',
+      fountains: isVisible ? '💧 Hide fountains' : '💧 Show fountains',
+    };
+    btn.textContent = labels[overlayKey];
+    btn.style.opacity = isVisible ? '1' : '0.8';
+  }
+  
+  // Create the three buttons
+  const routesBtn = createButton('🥾 Show trail routes', 'routes');
+  const liftsBtn = createButton('🚡 Show lifts', 'lifts');
+  const fountainsBtn = createButton('💧 Show fountains', 'fountains');
+}
+
+
+function renderGondolas(map, sourceId){
+  if(typeof gondolas === 'undefined' || !gondolas.length) return null;
   const features = gondolas.map(g => ({
     type: 'Feature',
     properties: { name: g.name, note: g.note, status: g.status },
@@ -120,28 +187,17 @@ function renderGondolas(map, sourceId, containerId){
   }));
   map.addSource(sourceId, { type: 'geojson', data: { type: 'FeatureCollection', features } });
 
-  // Status-based styling: confirmed-summer lifts stand out clearly; unknown
-  // and confirmed-not-summer ones stay visually muted so 718 lines don't
-  // just read as undifferentiated clutter over the trail data underneath.
-  //
-  // Hidden by default (visibility:'none') — 718 lines shown automatically
-  // would overwhelm the map. A toggle button reveals them on request, and
-  // also zooms out to actually show where the data is (see below).
   map.addLayer({
     id: sourceId + '-line',
     type: 'line',
     source: sourceId,
-    // (no minzoom restriction — the toggle itself is the declutter
-    // mechanism now that it also zooms to fit the real data; a minzoom
-    // here would fight against that by hiding lines at the zoomed-out
-    // level needed to actually see a 3-region spread of lifts)
     layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'none' },
     paint: {
       'line-color': [
         'match', ['get', 'status'],
         'summer', '#4E90A8',
         'no-summer', '#9C3A25',
-        '#5A5548', // unknown — a real, visible grey, not the barely-there tone from before
+        '#5A5548',
       ],
       'line-width': 2.5,
       'line-opacity': 0.9,
@@ -149,10 +205,6 @@ function renderGondolas(map, sourceId, containerId){
     },
   });
 
-  // Real name labels along every line — repeated text following the line's
-  // own direction, same technique already used for trail direction arrows.
-  // Without this, lift lines just look like unlabeled marks on the map —
-  // seeing a line means nothing without knowing which lift it actually is.
   map.addLayer({
     id: sourceId + '-labels',
     type: 'symbol',
@@ -178,8 +230,6 @@ function renderGondolas(map, sourceId, containerId){
     },
   });
 
-  // Click anywhere on a line to see its name/status/note — far more
-  // efficient than a dedicated marker per station across 718 lifts.
   map.on('click', sourceId + '-line', (e) => {
     const p = e.features[0].properties;
     new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
@@ -188,11 +238,8 @@ function renderGondolas(map, sourceId, containerId){
   map.on('mouseenter', sourceId + '-line', () => map.getCanvas().style.cursor = 'pointer');
   map.on('mouseleave', sourceId + '-line', () => map.getCanvas().style.cursor = '');
 
-  // Full 🚡 station markers only for confirmed summer-operating lifts —
-  // the ones actually useful to plan around right now. These are also
-  // hidden by default and toggled together with the lines.
-  const summerMarkers = [];
-  gondolas.filter(g => g.status === 'summer').forEach(g => {
+  const allLiftMarkers = [];
+  gondolas.forEach(g => {
     [g.from, g.to].forEach(station => {
       const el = document.createElement('div');
       el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;visibility:hidden;';
@@ -201,46 +248,11 @@ function renderGondolas(map, sourceId, containerId){
         .setLngLat([station.lng, station.lat])
         .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b><br>${station.label}<br>${g.note}`))
         .addTo(map);
-      summerMarkers.push(el);
+      allLiftMarkers.push(el);
     });
   });
-
-  // Toggle button — same visual pattern as the existing 3D/flat terrain
-  // toggle, so it reads as consistent with controls already on this map.
-  if(containerId){
-    const container = document.getElementById(containerId);
-    if(container){
-      container.style.position = container.style.position || 'relative';
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = '🚡 Show lifts';
-      btn.style.cssText = 'position:absolute;bottom:10px;right:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
-      container.appendChild(btn);
-      let visible = false;
-      btn.addEventListener('click', () => {
-        visible = !visible;
-        map.setLayoutProperty(sourceId + '-line', 'visibility', visible ? 'visible' : 'none');
-        map.setLayoutProperty(sourceId + '-labels', 'visibility', visible ? 'visible' : 'none');
-        summerMarkers.forEach(el => { el.style.visibility = visible ? 'visible' : 'hidden'; });
-        btn.textContent = visible ? '🚡 Hide lifts' : '🚡 Show lifts';
-
-        // The map's default view is framed around the existing trails only,
-        // which all sit in one small area — most of these 718 lifts are
-        // elsewhere (Lombardy, wider Veneto/Trentino) and would stay
-        // invisible off-screen without this. Toggling on actually moves the
-        // view to show where the data really is, rather than leaving the
-        // viewport wherever it happened to be.
-        if(visible){
-          const gondolaBounds = new maplibregl.LngLatBounds();
-          gondolas.forEach(g => {
-            gondolaBounds.extend([g.from.lng, g.from.lat]);
-            gondolaBounds.extend([g.to.lng, g.to.lat]);
-          });
-          map.fitBounds(gondolaBounds, { padding: 40 });
-        }
-      });
-    }
-  }
+  
+  return allLiftMarkers;
 }
 
 function initGuestMap(){
@@ -260,7 +272,7 @@ function initGuestMap(){
     addTerrainSource(guestMapInstance);
     increaseLabelDensity(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
-    renderGondolas(guestMapInstance, 'guest-gondolas', 'guestPreviewMap');
+    renderGondolas(guestMapInstance, 'guest-gondolas');
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
       .filter(t => Array.isArray(t.path) && t.path.length > 1)
@@ -335,7 +347,8 @@ function initTrailMap(){
     addTerrainSource(trailMapInstance);
     increaseLabelDensity(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
-    renderGondolas(trailMapInstance, 'trailmap-gondolas', 'trailMap');
+    
+    const allLiftMarkers = renderGondolas(trailMapInstance, 'trailmap-gondolas');
     
     // Waymarked Trails hiking overlay — shows route numbers, waymarking, and trail network detail
     const firstLabelLayer = trailMapInstance.getStyle().layers.find(l => l.type === 'symbol');
@@ -349,6 +362,7 @@ function initTrailMap(){
       id: 'waymarked-hiking-layer',
       type: 'raster',
       source: 'waymarked-hiking',
+      layout: { visibility: 'none' },
       paint: { 'raster-opacity': 0.4 },
     }, firstLabelLayer ? firstLabelLayer.id : undefined);
     
@@ -372,6 +386,36 @@ function initTrailMap(){
         'line-width': 3,
       },
     });
+
+    // Water sources (fountains, springs) — clickable markers on the map
+    trailMapInstance.addSource('water-sources', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    });
+    trailMapInstance.addLayer({
+      id: 'water-sources-layer',
+      type: 'circle',
+      source: 'water-sources',
+      layout: { visibility: 'none' },
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#4E90A8',
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 2,
+        'circle-opacity': 0.8,
+      },
+    });
+    trailMapInstance.on('click', 'water-sources-layer', (e) => {
+      const p = e.features[0].properties;
+      new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
+        .setHTML(`<b>💧 ${p.label}</b><br>Km ${p.km}`).addTo(trailMapInstance);
+    });
+    trailMapInstance.on('mouseenter', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = 'pointer');
+    trailMapInstance.on('mouseleave', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = '');
+    
+    // Create overlay toggle controls
+    createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers);
+    
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
   });
@@ -480,7 +524,7 @@ function jumpToCard(trailId){
 
 function updatePathLayer(list){
   if(!trailMapLoaded){
-    pendingPathList = list; // apply once the style finishes loading
+    pendingPathList = list;
     return;
   }
   const features = list
@@ -488,10 +532,47 @@ function updatePathLayer(list){
     .map(t => ({
       type: 'Feature',
       properties: { id: t.id, name: t.name, safetyLevel: t.safetyLevel },
-      // GeoJSON is [lng, lat] — our stored path is [lat, lng], so flip each point.
       geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
     }));
   trailMapInstance.getSource('trail-paths').setData({ type: 'FeatureCollection', features });
+  
+  // Also populate water sources from the visible trails
+  const waterFeatures = [];
+  list.forEach(t => {
+    if(Array.isArray(t.waterSources) && Array.isArray(t.path) && t.path.length > 1){
+      t.waterSources.forEach(w => {
+        const fraction = t.distance > 0 ? w.km / t.distance : 0;
+        let lat, lng;
+        if(typeof w.lat === 'number' && typeof w.lng === 'number'){
+          lat = w.lat; lng = w.lng;
+        } else {
+          // Interpolate position along the path
+          const totalDist = t.path.reduce((sum, p, i) => i === 0 ? 0 : sum + Math.hypot(p[0]-t.path[i-1][0], p[1]-t.path[i-1][1]) * 111000, 0);
+          const targetDist = totalDist * Math.max(0, Math.min(1, fraction));
+          let acc = 0;
+          for(let i = 0; i < t.path.length - 1; i++){
+            const seg = Math.hypot(t.path[i+1][0]-t.path[i][0], t.path[i+1][1]-t.path[i][1]) * 111000;
+            if(acc + seg >= targetDist){
+              const t_frac = seg > 0 ? (targetDist - acc) / seg : 0;
+              lat = t.path[i][0] + (t.path[i+1][0] - t.path[i][0]) * t_frac;
+              lng = t.path[i][1] + (t.path[i+1][1] - t.path[i][1]) * t_frac;
+              break;
+            }
+            acc += seg;
+          }
+          if(!lat) [lat, lng] = t.path[t.path.length - 1];
+        }
+        waterFeatures.push({
+          type: 'Feature',
+          properties: { label: w.label, km: w.km, trailId: t.id },
+          geometry: { type: 'Point', coordinates: [lng, lat] },
+        });
+      });
+    }
+  });
+  if(trailMapInstance.getSource('water-sources')){
+    trailMapInstance.getSource('water-sources').setData({ type: 'FeatureCollection', features: waterFeatures });
+  }
 }
 
 function updateMapMarkers(list){
