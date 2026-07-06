@@ -71,7 +71,7 @@ function renderTeaser(){
         <div class="name">${t.name}</div>
         <div class="match">${scoreTrail(t, generic)}%</div>
       </div>
-      <div class="meta">${t.area} · ${t.distance} km</div>
+      <div class="meta">${t.ref ? `Trail ${t.ref} · ` : ''}${t.area} · ${t.distance} km</div>
     </div>
   `).join('');
 }
