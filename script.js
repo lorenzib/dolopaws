@@ -148,12 +148,16 @@ function createMapOverlayControls(map, containerId, allLiftMarkers, allFountainM
       } else if(overlayKey === 'lifts'){
         map.setLayoutProperty('trailmap-gondolas-line', 'visibility', visibility);
         map.setLayoutProperty('trailmap-gondolas-labels', 'visibility', visibility);
-        if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = visibility; });
+        // For DOM elements, use 'visible'/'hidden' not 'visible'/'none'
+        const markerVisibility = visibility === 'visible' ? 'visible' : 'hidden';
+        if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = markerVisibility; });
       } else if(overlayKey === 'fountains'){
         if(map.getLayer('trailmap-fountains-circles')) {
           map.setLayoutProperty('trailmap-fountains-circles', 'visibility', visibility);
         }
-        if(allFountainMarkers) allFountainMarkers.forEach(el => { el.style.visibility = visibility; });
+        // For DOM elements, use 'visible'/'hidden' not 'visible'/'none'
+        const markerVisibility = visibility === 'visible' ? 'visible' : 'hidden';
+        if(allFountainMarkers) allFountainMarkers.forEach(el => { el.style.visibility = markerVisibility; });
       }
       
       // Update button text and style
