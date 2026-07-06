@@ -395,6 +395,15 @@ function increaseLabelDensity(map){
       map.setLayoutProperty(layer.id, 'text-allow-overlap', true);
       map.setLayoutProperty(layer.id, 'icon-allow-overlap', true);
       map.setLayoutProperty(layer.id, 'text-optional', true);
+      // The overlap settings above only stop labels being hidden due to
+      // crowding — they don't touch a layer's own built-in minzoom, which
+      // is the actual reason a wide, zoomed-out overview map shows far
+      // fewer labels than a zoomed-in single-trail view: many place-name
+      // layers in a style simply don't exist below a certain zoom at all.
+      // Clearing that floor makes every label the style is capable of
+      // showing become a candidate at any zoom, so overlap logic (not a
+      // hard cutoff) becomes the only thing controlling what's visible.
+      map.setLayerZoomRange(layer.id, 0, 24);
     } catch(e) { /* some layers may not support one of these props — skip silently */ }
   });
 }

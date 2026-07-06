@@ -212,6 +212,7 @@ function increaseLabelDensity(map){
       map.setLayoutProperty(layer.id, 'text-allow-overlap', true);
       map.setLayoutProperty(layer.id, 'icon-allow-overlap', true);
       map.setLayoutProperty(layer.id, 'text-optional', true);
+      map.setLayerZoomRange(layer.id, 0, 24);
     } catch(e) { /* some layers may not support one of these props — skip silently */ }
   });
 }
