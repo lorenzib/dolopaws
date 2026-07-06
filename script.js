@@ -111,7 +111,7 @@ let guestMapInstance = null;
 let showingSavedOnly = false;
 let activeArea = 'all';
 
-function renderGondolas(map, sourceId){
+function renderGondolas(map, sourceId, containerId){
   if(typeof gondolas === 'undefined' || !gondolas.length) return;
   const features = gondolas.map(g => ({
     type: 'Feature',
@@ -121,13 +121,18 @@ function renderGondolas(map, sourceId){
   map.addSource(sourceId, { type: 'geojson', data: { type: 'FeatureCollection', features } });
 
   // Status-based styling: confirmed-summer lifts stand out clearly; unknown
-  // and confirmed-not-summer ones stay visually muted so 215 lines don't
+  // and confirmed-not-summer ones stay visually muted so 718 lines don't
   // just read as undifferentiated clutter over the trail data underneath.
+  //
+  // Hidden by default (visibility:'none') — 718 lines shown automatically
+  // would overwhelm the map. A toggle button reveals them on request, and
+  // even then minzoom keeps them from cluttering a fully zoomed-out view.
   map.addLayer({
     id: sourceId + '-line',
     type: 'line',
     source: sourceId,
-    layout: { 'line-join': 'round', 'line-cap': 'round' },
+    minzoom: 9,
+    layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'none' },
     paint: {
       'line-color': [
         'match', ['get', 'status'],
@@ -142,7 +147,7 @@ function renderGondolas(map, sourceId){
   });
 
   // Click anywhere on a line to see its name/status/note — far more
-  // efficient than a dedicated marker per station across 215 lifts.
+  // efficient than a dedicated marker per station across 718 lifts.
   map.on('click', sourceId + '-line', (e) => {
     const p = e.features[0].properties;
     new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
@@ -152,18 +157,42 @@ function renderGondolas(map, sourceId){
   map.on('mouseleave', sourceId + '-line', () => map.getCanvas().style.cursor = '');
 
   // Full 🚡 station markers only for confirmed summer-operating lifts —
-  // the ones actually useful to plan around right now.
+  // the ones actually useful to plan around right now. These are also
+  // hidden by default and toggled together with the lines.
+  const summerMarkers = [];
   gondolas.filter(g => g.status === 'summer').forEach(g => {
     [g.from, g.to].forEach(station => {
       const el = document.createElement('div');
-      el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;';
+      el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;visibility:hidden;';
       el.textContent = '🚡';
-      new maplibregl.Marker({ element: el })
+      const marker = new maplibregl.Marker({ element: el })
         .setLngLat([station.lng, station.lat])
         .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b><br>${station.label}<br>${g.note}`))
         .addTo(map);
+      summerMarkers.push(el);
     });
   });
+
+  // Toggle button — same visual pattern as the existing 3D/flat terrain
+  // toggle, so it reads as consistent with controls already on this map.
+  if(containerId){
+    const container = document.getElementById(containerId);
+    if(container){
+      container.style.position = container.style.position || 'relative';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = '🚡 Show lifts';
+      btn.style.cssText = 'position:absolute;bottom:10px;right:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
+      container.appendChild(btn);
+      let visible = false;
+      btn.addEventListener('click', () => {
+        visible = !visible;
+        map.setLayoutProperty(sourceId + '-line', 'visibility', visible ? 'visible' : 'none');
+        summerMarkers.forEach(el => { el.style.visibility = visible ? 'visible' : 'hidden'; });
+        btn.textContent = visible ? '🚡 Hide lifts' : '🚡 Show lifts';
+      });
+    }
+  }
 }
 
 function initGuestMap(){
@@ -183,7 +212,7 @@ function initGuestMap(){
     addTerrainSource(guestMapInstance);
     increaseLabelDensity(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
-    renderGondolas(guestMapInstance, 'guest-gondolas');
+    renderGondolas(guestMapInstance, 'guest-gondolas', 'guestPreviewMap');
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
       .filter(t => Array.isArray(t.path) && t.path.length > 1)
@@ -257,7 +286,7 @@ function initTrailMap(){
     addTerrainSource(trailMapInstance);
     increaseLabelDensity(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
-    renderGondolas(trailMapInstance, 'trailmap-gondolas');
+    renderGondolas(trailMapInstance, 'trailmap-gondolas', 'trailMap');
     trailMapInstance.addSource('trail-paths', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
