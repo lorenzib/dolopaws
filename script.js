@@ -708,7 +708,7 @@ async function renderReturningHomepage(profile){
   listEl.innerHTML = displayList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
-    const thumb = pathThumbnailSvg(t.path);
+    const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
     return `
     <div class="trail-card" id="trail-card-${t.id}" data-id="${t.id}">
       <div class="photo" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
@@ -724,7 +724,7 @@ async function renderReturningHomepage(profile){
         <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
         <div class="meta">${t.ref ? `Trail ${t.ref} · ` : ''}${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
-        ${thumb ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
+        ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
         <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">Trail details →</a>
       </div>
     </div>`;
