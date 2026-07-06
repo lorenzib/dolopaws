@@ -150,7 +150,9 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
         map.setLayoutProperty('trailmap-gondolas-labels', 'visibility', visibility);
         if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = visibility; });
       } else if(overlayKey === 'fountains'){
-        map.setLayoutProperty('water-sources-layer', 'visibility', visibility);
+        ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
+          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
+        });
       }
       
       // Update button text and style
@@ -869,76 +871,86 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
  * Call this after map is loaded
  */
 function initializeWaterSources(map) {
-  // Add GeoJSON source
-  map.addSource('water-sources', {
-    type: 'geojson',
-    data: './data/drinking-water-all-sources.geojson',
-    cluster: true,
-    clusterRadius: 50,
-    clusterProperties: {
-      count: ['length']
-    }
-  });
+  // The map can already have this source/layer from initTrailMap().
+  // Re-adding the same IDs throws and interrupts map-load setup.
+  const hasSource = !!map.getSource('water-sources');
+  if(!hasSource){
+    map.addSource('water-sources', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+      cluster: true,
+      clusterRadius: 50,
+      clusterProperties: {
+        count: ['length']
+      }
+    });
+  }
 
   // Unclustered points layer
-  map.addLayer({
-    id: 'water-sources-layer',
-    type: 'circle',
-    source: 'water-sources',
-    filter: ['!', ['has', 'point_count']],
-    paint: {
-      'circle-radius': 5,
-      'circle-color': [
-        'case',
-        ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',  // Blue - fountains
-        ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',         // Dark blue - fountains
-        ['==', ['get', 'natural'], 'spring'], '#228B22',           // Green - springs
-        ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',       // Deep blue - taps
-        ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',      // Light blue - water points
-        '#5A5548'  // Grey - other
-      ],
-      'circle-opacity': 0.75,
-      'circle-stroke-width': 1,
-      'circle-stroke-color': '#fff'
-    }
-  });
+  if(!map.getLayer('water-sources-layer')){
+    map.addLayer({
+      id: 'water-sources-layer',
+      type: 'circle',
+      source: 'water-sources',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-radius': 5,
+        'circle-color': [
+          'case',
+          ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',  // Blue - fountains
+          ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',         // Dark blue - fountains
+          ['==', ['get', 'natural'], 'spring'], '#228B22',           // Green - springs
+          ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',       // Deep blue - taps
+          ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',      // Light blue - water points
+          '#5A5548'  // Grey - other
+        ],
+        'circle-opacity': 0.75,
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#fff'
+      }
+    });
+  }
 
   // Clustered points layer
-  map.addLayer({
-    id: 'water-sources-cluster',
-    type: 'circle',
-    source: 'water-sources',
-    filter: ['has', 'point_count'],
-    paint: {
-      'circle-radius': [
-        'step',
-        ['get', 'point_count'],
-        20,
-        5, 25,
-        10, 30
-      ],
-      'circle-color': '#4E90A8',
-      'circle-opacity': 0.7,
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#fff'
-    }
-  });
+  if(!map.getLayer('water-sources-cluster')){
+    map.addLayer({
+      id: 'water-sources-cluster',
+      type: 'circle',
+      source: 'water-sources',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20,
+          5, 25,
+          10, 30
+        ],
+        'circle-color': '#4E90A8',
+        'circle-opacity': 0.7,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#fff'
+      }
+    });
+  }
 
   // Cluster count labels
-  map.addLayer({
-    id: 'water-sources-cluster-count',
-    type: 'symbol',
-    source: 'water-sources',
-    filter: ['has', 'point_count'],
-    layout: {
-      'text-field': ['get', 'point_count'],
-      'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-      'text-size': 12
-    },
-    paint: {
-      'text-color': '#fff'
-    }
-  });
+  if(!map.getLayer('water-sources-cluster-count')){
+    map.addLayer({
+      id: 'water-sources-cluster-count',
+      type: 'symbol',
+      source: 'water-sources',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': ['get', 'point_count'],
+        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+        'text-size': 12
+      },
+      paint: {
+        'text-color': '#fff'
+      }
+    });
+  }
 
   // Interactive hover effect
   map.on('mouseenter', 'water-sources-layer', () => {
@@ -966,6 +978,12 @@ function initializeWaterSources(map) {
     
     if (props.name) {
       content += `<br>${props.name}`;
+    } else if (props.label) {
+      content += `<br>${props.label}`;
+    }
+    
+    if (props.km !== undefined) {
+      content += `<br><small>Km ${props.km}</small>`;
     }
     
     if (props.check_date) {
