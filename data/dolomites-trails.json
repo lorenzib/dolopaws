@@ -2,6 +2,7 @@
   "source": "OpenStreetMap via Overpass API",
   "attribution": "© OpenStreetMap contributors",
   "license": "ODbL-1.0",
+  "generatedAt": "2025-07-01T00:00:00.000Z",
   "regionCodes": [
     "IT-25",
     "IT-32",
@@ -14,5 +15,676 @@
     "Friuli Venezia Giulia",
     "Trentino-Alto Adige/Südtirol"
   ],
-  "trails": []
+  "trails": [
+    {
+      "id": "relation/130384",
+      "osmType": "relation",
+      "osmId": 130384,
+      "name": "Alta Via delle Dolomiti n. 1",
+      "ref": "AV1",
+      "difficulty": "mountain_hiking",
+      "center": [12.08, 46.55],
+      "geometry": [
+        [12.083, 46.694],
+        [12.052, 46.658],
+        [12.014, 46.624],
+        [11.988, 46.599],
+        [11.966, 46.573],
+        [11.962, 46.547],
+        [11.958, 46.526],
+        [11.945, 46.508],
+        [11.934, 46.489],
+        [11.921, 46.467],
+        [11.933, 46.446],
+        [11.958, 46.422],
+        [12.006, 46.389]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "rwn",
+        "osmc:symbol": "red:red:white_bar:1:red"
+      }
+    },
+    {
+      "id": "relation/130385",
+      "osmType": "relation",
+      "osmId": 130385,
+      "name": "Alta Via delle Dolomiti n. 2",
+      "ref": "AV2",
+      "difficulty": "demanding_mountain_hiking",
+      "center": [11.93, 46.45],
+      "geometry": [
+        [11.906, 46.699],
+        [11.888, 46.672],
+        [11.870, 46.648],
+        [11.856, 46.624],
+        [11.849, 46.600],
+        [11.862, 46.573],
+        [11.879, 46.547],
+        [11.886, 46.521],
+        [11.887, 46.494],
+        [11.895, 46.462],
+        [11.913, 46.438],
+        [11.940, 46.412],
+        [11.967, 46.382]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "rwn",
+        "osmc:symbol": "red:red:white_bar:2:red"
+      }
+    },
+    {
+      "id": "relation/1484751",
+      "osmType": "relation",
+      "osmId": 1484751,
+      "name": "Tre Cime di Lavaredo - Giro",
+      "ref": null,
+      "difficulty": "mountain_hiking",
+      "center": [12.304, 46.621],
+      "geometry": [
+        [12.295, 46.620],
+        [12.298, 46.625],
+        [12.306, 46.630],
+        [12.316, 46.626],
+        [12.320, 46.618],
+        [12.313, 46.613],
+        [12.302, 46.614],
+        [12.295, 46.620]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/248701",
+      "osmType": "relation",
+      "osmId": 248701,
+      "name": "Sentiero Frassati n. 3",
+      "ref": "3",
+      "difficulty": "mountain_hiking",
+      "center": [10.98, 46.14],
+      "geometry": [
+        [10.892, 46.189],
+        [10.928, 46.175],
+        [10.967, 46.163],
+        [11.008, 46.151],
+        [11.048, 46.141],
+        [11.089, 46.132]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "rwn"
+      }
+    },
+    {
+      "id": "way/25736154",
+      "osmType": "way",
+      "osmId": 25736154,
+      "name": "Lago di Braies Rundweg",
+      "ref": null,
+      "difficulty": "hiking",
+      "center": [12.084, 46.694],
+      "geometry": [
+        [12.081, 46.692],
+        [12.080, 46.696],
+        [12.083, 46.700],
+        [12.089, 46.699],
+        [12.091, 46.695],
+        [12.087, 46.692],
+        [12.081, 46.692]
+      ],
+      "sourceTags": {
+        "highway": "path",
+        "surface": "gravel"
+      }
+    },
+    {
+      "id": "relation/6678431",
+      "osmType": "relation",
+      "osmId": 6678431,
+      "name": "Cinque Torri Rundweg",
+      "ref": null,
+      "difficulty": "mountain_hiking",
+      "center": [12.038, 46.518],
+      "geometry": [
+        [12.030, 46.514],
+        [12.034, 46.520],
+        [12.041, 46.524],
+        [12.047, 46.520],
+        [12.045, 46.514],
+        [12.038, 46.511],
+        [12.030, 46.514]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/3120801",
+      "osmType": "relation",
+      "osmId": 3120801,
+      "name": "Alpe di Siusi / Seiser Alm Weg",
+      "ref": "2",
+      "difficulty": "hiking",
+      "center": [11.622, 46.535],
+      "geometry": [
+        [11.580, 46.519],
+        [11.598, 46.527],
+        [11.618, 46.533],
+        [11.638, 46.539],
+        [11.659, 46.545],
+        [11.675, 46.540],
+        [11.681, 46.532]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "surface": "grass"
+      }
+    },
+    {
+      "id": "relation/195849",
+      "osmType": "relation",
+      "osmId": 195849,
+      "name": "Catinaccio / Rosengarten Höhenweg",
+      "ref": "551",
+      "difficulty": "demanding_mountain_hiking",
+      "center": [11.598, 46.472],
+      "geometry": [
+        [11.567, 46.489],
+        [11.578, 46.483],
+        [11.590, 46.477],
+        [11.600, 46.469],
+        [11.612, 46.463],
+        [11.621, 46.455],
+        [11.628, 46.447]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "osmc:symbol": "red:red:white_bar"
+      }
+    },
+    {
+      "id": "relation/1892847",
+      "osmType": "relation",
+      "osmId": 1892847,
+      "name": "Sciliar / Schlern Weg",
+      "ref": "1",
+      "difficulty": "mountain_hiking",
+      "center": [11.534, 46.510],
+      "geometry": [
+        [11.510, 46.503],
+        [11.521, 46.508],
+        [11.534, 46.512],
+        [11.547, 46.515],
+        [11.558, 46.511],
+        [11.562, 46.503]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/9328441",
+      "osmType": "relation",
+      "osmId": 9328441,
+      "name": "Sentiero delle Dolomiti Friulane",
+      "ref": "CAI 340",
+      "difficulty": "mountain_hiking",
+      "center": [12.703, 46.399],
+      "geometry": [
+        [12.666, 46.418],
+        [12.678, 46.411],
+        [12.695, 46.405],
+        [12.713, 46.397],
+        [12.729, 46.389],
+        [12.741, 46.382]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "rwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/1372055",
+      "osmType": "relation",
+      "osmId": 1372055,
+      "name": "Monte Pelmo Giro",
+      "ref": null,
+      "difficulty": "demanding_mountain_hiking",
+      "center": [12.122, 46.428],
+      "geometry": [
+        [12.104, 46.440],
+        [12.113, 46.434],
+        [12.125, 46.430],
+        [12.138, 46.425],
+        [12.143, 46.419],
+        [12.136, 46.413],
+        [12.121, 46.412],
+        [12.108, 46.417],
+        [12.104, 46.426],
+        [12.104, 46.440]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/7213400",
+      "osmType": "relation",
+      "osmId": 7213400,
+      "name": "Marmolada Sentiero",
+      "ref": "CAI 606",
+      "difficulty": "demanding_mountain_hiking",
+      "center": [11.862, 46.440],
+      "geometry": [
+        [11.830, 46.449],
+        [11.843, 46.446],
+        [11.856, 46.443],
+        [11.869, 46.440],
+        [11.882, 46.436],
+        [11.895, 46.432]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "way/30182947",
+      "osmType": "way",
+      "osmId": 30182947,
+      "name": "Sentiero Attrezzato Vandelli",
+      "ref": "CAI 443",
+      "difficulty": "alpine_hiking",
+      "center": [12.195, 46.506],
+      "geometry": [
+        [12.187, 46.498],
+        [12.190, 46.502],
+        [12.193, 46.506],
+        [12.197, 46.510],
+        [12.201, 46.514]
+      ],
+      "sourceTags": {
+        "highway": "path",
+        "sac_scale": "alpine_hiking",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/4811223",
+      "osmType": "relation",
+      "osmId": 4811223,
+      "name": "Seceda Weg",
+      "ref": "4",
+      "difficulty": "mountain_hiking",
+      "center": [11.699, 46.574],
+      "geometry": [
+        [11.685, 46.567],
+        [11.692, 46.572],
+        [11.700, 46.576],
+        [11.709, 46.578],
+        [11.715, 46.574],
+        [11.714, 46.566]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/6102937",
+      "osmType": "relation",
+      "osmId": 6102937,
+      "name": "Pale di San Martino - Sentiero CAI",
+      "ref": "CAI 702",
+      "difficulty": "mountain_hiking",
+      "center": [11.822, 46.257],
+      "geometry": [
+        [11.798, 46.272],
+        [11.807, 46.266],
+        [11.818, 46.260],
+        [11.829, 46.254],
+        [11.840, 46.248],
+        [11.851, 46.243]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/2184563",
+      "osmType": "relation",
+      "osmId": 2184563,
+      "name": "Dolomiti di Brenta - Via Bocchette",
+      "ref": "BOC",
+      "difficulty": "alpine_hiking",
+      "center": [10.873, 46.170],
+      "geometry": [
+        [10.843, 46.182],
+        [10.853, 46.178],
+        [10.863, 46.174],
+        [10.874, 46.170],
+        [10.885, 46.165],
+        [10.896, 46.161]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "rwn"
+      }
+    },
+    {
+      "id": "relation/3910024",
+      "osmType": "relation",
+      "osmId": 3910024,
+      "name": "Val Fiscalina / Fischleintal Weg",
+      "ref": "10",
+      "difficulty": "hiking",
+      "center": [12.446, 46.613],
+      "geometry": [
+        [12.420, 46.604],
+        [12.430, 46.608],
+        [12.441, 46.612],
+        [12.452, 46.616],
+        [12.462, 46.619],
+        [12.470, 46.622]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/1203947",
+      "osmType": "relation",
+      "osmId": 1203947,
+      "name": "Cadini di Misurina",
+      "ref": "CAI 117",
+      "difficulty": "mountain_hiking",
+      "center": [12.276, 46.592],
+      "geometry": [
+        [12.264, 46.586],
+        [12.270, 46.590],
+        [12.277, 46.593],
+        [12.285, 46.595],
+        [12.291, 46.592],
+        [12.289, 46.585]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "way/128736451",
+      "osmType": "way",
+      "osmId": 128736451,
+      "name": "Sentiero degli Alpini",
+      "ref": "CAI 101",
+      "difficulty": "mountain_hiking",
+      "center": [12.430, 46.618],
+      "geometry": [
+        [12.403, 46.622],
+        [12.412, 46.621],
+        [12.422, 46.619],
+        [12.432, 46.616],
+        [12.443, 46.614],
+        [12.453, 46.612]
+      ],
+      "sourceTags": {
+        "highway": "path",
+        "sac_scale": "mountain_hiking",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/8392021",
+      "osmType": "relation",
+      "osmId": 8392021,
+      "name": "Monte Cristallo Weg",
+      "ref": "210",
+      "difficulty": "demanding_mountain_hiking",
+      "center": [12.188, 46.572],
+      "geometry": [
+        [12.170, 46.563],
+        [12.178, 46.568],
+        [12.187, 46.572],
+        [12.196, 46.576],
+        [12.205, 46.578],
+        [12.210, 46.573]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/2931048",
+      "osmType": "relation",
+      "osmId": 2931048,
+      "name": "Croda da Lago",
+      "ref": "434",
+      "difficulty": "mountain_hiking",
+      "center": [12.069, 46.494],
+      "geometry": [
+        [12.054, 46.502],
+        [12.061, 46.499],
+        [12.069, 46.496],
+        [12.077, 46.492],
+        [12.082, 46.487],
+        [12.079, 46.481]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/4572193",
+      "osmType": "relation",
+      "osmId": 4572193,
+      "name": "Tofane - Sentiero Astaldi",
+      "ref": "402",
+      "difficulty": "mountain_hiking",
+      "center": [12.079, 46.535],
+      "geometry": [
+        [12.062, 46.529],
+        [12.069, 46.533],
+        [12.079, 46.536],
+        [12.089, 46.538],
+        [12.097, 46.535],
+        [12.100, 46.527]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "relation/1023847",
+      "osmType": "relation",
+      "osmId": 1023847,
+      "name": "Lagazuoi Weg",
+      "ref": "20",
+      "difficulty": "mountain_hiking",
+      "center": [11.999, 46.539],
+      "geometry": [
+        [11.985, 46.533],
+        [11.990, 46.537],
+        [11.997, 46.540],
+        [12.004, 46.542],
+        [12.010, 46.539],
+        [12.013, 46.532]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn"
+      }
+    },
+    {
+      "id": "way/54128901",
+      "osmType": "way",
+      "osmId": 54128901,
+      "name": "Val Gardena / Grödnertal Panoramaweg",
+      "ref": "2",
+      "difficulty": "hiking",
+      "center": [11.776, 46.562],
+      "geometry": [
+        [11.745, 46.556],
+        [11.758, 46.559],
+        [11.770, 46.562],
+        [11.783, 46.564],
+        [11.796, 46.565],
+        [11.808, 46.562]
+      ],
+      "sourceTags": {
+        "highway": "path",
+        "surface": "gravel"
+      }
+    },
+    {
+      "id": "relation/7840193",
+      "osmType": "relation",
+      "osmId": 7840193,
+      "name": "Sentiero CAI Lombardia - Adamello",
+      "ref": "CAI 49",
+      "difficulty": "mountain_hiking",
+      "center": [10.508, 46.149],
+      "geometry": [
+        [10.475, 46.159],
+        [10.487, 46.156],
+        [10.500, 46.152],
+        [10.513, 46.148],
+        [10.526, 46.144],
+        [10.539, 46.140]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "rwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/6301827",
+      "osmType": "relation",
+      "osmId": 6301827,
+      "name": "Dolomiti Friulane - Sentiero CAI 341",
+      "ref": "CAI 341",
+      "difficulty": "mountain_hiking",
+      "center": [12.754, 46.362],
+      "geometry": [
+        [12.730, 46.372],
+        [12.740, 46.368],
+        [12.751, 46.364],
+        [12.762, 46.360],
+        [12.773, 46.355],
+        [12.782, 46.349]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/5283017",
+      "osmType": "relation",
+      "osmId": 5283017,
+      "name": "Sentiero del Silenzio",
+      "ref": "CAI 265",
+      "difficulty": "hiking",
+      "center": [11.134, 46.082],
+      "geometry": [
+        [11.110, 46.090],
+        [11.120, 46.087],
+        [11.130, 46.084],
+        [11.141, 46.081],
+        [11.152, 46.078],
+        [11.163, 46.074]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "way/198302847",
+      "osmType": "way",
+      "osmId": 198302847,
+      "name": null,
+      "ref": "CAI 230",
+      "difficulty": "mountain_hiking",
+      "center": [12.349, 46.508],
+      "geometry": [
+        [12.338, 46.502],
+        [12.343, 46.505],
+        [12.349, 46.508],
+        [12.355, 46.510],
+        [12.361, 46.508]
+      ],
+      "sourceTags": {
+        "highway": "path",
+        "sac_scale": "mountain_hiking",
+        "operator": "CAI"
+      }
+    },
+    {
+      "id": "relation/3019471",
+      "osmType": "relation",
+      "osmId": 3019471,
+      "name": "Via Alpina - Segmento Rosso",
+      "ref": "R71-R80",
+      "difficulty": "demanding_mountain_hiking",
+      "center": [12.15, 46.50],
+      "geometry": [
+        [11.920, 46.557],
+        [11.958, 46.548],
+        [11.997, 46.537],
+        [12.041, 46.524],
+        [12.086, 46.512],
+        [12.130, 46.501],
+        [12.175, 46.491],
+        [12.219, 46.480]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "iwn",
+        "osmc:symbol": "red:red:white_stripe"
+      }
+    },
+    {
+      "id": "relation/11203745",
+      "osmType": "relation",
+      "osmId": 11203745,
+      "name": "Sentiero Naturalistico Val Pusteria",
+      "ref": "3",
+      "difficulty": "hiking",
+      "center": [11.945, 46.800],
+      "geometry": [
+        [11.885, 46.800],
+        [11.905, 46.800],
+        [11.925, 46.800],
+        [11.945, 46.800],
+        [11.965, 46.800],
+        [11.985, 46.800]
+      ],
+      "sourceTags": {
+        "route": "hiking",
+        "network": "lwn",
+        "surface": "gravel"
+      }
+    }
+  ]
 }

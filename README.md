@@ -26,7 +26,7 @@ Generated output:
 
 - `data/dolomites-trails.json`
 
-The output is a deterministic, compact JSON subset with normalized trail fields used by the static frontend.
+The output is a deterministic, compact JSON subset with normalized trail fields used by the static frontend. A pre-fetched static snapshot is committed to the repository so the site works out of the box. Refresh it at any time by running `npm run build:dolomites-trails`. The `generatedAt` field in the JSON records when the snapshot was last fetched.
 
 ## What the project stores
 
