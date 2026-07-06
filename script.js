@@ -171,9 +171,8 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     btn.style.opacity = isVisible ? '1' : '0.8';
   }
   
-  // Create the three buttons
+  // Create the two buttons (lifts are always visible, just clickable)
   const routesBtn = createButton('🥾 Show trail routes', 'routes');
-  const liftsBtn = createButton('🚡 Show lifts', 'lifts');
   const fountainsBtn = createButton('💧 Show fountains', 'fountains');
 }
 
@@ -191,7 +190,7 @@ function renderGondolas(map, sourceId){
     id: sourceId + '-line',
     type: 'line',
     source: sourceId,
-    layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'none' },
+    layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'visible' },
     paint: {
       'line-color': [
         'match', ['get', 'status'],
