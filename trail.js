@@ -204,6 +204,18 @@ function addTerrainToggle(map, containerId, exaggeration, pitch3D){
   });
 }
 
+function increaseLabelDensity(map){
+  const layers = map.getStyle().layers || [];
+  layers.forEach(layer => {
+    if(layer.type !== 'symbol') return;
+    try {
+      map.setLayoutProperty(layer.id, 'text-allow-overlap', true);
+      map.setLayoutProperty(layer.id, 'icon-allow-overlap', true);
+      map.setLayoutProperty(layer.id, 'text-optional', true);
+    } catch(e) { /* some layers may not support one of these props — skip silently */ }
+  });
+}
+
 function addTerrainSource(map){
   map.addSource('terrain-dem', {
     type: 'raster-dem',
@@ -364,6 +376,7 @@ function init(){
 
     map.on('load', () => {
       addTerrainSource(map);
+      increaseLabelDensity(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM

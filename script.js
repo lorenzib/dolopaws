@@ -115,25 +115,52 @@ function renderGondolas(map, sourceId){
   if(typeof gondolas === 'undefined' || !gondolas.length) return;
   const features = gondolas.map(g => ({
     type: 'Feature',
-    properties: { name: g.name, note: g.note },
+    properties: { name: g.name, note: g.note, status: g.status },
     geometry: { type: 'LineString', coordinates: [[g.from.lng, g.from.lat], [g.to.lng, g.to.lat]] },
   }));
   map.addSource(sourceId, { type: 'geojson', data: { type: 'FeatureCollection', features } });
+
+  // Status-based styling: confirmed-summer lifts stand out clearly; unknown
+  // and confirmed-not-summer ones stay visually muted so 215 lines don't
+  // just read as undifferentiated clutter over the trail data underneath.
   map.addLayer({
     id: sourceId + '-line',
     type: 'line',
     source: sourceId,
     layout: { 'line-join': 'round', 'line-cap': 'round' },
-    paint: { 'line-color': '#4E90A8', 'line-width': 2.5, 'line-dasharray': [2, 1.5] },
+    paint: {
+      'line-color': [
+        'match', ['get', 'status'],
+        'summer', '#4E90A8',
+        'no-summer', '#9C3A25',
+        '#8a8474', // unknown — neutral grey
+      ],
+      'line-width': ['match', ['get', 'status'], 'summer', 2.5, 1.5],
+      'line-opacity': ['match', ['get', 'status'], 'summer', 1, 'no-summer', 0.4, 0.35],
+      'line-dasharray': ['match', ['get', 'status'], 'summer', ['literal', [1, 0]], ['literal', [2, 1.5]]],
+    },
   });
-  gondolas.forEach(g => {
+
+  // Click anywhere on a line to see its name/status/note — far more
+  // efficient than a dedicated marker per station across 215 lifts.
+  map.on('click', sourceId + '-line', (e) => {
+    const p = e.features[0].properties;
+    new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
+      .setHTML(`<b>${p.name}</b><br>${p.note}`).addTo(map);
+  });
+  map.on('mouseenter', sourceId + '-line', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', sourceId + '-line', () => map.getCanvas().style.cursor = '');
+
+  // Full 🚡 station markers only for confirmed summer-operating lifts —
+  // the ones actually useful to plan around right now.
+  gondolas.filter(g => g.status === 'summer').forEach(g => {
     [g.from, g.to].forEach(station => {
       const el = document.createElement('div');
-      el.style.cssText = 'width:24px;height:24px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:12px;';
+      el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;';
       el.textContent = '🚡';
       new maplibregl.Marker({ element: el })
         .setLngLat([station.lng, station.lat])
-        .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b><br>${station.label}`))
+        .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b><br>${station.label}<br>${g.note}`))
         .addTo(map);
     });
   });
@@ -154,6 +181,7 @@ function initGuestMap(){
 
   guestMapInstance.on('load', () => {
     addTerrainSource(guestMapInstance);
+    increaseLabelDensity(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
     renderGondolas(guestMapInstance, 'guest-gondolas');
     // Real route lines for any trail that has one — same data the logged-in map uses.
@@ -227,6 +255,7 @@ function initTrailMap(){
 
   trailMapInstance.on('load', () => {
     addTerrainSource(trailMapInstance);
+    increaseLabelDensity(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     renderGondolas(trailMapInstance, 'trailmap-gondolas');
     trailMapInstance.addSource('trail-paths', {
@@ -272,6 +301,25 @@ function pathThumbnailSvg(path){
     <rect width="${W}" height="${H}" fill="var(--sage-dim)"/>
     <polyline points="${points}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
   </svg>`;
+}
+
+// Increases label density by telling every text/icon layer in the base
+// style to render even when it would otherwise overlap a neighbor. By
+// default, vector styles hide crowded labels for cleanliness — this trades
+// some visual tidiness for more names actually being visible, which is
+// what was being asked for here. Works on any style without needing to
+// know its specific internal layer names, since it targets every layer of
+// type 'symbol' generically rather than hardcoded IDs.
+function increaseLabelDensity(map){
+  const layers = map.getStyle().layers || [];
+  layers.forEach(layer => {
+    if(layer.type !== 'symbol') return;
+    try {
+      map.setLayoutProperty(layer.id, 'text-allow-overlap', true);
+      map.setLayoutProperty(layer.id, 'icon-allow-overlap', true);
+      map.setLayoutProperty(layer.id, 'text-optional', true);
+    } catch(e) { /* some layers may not support one of these props — skip silently */ }
+  });
 }
 
 function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
