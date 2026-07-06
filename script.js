@@ -111,7 +111,7 @@ let guestMapInstance = null;
 let showingSavedOnly = false;
 let activeArea = 'all';
 
-function createMapOverlayControls(map, containerId, allLiftMarkers){
+function createMapOverlayControls(map, containerId, allLiftMarkers, allFountainMarkers){
   const container = document.getElementById(containerId);
   if(!container) return;
   
@@ -150,9 +150,10 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
         map.setLayoutProperty('trailmap-gondolas-labels', 'visibility', visibility);
         if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = visibility; });
       } else if(overlayKey === 'fountains'){
-        ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
+        if(map.getLayer('trailmap-fountains-circles')) {
+          map.setLayoutProperty('trailmap-fountains-circles', 'visibility', visibility);
+        }
+        if(allFountainMarkers) allFountainMarkers.forEach(el => { el.style.visibility = visibility; });
       }
       
       // Update button text and style
@@ -256,6 +257,83 @@ function renderGondolas(map, sourceId){
   return allLiftMarkers;
 }
 
+function renderFountains(map, sourceId) {
+  if(typeof fountains === 'undefined' || !fountains.length) return null;
+  
+  // Convert fountains to GeoJSON features
+  const features = fountains.map(f => ({
+    type: 'Feature',
+    properties: { 
+      name: f.name, 
+      type: f.type, 
+      seasonal: f.seasonal 
+    },
+    geometry: { type: 'Point', coordinates: [f.lng, f.lat] },
+  }));
+  
+  map.addSource(sourceId, { 
+    type: 'geojson', 
+    data: { type: 'FeatureCollection', features } 
+  });
+
+  // Fountain circle markers layer
+  map.addLayer({
+    id: sourceId + '-circles',
+    type: 'circle',
+    source: sourceId,
+    layout: { visibility: 'none' },
+    paint: {
+      'circle-radius': 5,
+      'circle-color': [
+        'match', ['get', 'type'],
+        'drinking_water', '#4E90A8',  // Blue for drinking fountains
+        'spring', '#228B22',           // Green for springs
+        '#5A5548'                      // Grey for other
+      ],
+      'circle-stroke-color': '#ffffff',
+      'circle-stroke-width': 1.5,
+      'circle-opacity': 0.8,
+    },
+  });
+
+  // Click to show popup
+  map.on('click', sourceId + '-circles', (e) => {
+    const p = e.features[0].properties;
+    let typeIcon = p.type === 'drinking_water' ? '🚰' : '💧';
+    let typeLabel = p.type === 'drinking_water' ? 'Drinking Fountain' : 'Water Spring';
+    let html = `<b>${typeIcon} ${p.name}</b><br><small>${typeLabel}</small>`;
+    if(p.seasonal) html += '<br><small>⚠️ Seasonal</small>';
+    
+    new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
+      .setHTML(html).addTo(map);
+  });
+  
+  // Hover effect
+  map.on('mouseenter', sourceId + '-circles', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', sourceId + '-circles', () => map.getCanvas().style.cursor = '');
+
+  // Create markers with popup
+  const allFountainMarkers = [];
+  fountains.forEach(f => {
+    const el = document.createElement('div');
+    const color = f.type === 'drinking_water' ? '#4E90A8' : '#228B22';
+    el.style.cssText = `width:20px;height:20px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;visibility:hidden;`;
+    el.textContent = f.type === 'drinking_water' ? '🚰' : '💧';
+    
+    let html = `<b>${f.name}</b><br><small>${f.type === 'drinking_water' ? 'Drinking Fountain' : 'Water Spring'}</small>`;
+    if(f.seasonal) html += '<br><small>⚠️ Seasonal</small>';
+    
+    const marker = new maplibregl.Marker({ element: el })
+      .setLngLat([f.lng, f.lat])
+      .setPopup(new maplibregl.Popup({ offset: 12 }).setHTML(html))
+      .addTo(map);
+    
+    allFountainMarkers.push(el);
+  });
+  
+  return allFountainMarkers;
+}
+
 function initGuestMap(){
   if(guestMapInstance || typeof maplibregl === 'undefined' || typeof trails === 'undefined') return;
   const el = document.getElementById('guestPreviewMap');
@@ -350,6 +428,7 @@ function initTrailMap(){
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     
     const allLiftMarkers = renderGondolas(trailMapInstance, 'trailmap-gondolas');
+    const allFountainMarkers = renderFountains(trailMapInstance, 'trailmap-fountains');
     
     // Waymarked Trails hiking overlay — shows route numbers, waymarking, and trail network detail
     const firstLabelLayer = trailMapInstance.getStyle().layers.find(l => l.type === 'symbol');
@@ -415,10 +494,11 @@ function initTrailMap(){
     trailMapInstance.on('mouseleave', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = '');
     
     // Create overlay toggle controls
-    createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers);
+    createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers, allFountainMarkers);
     
     // Initialize comprehensive water sources layer from Overpass API data
-    initializeWaterSources(trailMapInstance);
+    // (Now using renderFountains() above - see fountains array in trails-data.js)
+    // initializeWaterSources(trailMapInstance);
     
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
