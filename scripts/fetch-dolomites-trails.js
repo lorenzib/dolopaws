@@ -170,6 +170,7 @@ async function main() {
     source: 'OpenStreetMap via Overpass API',
     attribution: '© OpenStreetMap contributors',
     license: 'ODbL-1.0',
+    generatedAt: new Date().toISOString(),
     regionCodes: REGION_CODES,
     regions: TARGET_REGIONS,
     trails
