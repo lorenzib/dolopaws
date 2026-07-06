@@ -126,23 +126,55 @@ function renderGondolas(map, sourceId, containerId){
   //
   // Hidden by default (visibility:'none') — 718 lines shown automatically
   // would overwhelm the map. A toggle button reveals them on request, and
-  // even then minzoom keeps them from cluttering a fully zoomed-out view.
+  // also zooms out to actually show where the data is (see below).
   map.addLayer({
     id: sourceId + '-line',
     type: 'line',
     source: sourceId,
-    minzoom: 9,
+    // (no minzoom restriction — the toggle itself is the declutter
+    // mechanism now that it also zooms to fit the real data; a minzoom
+    // here would fight against that by hiding lines at the zoomed-out
+    // level needed to actually see a 3-region spread of lifts)
     layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'none' },
     paint: {
       'line-color': [
         'match', ['get', 'status'],
         'summer', '#4E90A8',
         'no-summer', '#9C3A25',
-        '#8a8474', // unknown — neutral grey
+        '#5A5548', // unknown — a real, visible grey, not the barely-there tone from before
       ],
-      'line-width': ['match', ['get', 'status'], 'summer', 2.5, 1.5],
-      'line-opacity': ['match', ['get', 'status'], 'summer', 1, 'no-summer', 0.4, 0.35],
-      'line-dasharray': ['match', ['get', 'status'], 'summer', ['literal', [1, 0]], ['literal', [2, 1.5]]],
+      'line-width': 2.5,
+      'line-opacity': 0.9,
+      'line-dasharray': ['match', ['get', 'status'], 'summer', ['literal', [1, 0]], ['literal', [2, 1]]],
+    },
+  });
+
+  // Real name labels along every line — repeated text following the line's
+  // own direction, same technique already used for trail direction arrows.
+  // Without this, lift lines just look like unlabeled marks on the map —
+  // seeing a line means nothing without knowing which lift it actually is.
+  map.addLayer({
+    id: sourceId + '-labels',
+    type: 'symbol',
+    source: sourceId,
+    layout: {
+      visibility: 'none',
+      'symbol-placement': 'line',
+      'symbol-spacing': 250,
+      'text-field': ['get', 'name'],
+      'text-size': 11,
+      'text-rotation-alignment': 'map',
+      'text-keep-upright': true,
+    },
+    paint: {
+      'text-color': [
+        'match', ['get', 'status'],
+        'summer', '#2E4034',
+        'no-summer', '#7a2818',
+        '#4a4638',
+      ],
+      'text-halo-color': '#ffffff',
+      'text-halo-width': 1.5,
     },
   });
 
@@ -188,8 +220,24 @@ function renderGondolas(map, sourceId, containerId){
       btn.addEventListener('click', () => {
         visible = !visible;
         map.setLayoutProperty(sourceId + '-line', 'visibility', visible ? 'visible' : 'none');
+        map.setLayoutProperty(sourceId + '-labels', 'visibility', visible ? 'visible' : 'none');
         summerMarkers.forEach(el => { el.style.visibility = visible ? 'visible' : 'hidden'; });
         btn.textContent = visible ? '🚡 Hide lifts' : '🚡 Show lifts';
+
+        // The map's default view is framed around the existing trails only,
+        // which all sit in one small area — most of these 718 lifts are
+        // elsewhere (Lombardy, wider Veneto/Trentino) and would stay
+        // invisible off-screen without this. Toggling on actually moves the
+        // view to show where the data really is, rather than leaving the
+        // viewport wherever it happened to be.
+        if(visible){
+          const gondolaBounds = new maplibregl.LngLatBounds();
+          gondolas.forEach(g => {
+            gondolaBounds.extend([g.from.lng, g.from.lat]);
+            gondolaBounds.extend([g.to.lng, g.to.lat]);
+          });
+          map.fitBounds(gondolaBounds, { padding: 40 });
+        }
       });
     }
   }
