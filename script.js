@@ -111,7 +111,7 @@ let guestMapInstance = null;
 let showingSavedOnly = false;
 let activeArea = 'all';
 
-function createMapOverlayControls(map, containerId, allLiftMarkers, allFountainMarkers){
+function createMapOverlayControls(map, containerId, allLiftMarkers){
   const container = document.getElementById(containerId);
   if(!container) return;
   
@@ -152,12 +152,10 @@ function createMapOverlayControls(map, containerId, allLiftMarkers, allFountainM
         const markerVisibility = visibility === 'visible' ? 'visible' : 'hidden';
         if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = markerVisibility; });
       } else if(overlayKey === 'fountains'){
-        if(map.getLayer('trailmap-fountains-circles')) {
-          map.setLayoutProperty('trailmap-fountains-circles', 'visibility', visibility);
-        }
-        // For DOM elements, use 'visible'/'hidden' not 'visible'/'none'
-        const markerVisibility = visibility === 'visible' ? 'visible' : 'hidden';
-        if(allFountainMarkers) allFountainMarkers.forEach(el => { el.style.visibility = markerVisibility; });
+        // Toggle water sources layers (using map layers, not DOM markers)
+        ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
+          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
+        });
       }
       
       // Update button text and style
@@ -432,7 +430,6 @@ function initTrailMap(){
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     
     const allLiftMarkers = renderGondolas(trailMapInstance, 'trailmap-gondolas');
-    const allFountainMarkers = renderFountains(trailMapInstance, 'trailmap-fountains');
     
     // Waymarked Trails hiking overlay — shows route numbers, waymarking, and trail network detail
     const firstLabelLayer = trailMapInstance.getStyle().layers.find(l => l.type === 'symbol');
@@ -471,38 +468,11 @@ function initTrailMap(){
       },
     });
 
-    // Water sources (fountains, springs) — clickable markers on the map
-    trailMapInstance.addSource('water-sources', {
-      type: 'geojson',
-      data: { type: 'FeatureCollection', features: [] },
-    });
-    trailMapInstance.addLayer({
-      id: 'water-sources-layer',
-      type: 'circle',
-      source: 'water-sources',
-      layout: { visibility: 'none' },
-      paint: {
-        'circle-radius': 6,
-        'circle-color': '#4E90A8',
-        'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': 2,
-        'circle-opacity': 0.8,
-      },
-    });
-    trailMapInstance.on('click', 'water-sources-layer', (e) => {
-      const p = e.features[0].properties;
-      new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
-        .setHTML(`<b>💧 ${p.label}</b><br>Km ${p.km}`).addTo(trailMapInstance);
-    });
-    trailMapInstance.on('mouseenter', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = 'pointer');
-    trailMapInstance.on('mouseleave', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = '');
-    
     // Create overlay toggle controls
-    createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers, allFountainMarkers);
+    createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers);
     
-    // Initialize comprehensive water sources layer from Overpass API data
-    // (Now using renderFountains() above - see fountains array in trails-data.js)
-    // initializeWaterSources(trailMapInstance);
+    // Initialize water sources from combined GeoJSON (Trentino, Veneto, Savoy)
+    initializeWaterSources(trailMapInstance);
     
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
@@ -959,8 +929,8 @@ function initializeWaterSources(map) {
   // Re-adding the same IDs throws and interrupts map-load setup.
   const hasSource = !!map.getSource('water-sources');
   if(!hasSource){
-    // Fetch the GeoJSON data first
-    fetch('./drinking-water-all-sources.geojson')
+    // Fetch the combined GeoJSON data from all regions (Trentino, Veneto, Savoy)
+    fetch('./water-sources-all-regions.geojson')
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: Failed to load GeoJSON`);
@@ -968,7 +938,7 @@ function initializeWaterSources(map) {
         return response.json();
       })
       .then(geojsonData => {
-        console.log(`✅ Loaded ${geojsonData.features?.length || 0} water sources`);
+        console.log(`✅ Loaded ${geojsonData.features?.length || 0} water sources from Trentino, Veneto, and Savoy`);
         
         map.addSource('water-sources', {
           type: 'geojson',
@@ -1073,7 +1043,8 @@ function addWaterSourcesLayers(map) {
     map.getCanvas().style.cursor = '';
   });
 
-  // Click to show popup
+  // Click to show popup - remove old handler first to prevent duplicates
+  map.off('click', 'water-sources-layer');
   map.on('click', 'water-sources-layer', (e) => {
     const feature = e.features[0];
     const props = feature.properties;
@@ -1113,7 +1084,8 @@ function addWaterSourcesLayers(map) {
       .addTo(map);
   });
 
-  // Click cluster to zoom in
+  // Click cluster to zoom in - remove old handler first to prevent duplicates
+  map.off('click', 'water-sources-cluster');
   map.on('click', 'water-sources-cluster', (e) => {
     const features = map.querySourceFeatures('water-sources', {
       filter: ['!=', ['get', 'point_count'], null]
