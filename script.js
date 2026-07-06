@@ -876,9 +876,16 @@ function initializeWaterSources(map) {
   const hasSource = !!map.getSource('water-sources');
   if(!hasSource){
     // Fetch the GeoJSON data first
-    fetch('./data/drinking-water-all-sources.geojson')
-      .then(response => response.json())
+    fetch('./drinking-water-all-sources.geojson')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: Failed to load GeoJSON`);
+        }
+        return response.json();
+      })
       .then(geojsonData => {
+        console.log(`✅ Loaded ${geojsonData.features?.length || 0} water sources`);
+        
         map.addSource('water-sources', {
           type: 'geojson',
           data: geojsonData,
@@ -889,11 +896,13 @@ function initializeWaterSources(map) {
           }
         });
         
+        console.log('✅ Water sources source added to map');
+        
         // Add layers after source is ready
         addWaterSourcesLayers(map);
       })
       .catch(error => {
-        console.error('Error loading water sources GeoJSON:', error);
+        console.error('❌ Error loading water sources GeoJSON:', error.message);
       });
     
     return; // Exit early since layers will be added in the fetch callback
@@ -904,6 +913,8 @@ function initializeWaterSources(map) {
  * Add all water sources layers to the map
  */
 function addWaterSourcesLayers(map) {
+  console.log('📍 Adding water sources layers...');
+  
   // Unclustered points layer
   if(!map.getLayer('water-sources-layer')){
     map.addLayer({
