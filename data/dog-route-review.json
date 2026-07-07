@@ -1,0 +1,8090 @@
+[
+  {
+    "id": 136322,
+    "name": "Mulattiera di Sadole",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 140401,
+    "name": "Sentiero del Passo Feudo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 140451,
+    "name": "Sentiero attrezzato del Gartl",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 140464,
+    "name": "Sentiero di Val de Udai",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 140480,
+    "name": "Sentiero del Masarè - Hirzelsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 141744,
+    "name": "Sentiero della forcella di Val Mesaz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 144769,
+    "name": "Mesotrekking",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 157372,
+    "name": "Keschtnweg - Sentiero del Castagno",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 158983,
+    "name": "Sentiero di Val Manara",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 162037,
+    "name": "Sentiero dei Vecchi Mestieri",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 170287,
+    "name": "6 - Gasserhütte => Schloss Reinegg",
+    "reasons": [
+      "distance 14.7 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 170299,
+    "name": "3 - Sarnthein => Gasteiger Sattel",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 171686,
+    "name": "7 - Gablersteig",
+    "reasons": [
+      "distance 16.5 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 171762,
+    "name": "2 - Rodeneck => Starkenfeldhütte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 177743,
+    "name": "Alta via n. 1 delle Dolomiti - Dolomiten-Höhenweg Nr. 1",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 125 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 404914,
+    "name": "Alta Via n. 2 delle Dolomiti - Dolomiten-Höhenweg Nr. 2",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 185 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 445316,
+    "name": "Passeggiata 3 Molini",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 934999,
+    "name": "Sentiero Europeo E5, Italia",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1028797,
+    "name": "Via Nuova",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1067616,
+    "name": "Sentiero Bonacossa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1067617,
+    "name": "Sentiero Durissini",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1124725,
+    "name": "Strada da la Vena",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1159907,
+    "name": "Pfunderer Höhenweg - Alta Via di Fundres",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1161619,
+    "name": "Meraner Höhenweg - Alta Via di Merano",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 93 km > 12 km"
+    ]
+  },
+  {
+    "id": 1163255,
+    "name": "Karnischer Höhenweg 403",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1167510,
+    "name": "Römerweg - Via Romana",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1172242,
+    "name": "Sentiero attrezzato di Val Averta",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1172245,
+    "name": "Sentiero attrezzato Attilio Sieff",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1188463,
+    "name": "Traversata del Centro Cadore",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1192044,
+    "name": "Günther-Messner-Steig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 15.2 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1198629,
+    "name": "Via ferrata delle Scalette",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1267710,
+    "name": "Itinerario storico del Monte Tudaio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1501906,
+    "name": "Sentiero Botanico Tita Poa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1506470,
+    "name": "Sissiweg - Sentiero Sissi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1520033,
+    "name": "Sentiero di Calaita",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1524702,
+    "name": "Sentiero alpinistico attrezzato delle Cime",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 52.6 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1573459,
+    "name": "Sentiero Sperti",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1608537,
+    "name": "Troso de Slavin",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1608538,
+    "name": "Troso de Cornon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1616473,
+    "name": "Sentiero C.A.I. 554",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1640906,
+    "name": "Maximiliansteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1640907,
+    "name": "Geologensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1649555,
+    "name": "Troi del Buro",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1657836,
+    "name": "Alta via n. 3 delle Dolomiti - Dolomiten-Höhenweg Nr. 3",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1658415,
+    "name": "Alta via n. 4 delle Dolomiti - Dolomiten-Höhenweg Nr. 4",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1671736,
+    "name": "Höfeweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1671781,
+    "name": "Ratscheidweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1674499,
+    "name": "Wiesenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1675481,
+    "name": "Schenner Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1696865,
+    "name": "Schillerhof - Totmoos",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1717002,
+    "name": "Via Ferrata Zandonella",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1736379,
+    "name": "Traumpfad München-Venedig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 550 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1780767,
+    "name": "Almweg 2000",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1809006,
+    "name": "Sentiero tematico delle chiesette pedemontane",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2063160,
+    "name": "Cammino Jacopeo d'Anaunia - Sesta Tappa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2120149,
+    "name": "Via ferrata di rientro dalla via ferrata del Rio Secco",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2120150,
+    "name": "Sentiero normale di rientro",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168820,
+    "name": "Sentiero di Valmaggiore e di Coltorondo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168822,
+    "name": "Sentiero di Cece e di Miesnotta",
+    "reasons": [
+      "distance 14.7 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168823,
+    "name": "Sentiero \"Don Battistin\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168857,
+    "name": "Sentiero delle Pozze",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168858,
+    "name": "Sentiero di Moregna e di Coldosè",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168859,
+    "name": "Sentiero del Fifol \"Giovanni Guadagnini\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168865,
+    "name": "Sentiero della Tognola",
+    "reasons": [
+      "distance 12.8 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168875,
+    "name": "Sentiero di Valzanchetta",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168922,
+    "name": "Sentiero attrezzato del Comedon - Intaiada",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2168925,
+    "name": "Via ferrata \"Dino Buzzati\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2169848,
+    "name": "Sentiero di Mulat",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2169862,
+    "name": "Troi de Pozil",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2172730,
+    "name": "Katzenleiter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2174946,
+    "name": "Sentiero di Grugola",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2174948,
+    "name": "Sentiero di Folga e di Valsorda",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2181902,
+    "name": "Confinweg/Schöpfungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2181922,
+    "name": "14 - Lüsen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2194427,
+    "name": "Völser Höfeweg - Il sentiero dei masi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2266340,
+    "name": "Rasteinweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2268133,
+    "name": "Bloseggweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2271199,
+    "name": "Via ferrata del Cacciatore",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2273151,
+    "name": "B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2273152,
+    "name": "D",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2282556,
+    "name": "Sentiero dei Kaiserjäger - Kaiserjäger Steig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "relation sac_scale=demanding_alpine_hiking",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316201,
+    "name": "Wanderweg 10",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316291,
+    "name": "Wanderweg 8",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316292,
+    "name": "Wanderweg 8A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316316,
+    "name": "Wanderweg 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316317,
+    "name": "Wanderweg 1A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316324,
+    "name": "Wanderweg 1B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2316327,
+    "name": "Wanderweg 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343983,
+    "name": "Kastanien-erlebnisweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343984,
+    "name": "Wanderweg 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343985,
+    "name": "Wanderweg 2A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343986,
+    "name": "Wanderweg 3A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343987,
+    "name": "Wanderweg 4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343988,
+    "name": "Wanderweg 4A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343989,
+    "name": "Wanderweg 4B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343990,
+    "name": "Wanderweg 5A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343991,
+    "name": "Wanderweg 6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343992,
+    "name": "Wanderweg 6A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343993,
+    "name": "Wanderweg 9",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2343994,
+    "name": "Wanderweg 9A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2345119,
+    "name": "Wanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2345120,
+    "name": "Wanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2345121,
+    "name": "Wanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2379944,
+    "name": "Via ferrata \"Nico Gusella\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2385558,
+    "name": "Eppaner Höhenweg - Alta Via di Appiano",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2386380,
+    "name": "Kalterer Höhenweg - Alta via di Caldaro",
+    "reasons": [
+      "distance 12.7 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2386385,
+    "name": "Traminer Höhenweg - Alta Via di Termeno",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2402209,
+    "name": "Sentiero attrezzato \"Giovanni Olivato\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2409592,
+    "name": "Via normale monte Cridola",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2442695,
+    "name": "Adolf Munkel Weg - Via delle Odle",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2498418,
+    "name": "Geschichtsparcours - Percorso Storico",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2579389,
+    "name": "Via Ferrata del Porton",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2579393,
+    "name": "Sentiero attrezzato della Lasta moia",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2579394,
+    "name": "Sentiero attrezzato del Passo di Ball",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2579395,
+    "name": "Via Ferrata del Velo",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2579397,
+    "name": "Sentiero del cacciatore",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2579444,
+    "name": "Via ferrata \"Camillo Depaoli\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2584188,
+    "name": "Sentiero del Mulaz \"Quinto Scalet\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2584190,
+    "name": "Via ferrata delle Farangole",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2585527,
+    "name": "Sentiero dei Finanzieri",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2596231,
+    "name": "Pieve di Cadore walking",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2598533,
+    "name": "Wanderroute 69",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2598771,
+    "name": "Wanderroute 68B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2622664,
+    "name": "Wanderroute 22",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2622704,
+    "name": "Wanderroute 8",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2646808,
+    "name": "Castellazzo Trekking del Cristo Pensante",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2714729,
+    "name": "Via Alpina Red R27",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2800687,
+    "name": "Sentiero \"Alessandro Miola\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2812874,
+    "name": "Sentiero \"Nico Scalet\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2817223,
+    "name": "Sentiero \"Piero Agostini\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2817224,
+    "name": "Sentiero attrezzato delle Regade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2837090,
+    "name": "Sentiero attrezzato Osvaldo Zandonella",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2969726,
+    "name": "Nachtigallenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2969727,
+    "name": "Tränksteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2989521,
+    "name": "Weinweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2989563,
+    "name": "Apfelweg Variante 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2989591,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2989622,
+    "name": "Kulturweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2991333,
+    "name": "Brixener Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2991338,
+    "name": "3B - Lüsen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2991339,
+    "name": "Wanderweg G - Gargitt",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2991396,
+    "name": "Panoramaweg (Lüsen) - Sentiero Panorama (Luson)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2992855,
+    "name": "Flittrunde",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 2992857,
+    "name": "Wanderweg G - Lüsen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3087578,
+    "name": "Wanderweg 9B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3089299,
+    "name": "Sentiero attrezzato del Cronello",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3089322,
+    "name": "Via ferrata del Burrone \"Tullio Giovanelli\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3100354,
+    "name": "Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3106274,
+    "name": "Via delle Regole",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3107942,
+    "name": "Heimatsteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3109582,
+    "name": "14A - Penser Joch => Puntleider Joch => Puntleider See",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3109599,
+    "name": "AVS 14B - Penser Joch - Astenberg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3114624,
+    "name": "Kreuzweg St. Peter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3118896,
+    "name": "Sentiero Botanico sul dossone di Cembra",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3149283,
+    "name": "7 - Villanders => Gasteiger Sattel",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3174270,
+    "name": "Naturlehrpfad",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3182609,
+    "name": "Wassersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3182798,
+    "name": "Boymont",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3185705,
+    "name": "Sentiero attrezzato del Mondino \"Edmondo Janes\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3186414,
+    "name": "Göllersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3186643,
+    "name": "Prazollsteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3186734,
+    "name": "Telefonsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3187564,
+    "name": "Burgenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3189972,
+    "name": "Gänsekragen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3193824,
+    "name": "Maria Rast Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3200837,
+    "name": "11 - Ehrenburg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3202310,
+    "name": "Senter attrezzato dei Pontesèi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207246,
+    "name": "Kasterneienweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207257,
+    "name": "Überetscher Spazierweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207278,
+    "name": "Wanderweg Kalterer See",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207285,
+    "name": "Seerundweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207917,
+    "name": "Larchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207922,
+    "name": "Sentiero della Pace",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207964,
+    "name": "Naturerlebnisweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207984,
+    "name": "Barleiter Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3207987,
+    "name": "Kardatscher Weg - Sentiero Kardatsch",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3262801,
+    "name": "2A - Spiluck => Zirmaitalm",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3262802,
+    "name": "3 - Franzensfeste => Schalders",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3267682,
+    "name": "Alta via dei Fassani",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3287454,
+    "name": "AVS 5 - Sarnthein - Premstall - Putzer Kreuz - Jenesier Jöchl - Fahrerhöfe - Schermoss",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3308540,
+    "name": "Leiferer Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3312655,
+    "name": "Via Claudia Augusta",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3458947,
+    "name": "15 - Grasstein => Traminer Scharte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3471272,
+    "name": "14 - Weg 15 (Grasstein) => Puntleider Alm - Puntleider See => Weg 15 (Traminer Scharte)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3471955,
+    "name": "16 - Durnholz => Flaggerscharte => Mittewald",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3471992,
+    "name": "AVS 13 - Asten - Hörtlahner Scharte - Marburger Hütte (Flaggerschartenhütte) - Tellerjoch - (Fortschellscharte)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3473530,
+    "name": "3A - Franzensfeste => Schalders",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3477430,
+    "name": "Sentiero della Pace",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 520 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3484165,
+    "name": "3B - Franzensfeste => Vahrner See",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3486583,
+    "name": "2 - Brixen => Schalders",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3486598,
+    "name": "AVS 5 - Vahrn - Bad Schalders - Lorenzischarte - Fortschellscharte - Durnholz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3767110,
+    "name": "Ottoweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3771847,
+    "name": "Schelmsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3780444,
+    "name": "Weinweg - Sentiero del vino",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3780670,
+    "name": "30A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3780671,
+    "name": "Hilbertal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3780672,
+    "name": "Rittersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3846698,
+    "name": "Troi di Mistièri",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3846699,
+    "name": "Troi dli Tradiziòns",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3846700,
+    "name": "Troi di Bacàni",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3846701,
+    "name": "Troi dli Màscri",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3865163,
+    "name": "Alta via n. 6 delle Dolomiti",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 180 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3889903,
+    "name": "Mühlensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3918207,
+    "name": "6 - Meransen => Pfunders",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3918233,
+    "name": "14 - Möserweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3932005,
+    "name": "Hotel Serena - Mandres - Lago Scin",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3937339,
+    "name": "Motel - Cojana - Fraina - Valle Orita - Tondi Faloria",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3974451,
+    "name": "Bivio Mandres - Porta del Dio Silvano - Fraina - Miramonti",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3985980,
+    "name": "Anello del Paradiso",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 4063351,
+    "name": "Intrecci del Tempo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4065681,
+    "name": "Viaz del Bus",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4084899,
+    "name": "15 - 6 => 17",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4103375,
+    "name": "12 - Mühlbach => Pfunders",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4210331,
+    "name": "10 => Spinges => Mühlbach => Vintl",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4242791,
+    "name": "17 - Vals => Fußendraß",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4679605,
+    "name": "8 - Neumarkt => Laag => Gfrill",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5143278,
+    "name": "Wasserfallweg - Sentiero delle cascate",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5145417,
+    "name": "Via Ferrata Ivano Dibona",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5373192,
+    "name": "21",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5373202,
+    "name": "9",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5373213,
+    "name": "8",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5373238,
+    "name": "21A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5412043,
+    "name": "Sentiero \"Friedrich August\" - Friedrich-August-Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5428212,
+    "name": "Falknerweg - Schloss Tirol",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5469305,
+    "name": "Laste Ciaspamoon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5472854,
+    "name": "Proveiser Steig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5486626,
+    "name": "Partschinser Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5486627,
+    "name": "Sagenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5489081,
+    "name": "91B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5497396,
+    "name": "Sunnenseitnweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5599406,
+    "name": "Jesus-Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5601965,
+    "name": "16",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5601967,
+    "name": "Alter Mühlweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5603332,
+    "name": "Almenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5607604,
+    "name": "25",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5609758,
+    "name": "Marlinger Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5610327,
+    "name": "Tappeinerweg - Passeggiata Tappeiner",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5612678,
+    "name": "1 - Brixen => Natz => Rodeneck => Lüsen => AV2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5612679,
+    "name": "Pinazweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5612704,
+    "name": "39A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5682682,
+    "name": "vertical KM col de lana",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5689436,
+    "name": "Via Italiana",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5689437,
+    "name": "Via degli Alpini",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5758896,
+    "name": "Lottersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5794099,
+    "name": "10 - (Asten) - Tramintal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5794100,
+    "name": "12A - Obertal => Sarner Weißhorn => Penser Joch",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5794101,
+    "name": "13A - Weg 14 A (Penser Joch) - ... - Traminer Scharte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5794103,
+    "name": "AVS 15A - Traminer Scharte - Tagewaldhorn - AVS13",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5794106,
+    "name": "AVS 6 - Oberberg - Sieben Schupfen - Pens",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5803140,
+    "name": "Choleraweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805899,
+    "name": "Pens - Durnholzer Jöchl - Durnholz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805900,
+    "name": "AVS 26 - Feldrand - Weissenbach",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805901,
+    "name": "AVS 6A - Weissenbach - Außerpens - (Pens)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805902,
+    "name": "AVS 6B - St. Johann - Außerpens",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805903,
+    "name": "AVS 8 - Weissenbach - Wannser Joch",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805904,
+    "name": "AVS 8A - Wannser Joch",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805905,
+    "name": "AVS 8B - (Weissenbach) - Oberberg Alm via Wandersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5805906,
+    "name": "AVS 9 - Sarner Weißhorn - Oberberg Alm",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5815720,
+    "name": "Sentiero della Rovessa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5844000,
+    "name": "AVS 5A - Durnholz - Tellerjoch - Jakobsspitze",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5954203,
+    "name": "Trui de Pintha",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5999432,
+    "name": "Sentiero per Cupolà di sopra",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6042814,
+    "name": "Sentiero dell'Ardo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6182620,
+    "name": "924 Variante",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6256871,
+    "name": "Schmelzöfen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6269132,
+    "name": "Wanderroute 7",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6282517,
+    "name": "Wanderroute 8B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6282531,
+    "name": "Wanderroute 8A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6290720,
+    "name": "1 - Al Plan de Mareo => Kronplatz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6333383,
+    "name": "30B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6335121,
+    "name": "Verbindungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6338111,
+    "name": "Brunnenburgsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6339409,
+    "name": "20",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6339628,
+    "name": "23B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6339631,
+    "name": "28",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6341844,
+    "name": "29",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6341847,
+    "name": "25",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6343915,
+    "name": "5B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6344592,
+    "name": "12",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6364448,
+    "name": "34B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6364450,
+    "name": "9B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6364451,
+    "name": "4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6369294,
+    "name": "91",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6373136,
+    "name": "24A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6373137,
+    "name": "Franz-Huber-Steig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6399432,
+    "name": "Sentiero attrezzato Corrado D'Ambros",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6411714,
+    "name": "Biotopweg - Via del Biotopo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6412386,
+    "name": "Val di Dona",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6433101,
+    "name": "Via Edith Stein Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6438528,
+    "name": "Ferata dla Crusc - Heiligkreuzkofelsteig - Ferrata Monte Cavallo",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6449356,
+    "name": "Ruinenweg Altrasen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6454304,
+    "name": "Via ferrata \"Gino Badia\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6462814,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6498948,
+    "name": "Pyramidenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6503462,
+    "name": "Ferrata degli Alleghesi",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6503473,
+    "name": "Ferrata Piero Rossi (ex Marmol)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6503486,
+    "name": "Via ferrata Marino Bianchi",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6504567,
+    "name": "Alpinisteig - Strada degli Alpini",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6519405,
+    "name": "Via Normale Monte Cernera",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6599235,
+    "name": "Sentiero delle Muse Fedaie",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6625270,
+    "name": "Brigata Tridentina",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6635521,
+    "name": "Via Ferrata Lipella",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6635627,
+    "name": "Ferrata Lamon",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6645275,
+    "name": "Sentiero Natura Val Falcina",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6659478,
+    "name": "Via Ferrata Sass de Rocia",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6823563,
+    "name": "Teriol Ladin",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6825749,
+    "name": "Kaltwassertal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6825771,
+    "name": "Gamssteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6841863,
+    "name": "Rundwanderweg Kranebitt - Passeggiata Costa d'Elvas",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6863418,
+    "name": "Griablsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6902634,
+    "name": "Sentiero di Raganel",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6927982,
+    "name": "2B - Gifen => 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6928014,
+    "name": "5A - Rodeneck => 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6929208,
+    "name": "Höfeweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6933204,
+    "name": "Tres la Val",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7012448,
+    "name": "Senter de l'Ors",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7021747,
+    "name": "Sentiero dei Mangheneti",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7035375,
+    "name": "Sentiero alpinistico attrezzato \"Don Martino Delugan\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 13.7 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7045224,
+    "name": "Sentiero delle Mozzane",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7077845,
+    "name": "Sentiero della Bodrina o della Bara",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7077997,
+    "name": "Nuovo collegamento",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7078910,
+    "name": "Sentiero di Val Ziolèra",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7079038,
+    "name": "Sentiero di Val Montalon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7081752,
+    "name": "Sentiero alpinistico attrezzato di Forcella Segura",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7081803,
+    "name": "Sentiero natura dell'Oasi di Valtrigona",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7083381,
+    "name": "Sentiero Conte Moro - sentiero militare battaglione Val Cismon - sentiero \"Giuseppina Negrelli\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 14 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7083729,
+    "name": "Trodo de la Regana",
+    "reasons": [
+      "distance 15.3 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7083918,
+    "name": "Sentiero di Socede",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 13.5 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7087007,
+    "name": "Via ferrata \"Giulio Gabrielli\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7087024,
+    "name": "Sentiero attrezzato Orti della Regana",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7087037,
+    "name": "Sentiero dei Lastoni",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7087086,
+    "name": "Sentiero della Campagnassa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7098683,
+    "name": "Sentiero del Casarin",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7098785,
+    "name": "Sentiero alpinistico attrezzato del Col del Vento",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7102971,
+    "name": "Sentiero de Fossernica",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7191562,
+    "name": "Via Nova",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7191573,
+    "name": "Sentiero Botanico",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7204041,
+    "name": "Sentiero del Piz dele Agole",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7206238,
+    "name": "Sentiero forestale Cucal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7212194,
+    "name": "Sentiero attrezzato delle Dolae",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7212218,
+    "name": "Troso delle Spiase",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7212934,
+    "name": "Sentiero Dos dai Branchi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7214637,
+    "name": "Troso de la Mandrolina",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7220006,
+    "name": "Sentiero di Pelenzana e del Dos Capèl",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7220014,
+    "name": "Sentiero di Sacina e Pelenzana",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7220116,
+    "name": "Via Ferrata dei Campanili del Latemar",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7221030,
+    "name": "Troi de la Scontrada Ladina",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7224675,
+    "name": "Via ferrata del Catinaccio D'Antermoia",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7224925,
+    "name": "Sentiero delle Ciaregole",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7238953,
+    "name": "Troi dei Soldai",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7238994,
+    "name": "Sentiero attrezzato del Gronton",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7260985,
+    "name": "Sentiero de le Cirele",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7261080,
+    "name": "Via ferrata de Ombreta - Vernale",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7263120,
+    "name": "14A - Stilfes => Zinseler",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7263121,
+    "name": "14 - Sterzing => Pens",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7263587,
+    "name": "Troi de Toal da Mascion",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7263593,
+    "name": "Via ferrata \"Bruno Federspiel\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7277794,
+    "name": "13 - Mittertal =>",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7284808,
+    "name": "Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7289753,
+    "name": "Via ferrata al Sass Aut",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7289756,
+    "name": "Via ferrata \"Franco Gadotti\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7296387,
+    "name": "Via ferrata a Cima Campagnacia",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7297059,
+    "name": "Via ferrata \"Bepi Zac\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7298050,
+    "name": "Via ferrata di Forcella Marmolada",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7298189,
+    "name": "Sentiero attrezzato \"Lino Pederiva\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7302210,
+    "name": "Via dei Rusci",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7302436,
+    "name": "Viel del Pan",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7302496,
+    "name": "Via ferrata del Piz Boè",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7302531,
+    "name": "Sentiero della Val Lastìes",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7302551,
+    "name": "Via ferrata Koburger",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7309086,
+    "name": "Via ferrata della Vecia",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7326029,
+    "name": "Sentiero \"Italo Zecchini\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7338915,
+    "name": "Sentiero dei Pieroni \"Giulio Giovannini\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7338930,
+    "name": "Sentiero Maresciallo \"Giuseppe Farneti\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7386592,
+    "name": "Labyrinthsteig - Labirinto",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7392618,
+    "name": "Silvano De Romedi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7396852,
+    "name": "Sentiero Aldo Bonacossa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 38.6 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7397080,
+    "name": "N01",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7397081,
+    "name": "Vial de la Feide",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7397211,
+    "name": "Sentiero Aldo Bonacossa - Traversata Maddalene Sud",
+    "reasons": [
+      "distance 18.7 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7406119,
+    "name": "Misurina Casello - Rifugio Auronzo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7412727,
+    "name": "6B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7412728,
+    "name": "47",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7421119,
+    "name": "Monte Crot",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7423485,
+    "name": "Wanderweg 8A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7424683,
+    "name": "Marlinger Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425040,
+    "name": "2A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425547,
+    "name": "Wanderweg 12B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425716,
+    "name": "Wanderweg 12",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425717,
+    "name": "Wanderweg 7A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425718,
+    "name": "Wanderweg 7",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425719,
+    "name": "Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425891,
+    "name": "Wanderweg 19",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7425948,
+    "name": "Wanderweg 15",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7426648,
+    "name": "Algunder Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7426666,
+    "name": "Maiser Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7427175,
+    "name": "Passerschluchtenweg - Sentiero Gola del Passirio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7427262,
+    "name": "Wanderweg 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7427263,
+    "name": "Wanderweg 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7428719,
+    "name": "Untersteiner Steig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7429757,
+    "name": "Sentiero C.A.I. 569 (incomplete)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7430968,
+    "name": "2C",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7431628,
+    "name": "Eggersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7431844,
+    "name": "Wanderweg 50",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7441429,
+    "name": "Flatscher Steig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7441460,
+    "name": "Passerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7441469,
+    "name": "4A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7443872,
+    "name": "Erlenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7446758,
+    "name": "15",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7448642,
+    "name": "10",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7448895,
+    "name": "1A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7448902,
+    "name": "1B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7448978,
+    "name": "5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7454195,
+    "name": "Riffianer Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7461664,
+    "name": "Laureiner Steig - Sentiero di Lauregno",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7464411,
+    "name": "Itinerario 1 Colline Avisiane",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7472738,
+    "name": "Senter dei Gropi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7472754,
+    "name": "Senter de la Bepina",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7475246,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7484678,
+    "name": "Tru dl Fër",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7510113,
+    "name": "Sentiero Terres",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7510145,
+    "name": "Sentiero della Lasta",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7541140,
+    "name": "Moosweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7541147,
+    "name": "Lanerweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 7542172,
+    "name": "34A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7545402,
+    "name": "1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7545403,
+    "name": "34",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7545404,
+    "name": "13",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7545405,
+    "name": "11",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7546164,
+    "name": "12",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7546526,
+    "name": "Via dei Silenzi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7548118,
+    "name": "Anello delle Sorgenti",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 7549160,
+    "name": "Anello delle Aquile",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 7549816,
+    "name": "Via dell'Altopiano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7550566,
+    "name": "Dolomitenblicksteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7568878,
+    "name": "Tru di Iagri",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7579285,
+    "name": "Verseller Steig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7591282,
+    "name": "Almsteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7593417,
+    "name": "Sentiero \"Maestro Angelo Leonardelli\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7615716,
+    "name": "Sentiero CAI 757",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7615874,
+    "name": "Le chiesette di Albiano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7626672,
+    "name": "Sentier dal Verm",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7639407,
+    "name": "Waldackerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7644830,
+    "name": "10",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7651084,
+    "name": "Rablander Waalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7655311,
+    "name": "Sonnenberger Panoramaweg - Sentiero",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7668333,
+    "name": "91A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7680681,
+    "name": "Kirchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7680811,
+    "name": "10 - Sauderer Almweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7680948,
+    "name": "Törggelesteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7779326,
+    "name": "Europäischer Fernwanderweg E10 (Nassfeld - Silian)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7913619,
+    "name": "Heini Holzer Klettersteig - Ferrata Heini Holzer",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8336480,
+    "name": "Sentiero attrezzato dei Mède",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8367487,
+    "name": "Partschinser Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8408055,
+    "name": "Ferrata De Luca - Innerkofler Klettersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8408146,
+    "name": "Sentiero attrezzato \"delle Forcelle\" al Paterno - Gamsschartensteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8408400,
+    "name": "Sentiero attrezzato Antonio Sanmarchi",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8408717,
+    "name": "Sentiero attrezzato Pala del Fien",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8409551,
+    "name": "Sentiero attrezzato \"Carlo MInazio\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 3500 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8417170,
+    "name": "Sentiero attrezzato Amalio Da Pra",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8439690,
+    "name": "Ferrata Mazzetta",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8444903,
+    "name": "Ferrata Roghel",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8444904,
+    "name": "Ferrata Cengia Gabriella",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8445846,
+    "name": "Sentiero Re Leone",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8446290,
+    "name": "Sentiero degli Alpini",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8447235,
+    "name": "Forcella del Ghiacciaio - Ferrata del Cadorin",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8451429,
+    "name": "Scalette di Arroccamento Quota 2386",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8452486,
+    "name": "Ferrata Severino Casara",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8504199,
+    "name": "Via Ferrata Francesco Berti",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8511128,
+    "name": "Kienbergweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8511195,
+    "name": "Wanderroute 15",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8595718,
+    "name": "Sentiero Augusto Daolio Dante Pergreffi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8595770,
+    "name": "Sentiero dei Zirmi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8655886,
+    "name": "Via Ferrata “Rino Costacurta”",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8677662,
+    "name": "Percorso San Romedio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8677663,
+    "name": "Cammino Jacopeo d'Anaunia - Prima Tappa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8688052,
+    "name": "Cammino Jacopeo d'Anaunia - Settima Tappa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8777661,
+    "name": "Jakobsweg Naturns - Cammino di San Giacomo Naturno",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9404139,
+    "name": "6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9404169,
+    "name": "Brandswaalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9407889,
+    "name": "lwn 13",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9434814,
+    "name": "Troi Paian",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9434896,
+    "name": "Troi di Tuei",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9442911,
+    "name": "Troi da la Tambres",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9445397,
+    "name": "Legendenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9445590,
+    "name": "Talweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9445639,
+    "name": "Stazions de Val - Kreuzweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9445694,
+    "name": "La Ferata",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9447241,
+    "name": "Meisules - Pößnecker",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9450411,
+    "name": "Poststeig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9485181,
+    "name": "Seiser-Alm-Steig - Sentiero Alpe di Siusi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9487008,
+    "name": "Gamssteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9487070,
+    "name": "Bischofsweg - Sentiero del Vescovo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9487763,
+    "name": "Mitterweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9489139,
+    "name": "Schäufelesteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9489218,
+    "name": "Prügelsteig - Sentiero dei tronchi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9489489,
+    "name": "Tru dles Cascades",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9489551,
+    "name": "La Scofrina",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9491043,
+    "name": "La Plans",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9491589,
+    "name": "Lichtenfelser Weg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9492442,
+    "name": "Gorneggweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9492860,
+    "name": "Rungg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9502475,
+    "name": "Weiherrundweg (Huber)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9506256,
+    "name": "Tru Panoramic",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9507932,
+    "name": "Tru Dolomieu",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9508156,
+    "name": "Friedensweg - Via della Pace",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9511659,
+    "name": "Lärchenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9512243,
+    "name": "Via Crucis",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9577461,
+    "name": "Quadrater Höfe-Runde",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9648632,
+    "name": "Pana Raida",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9670970,
+    "name": "St. Helena Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9670971,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9686086,
+    "name": "Kirchweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9724281,
+    "name": "Familien-Wanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9741603,
+    "name": "Assweg der Herz-Ass Villgratental",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9788876,
+    "name": "Via Alpina Red R25",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9815711,
+    "name": "Bonnerhütte - Steinbergalm",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9815712,
+    "name": "Schnegga Säge - Hühnerspiel",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9870649,
+    "name": "28 - Saubacher Kofelweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9876962,
+    "name": "Raida dl luech",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9882276,
+    "name": "Via normale Monte Pelmo",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9906802,
+    "name": "Ultner Talweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9927951,
+    "name": "Sentiero Heidi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10055096,
+    "name": "8A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10097020,
+    "name": "Il Bosco Nascosto - Percorso Lungo (Blu)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10115809,
+    "name": "Sentiero delle Aie",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10220399,
+    "name": "Martinsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10399914,
+    "name": "Hans und Paula Steger Weg - Sentiero Hans e Paula Steger",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10402489,
+    "name": "Troi uniKa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10452653,
+    "name": "Via Alpina Red R28",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10551322,
+    "name": "Weinlehrpfad",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10564936,
+    "name": "Glaubensweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10577683,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10581929,
+    "name": "Weinlehrpfad",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11013035,
+    "name": "Bärentalwanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11082129,
+    "name": "Via Alpina Red R29",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11084328,
+    "name": "Via Alpina Red R30",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11094256,
+    "name": "Alta via n. 9 delle Dolomiti - Dolomiten-Höhenweg Nr. 9",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 140 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11270235,
+    "name": "Passeggiata del Rio Tigia - Titschenbachpromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11270309,
+    "name": "Passeggiata delle Sorgenti - Quellenpromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11285084,
+    "name": "Sas Rigais",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11322144,
+    "name": "Raida di Mejes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11340957,
+    "name": "Schnürlsteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11509463,
+    "name": "Sentiero del Pastore",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11539317,
+    "name": "Alta Via del Granito",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11580971,
+    "name": "Haflinger Erlebnisweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11682668,
+    "name": "Sentiero dei Laghi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11742014,
+    "name": "16 - Brixen => Neustift",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11744620,
+    "name": "Karlspromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11744632,
+    "name": "12A - Kitzloch",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11745726,
+    "name": "9A - Hartmannsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11747452,
+    "name": "St.-Cyrillus-Weg - Itinerario S. Cirillo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11755900,
+    "name": "8 - Brixen => Radlseehütte => Klausner Hütte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11757372,
+    "name": "18 - Schalders => Radlseehütte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11757456,
+    "name": "7 - Schalders => Königsanger => Radlseehütte",
+    "reasons": [
+      "distance 15 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11757776,
+    "name": "21 - Mittewald => Kreuzjoch => Flaggeralm",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11758033,
+    "name": "19 - Schalders => Flaggeralm",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11764186,
+    "name": "6 - Rodeneck => 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11764473,
+    "name": "2 - Lüsen => Montal",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11764804,
+    "name": "Kuhsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11764954,
+    "name": "4B - Pfannscharte => Schalderer Scharter",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11768557,
+    "name": "12 - Lorenzen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11771617,
+    "name": "Panoramaweg (Afers)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11775923,
+    "name": "Törggeleweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11776085,
+    "name": "7 - Franzensfeste => Mühlbach",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11779638,
+    "name": "9 - Latzfonser Kreuz => Kassianspitz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11779680,
+    "name": "7 - Reinswald => Latzfonser Kreuz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11779776,
+    "name": "8 - 7 => Plankenhorn => Bischofer",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11779931,
+    "name": "25 - Jagersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11780067,
+    "name": "15 - Unterhorn => 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11784022,
+    "name": "15A - Stofflhütte => 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11790309,
+    "name": "Cikilyrweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11791574,
+    "name": "7A - Aicha => Spinges",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11791631,
+    "name": "7B - Aicha => 7",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11791894,
+    "name": "Klettergarten",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792165,
+    "name": "5 - 7 => Spinges",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792176,
+    "name": "5A - Samweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792222,
+    "name": "Talweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792330,
+    "name": "11 - Yweinweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792447,
+    "name": "Kirchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792725,
+    "name": "Balanceweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792782,
+    "name": "Wiesenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792809,
+    "name": "Kreuzweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792821,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792829,
+    "name": "Thurner Thall",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11792944,
+    "name": "Weinweg - Sentiero del vino",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11795120,
+    "name": "Wolfsgrube",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11797759,
+    "name": "Säbener Promenade - Passeggiata Sabiona",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11814970,
+    "name": "Pilzeweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11815009,
+    "name": "Wetterkreuzsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11815027,
+    "name": "Wasserbühlrunde",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11815063,
+    "name": "Trifolium",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11816899,
+    "name": "Höfeweg (Lüsen)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11817202,
+    "name": "Sunnseitenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11817222,
+    "name": "Bergbauernweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11817269,
+    "name": "Panoramaweg (Villnöß) - Sentiero Panorama (Funes)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11817274,
+    "name": "Bühlweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11817696,
+    "name": "Katzenleiter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11818441,
+    "name": "3 - Waidbruck => Barbian => 4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11818498,
+    "name": "7 - Barbian => Sauders",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11818631,
+    "name": "20 - Gravetscher Almweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11818638,
+    "name": "22 - Wasserwaal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11818666,
+    "name": "12 - Florweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11819494,
+    "name": "Naturlehrpfad (Lüsen)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11819707,
+    "name": "1 - Knappensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11819848,
+    "name": "11 - Mauls => Jochtal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11820259,
+    "name": "11 - Vals => Meransen => Niedervintl",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11820292,
+    "name": "10 - => Meransen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11821428,
+    "name": "16 - Stilfes => Puntleider Alm",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11821624,
+    "name": "15 - Kirchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11822450,
+    "name": "Erzweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11822459,
+    "name": "Seniorenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11822528,
+    "name": "27 - Tann => 11",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11823171,
+    "name": "9 - => Pichlberg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11827917,
+    "name": "Leitensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11829153,
+    "name": "Almhüttenrundweg Gitschberg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11829196,
+    "name": "Planer Almsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11835384,
+    "name": "Kälbergarten",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11835463,
+    "name": "Rampoltsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11835515,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11835914,
+    "name": "8B - Kaiserweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11839296,
+    "name": "Hirtensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11844089,
+    "name": "Völser Höfeweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11844351,
+    "name": "Rundwanderweg (Tiers)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 11844367,
+    "name": "Besinnungsweg (Tiers)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11844384,
+    "name": "Kirchsteig (Tiers)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11844400,
+    "name": "Tierser Höfeweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11846880,
+    "name": "1 - Kardaun => Nigerpass => Kölner Hütte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11847011,
+    "name": "5 - Laives => Deutschnofen => Welschnofen => Tiers",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11859955,
+    "name": "Tru do l'ega",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11860266,
+    "name": "Via Crucis d'La Val - Kreuzweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11860292,
+    "name": "Ranchhütte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11860307,
+    "name": "Tru de meditaziun \"Memento vivere\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11860586,
+    "name": "Panoramaweg (Olang)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11860625,
+    "name": "Steinmeile",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905080,
+    "name": "23A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905081,
+    "name": "24A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905082,
+    "name": "23",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905281,
+    "name": "25B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905282,
+    "name": "22A",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905283,
+    "name": "22B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905457,
+    "name": "7A",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905458,
+    "name": "25A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905459,
+    "name": "21A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905460,
+    "name": "26A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905461,
+    "name": "26B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905462,
+    "name": "21",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11905463,
+    "name": "25A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12013152,
+    "name": "Führersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12015459,
+    "name": "Nigertalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12017594,
+    "name": "Samweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12018156,
+    "name": "Taufenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12018879,
+    "name": "Rittersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12023209,
+    "name": "Weg der Sterne - Sentiero delle Stelle",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12023318,
+    "name": "Sagenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12023889,
+    "name": "Kaiserstein",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12023982,
+    "name": "Plattenbodenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12024742,
+    "name": "Heuweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12024779,
+    "name": "Protzleitweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12025021,
+    "name": "Gamplsteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12025039,
+    "name": "Zirmersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12025047,
+    "name": "Blauweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12028431,
+    "name": "Schulsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12028439,
+    "name": "Promenade Haslach Virgl",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12028446,
+    "name": "Schelmwald - Bosco dei Bricconi",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12028803,
+    "name": "Spinellweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12031066,
+    "name": "Enzbirch Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12034997,
+    "name": "Waldweg - Sentiero boschivo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12035238,
+    "name": "Göllerseerunde",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12035367,
+    "name": "Alter Branzollersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12035557,
+    "name": "Lahnweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12036067,
+    "name": "Dürerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12036138,
+    "name": "Burgenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12036595,
+    "name": "Banklsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12037682,
+    "name": "Zissweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12038843,
+    "name": "Landsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12038940,
+    "name": "Lärcheneggweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12038980,
+    "name": "Altreier Sagenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12039179,
+    "name": "Atemweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12039404,
+    "name": "Panoramaweg Stramentizzo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12042574,
+    "name": "Trudner Sagenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12042991,
+    "name": "Lottersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12043409,
+    "name": "Bahnweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12046965,
+    "name": "Tru de Meditaziun",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12047192,
+    "name": "Themenweg vom Korn zum Brot",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12047234,
+    "name": "Kirchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12047347,
+    "name": "Maistattweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 12047608,
+    "name": "Themenweg Niederdorf",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 12076503,
+    "name": "Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12103681,
+    "name": "Tru di Pra",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12104164,
+    "name": "Bonner Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12120263,
+    "name": "Gipfelsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12131857,
+    "name": "Alta via n. 5 delle Dolomiti - III Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12132128,
+    "name": "Bettelweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12135462,
+    "name": "Fitnessweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12137271,
+    "name": "Archäologischer Panoramaweg - Sentiero panoramico archeologico",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12137614,
+    "name": "Kneippweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12138325,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12138329,
+    "name": "Soplajes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12138377,
+    "name": "Weg Wolkenstein",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12138471,
+    "name": "Troi dl Dialog - Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12138474,
+    "name": "Paratoni",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12139251,
+    "name": "Planetenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12141304,
+    "name": "Schattensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12142299,
+    "name": "Zustieg Klettersteig - Accesso via ferrata",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12142355,
+    "name": "Mühlenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12142358,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12142365,
+    "name": "Tru di Artisc",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12148435,
+    "name": "Trimm dich Pfad",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12148444,
+    "name": "Zauberwaldweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12148992,
+    "name": "Unterer Herrensteig - Sentiero dei Signori inferiore",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12149004,
+    "name": "Klettergarten",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12149009,
+    "name": "Oberer Herrensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12150312,
+    "name": "Almweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12150324,
+    "name": "Georgssteig - Sentiero di S. Giorgio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12150333,
+    "name": "Finthersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12150632,
+    "name": "Bittgang",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12151643,
+    "name": "Sagenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12153108,
+    "name": "Heusteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12154517,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12154613,
+    "name": "Latschenweg - Sentiero Pino Mugo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12154619,
+    "name": "Schustersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12154778,
+    "name": "Familienwanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12156284,
+    "name": "Rotenstein-Höhenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12156487,
+    "name": "Römerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12160652,
+    "name": "Jägersteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12163463,
+    "name": "Romedisteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12165641,
+    "name": "Bürgstallstöckl",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12165752,
+    "name": "Talweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12166100,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12166102,
+    "name": "Elfenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12166113,
+    "name": "Vintl 19",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12168088,
+    "name": "Knollsteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12169068,
+    "name": "Kirchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12169909,
+    "name": "Gamssteig - Sentiero dei camosci",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12169910,
+    "name": "Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12169915,
+    "name": "Heimatsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12172386,
+    "name": "Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12172403,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12172409,
+    "name": "Pfaffensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12172410,
+    "name": "Stockner Talweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12172442,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12172463,
+    "name": "Schlossweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12173549,
+    "name": "Mühlenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12173550,
+    "name": "Waggler Zäune",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12173801,
+    "name": "Kehlburgweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12174095,
+    "name": "Dolomitenpanoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12174338,
+    "name": "Kirchsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12174422,
+    "name": "Wiesenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12174787,
+    "name": "Durchs Toul",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12177114,
+    "name": "Mazoner Hochweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12177124,
+    "name": "Mazoner Spazierweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12182642,
+    "name": "Leichte Variante",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12182674,
+    "name": "Mühlenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12183156,
+    "name": "Variante Alpennieder",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12185481,
+    "name": "Freudpromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12185631,
+    "name": "1 - Klobenstein => Rittner Horn",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12185791,
+    "name": "Nesselbrunnsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12186318,
+    "name": "Brandsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12186467,
+    "name": "Erdpyramidenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12186496,
+    "name": "Sommerfrischweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12186520,
+    "name": "Pyramidenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12190789,
+    "name": "Katzenleiter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12190791,
+    "name": "Rundwanderweg Simml",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12190836,
+    "name": "Martinsweg - Sentiero di San Martino",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12191751,
+    "name": "Wolfsgrubensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12191762,
+    "name": "Knappensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12234728,
+    "name": "Gurglweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12235131,
+    "name": "Ratschinger Almenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12290062,
+    "name": "Almweg 2000",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12291300,
+    "name": "Über die Jöcher",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12291329,
+    "name": "Über die Jöcher",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12291355,
+    "name": "Über die Jöcher",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12296183,
+    "name": "Tesselberg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12301123,
+    "name": "Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12301151,
+    "name": "Bonner Höhenweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12302488,
+    "name": "Franzosensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12303721,
+    "name": "Kirchweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12304517,
+    "name": "Koflsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12304930,
+    "name": "Kreuzweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12306091,
+    "name": "Ruinenweg Neurasen",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12323423,
+    "name": "Murmeltierweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12359516,
+    "name": "Knappensteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12361087,
+    "name": "Lahnsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12362733,
+    "name": "Paul Troger Weg - Via Paul Troger",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12364872,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12364897,
+    "name": "Brentalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12365009,
+    "name": "Nussentalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12365171,
+    "name": "Tuiflslammerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12365198,
+    "name": "Tröpftalweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12368124,
+    "name": "Taurisweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12368187,
+    "name": "Römerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12368235,
+    "name": "Bergweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12369091,
+    "name": "Katzenleiter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12371512,
+    "name": "Gleifkirche - Chiesa del Calvario",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12371662,
+    "name": "Kaltererseeweg - Sentiero del Lago di Caldaro",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12371672,
+    "name": "Kastelazweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373416,
+    "name": "Kreuzweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373491,
+    "name": "Lochweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373513,
+    "name": "Margarethenpromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373578,
+    "name": "Mendelsteig - Sentiero della Mendola",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373614,
+    "name": "Mühlastiege",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373636,
+    "name": "Römerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373648,
+    "name": "Seeweg - Sentiero del lago",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373668,
+    "name": "Sitzkofelweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373677,
+    "name": "Südtirols Süden 3767",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12373729,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12375955,
+    "name": "Eisackpromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12375977,
+    "name": "Passeggiata del Guncina - Guntschnapromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12375991,
+    "name": "Passeggiata S. Osvaldo - Oswaldpromenade",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12376002,
+    "name": "Jakobsweg Bozen - Cammino di San Giacomo Bolzano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12376459,
+    "name": "Jakobsweg Andrian - Cammino di San Giacomo Andriano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13048011,
+    "name": "2-Täler-Trail",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 90 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13347902,
+    "name": "Via Romea Südtiroler Abschnitt - Via Romea Tratto Altoatesino",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13348006,
+    "name": "Klammlweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13397744,
+    "name": "La Velenosa",
+    "reasons": [
+      "distance 13.3 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13397802,
+    "name": "La Velenosetta",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13509581,
+    "name": "Sentiero della sensibilità",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13715883,
+    "name": "Jakobsweg Sarntal - Cammino di San Giacomo Val Sarentino",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13716033,
+    "name": "Jakobsweg Wolfsgruben - Cammino di San Giacomo Costalovara",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13716129,
+    "name": "Jakobsweg Lengstein - Cammino di San Giacomo Longostagno",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13716217,
+    "name": "Jakobsweg Villanders => Oberbozen - Cammino di San Giacomo Villandro => Soprabolzano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13721788,
+    "name": "Jakobsweg Oberbozen => Andrian - Cammino di San Giacomo Soprabolzano => Andriano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13722028,
+    "name": "Jakobsweg Prissian - Cammino di San Giacomo Prissiano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13722084,
+    "name": "Jakobsweg Saring - Cammino di San Giacomo Saring",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13722101,
+    "name": "Jakobsweg Niederlana - Cammino di San Giacomo Lana di Sotto",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13722189,
+    "name": "Jakobsweg Marling - Cammino di San Giacomo Marlengo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13726627,
+    "name": "Jakobsweg Latsch - Cammino di San Giacomo Laces",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13730219,
+    "name": "Jakobsweg Andrian => Lana - Cammino di San Giacomo Andriano => Lana",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13730307,
+    "name": "Waldsteig - Sentiero nel bosco",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13730431,
+    "name": "Unterer Wiesenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13743729,
+    "name": "Wanderweg 5A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13743730,
+    "name": "Südalpenweg 03 - Etappe 25",
+    "reasons": [
+      "distance 14.8 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13777123,
+    "name": "Jakobsweg Klausen - Cammino di San Giacomo Chiusa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13777124,
+    "name": "Jakobsweg Barban - Cammino di San Giacomo Barbiano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13777198,
+    "name": "Jakobsweg Neustift => Villanders - Cammino di San Giacomo Novacella => Villandro",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956718,
+    "name": "Alta via n. 5 delle Dolomiti - I Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956719,
+    "name": "Alta via n. 5 delle Dolomiti - II Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956720,
+    "name": "Alta via n. 5 delle Dolomiti - IV Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956721,
+    "name": "Alta via n. 5 delle Dolomiti - V Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956722,
+    "name": "Alta via n. 5 delle Dolomiti - VI Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956723,
+    "name": "Alta via n. 5 delle Dolomiti - VII Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13956890,
+    "name": "Alta via n. 6 delle Dolomiti - X tappa",
+    "reasons": [
+      "distance 180 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13957970,
+    "name": "Alta via n. 7 delle Dolomiti - I Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13957971,
+    "name": "Alta via n. 7 delle Dolomiti - II Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13958031,
+    "name": "Alta via n. 7 delle Dolomiti - III Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13958077,
+    "name": "Alta via n. 7 delle Dolomiti - IV Tappa",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14054360,
+    "name": "Sentiero Frassati - Tappa 4",
+    "reasons": [
+      "distance 17.2 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14054431,
+    "name": "Sentiero Frassati - Tappa 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14056126,
+    "name": "Sentiero Frassati - Tappa 6",
+    "reasons": [
+      "distance 14.3 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14056174,
+    "name": "Sentiero Frassati - Tappa 7 via per Sanzeno",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14056194,
+    "name": "Sentiero Frassati - Tappa 7 via per Smarano",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14322882,
+    "name": "Costa Davanti",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14429580,
+    "name": "Sentiero Forestale \"De la Nores\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14432824,
+    "name": "Karrenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14467095,
+    "name": "Katzenleiter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14585072,
+    "name": "Alta Via delle Dolomiti n. 3 - VIII Tappa",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14651597,
+    "name": "Köfeleweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14730695,
+    "name": "Via Romea - Tratto Trentino",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14907916,
+    "name": "Via Alpina Yellow B17",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14907917,
+    "name": "Via Alpina Yellow B18",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14907918,
+    "name": "Via Alpina Yellow B19",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14907919,
+    "name": "Via Alpina Yellow B20",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14907920,
+    "name": "Via Alpina Yellow B21",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14907921,
+    "name": "Via Alpina Yellow B22",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15413985,
+    "name": "Variante della Cascata della via ferrata del Burrone \"Tullio Giovanelli\"",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15415017,
+    "name": "Val di San Pietro",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15415174,
+    "name": "Valle dei Pilastri",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15511787,
+    "name": "Herzass Trumpfvariante Riepenspitze",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15633451,
+    "name": "Hüttenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15698788,
+    "name": "Via Alpina Yellow B23",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15698789,
+    "name": "Via Alpina Yellow B24",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15698790,
+    "name": "Via Alpina Yellow B25",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15698791,
+    "name": "Via Alpina Yellow B26",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15698792,
+    "name": "Via Alpina Yellow B27",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15698793,
+    "name": "Via Alpina Yellow B28",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15699703,
+    "name": "Via Alpina Yellow B29",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15743546,
+    "name": "Sentiero Achille Gadler",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15745987,
+    "name": "Kuenser Waalweg - Sentiero della Roggia di Caines",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791290,
+    "name": "Ferrata Formenton",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791292,
+    "name": "Ferrata Giuseppe Olivieri a Punta Anna",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791293,
+    "name": "Ferrata Gianni Aglio",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791294,
+    "name": "Tofana di Rozes (via normale)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791297,
+    "name": "Via Ferrata Ettore Bovero",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 900 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791300,
+    "name": "Croda de r'Ancona",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791306,
+    "name": "Via Ferrata Tomaselli",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791396,
+    "name": "436 Sentiero Delle Trincee",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791433,
+    "name": "Dolomieu Panoramic Trail",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791498,
+    "name": "Via Ferrata Ivano Dibona ascent parte superiore",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791500,
+    "name": "Via Ferrata René De Pol",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791501,
+    "name": "Sentiero Attrezzato Zumelès",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15791503,
+    "name": "Via Ferrata Strobel",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792068,
+    "name": "Sas de Pere da Fech",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792123,
+    "name": "Sentiero Forestale Do' le Pale",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792124,
+    "name": "Col Pelous",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792125,
+    "name": "Sentiero Camosci",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792127,
+    "name": "Sentiero Forestale",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792129,
+    "name": "Sentiero Forestale Toalet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792130,
+    "name": "Strada forestale Pian de Rucenaes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792131,
+    "name": "Sentiero Val Duron - Val di Dona",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792132,
+    "name": "Sentiero Forestale Prà Molin",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15792156,
+    "name": "Sentiero Paola",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15795770,
+    "name": "Via Ferrata Fusetti",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15795777,
+    "name": "Sentiero di vetta",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15795837,
+    "name": "Sentiero attrezzato Astaldi",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16052324,
+    "name": "Via Ferrata Šara del Minighel",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16115524,
+    "name": "Gran Cir - Große Cirspitze - Grande Cir",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16116698,
+    "name": "Ludwig Weg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16133891,
+    "name": "Dolomites World Heritage Geotrail",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16148539,
+    "name": "Dolomites World Heritage Geotrail 7",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16148630,
+    "name": "Dolomites World Heritage Geotrail 6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16148671,
+    "name": "Dolomites World Heritage Geotrail 8",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16150721,
+    "name": "Dolomites World Heritage Geotrail 9",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16151667,
+    "name": "Dolomites World Heritage Geotrail 10",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16206458,
+    "name": "Dolomites World Heritage Geotrail 11",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16206551,
+    "name": "Dolomites World Heritage Geotrail 12",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16206573,
+    "name": "Dolomites World Heritage Geotrail 13",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16206588,
+    "name": "Dolomites World Heritage Geotrail 14",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16213323,
+    "name": "Dolomites World Heritage Geotrail 15",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16213568,
+    "name": "Dolomites World Heritage Geotrail 16",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16213714,
+    "name": "Dolomites World Heritage Geotrail 17",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16213768,
+    "name": "Dolomites World Heritage Geotrail 18",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16213815,
+    "name": "Dolomites World Heritage Geotrail 19",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16214188,
+    "name": "Dolomites World Heritage Geotrail 20",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16216958,
+    "name": "Dolomites World Heritage Geotrail 21",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16216999,
+    "name": "Dolomites World Heritage Geotrail 22",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16217028,
+    "name": "Dolomites World Heritage Geotrail 22bis",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16217039,
+    "name": "Dolomites World Heritage Geotrail 23",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16226352,
+    "name": "Dolomites World Heritage Geotrail 31",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16226804,
+    "name": "Dolomites World Heritage Geotrail 35",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16226945,
+    "name": "Dolomites World Heritage Geotrail 36",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16227060,
+    "name": "Dolomites World Heritage Geotrail 37",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16229090,
+    "name": "Dolomites World Heritage Geotrail 38",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16229098,
+    "name": "Dolomites World Heritage Geotrail 39",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16229125,
+    "name": "Dolomites World Heritage Geotrail 40",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16229139,
+    "name": "Dolomites World Heritage Geotrail 41",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16229233,
+    "name": "Dolomites World Heritage Geotrail 42",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16237663,
+    "name": "Dolomites World Heritage Geotrail 43",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16237673,
+    "name": "Dolomites World Heritage Geotrail 44",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16237691,
+    "name": "Dolomites World Heritage Geotrail 45",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16237705,
+    "name": "Dolomites World Heritage Geotrail 46",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16237725,
+    "name": "Dolomites World Heritage Geotrail 47",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16260974,
+    "name": "Alta Via dei Monti del Sole",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16276576,
+    "name": "Wanderweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16277078,
+    "name": "2A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16277079,
+    "name": "2",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16277080,
+    "name": "2B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16277081,
+    "name": "7B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16282416,
+    "name": "8A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16282417,
+    "name": "8",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16282418,
+    "name": "5B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16282419,
+    "name": "5A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16282442,
+    "name": "Sentiero attrezzato G. Olivieri",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16282457,
+    "name": "Almenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16570024,
+    "name": "Cammino del beato Enrico - Tappa 3",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16570025,
+    "name": "Cammino del beato Enrico - Tappa 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16570026,
+    "name": "Cammino del beato Enrico - Tappa 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16714116,
+    "name": "Sentiero Olivo Troian",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16946669,
+    "name": "TransLagorai - Tappa 2",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17017471,
+    "name": "TransLagorai - Tappa 3",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17017699,
+    "name": "TransLagorai - Tappa 4",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17017754,
+    "name": "TransLagorai - Tappa 3 variante Lago Buse",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17046257,
+    "name": "TransLagorai - Tappa 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17050418,
+    "name": "Sentiero delle Creste",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17051109,
+    "name": "TransLagorai - Tappa 6",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17051110,
+    "name": "TransLagorai - Tappa 6 variante Malacarne",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17051182,
+    "name": "TransLagorai - Tappa 4 variante Copolà",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17174345,
+    "name": "Via Vigilius - Tappa 3",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17174346,
+    "name": "Via Vigilius - Tappa 4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17174384,
+    "name": "Via Vigilius - Tappa 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17174391,
+    "name": "Via Vigilius - Tappa 6",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17174417,
+    "name": "Via Vigilius - Tappa 7",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17187699,
+    "name": "Alta Via del Porfido - Tappa 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17187700,
+    "name": "Alta Via del Porfido - Tappa 2",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17223304,
+    "name": "Proazei",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17348681,
+    "name": "1 - Sauch",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17348682,
+    "name": "8A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17490396,
+    "name": "Ferrata Cesare Piazzetta",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17501709,
+    "name": "Ferrata Furcela de Saslonch",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17502063,
+    "name": "Ferrata Oskar Schuster",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17502568,
+    "name": "Via Ferrata dei Finanzieri",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17502628,
+    "name": "Klettersteig Toblinger Knoten / Via Ferrata Torre di Toblin",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17636710,
+    "name": "Sas Rigais Südwestanstieg - Sas Rigais Sud-Ovest",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17646720,
+    "name": "Peitlerkofel - Sass de Pütia - Sass de Putia",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664329,
+    "name": "Ziel Klettersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664347,
+    "name": "Via ferrata Merlone",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664365,
+    "name": "Ferrata Gianni Costantini",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664369,
+    "name": "Via ferrata Severino Casara",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664371,
+    "name": "Via ferrata dei Laghi",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664372,
+    "name": "Forcia-Rossa-Klettersteig",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17664373,
+    "name": "Fennberg-Klettersteig - Ferrata di Favogna",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17666504,
+    "name": "Ferrata Ra Gusela",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17687522,
+    "name": "Alpinsteig Wasserfall",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17744534,
+    "name": "Ciclopedonale Caoria.Paneveggio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17789898,
+    "name": "Klettersteig Feldkurat Hosp / Via Ferrata Cappellano Hosp",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17813241,
+    "name": "Ferrata Grotta di Tofana",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17834359,
+    "name": "Ferrata Maria e Andrea Ferrari - Ra Bujela",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17834360,
+    "name": "Ferrata Ra Pegna",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17838740,
+    "name": "Ferrata La Rota - Caprioli",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17996456,
+    "name": "Sentiero attrezzato \"Osiride Brovedani\"",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 1900 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18015433,
+    "name": "Alpenrosenweg",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18016826,
+    "name": "Mühlenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18018833,
+    "name": "Sentiero Riccardo Simon",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18147967,
+    "name": "Cammino delle Dolomiti - Tappa 07a",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18148253,
+    "name": "Cammino delle Dolomiti - Tappa 08",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18155406,
+    "name": "Cammino delle Dolomiti - Tappa 09",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18155820,
+    "name": "Cammino delle Dolomiti - Tappa 10",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156180,
+    "name": "Cammino delle Dolomiti - Tappa 11",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156188,
+    "name": "Cammino delle Dolomiti - Tappa 13",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156189,
+    "name": "Cammino delle Dolomiti - Tappa 12",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156392,
+    "name": "Cammino delle Dolomiti - Tappa 07b",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156498,
+    "name": "Cammino delle Dolomiti - Tappa 16",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156499,
+    "name": "Cammino delle Dolomiti - Tappa 15",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18156500,
+    "name": "Cammino delle Dolomiti - Tappa 14",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161247,
+    "name": "Cammino delle Dolomiti - Tappa 26",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161248,
+    "name": "Cammino delle Dolomiti - Tappa 25",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161249,
+    "name": "Cammino delle Dolomiti - Tappa 24",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161250,
+    "name": "Cammino delle Dolomiti - Tappa 23",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161251,
+    "name": "Cammino delle Dolomiti - Tappa 22",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161252,
+    "name": "Cammino delle Dolomiti - Tappa 21",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161255,
+    "name": "Cammino delle Dolomiti - Tappa 18",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161256,
+    "name": "Cammino delle Dolomiti - Tappa 17",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18161262,
+    "name": "Cammino delle Dolomiti - Tappa 29",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18430189,
+    "name": "Weitental => Gitschberg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18484760,
+    "name": "Kunst am Weg Panorama - Percorso d'Arte Panorama",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18633332,
+    "name": "Percorso ciclo-pedonale Quota 860",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18661804,
+    "name": "Scritte dei Pastori",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19256063,
+    "name": "Passi nel tempo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19256197,
+    "name": "Vecchia Ferrovia Masi di Cavalese",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19258839,
+    "name": "Bletterbachrunde",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19263305,
+    "name": "Passo Cùgola",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19280394,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz a",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19280395,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß a",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19292055,
+    "name": "Sentiero delle Buse Todesche",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19292056,
+    "name": "Sentiero della Memoria",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19293620,
+    "name": "Wallfahrtsweg - Via Crucis",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19299449,
+    "name": "Sentiero della Malga",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323550,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz e",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323551,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß e",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323552,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz f",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323553,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz f1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323554,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß f1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323555,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß f",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323633,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz b1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323634,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß b1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19323899,
+    "name": "Der Saumpfad - La Mulattiera",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19331812,
+    "name": "Gorzsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19332323,
+    "name": "Pladerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19334134,
+    "name": "Unterrain",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19344323,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß b",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19344324,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz b",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19344325,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail schwarz b1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19344326,
+    "name": "Schwarz-Weiss-Weg/Cammino/Trail weiß b1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19378617,
+    "name": "lwn Bus de la Giacia",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19382375,
+    "name": "5A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19398650,
+    "name": "Lüsner Panoramaweg - Giro panoramico di Luson",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 19411017,
+    "name": "Troi dei Milezinche",
+    "reasons": [
+      "distance 1300 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19423504,
+    "name": "Sunnseitensteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19428306,
+    "name": "Cammino delle terre sospese - Tappa 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19430906,
+    "name": "30",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19430915,
+    "name": "6A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19430949,
+    "name": "5B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19430991,
+    "name": "24A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431074,
+    "name": "2A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431075,
+    "name": "7A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431276,
+    "name": "13B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431281,
+    "name": "4A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431619,
+    "name": "6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431664,
+    "name": "1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431744,
+    "name": "5B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431766,
+    "name": "4A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431819,
+    "name": "5A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19431913,
+    "name": "3A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19432867,
+    "name": "7",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19434038,
+    "name": "Cammino delle terre sospese - Tappa 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19434247,
+    "name": "Cammino delle terre sospese - Tappa 3",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19435606,
+    "name": "14B",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19435912,
+    "name": "10A",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19436188,
+    "name": "4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19436389,
+    "name": "Cammino delle terre sospese - Tappa 4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19439215,
+    "name": "Cammino delle terre sospese - Tappa 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19452733,
+    "name": "Sentiero del Cielo",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19452765,
+    "name": "Sentiero del Dahu",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19534296,
+    "name": "Ferrata Vandelli",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 3200 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19542383,
+    "name": "Via ferrata Paolin Piccolin",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19560678,
+    "name": "Via ferrata degli Alpini",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19567416,
+    "name": "Cammino delle terre sospese - Tappa 6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19661223,
+    "name": "Natur & Erlebnisweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19661319,
+    "name": "Val dl'Ert",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19664818,
+    "name": "Mühlbachweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19694322,
+    "name": "Höfeweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19694395,
+    "name": "Graf Volkmar Weg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19697820,
+    "name": "Panoramaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19698182,
+    "name": "Wasserfallweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19698692,
+    "name": "Zueggsteig",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19703506,
+    "name": "Schützenbrünnlweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19723635,
+    "name": "Knottnerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19724566,
+    "name": "Binnendammweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19724578,
+    "name": "Großackerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19733289,
+    "name": "Weissplatter",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19733333,
+    "name": "Besinnungsweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19785533,
+    "name": "Idaweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19786348,
+    "name": "Schlehdorf-Tappeinerweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19967078,
+    "name": "Murundum 5",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19967136,
+    "name": "Murundum 6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19967179,
+    "name": "Murundum 3",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19967371,
+    "name": "Murundum 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19967444,
+    "name": "Murundum 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19967445,
+    "name": "Murundum 4",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19986963,
+    "name": "Zauberweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19986964,
+    "name": "Scheibenweg",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20017003,
+    "name": "Via Alpina Stage 26: Silianer Hütte - Drei-Zinnen-Hütte / Rifugio Locatelli",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20034204,
+    "name": "Via Ferrata Bepi Zac",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20608593,
+    "name": "Sentiero Frassati",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  }
+]

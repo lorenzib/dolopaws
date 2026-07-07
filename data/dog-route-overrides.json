@@ -1,0 +1,11 @@
+{
+  "1640016": {
+    "include": true,
+    "note": "manually verified on waymarkedtrails"
+  },
+  "9437627": {
+    "include": true,
+    "note": "manually verified on waymarkedtrails"
+  },
+  "_comment": "Keyed by OSM relation id. {\"include\": true|false, \"note\": \"...\", \"leash\": \"required|recommended\", \"dogFriendlyNotes\": \"...\"}"
+}
