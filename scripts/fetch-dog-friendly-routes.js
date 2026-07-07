@@ -97,6 +97,33 @@ function buildPhase2Query(relationIds) {
   ].join('\n');
 }
 
+// Companion query: surface/path tags of the member ways, so terrain can be
+// described from real OSM data instead of guessed.
+function buildWayTagsQuery(relationIds) {
+  return [
+    '[out:json][timeout:180];',
+    `relation(id:${relationIds.join(',')})->.r;`,
+    'way(r.r)["surface"];',
+    'out ids tags;'
+  ].join('\n');
+}
+
+// Phase 3: real-world access points (parking, lift stations, bus stops) used
+// by the promote script to anchor verified starting points.
+function buildAccessPointsQuery() {
+  return [
+    '[out:json][timeout:300];',
+    `node["amenity"="parking"](${DOLOMITES_BBOX});`,
+    'out center tags;',
+    `way["amenity"="parking"](${DOLOMITES_BBOX});`,
+    'out center tags;',
+    `node["aerialway"="station"](${DOLOMITES_BBOX});`,
+    'out center tags;',
+    `node["highway"="bus_stop"](${DOLOMITES_BBOX});`,
+    'out center tags;'
+  ].join('\n');
+}
+
 async function fetchWithRetries(body, options = {}) {
   const attempts = options.attempts || 3;
   const timeoutMs = options.timeoutMs || 120000;
@@ -259,6 +286,14 @@ function isClosedLoop(lines) {
   return haversineMeters(line[0], line[line.length - 1]) < LOOP_CLOSE_METERS;
 }
 
+function pathLengthKm(lines) {
+  let meters = 0;
+  for (const line of lines) {
+    for (let i = 1; i < line.length; i += 1) meters += haversineMeters(line[i - 1], line[i]);
+  }
+  return Math.round((meters / 1000) * 10) / 10;
+}
+
 /* -------------------------------------------------------------------- Main */
 
 async function loadOverrides() {
@@ -313,6 +348,18 @@ async function main() {
     console.log(`[phase2] Geometry batch ${i / BATCH + 1}/${Math.ceil(kept.length / BATCH)}…`);
     const data = await fetchWithRetries(buildPhase2Query(batch.map((k) => k.tags.__id)));
 
+    // Surface tags of member ways (best-effort: terrain data is a bonus).
+    const waySurface = new Map();
+    try {
+      const wayData = await fetchWithRetries(buildWayTagsQuery(batch.map((k) => k.tags.__id)));
+      for (const w of wayData.elements || []) {
+        if (w.type === 'way' && w.tags && w.tags.surface) waySurface.set(w.id, w.tags.surface);
+      }
+    } catch (err) {
+      console.warn(`[phase2] Surface-tag query failed for this batch: ${err.message}`);
+    }
+    await new Promise((r) => setTimeout(r, 2000));
+
     for (const el of data.elements || []) {
       if (el.type !== 'relation') continue;
       if (!el.members || !el.members.length) {
@@ -325,8 +372,33 @@ async function main() {
       const lines = stitchMembers(el.members).map((l) => simplify(l));
       if (!lines.length) continue;
 
-      const loop = match.verdict.loop || isClosedLoop(lines);
-      if (LOOPS_ONLY && !loop) continue;
+      // Aggregate surface breakdown (km per surface value) from member ways.
+      const surfaces = {};
+      for (const m of el.members) {
+        if (m.type !== 'way' || !Array.isArray(m.geometry) || m.geometry.length < 2) continue;
+        const s = waySurface.get(m.ref);
+        if (!s) continue;
+        let meters = 0;
+        for (let j = 1; j < m.geometry.length; j += 1) {
+          meters += haversineMeters(
+            [m.geometry[j - 1].lon, m.geometry[j - 1].lat],
+            [m.geometry[j].lon, m.geometry[j].lat]
+          );
+        }
+        surfaces[s] = Math.round(((surfaces[s] || 0) + meters / 1000) * 10) / 10;
+      }
+
+      const lengthKm = pathLengthKm(lines);
+      // Drop degenerate/broken geometries (e.g. two identical points).
+      if (lengthKm < 0.3) {
+        console.warn(`[phase2] Dropped relation ${el.id} (${match.tags.name}): degenerate geometry (${lengthKm} km).`);
+        continue;
+      }
+
+      // Loop = what the GEOMETRY says, not what tags/names claim:
+      // one continuous line, >= 1 km, ends meeting within LOOP_CLOSE_METERS.
+      const loop = lengthKm >= 1 && isClosedLoop(lines);
+      if (LOOPS_ONLY && !loop && !match.verdict.loop) continue;
 
       const t = match.tags;
       const ov = overrides[String(el.id)] || {};
@@ -339,7 +411,8 @@ async function main() {
           'name:de': t['name:de'] || null,
           ref: t.ref || null,
           network: t.network || null,
-          distance_km: match.verdict.km,
+          distance_km: match.verdict.km || lengthKm,
+          surfaces: Object.keys(surfaces).length ? surfaces : null,
           sac_scale: t.sac_scale || null,
           loop,
           symbol: t['osmc:symbol'] || null,
@@ -365,6 +438,38 @@ async function main() {
   };
   await fs.writeFile(OUTPUT_PATH, JSON.stringify(collection));
   console.log(`[done] Wrote ${features.length} routes -> ${OUTPUT_PATH}`);
+
+  // Phase 3: access points (parking, lift stations, bus stops) for verified
+  // starting-point assignment in promote-osm-trails.js.
+  console.log('[phase3] Fetching access points (parking, lifts, bus stops)…');
+  try {
+    const ap = await fetchWithRetries(buildAccessPointsQuery());
+    const apFeatures = (ap.elements || [])
+      .map((el) => {
+        const lat = el.lat ?? el.center?.lat;
+        const lon = el.lon ?? el.center?.lon;
+        if (typeof lat !== 'number' || typeof lon !== 'number') return null;
+        const t = el.tags || {};
+        const kind = t.aerialway === 'station' ? 'lift station'
+          : t.highway === 'bus_stop' ? 'bus stop' : 'parking';
+        return {
+          type: 'Feature',
+          properties: { kind, name: t.name || null },
+          geometry: { type: 'Point', coordinates: [lon, lat] }
+        };
+      })
+      .filter(Boolean);
+    const apPath = path.resolve(__dirname, '..', 'data', 'access-points.geojson');
+    await fs.writeFile(apPath, JSON.stringify({
+      type: 'FeatureCollection',
+      generatedAt: new Date().toISOString(),
+      attribution: '© OpenStreetMap contributors (ODbL)',
+      features: apFeatures
+    }));
+    console.log(`[phase3] Wrote ${apFeatures.length} access points -> ${apPath}`);
+  } catch (err) {
+    console.warn(`[phase3] Access points fetch failed (start points will fall back to route geometry): ${err.message}`);
+  }
 
   // Review file so rejects can be rescued via the overrides file.
   const reviewPath = path.resolve(__dirname, '..', 'data', 'dog-route-review.json');
