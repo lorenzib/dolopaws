@@ -467,6 +467,23 @@ function init(){
         // path, not guessed coordinates. Km markers were recorded against
         // the trail's stated distance, so we convert to a fraction of that
         // distance, then find the matching point on the real path.
+        //
+        // OFFSET NOTE: rifugi/water/decision/start markers frequently share
+        // the exact same coordinate (e.g. a rifugio + fountain both at km 0,
+        // right at the trailhead). Without an offset, later-added markers
+        // render on top of earlier ones and silently hide them - this is
+        // what happened to lago-braies's rifugio marker (identical coords
+        // to its water source AND start flag, buried under both). Each
+        // marker type now gets its own quadrant, matching the existing
+        // pattern used for decisionPoints [14,-14] and startPoint [-14,-14]:
+        //   startPoint (🚩)      -> top-left  [-14, -14]  (existing)
+        //   decisionPoints (🔀)  -> top-right [ 14, -14]  (existing)
+        //   rifugi (🏠)          -> bottom-left  [-14, 14]  (new)
+        //   waterSources (💧)    -> bottom-right [ 14, 14]  (new)
+        // This only separates markers of DIFFERENT types sharing a
+        // coordinate. Two rifugi (or two water sources) at the exact same
+        // point would still stack on each other - not handled here, since
+        // it wasn't the observed bug and no current trail data has that case.
         (t.rifugi || []).forEach(r => {
           let lat, lng;
           if(typeof r.lat === 'number' && typeof r.lng === 'number'){
@@ -475,7 +492,7 @@ function init(){
             const fraction = t.distance > 0 ? r.km / t.distance : 0;
             [lat, lng] = pointAtFraction(t.path, fraction); // approximate fallback
           }
-          new maplibregl.Marker({ element: makeIconEl('🏠', '#2E4034') })
+          new maplibregl.Marker({ element: makeIconEl('🏠', '#2E4034'), offset: [-14, 14] })
             .setLngLat([lng, lat])
             .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${r.name}</b><br>Km ${r.km}`))
             .addTo(map);
@@ -488,7 +505,7 @@ function init(){
             const fraction = t.distance > 0 ? w.km / t.distance : 0;
             [lat, lng] = pointAtFraction(t.path, fraction); // approximate fallback
           }
-          new maplibregl.Marker({ element: makeIconEl('💧', '#4E90A8') })
+          new maplibregl.Marker({ element: makeIconEl('💧', '#4E90A8'), offset: [14, 14] })
             .setLngLat([lng, lat])
             .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${w.label}</b><br>Km ${w.km}`))
             .addTo(map);
