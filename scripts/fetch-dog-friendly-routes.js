@@ -93,7 +93,7 @@ function buildPhase2Query(relationIds) {
   return [
     '[out:json][timeout:180];',
     `relation(id:${relationIds.join(',')});`,
-    'out tags geom;'
+    'out geom;'
   ].join('\n');
 }
 
@@ -305,16 +305,20 @@ async function main() {
   }
   console.log(`[filter] kept ${kept.length}, rejected ${rejected.length} (see review file).`);
 
-  // Geometry in batches to keep responses small.
+  // Geometry in small batches to keep responses light (504s = server strain).
   const features = [];
-  const BATCH = 50;
+  const BATCH = 25;
   for (let i = 0; i < kept.length; i += BATCH) {
     const batch = kept.slice(i, i + BATCH);
     console.log(`[phase2] Geometry batch ${i / BATCH + 1}/${Math.ceil(kept.length / BATCH)}…`);
     const data = await fetchWithRetries(buildPhase2Query(batch.map((k) => k.tags.__id)));
 
     for (const el of data.elements || []) {
-      if (el.type !== 'relation' || !el.members) continue;
+      if (el.type !== 'relation') continue;
+      if (!el.members || !el.members.length) {
+        console.warn(`[phase2] WARNING: relation ${el.id} returned no member geometry — skipped.`);
+        continue;
+      }
       const match = batch.find((k) => k.tags.__id === el.id);
       if (!match) continue;
 
