@@ -31,8 +31,12 @@ const OVERPASS_URLS = process.env.OVERPASS_URL
   : [
       'https://overpass-api.de/api/interpreter',
       'https://overpass.kumi.systems/api/interpreter',
-      'https://overpass.private.coffee/api/interpreter'
+      'https://overpass.private.coffee/api/interpreter',
+      'https://overpass.osm.jp/api/interpreter'
     ];
+
+// Overpass etiquette: identify the app so requests aren't treated as anonymous bots.
+const USER_AGENT = 'DoloPaws-trail-fetcher/1.0 (+https://dolopaws.com)';
 
 const OUTPUT_PATH = path.resolve(__dirname, '..', 'dog-friendly-routes.geojson');
 const OVERRIDES_PATH = path.resolve(__dirname, '..', 'data', 'dog-route-overrides.json');
@@ -106,16 +110,27 @@ async function fetchWithRetries(body, options = {}) {
         console.log(`[fetch] Attempt ${attempt}/${attempts} -> ${url}`);
         const response = await fetch(url, {
           method: 'POST',
-          headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'user-agent': USER_AGENT
+          },
           body: `data=${encodeURIComponent(body)}`,
           signal: controller.signal
         });
-        if (!response.ok) throw new Error(`Overpass returned HTTP ${response.status}`);
+        if (!response.ok) {
+          const err = new Error(`Overpass returned HTTP ${response.status}`);
+          err.status = response.status;
+          throw err;
+        }
         return await response.json();
       } catch (error) {
         lastError = error;
         console.warn(`[fetch] ${url} failed: ${error.message}`);
-        await new Promise((r) => setTimeout(r, 2000 * attempt));
+        // 429/406 = rate limited or blocked: waiting longer is the only cure.
+        const rateLimited = error.status === 429 || error.status === 406;
+        const waitMs = rateLimited ? 45000 * attempt : 2000 * attempt;
+        console.log(`[fetch] Waiting ${Math.round(waitMs / 1000)}s before next attempt…`);
+        await new Promise((r) => setTimeout(r, waitMs));
       } finally {
         clearTimeout(timeout);
       }
