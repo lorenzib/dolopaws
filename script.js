@@ -127,8 +127,6 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     routes: false,
     lifts: false,
     fountains: false,
-    huts: false,
-    barsCafes: false,
   };
   
   // Helper function to create a button
@@ -150,24 +148,9 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
       } else if(overlayKey === 'lifts'){
         map.setLayoutProperty('trailmap-gondolas-line', 'visibility', visibility);
         map.setLayoutProperty('trailmap-gondolas-labels', 'visibility', visibility);
-        // For DOM elements, use 'visible'/'hidden' not 'visible'/'none'
-        const markerVisibility = visibility === 'visible' ? 'visible' : 'hidden';
-        if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = markerVisibility; });
+        if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = visibility; });
       } else if(overlayKey === 'fountains'){
-        // Toggle water sources layers (using map layers, not DOM markers)
-        ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
-      } else if(overlayKey === 'huts'){
-        // Toggle mountain huts layers
-        ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
-      } else if(overlayKey === 'barsCafes'){
-        // Toggle bars & cafés layers
-        ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
+        map.setLayoutProperty('water-sources-layer', 'visibility', visibility);
       }
       
       // Update button text and style
@@ -183,8 +166,6 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
       routes: isVisible ? '🥾 Hide trail routes' : '🥾 Show trail routes',
       lifts: isVisible ? '🚡 Hide lifts' : '🚡 Show lifts',
       fountains: isVisible ? '💧 Hide fountains' : '💧 Show fountains',
-      huts: isVisible ? '🏔️ Hide mountain huts' : '🏔️ Show mountain huts',
-      barsCafes: isVisible ? '🍺 Hide bars & cafés' : '🍺 Show bars & cafés',
     };
     btn.textContent = labels[overlayKey];
     btn.style.opacity = isVisible ? '1' : '0.8';
@@ -193,8 +174,6 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   // Create the two buttons (lifts are always visible, just clickable)
   const routesBtn = createButton('🥾 Show trail routes', 'routes');
   const fountainsBtn = createButton('💧 Show fountains', 'fountains');
-  const hutsBtn = createButton('🏔️ Show mountain huts', 'huts');
-  const barsCafesBtn = createButton('🍺 Show bars & cafés', 'barsCafes');
 }
 
 
@@ -274,7 +253,6 @@ function renderGondolas(map, sourceId){
   
   return allLiftMarkers;
 }
-
 
 function initGuestMap(){
   if(guestMapInstance || typeof maplibregl === 'undefined' || typeof trails === 'undefined') return;
@@ -408,14 +386,40 @@ function initTrailMap(){
       },
     });
 
+    // Water sources (fountains, springs) — clickable markers on the map
+    trailMapInstance.addSource('water-sources', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    });
+    trailMapInstance.addLayer({
+      id: 'water-sources-layer',
+      type: 'circle',
+      source: 'water-sources',
+      layout: { visibility: 'none' },
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#4E90A8',
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 2,
+        'circle-opacity': 0.8,
+      },
+    });
+    trailMapInstance.on('click', 'water-sources-layer', (e) => {
+      const p = e.features[0].properties;
+      new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat)
+        .setHTML(`<b>💧 ${p.label}</b><br>Km ${p.km}`).addTo(trailMapInstance);
+    });
+    trailMapInstance.on('mouseenter', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = 'pointer');
+    trailMapInstance.on('mouseleave', 'water-sources-layer', () => trailMapInstance.getCanvas().style.cursor = '');
+    
     // Create overlay toggle controls
     createMapOverlayControls(trailMapInstance, 'trailMap', allLiftMarkers);
     
-    // Initialize water sources from combined GeoJSON (Trentino, Veneto, Savoy)
+    // Initialize comprehensive water sources layer from Overpass API data
     initializeWaterSources(trailMapInstance);
-
-    // Initialize mountain huts & bars from combined GeoJSON (Trentino, Veneto, Savoy)
-    initializeHutsBars(trailMapInstance);
+    
+    // Initialize famous dog-friendly trails layer
+    initializeFamousDogsTrails(trailMapInstance);
     
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
@@ -537,10 +541,43 @@ function updatePathLayer(list){
     }));
   trailMapInstance.getSource('trail-paths').setData({ type: 'FeatureCollection', features });
   
-  // NOTE: The 'water-sources' source is managed exclusively by initializeWaterSources(),
-  // which loads the full OSM dataset (Trentino, Veneto, Savoy) from
-  // water-sources-all-regions.geojson. Do NOT overwrite it here — the old code that
-  // replaced its data with per-trail points was wiping out all the fountain markers.
+  // Also populate water sources from the visible trails
+  const waterFeatures = [];
+  list.forEach(t => {
+    if(Array.isArray(t.waterSources) && Array.isArray(t.path) && t.path.length > 1){
+      t.waterSources.forEach(w => {
+        const fraction = t.distance > 0 ? w.km / t.distance : 0;
+        let lat, lng;
+        if(typeof w.lat === 'number' && typeof w.lng === 'number'){
+          lat = w.lat; lng = w.lng;
+        } else {
+          // Interpolate position along the path
+          const totalDist = t.path.reduce((sum, p, i) => i === 0 ? 0 : sum + Math.hypot(p[0]-t.path[i-1][0], p[1]-t.path[i-1][1]) * 111000, 0);
+          const targetDist = totalDist * Math.max(0, Math.min(1, fraction));
+          let acc = 0;
+          for(let i = 0; i < t.path.length - 1; i++){
+            const seg = Math.hypot(t.path[i+1][0]-t.path[i][0], t.path[i+1][1]-t.path[i][1]) * 111000;
+            if(acc + seg >= targetDist){
+              const t_frac = seg > 0 ? (targetDist - acc) / seg : 0;
+              lat = t.path[i][0] + (t.path[i+1][0] - t.path[i][0]) * t_frac;
+              lng = t.path[i][1] + (t.path[i+1][1] - t.path[i][1]) * t_frac;
+              break;
+            }
+            acc += seg;
+          }
+          if(!lat) [lat, lng] = t.path[t.path.length - 1];
+        }
+        waterFeatures.push({
+          type: 'Feature',
+          properties: { label: w.label, km: w.km, trailId: t.id },
+          geometry: { type: 'Point', coordinates: [lng, lat] },
+        });
+      });
+    }
+  });
+  if(trailMapInstance.getSource('water-sources')){
+    trailMapInstance.getSource('water-sources').setData({ type: 'FeatureCollection', features: waterFeatures });
+  }
 }
 
 function updateMapMarkers(list){
@@ -835,129 +872,76 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
  * Call this after map is loaded
  */
 function initializeWaterSources(map) {
-  // The map can already have this source/layer from initTrailMap().
-  // Re-adding the same IDs throws and interrupts map-load setup.
-  const hasSource = !!map.getSource('water-sources');
-  if(!hasSource){
-    // Fetch the combined GeoJSON data from all regions (Trentino, Veneto, Savoy)
-    fetch('./water-sources-all-regions.geojson')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: Failed to load GeoJSON`);
-        }
-        return response.json();
-      })
-      .then(geojsonData => {
-        console.log(`✅ Loaded ${geojsonData.features?.length || 0} water sources from Trentino, Veneto, and Savoy`);
-        
-        // Convert any Polygon features (OSM "way" fountains) to Point centroids,
-        // since circle layers and clustering only render Point geometries.
-        geojsonData.features = (geojsonData.features || []).map(f => {
-          if (f.geometry && f.geometry.type === 'Polygon') {
-            const ring = f.geometry.coordinates[0] || [];
-            if (ring.length) {
-              const lng = ring.reduce((s, c) => s + c[0], 0) / ring.length;
-              const lat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
-              return { ...f, geometry: { type: 'Point', coordinates: [lng, lat] } };
-            }
-          }
-          return f;
-        }).filter(f => f.geometry && f.geometry.type === 'Point');
+  // Add GeoJSON source
+  map.addSource('water-sources', {
+    type: 'geojson',
+    data: './data/drinking-water-all-sources.geojson',
+    cluster: true,
+    clusterRadius: 50,
+    clusterProperties: {
+      count: ['length']
+    }
+  });
 
-        map.addSource('water-sources', {
-          type: 'geojson',
-          data: geojsonData,
-          cluster: true,
-          clusterRadius: 50
-        });
-        
-        console.log('✅ Water sources source added to map');
-        
-        // Add layers after source is ready
-        addWaterSourcesLayers(map);
-      })
-      .catch(error => {
-        console.error('❌ Error loading water sources GeoJSON:', error.message);
-      });
-    
-    return; // Exit early since layers will be added in the fetch callback
-  }
-}
-
-/**
- * Add all water sources layers to the map
- */
-function addWaterSourcesLayers(map) {
-  console.log('📍 Adding water sources layers...');
-  
   // Unclustered points layer
-  if(!map.getLayer('water-sources-layer')){
-    map.addLayer({
-      id: 'water-sources-layer',
-      type: 'circle',
-      source: 'water-sources',
-      filter: ['!', ['has', 'point_count']],
-      layout: { visibility: 'none' },  // ← ADDED: Default hidden
-      paint: {
-        'circle-radius': 5,
-        'circle-color': [
-          'case',
-          ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',  // Blue - fountains
-          ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',         // Dark blue - fountains
-          ['==', ['get', 'natural'], 'spring'], '#228B22',           // Green - springs
-          ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',       // Deep blue - taps
-          ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',      // Light blue - water points
-          '#5A5548'  // Grey - other
-        ],
-        'circle-opacity': 0.75,
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#fff'
-      }
-    });
-  }
+  map.addLayer({
+    id: 'water-sources-layer',
+    type: 'circle',
+    source: 'water-sources',
+    filter: ['!', ['has', 'point_count']],
+    paint: {
+      'circle-radius': 5,
+      'circle-color': [
+        'case',
+        ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',  // Blue - fountains
+        ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',         // Dark blue - fountains
+        ['==', ['get', 'natural'], 'spring'], '#228B22',           // Green - springs
+        ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',       // Deep blue - taps
+        ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',      // Light blue - water points
+        '#5A5548'  // Grey - other
+      ],
+      'circle-opacity': 0.75,
+      'circle-stroke-width': 1,
+      'circle-stroke-color': '#fff'
+    }
+  });
 
   // Clustered points layer
-  if(!map.getLayer('water-sources-cluster')){
-    map.addLayer({
-      id: 'water-sources-cluster',
-      type: 'circle',
-      source: 'water-sources',
-      filter: ['has', 'point_count'],
-      layout: { visibility: 'none' },  // ← ADDED: Default hidden
-      paint: {
-        'circle-radius': [
-          'step',
-          ['get', 'point_count'],
-          20,
-          5, 25,
-          10, 30
-        ],
-        'circle-color': '#4E90A8',
-        'circle-opacity': 0.7,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#fff'
-      }
-    });
-  }
+  map.addLayer({
+    id: 'water-sources-cluster',
+    type: 'circle',
+    source: 'water-sources',
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-radius': [
+        'step',
+        ['get', 'point_count'],
+        20,
+        5, 25,
+        10, 30
+      ],
+      'circle-color': '#4E90A8',
+      'circle-opacity': 0.7,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#fff'
+    }
+  });
 
   // Cluster count labels
-  if(!map.getLayer('water-sources-cluster-count')){
-    map.addLayer({
-      id: 'water-sources-cluster-count',
-      type: 'symbol',
-      source: 'water-sources',
-      filter: ['has', 'point_count'],
-      layout: {
-        visibility: 'none',  // ← ADDED: Default hidden
-        'text-field': ['get', 'point_count'],
-        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-        'text-size': 12
-      },
-      paint: {
-        'text-color': '#fff'
-      }
-    });
-  }
+  map.addLayer({
+    id: 'water-sources-cluster-count',
+    type: 'symbol',
+    source: 'water-sources',
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field': ['get', 'point_count'],
+      'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+      'text-size': 12
+    },
+    paint: {
+      'text-color': '#fff'
+    }
+  });
 
   // Interactive hover effect
   map.on('mouseenter', 'water-sources-layer', () => {
@@ -967,8 +951,7 @@ function addWaterSourcesLayers(map) {
     map.getCanvas().style.cursor = '';
   });
 
-  // Click to show popup - remove old handler first to prevent duplicates
-  map.off('click', 'water-sources-layer');
+  // Click to show popup
   map.on('click', 'water-sources-layer', (e) => {
     const feature = e.features[0];
     const props = feature.properties;
@@ -984,14 +967,8 @@ function addWaterSourcesLayers(map) {
     // Build popup content
     let content = `<b>${waterType}</b>`;
     
-    const pointLabel = props.name || props.label;
-    const pointDistance = props.km !== undefined ? `Km ${props.km}` : '';
-    if (pointLabel && pointDistance) {
-      content += `<br>${pointLabel} <small>(${pointDistance})</small>`;
-    } else if (pointLabel) {
-      content += `<br>${pointLabel}`;
-    } else if (pointDistance) {
-      content += `<br><small>${pointDistance}</small>`;
+    if (props.name) {
+      content += `<br>${props.name}`;
     }
     
     if (props.check_date) {
@@ -1008,22 +985,22 @@ function addWaterSourcesLayers(map) {
       .addTo(map);
   });
 
-  // Click cluster to zoom in - remove old handler first to prevent duplicates
-  map.off('click', 'water-sources-cluster');
+  // Click cluster to zoom in
   map.on('click', 'water-sources-cluster', (e) => {
     const features = map.querySourceFeatures('water-sources', {
       filter: ['!=', ['get', 'point_count'], null]
     });
 
-    const clusterId = e.features[0].properties.cluster_id;
+    const clusterId = e.features[0].id;
     const source = map.getSource('water-sources');
-
-    source.getClusterExpansionZoom(clusterId).then((zoom) => {
+    
+    source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+      if (err) return;
       map.easeTo({
-        center: e.features[0].geometry.coordinates,
+        center: e.lngLat,
         zoom: zoom
       });
-    }).catch(() => {});
+    });
   });
 }
 
@@ -1065,226 +1042,91 @@ function filterWaterSources(map, type) {
 }
 
 // ============================================================
+// FAMOUS DOG-FRIENDLY TRAILS LAYER
+// ============================================================
+
+function initializeFamousDogsTrails(map) {
+  // Check if data file exists
+  map.addSource('famous-dog-trails', {
+    type: 'geojson',
+    data: './data/dog-friendly-famous-trails.geojson'
+  });
+  
+  // Add main trail layer
+  map.addLayer({
+    id: 'famous-dog-trails-layer',
+    type: 'line',
+    source: 'famous-dog-trails',
+    paint: {
+      'line-color': '#FF8C00',      // Orange
+      'line-width': 3.5,
+      'line-opacity': 0.85,
+      'line-dasharray': [2, 2]      // Dashed line
+    }
+  }, 'water-sources-layer');  // Below water sources
+  
+  // Click to show trail details
+  map.on('click', 'famous-dog-trails-layer', (e) => {
+    const props = e.features[0].properties;
+    const name = props.curated_name || props.name || 'Famous Dog Trail';
+    const difficulty = props.curated_difficulty || 'unknown';
+    const distance = props.curated_distance_km ? props.curated_distance_km + ' km' : 'unknown';
+    
+    new maplibregl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(`
+        <b>🥾 ${name}</b>
+        <br>Difficulty: ${difficulty}
+        <br>Distance: ${distance}
+        <br><span style="font-size:0.9em;">Dog-friendly trail</span>
+      `)
+      .addTo(map);
+  });
+  
+  // Hover effect
+  map.on('mouseenter', 'famous-dog-trails-layer', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'famous-dog-trails-layer', () => {
+    map.getCanvas().style.cursor = '';
+  });
+}
+
+// Toggle visibility
+function toggleFamousTrails(map, show) {
+  if (map.getLayer('famous-dog-trails-layer')) {
+    map.setLayoutProperty('famous-dog-trails-layer', 'visibility', show ? 'visible' : 'none');
+  }
+}
+
+// ============================================================
 // USAGE - Add to your map initialization
 // ============================================================
 
-// After map loads:
+// After map loads (in initTrailMap function):
 // initializeWaterSources(trailMapInstance);
+// initializeFamousDogsTrails(trailMapInstance);
 
-// To toggle visibility:
+// To toggle water sources visibility:
 // toggleWaterSources(trailMapInstance, true);
 
-// To filter by type:
+// To toggle famous trails visibility:
+// toggleFamousTrails(trailMapInstance, true);
+
+// To filter water by type:
 // filterWaterSources(trailMapInstance, 'fountains');
-
-/**
- * ============================================================
- * Huts & Bars Integration for DoloPaws
- * Adds mountain huts, bars, cafés and pubs from OpenStreetMap
- * (Trentino, Veneto, Savoy) — same pattern as water sources.
- * ============================================================
- */
-function initializeHutsBars(map) {
-  if(map.getSource('mountain-huts') || map.getSource('bars-cafes')) return;
-
-  fetch('./huts-bars-all-regions.geojson')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to load huts/bars GeoJSON`);
-      }
-      return response.json();
-    })
-    .then(geojsonData => {
-      // Safety net: convert any Polygon/MultiPolygon features to Point centroids
-      const features = (geojsonData.features || []).map(f => {
-        const g = f.geometry;
-        if (g && (g.type === 'Polygon' || g.type === 'MultiPolygon')) {
-          const ring = g.type === 'Polygon' ? (g.coordinates[0] || []) : ((g.coordinates[0] || [])[0] || []);
-          if (ring.length) {
-            const lng = ring.reduce((s, c) => s + c[0], 0) / ring.length;
-            const lat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
-            return { ...f, geometry: { type: 'Point', coordinates: [lng, lat] } };
-          }
-        }
-        return f;
-      }).filter(f => f.geometry && f.geometry.type === 'Point');
-
-      // Split into two datasets so each gets its OWN clustering:
-      // mixing them in one clustered source would blend huts and bars
-      // inside the same cluster bubbles.
-      const isHut = p => p && (p.tourism === 'alpine_hut' || p.tourism === 'wilderness_hut' || p.amenity === 'shelter');
-      const huts = features.filter(f => isHut(f.properties));
-      const bars = features.filter(f => !isHut(f.properties));
-
-      console.log(`✅ Loaded ${huts.length} mountain huts and ${bars.length} bars/cafés (Trentino, Veneto, Savoy)`);
-
-      map.addSource('mountain-huts', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: huts },
-        cluster: true,
-        clusterRadius: 50
-      });
-
-      map.addSource('bars-cafes', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: bars },
-        cluster: true,
-        clusterRadius: 65  // slightly larger: consolidates the dense town blobs
-      });
-
-      addHutsBarsLayers(map);
-    })
-    .catch(error => {
-      console.error('❌ Error loading huts/bars GeoJSON:', error.message);
-    });
-}
-
-// Shared helper: adds circle + cluster + count layers for one POI source
-function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
-  if(!map.getLayer(prefix + '-layer')){
-    map.addLayer({
-      id: prefix + '-layer',
-      type: 'circle',
-      source: sourceId,
-      filter: ['!', ['has', 'point_count']],
-      layout: { visibility: 'none' },
-      paint: {
-        'circle-radius': 5,
-        'circle-color': circleColor,
-        'circle-opacity': 0.8,
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#fff'
-      }
-    });
-  }
-
-  if(!map.getLayer(prefix + '-cluster')){
-    map.addLayer({
-      id: prefix + '-cluster',
-      type: 'circle',
-      source: sourceId,
-      filter: ['has', 'point_count'],
-      layout: { visibility: 'none' },
-      paint: {
-        'circle-radius': ['step', ['get', 'point_count'], 20, 5, 25, 10, 30],
-        'circle-color': clusterColor,
-        'circle-opacity': 0.7,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#fff'
-      }
-    });
-  }
-
-  if(!map.getLayer(prefix + '-cluster-count')){
-    map.addLayer({
-      id: prefix + '-cluster-count',
-      type: 'symbol',
-      source: sourceId,
-      filter: ['has', 'point_count'],
-      layout: {
-        visibility: 'none',
-        'text-field': ['get', 'point_count'],
-        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-        'text-size': 12
-      },
-      paint: { 'text-color': '#fff' }
-    });
-  }
-
-  // Hover cursor
-  map.on('mouseenter', prefix + '-layer', () => { map.getCanvas().style.cursor = 'pointer'; });
-  map.on('mouseleave', prefix + '-layer', () => { map.getCanvas().style.cursor = ''; });
-
-  // Popup on click
-  map.off('click', prefix + '-layer');
-  map.on('click', prefix + '-layer', (e) => {
-    const feature = e.features[0];
-    const props = feature.properties;
-
-    let placeType = 'Place';
-    if (props.tourism === 'alpine_hut') placeType = '🏔️ Mountain Hut (Rifugio)';
-    else if (props.tourism === 'wilderness_hut') placeType = '🛖 Wilderness Hut / Bivouac';
-    else if (props.amenity === 'shelter') placeType = '⛺ Shelter';
-    else if (props.amenity === 'bar') placeType = '🍺 Bar';
-    else if (props.amenity === 'pub') placeType = '🍻 Pub';
-    else if (props.amenity === 'cafe') placeType = '☕ Café';
-    else if (props.amenity === 'restaurant') placeType = '🍽️ Restaurant';
-
-    let content = `<b>${placeType}</b>`;
-    if (props.name) content += `<br><b>${props.name}</b>`;
-    if (props.ele) content += `<br>⛰️ ${props.ele} m elevation`;
-    if (props.opening_hours) content += `<br>🕐 ${props.opening_hours}`;
-    if (props.phone || props['contact:phone']) content += `<br>📞 ${props.phone || props['contact:phone']}`;
-    if (props.website || props['contact:website']) {
-      const url = props.website || props['contact:website'];
-      content += `<br>🔗 <a href="${url}" target="_blank" rel="noopener">Website</a>`;
-    }
-    if (props.dog === 'yes') content += `<br>🐕 Dogs welcome`;
-
-    new maplibregl.Popup({ offset: 10 })
-      .setLngLat(feature.geometry.coordinates)
-      .setHTML(content)
-      .addTo(map);
-  });
-
-  // Zoom into cluster on click
-  map.off('click', prefix + '-cluster');
-  map.on('click', prefix + '-cluster', (e) => {
-    const features = map.queryRenderedFeatures(e.point, { layers: [prefix + '-cluster'] });
-    if (!features.length) return;
-    const clusterId = features[0].properties.cluster_id;
-    const source = map.getSource(sourceId);
-    source.getClusterExpansionZoom(clusterId).then((zoom) => {
-      map.easeTo({ center: features[0].geometry.coordinates, zoom });
-    }).catch(() => {});
-  });
-}
-
-function addHutsBarsLayers(map) {
-  console.log('📍 Adding mountain huts + bars/cafés layers...');
-
-  // Mountain huts: color by hut type, brown clusters
-  addPoiLayerSet(map, 'mountain-huts', 'mountain-huts', [
-    'case',
-    ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',      // Brown - alpine huts (rifugi)
-    ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',  // Light brown - bivouacs
-    '#5A5548'                                                 // Grey - shelters
-  ], '#8A5A16');
-
-  // Bars & cafés: color by amenity, red clusters
-  addPoiLayerSet(map, 'bars-cafes', 'bars-cafes', [
-    'case',
-    ['==', ['get', 'amenity'], 'bar'], '#9C3A25',             // Red - bars
-    ['==', ['get', 'amenity'], 'pub'], '#7a2818',             // Dark red - pubs
-    ['==', ['get', 'amenity'], 'cafe'], '#D6A038',            // Gold - cafés
-    ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',      // Orange - restaurants
-    '#5A5548'
-  ], '#9C3A25');
-
-  console.log('✅ Huts + bars/cafés layers added');
-}
-
-/**
- * Toggle helpers
- */
-function toggleMountainHuts(map, show) {
-  ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
-    if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
-  });
-}
-
-function toggleBarsCafes(map, show) {
-  ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
-    if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
-  });
-}
 
 // ============================================================
 // LEGEND ENTRY
 // ============================================================
 
 /*
-Add this to your legend:
+Add this to your legend (index.html around line 135-145):
+
+<span style="display:flex;align-items:center;gap:6px;font-size:0.9em;">
+  <span style="width:16px;height:2px;background:#FF8C00;border-top:2px dashed #FF8C00;display:inline-block;"></span>
+  Famous dog-friendly trails (8)
+</span>
 
 <span>💧 Drinking water (12,921 sources)</span>
 
