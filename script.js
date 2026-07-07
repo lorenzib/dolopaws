@@ -127,6 +127,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     routes: false,
     lifts: false,
     fountains: false,
+    hutsBars: false,
   };
   
   // Helper function to create a button
@@ -156,6 +157,11 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
         ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
           if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
         });
+      } else if(overlayKey === 'hutsBars'){
+        // Toggle huts & bars layers
+        ['huts-bars-layer', 'huts-bars-cluster', 'huts-bars-cluster-count'].forEach(layerId => {
+          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
+        });
       }
       
       // Update button text and style
@@ -171,6 +177,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
       routes: isVisible ? '🥾 Hide trail routes' : '🥾 Show trail routes',
       lifts: isVisible ? '🚡 Hide lifts' : '🚡 Show lifts',
       fountains: isVisible ? '💧 Hide fountains' : '💧 Show fountains',
+      hutsBars: isVisible ? '🍺 Hide huts & bars' : '🍺 Show huts & bars',
     };
     btn.textContent = labels[overlayKey];
     btn.style.opacity = isVisible ? '1' : '0.8';
@@ -179,6 +186,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   // Create the two buttons (lifts are always visible, just clickable)
   const routesBtn = createButton('🥾 Show trail routes', 'routes');
   const fountainsBtn = createButton('💧 Show fountains', 'fountains');
+  const hutsBarsBtn = createButton('🍺 Show huts & bars', 'hutsBars');
 }
 
 
@@ -397,6 +405,9 @@ function initTrailMap(){
     
     // Initialize water sources from combined GeoJSON (Trentino, Veneto, Savoy)
     initializeWaterSources(trailMapInstance);
+
+    // Initialize mountain huts & bars from combined GeoJSON (Trentino, Veneto, Savoy)
+    initializeHutsBars(trailMapInstance);
     
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
@@ -996,16 +1007,15 @@ function addWaterSourcesLayers(map) {
       filter: ['!=', ['get', 'point_count'], null]
     });
 
-    const clusterId = e.features[0].id;
+    const clusterId = e.features[0].properties.cluster_id;
     const source = map.getSource('water-sources');
-    
-    source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-      if (err) return;
+
+    source.getClusterExpansionZoom(clusterId).then((zoom) => {
       map.easeTo({
-        center: e.lngLat,
+        center: e.features[0].geometry.coordinates,
         zoom: zoom
       });
-    });
+    }).catch(() => {});
   });
 }
 
@@ -1058,6 +1068,194 @@ function filterWaterSources(map, type) {
 
 // To filter by type:
 // filterWaterSources(trailMapInstance, 'fountains');
+
+/**
+ * ============================================================
+ * Huts & Bars Integration for DoloPaws
+ * Adds mountain huts, bars, cafés and pubs from OpenStreetMap
+ * (Trentino, Veneto, Savoy) — same pattern as water sources.
+ * ============================================================
+ */
+function initializeHutsBars(map) {
+  if(map.getSource('huts-bars')) return;
+
+  fetch('./huts-bars-all-regions.geojson')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to load huts/bars GeoJSON`);
+      }
+      return response.json();
+    })
+    .then(geojsonData => {
+      console.log(`✅ Loaded ${geojsonData.features?.length || 0} huts & bars from Trentino, Veneto, and Savoy`);
+
+      // Safety net: convert any Polygon/MultiPolygon features to Point centroids
+      geojsonData.features = (geojsonData.features || []).map(f => {
+        const g = f.geometry;
+        if (g && (g.type === 'Polygon' || g.type === 'MultiPolygon')) {
+          const ring = g.type === 'Polygon' ? (g.coordinates[0] || []) : ((g.coordinates[0] || [])[0] || []);
+          if (ring.length) {
+            const lng = ring.reduce((s, c) => s + c[0], 0) / ring.length;
+            const lat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
+            return { ...f, geometry: { type: 'Point', coordinates: [lng, lat] } };
+          }
+        }
+        return f;
+      }).filter(f => f.geometry && f.geometry.type === 'Point');
+
+      map.addSource('huts-bars', {
+        type: 'geojson',
+        data: geojsonData,
+        cluster: true,
+        clusterRadius: 50
+      });
+
+      addHutsBarsLayers(map);
+    })
+    .catch(error => {
+      console.error('❌ Error loading huts/bars GeoJSON:', error.message);
+    });
+}
+
+function addHutsBarsLayers(map) {
+  console.log('📍 Adding huts & bars layers...');
+
+  // Unclustered points layer
+  if(!map.getLayer('huts-bars-layer')){
+    map.addLayer({
+      id: 'huts-bars-layer',
+      type: 'circle',
+      source: 'huts-bars',
+      filter: ['!', ['has', 'point_count']],
+      layout: { visibility: 'none' },  // Default hidden, toggled via button
+      paint: {
+        'circle-radius': 5,
+        'circle-color': [
+          'case',
+          ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',      // Brown - alpine huts (rifugi)
+          ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',  // Light brown - bivouacs
+          ['==', ['get', 'amenity'], 'shelter'], '#5A5548',         // Grey - shelters
+          ['==', ['get', 'amenity'], 'bar'], '#9C3A25',             // Red - bars
+          ['==', ['get', 'amenity'], 'pub'], '#7a2818',             // Dark red - pubs
+          ['==', ['get', 'amenity'], 'cafe'], '#D6A038',            // Gold - cafés
+          ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',      // Orange - restaurants
+          '#5A5548'  // Grey - other
+        ],
+        'circle-opacity': 0.8,
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#fff'
+      }
+    });
+  }
+
+  // Clustered points layer
+  if(!map.getLayer('huts-bars-cluster')){
+    map.addLayer({
+      id: 'huts-bars-cluster',
+      type: 'circle',
+      source: 'huts-bars',
+      filter: ['has', 'point_count'],
+      layout: { visibility: 'none' },
+      paint: {
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20,
+          5, 25,
+          10, 30
+        ],
+        'circle-color': '#8A5A16',
+        'circle-opacity': 0.7,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#fff'
+      }
+    });
+  }
+
+  // Cluster count labels
+  if(!map.getLayer('huts-bars-cluster-count')){
+    map.addLayer({
+      id: 'huts-bars-cluster-count',
+      type: 'symbol',
+      source: 'huts-bars',
+      filter: ['has', 'point_count'],
+      layout: {
+        visibility: 'none',
+        'text-field': ['get', 'point_count'],
+        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+        'text-size': 12
+      },
+      paint: {
+        'text-color': '#fff'
+      }
+    });
+  }
+
+  // Interactive hover effect
+  map.on('mouseenter', 'huts-bars-layer', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'huts-bars-layer', () => {
+    map.getCanvas().style.cursor = '';
+  });
+
+  // Popup on click
+  map.off('click', 'huts-bars-layer');
+  map.on('click', 'huts-bars-layer', (e) => {
+    const feature = e.features[0];
+    const props = feature.properties;
+
+    // Determine place type
+    let placeType = 'Place';
+    if (props.tourism === 'alpine_hut') placeType = '🏔️ Mountain Hut (Rifugio)';
+    else if (props.tourism === 'wilderness_hut') placeType = '🛖 Wilderness Hut / Bivouac';
+    else if (props.amenity === 'shelter') placeType = '⛺ Shelter';
+    else if (props.amenity === 'bar') placeType = '🍺 Bar';
+    else if (props.amenity === 'pub') placeType = '🍻 Pub';
+    else if (props.amenity === 'cafe') placeType = '☕ Café';
+    else if (props.amenity === 'restaurant') placeType = '🍽️ Restaurant';
+
+    let content = `<b>${placeType}</b>`;
+    if (props.name) content += `<br><b>${props.name}</b>`;
+    if (props.ele) content += `<br>⛰️ ${props.ele} m elevation`;
+    if (props.opening_hours) content += `<br>🕐 ${props.opening_hours}`;
+    if (props.phone || props['contact:phone']) content += `<br>📞 ${props.phone || props['contact:phone']}`;
+    if (props.website || props['contact:website']) {
+      const url = props.website || props['contact:website'];
+      content += `<br>🔗 <a href="${url}" target="_blank" rel="noopener">Website</a>`;
+    }
+    if (props.dog === 'yes') content += `<br>🐕 Dogs welcome`;
+
+    new maplibregl.Popup({ offset: 10 })
+      .setLngLat(feature.geometry.coordinates)
+      .setHTML(content)
+      .addTo(map);
+  });
+
+  // Zoom into cluster on click
+  map.off('click', 'huts-bars-cluster');
+  map.on('click', 'huts-bars-cluster', (e) => {
+    const features = map.queryRenderedFeatures(e.point, { layers: ['huts-bars-cluster'] });
+    if (!features.length) return;
+    const clusterId = features[0].properties.cluster_id;
+    const source = map.getSource('huts-bars');
+    source.getClusterExpansionZoom(clusterId).then((zoom) => {
+      map.easeTo({ center: features[0].geometry.coordinates, zoom });
+    }).catch(() => {});
+  });
+
+  console.log('✅ Huts & bars layers added');
+}
+
+/**
+ * Toggle huts & bars visibility
+ */
+function toggleHutsBars(map, show) {
+  const layers = ['huts-bars-layer', 'huts-bars-cluster', 'huts-bars-cluster-count'];
+  layers.forEach(layerId => {
+    if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
+  });
+}
 
 // ============================================================
 // LEGEND ENTRY
