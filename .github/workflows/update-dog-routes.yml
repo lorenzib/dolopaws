@@ -1,0 +1,30 @@
+name: Update dog-friendly routes
+
+on:
+  workflow_dispatch: {}        # adds a "Run workflow" button in the Actions tab
+  schedule:
+    - cron: '0 4 1 * *'        # also refreshes automatically on the 1st of each month
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-routes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch dog-friendly routes from OpenStreetMap
+        run: node scripts/fetch-dog-friendly-routes.js --dolomites-only --loops-only --max-km 12
+
+      - name: Commit updated GeoJSON
+        run: |
+          git config user.name "dolopaws-bot"
+          git config user.email "actions@github.com"
+          git add dog-friendly-routes.geojson data/dog-route-review.json data/dog-route-overrides.json
+          git diff --cached --quiet || git commit -m "Update dog-friendly routes from OSM"
+          git push
