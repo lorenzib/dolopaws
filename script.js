@@ -414,6 +414,9 @@ function initTrailMap(){
     // Initialize water sources from combined GeoJSON (Trentino, Veneto, Savoy)
     initializeWaterSources(trailMapInstance);
 
+    // Initialize dog-friendly OSM routes from generated GeoJSON
+    initializeDogRoutes(trailMapInstance);
+
     // Initialize mountain huts & bars from combined GeoJSON (Trentino, Veneto, Savoy)
     initializeHutsBars(trailMapInstance);
     
