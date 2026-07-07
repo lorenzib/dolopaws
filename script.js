@@ -127,7 +127,8 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     routes: false,
     lifts: false,
     fountains: false,
-    hutsBars: false,
+    huts: false,
+    barsCafes: false,
   };
   
   // Helper function to create a button
@@ -157,9 +158,14 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
         ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
           if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
         });
-      } else if(overlayKey === 'hutsBars'){
-        // Toggle huts & bars layers
-        ['huts-bars-layer', 'huts-bars-cluster', 'huts-bars-cluster-count'].forEach(layerId => {
+      } else if(overlayKey === 'huts'){
+        // Toggle mountain huts layers
+        ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
+          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
+        });
+      } else if(overlayKey === 'barsCafes'){
+        // Toggle bars & cafés layers
+        ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
           if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
         });
       }
@@ -177,7 +183,8 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
       routes: isVisible ? '🥾 Hide trail routes' : '🥾 Show trail routes',
       lifts: isVisible ? '🚡 Hide lifts' : '🚡 Show lifts',
       fountains: isVisible ? '💧 Hide fountains' : '💧 Show fountains',
-      hutsBars: isVisible ? '🍺 Hide huts & bars' : '🍺 Show huts & bars',
+      huts: isVisible ? '🏔️ Hide mountain huts' : '🏔️ Show mountain huts',
+      barsCafes: isVisible ? '🍺 Hide bars & cafés' : '🍺 Show bars & cafés',
     };
     btn.textContent = labels[overlayKey];
     btn.style.opacity = isVisible ? '1' : '0.8';
@@ -186,7 +193,8 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   // Create the two buttons (lifts are always visible, just clickable)
   const routesBtn = createButton('🥾 Show trail routes', 'routes');
   const fountainsBtn = createButton('💧 Show fountains', 'fountains');
-  const hutsBarsBtn = createButton('🍺 Show huts & bars', 'hutsBars');
+  const hutsBtn = createButton('🏔️ Show mountain huts', 'huts');
+  const barsCafesBtn = createButton('🍺 Show bars & cafés', 'barsCafes');
 }
 
 
@@ -1077,7 +1085,7 @@ function filterWaterSources(map, type) {
  * ============================================================
  */
 function initializeHutsBars(map) {
-  if(map.getSource('huts-bars')) return;
+  if(map.getSource('mountain-huts') || map.getSource('bars-cafes')) return;
 
   fetch('./huts-bars-all-regions.geojson')
     .then(response => {
@@ -1087,10 +1095,8 @@ function initializeHutsBars(map) {
       return response.json();
     })
     .then(geojsonData => {
-      console.log(`✅ Loaded ${geojsonData.features?.length || 0} huts & bars from Trentino, Veneto, and Savoy`);
-
       // Safety net: convert any Polygon/MultiPolygon features to Point centroids
-      geojsonData.features = (geojsonData.features || []).map(f => {
+      const features = (geojsonData.features || []).map(f => {
         const g = f.geometry;
         if (g && (g.type === 'Polygon' || g.type === 'MultiPolygon')) {
           const ring = g.type === 'Polygon' ? (g.coordinates[0] || []) : ((g.coordinates[0] || [])[0] || []);
@@ -1103,11 +1109,27 @@ function initializeHutsBars(map) {
         return f;
       }).filter(f => f.geometry && f.geometry.type === 'Point');
 
-      map.addSource('huts-bars', {
+      // Split into two datasets so each gets its OWN clustering:
+      // mixing them in one clustered source would blend huts and bars
+      // inside the same cluster bubbles.
+      const isHut = p => p && (p.tourism === 'alpine_hut' || p.tourism === 'wilderness_hut' || p.amenity === 'shelter');
+      const huts = features.filter(f => isHut(f.properties));
+      const bars = features.filter(f => !isHut(f.properties));
+
+      console.log(`✅ Loaded ${huts.length} mountain huts and ${bars.length} bars/cafés (Trentino, Veneto, Savoy)`);
+
+      map.addSource('mountain-huts', {
         type: 'geojson',
-        data: geojsonData,
+        data: { type: 'FeatureCollection', features: huts },
         cluster: true,
         clusterRadius: 50
+      });
+
+      map.addSource('bars-cafes', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: bars },
+        cluster: true,
+        clusterRadius: 65  // slightly larger: consolidates the dense town blobs
       });
 
       addHutsBarsLayers(map);
@@ -1117,30 +1139,18 @@ function initializeHutsBars(map) {
     });
 }
 
-function addHutsBarsLayers(map) {
-  console.log('📍 Adding huts & bars layers...');
-
-  // Unclustered points layer
-  if(!map.getLayer('huts-bars-layer')){
+// Shared helper: adds circle + cluster + count layers for one POI source
+function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
+  if(!map.getLayer(prefix + '-layer')){
     map.addLayer({
-      id: 'huts-bars-layer',
+      id: prefix + '-layer',
       type: 'circle',
-      source: 'huts-bars',
+      source: sourceId,
       filter: ['!', ['has', 'point_count']],
-      layout: { visibility: 'none' },  // Default hidden, toggled via button
+      layout: { visibility: 'none' },
       paint: {
         'circle-radius': 5,
-        'circle-color': [
-          'case',
-          ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',      // Brown - alpine huts (rifugi)
-          ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',  // Light brown - bivouacs
-          ['==', ['get', 'amenity'], 'shelter'], '#5A5548',         // Grey - shelters
-          ['==', ['get', 'amenity'], 'bar'], '#9C3A25',             // Red - bars
-          ['==', ['get', 'amenity'], 'pub'], '#7a2818',             // Dark red - pubs
-          ['==', ['get', 'amenity'], 'cafe'], '#D6A038',            // Gold - cafés
-          ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',      // Orange - restaurants
-          '#5A5548'  // Grey - other
-        ],
+        'circle-color': circleColor,
         'circle-opacity': 0.8,
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'
@@ -1148,23 +1158,16 @@ function addHutsBarsLayers(map) {
     });
   }
 
-  // Clustered points layer
-  if(!map.getLayer('huts-bars-cluster')){
+  if(!map.getLayer(prefix + '-cluster')){
     map.addLayer({
-      id: 'huts-bars-cluster',
+      id: prefix + '-cluster',
       type: 'circle',
-      source: 'huts-bars',
+      source: sourceId,
       filter: ['has', 'point_count'],
       layout: { visibility: 'none' },
       paint: {
-        'circle-radius': [
-          'step',
-          ['get', 'point_count'],
-          20,
-          5, 25,
-          10, 30
-        ],
-        'circle-color': '#8A5A16',
+        'circle-radius': ['step', ['get', 'point_count'], 20, 5, 25, 10, 30],
+        'circle-color': clusterColor,
         'circle-opacity': 0.7,
         'circle-stroke-width': 2,
         'circle-stroke-color': '#fff'
@@ -1172,12 +1175,11 @@ function addHutsBarsLayers(map) {
     });
   }
 
-  // Cluster count labels
-  if(!map.getLayer('huts-bars-cluster-count')){
+  if(!map.getLayer(prefix + '-cluster-count')){
     map.addLayer({
-      id: 'huts-bars-cluster-count',
+      id: prefix + '-cluster-count',
       type: 'symbol',
-      source: 'huts-bars',
+      source: sourceId,
       filter: ['has', 'point_count'],
       layout: {
         visibility: 'none',
@@ -1185,27 +1187,20 @@ function addHutsBarsLayers(map) {
         'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
         'text-size': 12
       },
-      paint: {
-        'text-color': '#fff'
-      }
+      paint: { 'text-color': '#fff' }
     });
   }
 
-  // Interactive hover effect
-  map.on('mouseenter', 'huts-bars-layer', () => {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'huts-bars-layer', () => {
-    map.getCanvas().style.cursor = '';
-  });
+  // Hover cursor
+  map.on('mouseenter', prefix + '-layer', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', prefix + '-layer', () => { map.getCanvas().style.cursor = ''; });
 
   // Popup on click
-  map.off('click', 'huts-bars-layer');
-  map.on('click', 'huts-bars-layer', (e) => {
+  map.off('click', prefix + '-layer');
+  map.on('click', prefix + '-layer', (e) => {
     const feature = e.features[0];
     const props = feature.properties;
 
-    // Determine place type
     let placeType = 'Place';
     if (props.tourism === 'alpine_hut') placeType = '🏔️ Mountain Hut (Rifugio)';
     else if (props.tourism === 'wilderness_hut') placeType = '🛖 Wilderness Hut / Bivouac';
@@ -1233,26 +1228,53 @@ function addHutsBarsLayers(map) {
   });
 
   // Zoom into cluster on click
-  map.off('click', 'huts-bars-cluster');
-  map.on('click', 'huts-bars-cluster', (e) => {
-    const features = map.queryRenderedFeatures(e.point, { layers: ['huts-bars-cluster'] });
+  map.off('click', prefix + '-cluster');
+  map.on('click', prefix + '-cluster', (e) => {
+    const features = map.queryRenderedFeatures(e.point, { layers: [prefix + '-cluster'] });
     if (!features.length) return;
     const clusterId = features[0].properties.cluster_id;
-    const source = map.getSource('huts-bars');
+    const source = map.getSource(sourceId);
     source.getClusterExpansionZoom(clusterId).then((zoom) => {
       map.easeTo({ center: features[0].geometry.coordinates, zoom });
     }).catch(() => {});
   });
+}
 
-  console.log('✅ Huts & bars layers added');
+function addHutsBarsLayers(map) {
+  console.log('📍 Adding mountain huts + bars/cafés layers...');
+
+  // Mountain huts: color by hut type, brown clusters
+  addPoiLayerSet(map, 'mountain-huts', 'mountain-huts', [
+    'case',
+    ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',      // Brown - alpine huts (rifugi)
+    ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',  // Light brown - bivouacs
+    '#5A5548'                                                 // Grey - shelters
+  ], '#8A5A16');
+
+  // Bars & cafés: color by amenity, red clusters
+  addPoiLayerSet(map, 'bars-cafes', 'bars-cafes', [
+    'case',
+    ['==', ['get', 'amenity'], 'bar'], '#9C3A25',             // Red - bars
+    ['==', ['get', 'amenity'], 'pub'], '#7a2818',             // Dark red - pubs
+    ['==', ['get', 'amenity'], 'cafe'], '#D6A038',            // Gold - cafés
+    ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',      // Orange - restaurants
+    '#5A5548'
+  ], '#9C3A25');
+
+  console.log('✅ Huts + bars/cafés layers added');
 }
 
 /**
- * Toggle huts & bars visibility
+ * Toggle helpers
  */
-function toggleHutsBars(map, show) {
-  const layers = ['huts-bars-layer', 'huts-bars-cluster', 'huts-bars-cluster-count'];
-  layers.forEach(layerId => {
+function toggleMountainHuts(map, show) {
+  ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
+    if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
+  });
+}
+
+function toggleBarsCafes(map, show) {
+  ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
     if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
   });
 }
