@@ -518,43 +518,10 @@ function updatePathLayer(list){
     }));
   trailMapInstance.getSource('trail-paths').setData({ type: 'FeatureCollection', features });
   
-  // Also populate water sources from the visible trails
-  const waterFeatures = [];
-  list.forEach(t => {
-    if(Array.isArray(t.waterSources) && Array.isArray(t.path) && t.path.length > 1){
-      t.waterSources.forEach(w => {
-        const fraction = t.distance > 0 ? w.km / t.distance : 0;
-        let lat, lng;
-        if(typeof w.lat === 'number' && typeof w.lng === 'number'){
-          lat = w.lat; lng = w.lng;
-        } else {
-          // Interpolate position along the path
-          const totalDist = t.path.reduce((sum, p, i) => i === 0 ? 0 : sum + Math.hypot(p[0]-t.path[i-1][0], p[1]-t.path[i-1][1]) * 111000, 0);
-          const targetDist = totalDist * Math.max(0, Math.min(1, fraction));
-          let acc = 0;
-          for(let i = 0; i < t.path.length - 1; i++){
-            const seg = Math.hypot(t.path[i+1][0]-t.path[i][0], t.path[i+1][1]-t.path[i][1]) * 111000;
-            if(acc + seg >= targetDist){
-              const t_frac = seg > 0 ? (targetDist - acc) / seg : 0;
-              lat = t.path[i][0] + (t.path[i+1][0] - t.path[i][0]) * t_frac;
-              lng = t.path[i][1] + (t.path[i+1][1] - t.path[i][1]) * t_frac;
-              break;
-            }
-            acc += seg;
-          }
-          if(!lat) [lat, lng] = t.path[t.path.length - 1];
-        }
-        waterFeatures.push({
-          type: 'Feature',
-          properties: { label: w.label, km: w.km, trailId: t.id },
-          geometry: { type: 'Point', coordinates: [lng, lat] },
-        });
-      });
-    }
-  });
-  if(trailMapInstance.getSource('water-sources')){
-    trailMapInstance.getSource('water-sources').setData({ type: 'FeatureCollection', features: waterFeatures });
-  }
+  // NOTE: The 'water-sources' source is managed exclusively by initializeWaterSources(),
+  // which loads the full OSM dataset (Trentino, Veneto, Savoy) from
+  // water-sources-all-regions.geojson. Do NOT overwrite it here — the old code that
+  // replaced its data with per-trail points was wiping out all the fountain markers.
 }
 
 function updateMapMarkers(list){
@@ -864,14 +831,25 @@ function initializeWaterSources(map) {
       .then(geojsonData => {
         console.log(`✅ Loaded ${geojsonData.features?.length || 0} water sources from Trentino, Veneto, and Savoy`);
         
+        // Convert any Polygon features (OSM "way" fountains) to Point centroids,
+        // since circle layers and clustering only render Point geometries.
+        geojsonData.features = (geojsonData.features || []).map(f => {
+          if (f.geometry && f.geometry.type === 'Polygon') {
+            const ring = f.geometry.coordinates[0] || [];
+            if (ring.length) {
+              const lng = ring.reduce((s, c) => s + c[0], 0) / ring.length;
+              const lat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
+              return { ...f, geometry: { type: 'Point', coordinates: [lng, lat] } };
+            }
+          }
+          return f;
+        }).filter(f => f.geometry && f.geometry.type === 'Point');
+
         map.addSource('water-sources', {
           type: 'geojson',
           data: geojsonData,
           cluster: true,
-          clusterRadius: 50,
-          clusterProperties: {
-            count: ['length']
-          }
+          clusterRadius: 50
         });
         
         console.log('✅ Water sources source added to map');
