@@ -292,7 +292,7 @@ function initGuestMap(){
   guestMapInstance.on('load', () => {
     addTerrainSource(guestMapInstance);
     increaseLabelDensity(guestMapInstance);
-    simplifyBilingualLabels(guestMapInstance);
+    preventTransitPoiDuplication(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
     renderGondolas(guestMapInstance, 'guest-gondolas');
     // Real route lines for any trail that has one — same data the logged-in map uses.
@@ -368,7 +368,7 @@ function initTrailMap(){
   trailMapInstance.on('load', () => {
     addTerrainSource(trailMapInstance);
     increaseLabelDensity(trailMapInstance);
-    simplifyBilingualLabels(trailMapInstance);
+    preventTransitPoiDuplication(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     
     const allLiftMarkers = renderGondolas(trailMapInstance, 'trailmap-gondolas');
@@ -472,29 +472,26 @@ function increaseLabelDensity(map){
   });
 }
 
-// South Tyrol/Alto Adige is officially bilingual, and OSM commonly stores
-// the base `name` tag as an already-joined "German / Italian" string (e.g.
-// "Seis, Busbahnhof / Siusi, Autostazione"). Combined with the forced
-// text-allow-overlap above, these long joined strings stack on each other
-// and become unreadable at any real density. This picks ONE language per
-// label instead of rendering the whole joined string.
-function simplifyBilingualLabels(map){
-  const layers = map.getStyle().layers || [];
-  layers.forEach(layer => {
-    if(layer.type !== 'symbol') return;
-    const textField = layer.layout && layer.layout['text-field'];
-    if(!textField) return;
+// The "liberty" base style has two independent layers that can both match
+// the same transit POI (bus/rail/airport stops):
+//   poi_transit (blue, #2e5a80) - filters by class in [airport, bus, rail]
+//   poi_r1 / poi_r7 / poi_r20 (grey, #666) - filter by rank only, with no
+//     class exclusion, so a bus stop that also carries a rank value gets
+//     rendered a SECOND time by whichever of these matches its rank range.
+// Normally MapLibre's collision detection would hide one of the two
+// duplicates; increaseLabelDensity() disables that (text-allow-overlap),
+// so both now render permanently, stacked. Real fix: explicitly exclude
+// transit classes from the generic rank-based layers, since poi_transit
+// already owns those - only one layer renders each site after this.
+function preventTransitPoiDuplication(map){
+  const genericPoiLayers = ['poi_r1', 'poi_r7', 'poi_r20'];
+  genericPoiLayers.forEach(layerId => {
+    const layer = map.getStyle().layers.find(l => l.id === layerId);
+    if(!layer || !layer.filter) return;
     try {
-      map.setLayoutProperty(layer.id, 'text-field', [
-        'coalesce',
-        ['get', 'name:it'],  // prefer Italian
-        ['get', 'name:de'],  // fall back to German
-        ['get', 'name']      // fall back to whatever raw name exists (may still be joined)
-      ]);
-    } catch(e) {
-      // layers whose text-field isn't a simple name reference (cluster counts,
-      // route shields, etc.) will throw here — skip them rather than break the map
-    }
+      const excludeTransit = ['!', ['match', ['get', 'class'], ['airport', 'bus', 'rail'], true, false]];
+      map.setFilter(layerId, ['all', layer.filter, excludeTransit]);
+    } catch(e) { /* layer may not exist in this style version — skip silently */ }
   });
 }
 
