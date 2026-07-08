@@ -55,6 +55,8 @@
 
   function renderAreaFilters(){
     if(window.DoloPawsRegions) window.DoloPawsRegions.assign(trails);
+    const heading = document.getElementById('trailCountHeading');
+    if(heading) heading.textContent = `All our ${trails.length} trails`;
     const regionCounts = { dolomites: 0, savoy: 0 };
     trails.forEach(t => { if(regionCounts[t.region] !== undefined) regionCounts[t.region]++; });
     const valleys = window.DoloPawsRegions ? window.DoloPawsRegions.valleysFor(trails, activeRegion) : [];
