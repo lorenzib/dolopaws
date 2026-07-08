@@ -59,8 +59,8 @@
 </div>
 
 <div class="guide-hero">
-  <div class="eyebrow">Dolomites, Italy</div>
-  <h1 style="font-size:clamp(28px,5vw,38px);margin-top:14px;">All 16 trails</h1>
+  <div class="eyebrow">Dolomites &amp; Savoy</div>
+  <h1 id="trailCountHeading" style="font-size:clamp(28px,5vw,38px);margin-top:14px;">All our trails</h1>
   <p class="sub" style="margin-top:14px;">A quick look at every trail we cover. <a href="account.html" style="color:var(--accent);font-weight:700;">Create your dog's profile</a> to see safety scores, terrain detail, and matches picked for them.</p>
 </div>
 
@@ -74,17 +74,33 @@
 <script src="trails-data.js" defer></script>
 <script src="osm-trails-data.js" defer></script>
 <script src="osm-trails-savoy-data.js" defer></script>
+<script src="regions-config.js" defer></script>
 <script src="auth-ui.js" defer></script>
 <script>
   window.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('simpleTrailsList');
     if(!list || typeof trails === 'undefined') return;
-    list.innerHTML = trails.map(t => `
+    if(window.DoloPawsRegions) window.DoloPawsRegions.assign(trails);
+
+    const heading = document.getElementById('trailCountHeading');
+    if(heading) heading.textContent = `All ${trails.length} trails`;
+
+    const card = t => `
       <div class="simple-card">
         <div class="photo"></div>
-        <div class="name">${t.name}</div>
-      </div>
-    `).join('');
+        <div class="name">${t.name}${t.curated === false ? ' <span style="font-size:10px;color:#00695c;">🗺️</span>' : ' <span style="font-size:10px;">🐾</span>'}</div>
+      </div>`;
+
+    const regions = [['dolomites','Dolomites','Italy'],['savoy','Savoy','France']];
+    list.style.display = 'block';
+    list.innerHTML = regions.map(([key, label, country]) => {
+      const rt = trails.filter(t => t.region === key);
+      if(!rt.length) return '';
+      return `
+        <div class="region-section-header">${label}</div>
+        <div class="region-section-sub">${country} · ${rt.length} trails</div>
+        <div class="simple-grid">${rt.map(card).join('')}</div>`;
+    }).join('');
   });
 </script>
 </body>

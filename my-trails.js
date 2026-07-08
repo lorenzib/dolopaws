@@ -41,7 +41,10 @@
 
   let currentProfile = null;
   let currentFavorites = {};
-  let activeArea = 'all';
+  let activeArea = 'all';            // legacy
+  let activeRegion = 'dolomites';
+  let activeValley = 'all';
+  let activeProvenance = 'all';
 
   function overridesFromProfile(profile){
     const defaults = FITNESS_DEFAULTS[profile && profile.fitness] || FITNESS_DEFAULTS.moderate;
@@ -51,14 +54,48 @@
   }
 
   function renderAreaFilters(){
-    const areas = Array.from(new Set(trails.map(t => t.area))).sort();
-    const pills = ['all', ...areas];
-    areaFilterRow.innerHTML = pills.map(a => `
-      <div class="area-pill ${a === activeArea ? 'active' : ''}" data-area="${a}">${a === 'all' ? 'All areas' : a}</div>
-    `).join('');
-    areaFilterRow.querySelectorAll('.area-pill').forEach(pill => {
+    if(window.DoloPawsRegions) window.DoloPawsRegions.assign(trails);
+    const regionCounts = { dolomites: 0, savoy: 0 };
+    trails.forEach(t => { if(regionCounts[t.region] !== undefined) regionCounts[t.region]++; });
+    const valleys = window.DoloPawsRegions ? window.DoloPawsRegions.valleysFor(trails, activeRegion) : [];
+
+    areaFilterRow.innerHTML = `
+      <div class="region-tabs">
+        ${['dolomites','savoy'].map(r => `
+          <button class="region-tab ${r === activeRegion ? 'active' : ''}" data-region="${r}">
+            ${r === 'dolomites' ? 'Dolomites' : 'Savoy'} <span class="count">${regionCounts[r]}</span>
+          </button>`).join('')}
+      </div>
+      <div class="prov-row">
+        <div class="valley-pills">
+          <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">All valleys</div>
+          ${valleys.map(([v, n]) => `
+            <div class="area-pill ${v === activeValley ? 'active' : ''}" data-valley="${v}">${v} <span class="pill-count">${n}</span></div>`).join('')}
+        </div>
+        <div class="prov-toggle">
+          ${[['all','All'],['verified','🐾 Verified'],['imported','🗺️ Imported']].map(([k, label]) => `
+            <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}">${label}</div>`).join('')}
+        </div>
+      </div>`;
+
+    areaFilterRow.querySelectorAll('.region-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        activeRegion = tab.dataset.region;
+        activeValley = 'all';
+        renderAreaFilters();
+        renderList();
+      });
+    });
+    areaFilterRow.querySelectorAll('[data-valley]').forEach(pill => {
       pill.addEventListener('click', () => {
-        activeArea = pill.dataset.area;
+        activeValley = pill.dataset.valley;
+        renderAreaFilters();
+        renderList();
+      });
+    });
+    areaFilterRow.querySelectorAll('.prov-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        activeProvenance = opt.dataset.prov;
         renderAreaFilters();
         renderList();
       });
@@ -67,7 +104,10 @@
 
   function renderList(){
     const overrides = overridesFromProfile(currentProfile);
-    const filtered = trails.filter(t => activeArea === 'all' || t.area === activeArea);
+    let filtered = trails.filter(t => t.region === activeRegion);
+    if(activeValley !== 'all') filtered = filtered.filter(t => t.valley === activeValley);
+    if(activeProvenance === 'verified') filtered = filtered.filter(t => t.curated !== false);
+    if(activeProvenance === 'imported') filtered = filtered.filter(t => t.curated === false);
     const scored = filtered.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
 
     filteredTrailsList.innerHTML = scored.map(t => {
@@ -78,6 +118,7 @@
         <div class="body">
           <div class="top-row">
             <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
+            ${t.curated !== false ? `<span style="font-size:10px;font-weight:700;color:#fff;background:#2E4034;padding:3px 8px;border-radius:10px;white-space:nowrap;">🐾 VERIFIED</span>` : `<span style="font-size:10px;font-weight:700;color:#00695c;background:#e0f2f1;padding:3px 8px;border-radius:10px;white-space:nowrap;">🗺️ IMPORTED</span>`}
             <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
               <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
               <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>

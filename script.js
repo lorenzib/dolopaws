@@ -109,7 +109,10 @@ function effectiveOverrides(profile){
 
 let guestMapInstance = null;
 let showingSavedOnly = false;
-let activeArea = 'all';
+let activeArea = 'all';            // legacy, kept for safety
+let activeRegion = 'dolomites';
+let activeValley = 'all';
+let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
 
 function createMapOverlayControls(map, containerId, allLiftMarkers){
   const container = document.getElementById(containerId);
@@ -628,15 +631,51 @@ function updateMapMarkers(list){
 function renderAreaFilters(profile){
   const row = document.getElementById('areaFilterRow');
   if(!row || typeof trails === 'undefined') return;
-  const areas = Array.from(new Set(trails.map(t => t.area))).sort();
-  const pills = ['all', ...areas];
-  row.innerHTML = pills.map(a => `
-    <div class="area-pill ${a === activeArea ? 'active' : ''}" data-area="${a}">${a === 'all' ? 'All areas' : a}</div>
-  `).join('');
-  row.querySelectorAll('.area-pill').forEach(pill => {
+  if(window.DoloPawsRegions) window.DoloPawsRegions.assign(trails);
+
+  const regionCounts = { dolomites: 0, savoy: 0 };
+  trails.forEach(t => { if(regionCounts[t.region] !== undefined) regionCounts[t.region]++; });
+
+  const valleys = window.DoloPawsRegions
+    ? window.DoloPawsRegions.valleysFor(trails, activeRegion)
+    : [];
+
+  row.innerHTML = `
+    <div class="region-tabs">
+      ${['dolomites','savoy'].map(r => `
+        <button class="region-tab ${r === activeRegion ? 'active' : ''}" data-region="${r}">
+          ${r === 'dolomites' ? 'Dolomites' : 'Savoy'} <span class="count">${regionCounts[r]}</span>
+        </button>`).join('')}
+    </div>
+    <div class="prov-row">
+      <div class="valley-pills">
+        <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">All valleys</div>
+        ${valleys.map(([v, n]) => `
+          <div class="area-pill ${v === activeValley ? 'active' : ''}" data-valley="${v}">${v} <span class="pill-count">${n}</span></div>`).join('')}
+      </div>
+      <div class="prov-toggle">
+        ${[['all','All'],['verified','🐾 Verified'],['imported','🗺️ Imported']].map(([k, label]) => `
+          <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}">${label}</div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  row.querySelectorAll('.region-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      activeRegion = tab.dataset.region;
+      activeValley = 'all'; // valleys are region-scoped
+      renderReturningHomepage(profile);
+    });
+  });
+  row.querySelectorAll('[data-valley]').forEach(pill => {
     pill.addEventListener('click', () => {
-      activeArea = pill.dataset.area;
-      renderAreaFilters(profile);
+      activeValley = pill.dataset.valley;
+      renderReturningHomepage(profile);
+    });
+  });
+  row.querySelectorAll('.prov-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      activeProvenance = opt.dataset.prov;
       renderReturningHomepage(profile);
     });
   });
@@ -678,7 +717,10 @@ async function renderReturningHomepage(profile){
   subline.innerHTML = `${baseSubline} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">Edit profile →</a>`;
 
   let displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
-  if(activeArea !== 'all') displayList = displayList.filter(t => t.area === activeArea);
+  displayList = displayList.filter(t => t.region === activeRegion);
+  if(activeValley !== 'all') displayList = displayList.filter(t => t.valley === activeValley);
+  if(activeProvenance === 'verified') displayList = displayList.filter(t => t.curated !== false);
+  if(activeProvenance === 'imported') displayList = displayList.filter(t => t.curated === false);
 
   countEl.textContent = showingSavedOnly
     ? `${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
@@ -692,11 +734,12 @@ async function renderReturningHomepage(profile){
   }
 
   if(displayList.length === 0){
-    const msg = showingSavedOnly && activeArea !== 'all'
-      ? `No saved trails in ${activeArea}. Try a different area, or go back to all trails.`
+    const label = activeValley !== 'all' ? activeValley : (activeRegion === 'savoy' ? 'Savoy' : 'the Dolomites');
+    const msg = showingSavedOnly && activeValley !== 'all'
+      ? `No saved trails in ${label}. Try a different valley, or go back to all trails.`
       : showingSavedOnly
         ? `You haven't saved any trails yet. Click "Save" on a trail below to keep it here.`
-        : `No trails in ${activeArea}. Try a different area.`;
+        : `No trails in ${label}. Try a different valley or filter.`;
     listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">${msg}</div>`;
     return;
   }
