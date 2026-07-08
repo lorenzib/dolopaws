@@ -558,6 +558,8 @@ function init(){
             '<span style="font-style:italic;">— Rifugi/water map icons need this trail\'s real GPS route, not yet added. See the list below instead.</span>');
         }
       }
+
+      if (typeof makeBasemapPoisClickable === 'function') makeBasemapPoisClickable(map);
     });
   }
 

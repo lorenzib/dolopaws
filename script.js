@@ -298,6 +298,7 @@ function initGuestMap(){
     preventTransitPoiDuplication(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
     renderGondolas(guestMapInstance, 'guest-gondolas');
+    if (typeof makeBasemapPoisClickable === 'function') makeBasemapPoisClickable(guestMapInstance);
     // Real route lines for any trail that has one — same data the logged-in map uses.
     const pathFeatures = trails
       .filter(t => Array.isArray(t.path) && t.path.length > 1)
@@ -425,6 +426,8 @@ function initTrailMap(){
     // Initialize mountain huts & bars from combined GeoJSON (Trentino, Veneto, Savoy)
     initializeHutsBars(trailMapInstance);
     
+    if (typeof makeBasemapPoisClickable === 'function') makeBasemapPoisClickable(trailMapInstance);
+
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
   });
@@ -1189,6 +1192,10 @@ function initializeHutsBars(map) {
       const bars = features.filter(f => !isHut(f.properties));
 
       console.log(`✅ Loaded ${huts.length} mountain huts and ${bars.length} bars/cafés (Trentino, Veneto, Savoy)`);
+
+      // Register with basemap-poi-click.js so clicks on the base map's own
+      // icons can be enriched with these richer OSM tags (Tier 2).
+      if (typeof registerPoiFeatures === 'function') registerPoiFeatures([...huts, ...bars]);
 
       map.addSource('mountain-huts', {
         type: 'geojson',
