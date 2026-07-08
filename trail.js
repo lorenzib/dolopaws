@@ -253,6 +253,24 @@ function init(){
   document.getElementById('trailDesc').textContent = t.desc || '';
   document.getElementById('trailTips').textContent = t.tips ? `Tip: ${t.tips}` : '';
 
+  // Provenance banner: imported (OSM) vs verified (curated) trails.
+  (function () {
+    const descEl = document.getElementById('trailDesc');
+    if (!descEl || document.getElementById('osmProvenance')) return;
+    const box = document.createElement('div');
+    box.id = 'osmProvenance';
+    if (t.curated === false) {
+      box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #00897b;background:#e0f2f1;border-radius:6px;font-size:13px;line-height:1.5;';
+      box.innerHTML = '🗺️ <strong>Imported trail</strong> — route, elevation, fountains and rifugi come from verified map data, '
+        + 'but DoloPaws hasn\'t field-reviewed this trail yet.'
+        + (t.waymarkedtrails ? ` <a href="${t.waymarkedtrails}" target="_blank" rel="noopener">View source route on Waymarked Trails ↗</a>` : '');
+    } else {
+      box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #2E4034;background:#eef3ef;border-radius:6px;font-size:13px;line-height:1.5;';
+      box.innerHTML = '🐾 <strong>Verified by DoloPaws</strong> — route, terrain, water points and dog-specific details individually checked against independent sources.';
+    }
+    descEl.parentNode.insertBefore(box, descEl);
+  })();
+
   // Coordinates — shown in plain decimal-degree format, matching how most
   // real trail sites display a trailhead location.
   const coordSource = t.startPoint || t;

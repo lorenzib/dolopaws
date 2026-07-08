@@ -416,6 +416,9 @@ function initTrailMap(){
     // Initialize water sources from combined GeoJSON (Trentino, Veneto, Savoy)
     initializeWaterSources(trailMapInstance);
 
+    // Initialize dog-friendly OSM routes from generated GeoJSON
+    if (typeof initializeDogRoutes === 'function') initializeDogRoutes(trailMapInstance);
+
     // Initialize mountain huts & bars from combined GeoJSON (Trentino, Veneto, Savoy)
     initializeHutsBars(trailMapInstance);
     
@@ -708,6 +711,7 @@ async function renderReturningHomepage(profile){
       <div class="body">
         <div class="top-row">
           <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
+          ${t.curated !== false ? `<span style="font-size:10px;font-weight:700;color:#fff;background:#2E4034;padding:3px 8px;border-radius:10px;white-space:nowrap;">🐾 VERIFIED BY DOLOPAWS</span>` : `<span style="font-size:10px;font-weight:700;color:#00695c;background:#e0f2f1;padding:3px 8px;border-radius:10px;white-space:nowrap;">🗺️ IMPORTED</span>`}
           ${isNew ? `<span style="font-size:10px;font-weight:700;color:#fff;background:var(--accent);padding:3px 8px;border-radius:10px;">NEW MATCH</span>` : ''}
           <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
             <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
