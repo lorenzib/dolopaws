@@ -299,6 +299,7 @@
     "id": 1616473,
     "name": "Sentiero C.A.I. 554",
     "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
       "not a loop (loops-only mode)"
     ]
   },
@@ -522,13 +523,6 @@
   {
     "id": 2172730,
     "name": "Katzenleiter",
-    "reasons": [
-      "not a loop (loops-only mode)"
-    ]
-  },
-  {
-    "id": 2172732,
-    "name": "Ora Auer - Castelfeder - Pinzon Pinzano",
     "reasons": [
       "not a loop (loops-only mode)"
     ]
@@ -4823,13 +4817,6 @@
     ]
   },
   {
-    "id": 12026319,
-    "name": "Alpine Pearls",
-    "reasons": [
-      "contains T3+/ferrata/ladder/dog=no way"
-    ]
-  },
-  {
     "id": 12028431,
     "name": "Schulsteig",
     "reasons": [
@@ -6604,6 +6591,13 @@
     ]
   },
   {
+    "id": 16133891,
+    "name": "Dolomites World Heritage Geotrail",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
     "id": 16148539,
     "name": "Dolomites World Heritage Geotrail 7",
     "reasons": [
@@ -6968,6 +6962,7 @@
     "id": 16946669,
     "name": "TransLagorai - Tappa 2",
     "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
       "not a loop (loops-only mode)"
     ]
   },
@@ -7077,6 +7072,7 @@
     "id": 17187700,
     "name": "Alta Via del Porfido - Tappa 2",
     "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
       "not a loop (loops-only mode)"
     ]
   },

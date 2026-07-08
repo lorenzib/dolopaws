@@ -1,0 +1,2525 @@
+[
+  {
+    "id": 302332,
+    "name": "Tour de la Vallée du Trient",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 65.7 km > 12 km"
+    ]
+  },
+  {
+    "id": 377905,
+    "name": "GR 55 La Vanoise",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1214663,
+    "name": "Grand Cara - Carra (F)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1214665,
+    "name": "Les Bois d'Ornaz - Juvigny",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1214668,
+    "name": "Monniaz - Les Arales",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1214671,
+    "name": "Prés de Villette - Les Arales",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1215089,
+    "name": "Gy - Les Longerayes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1215161,
+    "name": "Chevrens - Les Lombards",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1215193,
+    "name": "Hermance - Les Lombards (F)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1230526,
+    "name": "Sierne Veyrier - Veyrier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 1946360,
+    "name": "Chemin d'Assise, Cluny - Montcenis",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2206298,
+    "name": "Circuit Historique",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2365423,
+    "name": "Au fil de l'eau",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2535650,
+    "name": "Traversée de la Chartreuse",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 88 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2572951,
+    "name": "Sentier des Gardes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2598922,
+    "name": "Tour du Beaufortain",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 2795159,
+    "name": "Boucle du Parmelan",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3124617,
+    "name": "Les Bords de Dranse",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3817498,
+    "name": "Tour de Chartreuse",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 110 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3854933,
+    "name": "Via Francigena - Variante Moncenisio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 3869710,
+    "name": "Rochebrune - Mègeve",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4099117,
+    "name": "Via Alpina Red R119",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4099118,
+    "name": "Via Alpina Red R120",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4203545,
+    "name": "Via Alpina Red R121",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4203743,
+    "name": "Via Alpina Red R122",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4203744,
+    "name": "Via Alpina Red R123",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4208989,
+    "name": "Via Alpina Red R124",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4208990,
+    "name": "Via Alpina Red R125",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 4638958,
+    "name": "Sentier des 2000",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5327648,
+    "name": "Chalet des Pyramides",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5329763,
+    "name": "Plan de l'Aiguille - Montenvers",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5330270,
+    "name": "Rocher des Mottets - Montenvers",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5330336,
+    "name": "Chalet du Chapeau",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5330417,
+    "name": "Refuge Albert Ier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5332521,
+    "name": "Lacs Noirs",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 5332686,
+    "name": "Col de Tricot",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5334628,
+    "name": "Mont Buet",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5369302,
+    "name": "Sulle strade dei valdesi: GRV Glorioso Rimpatrio dei Valdesi",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 325 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5370109,
+    "name": "Chalet de Loriaz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5370153,
+    "name": "Lac Cornu",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5370328,
+    "name": "Aiguille Croche",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5450507,
+    "name": "Tour des Portes du Soleil",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5468661,
+    "name": "Sentier botanique la flore aux Tindérêts",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5578954,
+    "name": "L'échappée Verte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 5689610,
+    "name": "Sur les traces d'Hannibal / Sulle tracce di Annibale",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6197308,
+    "name": "GR 96",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6376616,
+    "name": "Promenade lacustre",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 6517771,
+    "name": "Massif de Tournette-Aravis",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 6524929,
+    "name": "Tour des Dents Blanches",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 44.4 km > 12 km"
+    ]
+  },
+  {
+    "id": 6925616,
+    "name": "La Bourgeoise",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 7411016,
+    "name": "Chemin du Foron",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8482578,
+    "name": "Boucle de Rocafort",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 8910836,
+    "name": "Dent d'Oche",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9678267,
+    "name": "Tour Du Mont Blanc - Variante du Col de Tricot",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9678296,
+    "name": "Tour Du Mont Blanc - Variante du Col des Fours",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9678362,
+    "name": "Tour du Mont Blanc - Itinéraire principal",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 9678501,
+    "name": "Tour du Mont Blanc - Variante du Tour",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9678726,
+    "name": "Tour Du Mont Blanc - Variante de Vallorcine",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9934052,
+    "name": "Route Balcon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9935377,
+    "name": "Boucle de Roche de Mio",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9936472,
+    "name": "Boucle du Carroley",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9936779,
+    "name": "Les Frasses",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 9957802,
+    "name": "GR 5 Variante La Plantaz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10116379,
+    "name": "Combe d'Ablon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10116381,
+    "name": "Sentier Tom Morel",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 10509563,
+    "name": "Sentier du Pichut",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11291087,
+    "name": "Le Monolithe",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11292407,
+    "name": "Boucle du Lac Blanc",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11292562,
+    "name": "Vallon de l'Orgère",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11292611,
+    "name": "Le Lac du Génépy",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11292833,
+    "name": "Sentier Balcon de la Turra à la Loza",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11333277,
+    "name": "Chemin des Vignes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11376368,
+    "name": "Tour du Mont Thabor",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11376369,
+    "name": "Tour du Mont Thabor Variante",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11624687,
+    "name": "Sentier de l'Ultimatum",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11624688,
+    "name": "Sentier de l'Escarmouche",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11624689,
+    "name": "Sentier des Espagnols",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11624690,
+    "name": "Sentier du Dernier Assault",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11624691,
+    "name": "Sentier de l'Attaque",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11654906,
+    "name": "GR 5 Alpes Côte d'Azur Variant Canal des Chapelles",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11751892,
+    "name": "S03 - Les gorges du ruisseau de la Ravoire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11751893,
+    "name": "S01 - De Montvernier vers Saint-Avre",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11999801,
+    "name": "La Haute Traversée de Belledonne - Etape 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 11999979,
+    "name": "La Haute Traversée de Belledonne - Etape 2",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12000627,
+    "name": "La Haute Traversée de Belledonne - Etape 3",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12118142,
+    "name": "B03 - Le Grand Coin",
+    "reasons": [
+      "distance 14.3 km > 12 km"
+    ]
+  },
+  {
+    "id": 12119140,
+    "name": "EN03 - Les hauts de Saint-Jean-de-Maurienne",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 12119210,
+    "name": "EN05 - Les Resses d'en bas",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 12121201,
+    "name": "B12 - Les Ardoisiers",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 12124560,
+    "name": "L01 - De l'adret à l'ubac via Pontamafrey",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12124990,
+    "name": "Col de la Vallée Étroite - ?",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12125402,
+    "name": "S04 - Du Praz à Montvernier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12128210,
+    "name": "L02 - Du Ventour à la tour de la Maison de Savoie",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12128961,
+    "name": "S02 - Du col du Chaussy vers Fontaine Froide",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12129400,
+    "name": "S08 - Du chalet de l'Alpettaz au chalet des Brunes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12129601,
+    "name": "S15 - De Serpolière vers Saint-Martin-de-la-Porte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12136119,
+    "name": "Via Alpina Blue D34",
+    "reasons": [
+      "distance 18.4 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12136576,
+    "name": "Via Alpina Blue D35",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12155397,
+    "name": "S14 - De Montdenis à Tourmentier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12155439,
+    "name": "S13 - Chemin des Crêtes",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12155744,
+    "name": "S09 - De Champessuit au Col du Châtelard",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12155815,
+    "name": "S07 - Des Grangettes à Saint-Jacques",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12155836,
+    "name": "S06 - Du Châtel au col de la Baisse via Montberanger",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12156031,
+    "name": "S18 - Boucle du Mont l'Évêque – De Saint-Jean-de-Maurienne vers Albiez-le-Jeune",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12156216,
+    "name": "L06 - Boucle du Mont l'Évêque - Traversée de Saint-Jean-de-Maurienne",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12156283,
+    "name": "L03 - Traversée de Villargondran",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12156467,
+    "name": "S17 - Boucle du Mont l'Évêque - De Villargondran vers Albiez-le-Jeune",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12157313,
+    "name": "S05 - Traversée d'Hermillon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12158083,
+    "name": "S11 - De l’Echaillon à Montandré",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12158337,
+    "name": "S10 - De Saint-Jean-de-Maurienne à Jarrier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12159394,
+    "name": "L04 - De l'OTi à l'Echaillon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12159760,
+    "name": "L07 - De l'OTi vers la Combe des Moulins",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12163021,
+    "name": "L05 - De l'OTi vers Villargondran",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12163296,
+    "name": "L08 - De l'OTi vers Bonne Nouvelle",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12163373,
+    "name": "S12 - De Grenis à Montdenis",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12163430,
+    "name": "B10 - Lancheton",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 12163580,
+    "name": "S16 - De Saint-Jean-de-Maurienne vers Villargondran",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12166828,
+    "name": "L09 - Traversée de Saint-Julien-Montdenis",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12254934,
+    "name": "Lac Blanc - Crête de la Ponsonnière",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12254935,
+    "name": "Crête de la Ponsonnière - Col de la Ponsonnière",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12255261,
+    "name": "Seuil des Rochilles - Lac Rond",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12261601,
+    "name": "Boucle du Cavard",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12356390,
+    "name": "Col de la Chapelle - Pied du Désert",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12371786,
+    "name": "Col de Névache - ?",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12431795,
+    "name": "La Tournette",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12431837,
+    "name": "Boucle du Chaos du Chéran",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12717797,
+    "name": "Randonnée vers la Chapelle Sainte-Anne",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 12718917,
+    "name": "Sentier de la Forêt d'Erica",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13069200,
+    "name": "Sentier de la Forêt",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13094951,
+    "name": "Parcours Santé et Découverte Chevenne",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13094979,
+    "name": "Les Chalets du Mouet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13095235,
+    "name": "Le Linleu par les quatre cols",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13095396,
+    "name": "Boucle des Thoules au lac d'Arvouin",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13096331,
+    "name": "Chalet de la Raille par la Plagne",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13096372,
+    "name": "Tour du Mont Chauffé",
+    "reasons": [
+      "distance 15 km > 12 km"
+    ]
+  },
+  {
+    "id": 13098375,
+    "name": "Montée au Roc de Tavaneuse",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13126456,
+    "name": "GR 5 Variante Modane Gare",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13276921,
+    "name": "Tour du Mont de Grange",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 13277011,
+    "name": "Tour du Mont Brion",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13337922,
+    "name": "Le Môle depuis La Tour",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13338071,
+    "name": "Les Cornettes de Bise depuis le refuge de Bise",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 13501862,
+    "name": "Chemin pastoral des Inversaires",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13607060,
+    "name": "La Fonderie - Col de la Vallée Étroite",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13607479,
+    "name": "Lac du Peyron - Col de la Vallée Étroite",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13668305,
+    "name": "Sur les pas des Huguenots en France",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13668383,
+    "name": "Sur les pas des Huguenots",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 13736342,
+    "name": "Sentier raquettes Les Sources",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14353041,
+    "name": "1/2 KV de la Toussuire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14375893,
+    "name": "Pain de Sucre grande boucle",
+    "reasons": [
+      "distance 13 km > 12 km"
+    ]
+  },
+  {
+    "id": 14378489,
+    "name": "Descente Lac",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14381785,
+    "name": "Descente station",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14381961,
+    "name": "Col des Têtes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14401986,
+    "name": "Albannette grande boucle",
+    "reasons": [
+      "distance 14 km > 12 km"
+    ]
+  },
+  {
+    "id": 14509359,
+    "name": "GaB_TMB_S01",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14521011,
+    "name": "43-Chemin des cols alpins",
+    "reasons": [
+      "distance 16 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14670059,
+    "name": "Safari des animaux",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14702532,
+    "name": "Sentier découverte du Blanchon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14744910,
+    "name": "Les Balcons de Saint-Maurice-de-Rotherens",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14891036,
+    "name": "Boucle du Mont Vouan",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14901433,
+    "name": "Sentier géologique de la grotte d'Orjobet",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14903949,
+    "name": "Liason Boissey - Sentier géologique",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14904318,
+    "name": "Balcon du Téléphérique",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14904556,
+    "name": "Balcon des Crêts",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14905129,
+    "name": "Pierre-Vieille",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14922494,
+    "name": "Du Château de Chaumont à Vovray",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14948920,
+    "name": "Les Rives Sauvages du Rhône",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14954554,
+    "name": "Balcon des Allobroges",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14957309,
+    "name": "Le Pas de l'Echelle",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14957404,
+    "name": "Chemin du Funiculaire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14957900,
+    "name": "Sentier de la Joie",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14960981,
+    "name": "Les Pitons par l'alpage de Chavanne",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14961182,
+    "name": "Le Grand Piton, point culminant du Salève",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14961909,
+    "name": "Découverte panoramique de l'alpage du Plan",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14965141,
+    "name": "Entre alpages et forêts",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14965343,
+    "name": "Alpage de l'Iselet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14965460,
+    "name": "Balcon des Sons",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14980808,
+    "name": "Paysages Franco-Suisses",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 14983774,
+    "name": "Boucle sur la colline",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15003659,
+    "name": "Via Romana",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15005324,
+    "name": "Une boucle à saute frontière",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15005477,
+    "name": "Paysages et récoltes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15006233,
+    "name": "Sentier des Morennes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15101605,
+    "name": "Tour de la Coche - n°37",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15262316,
+    "name": "Tour du Golf",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15268878,
+    "name": "A la découverte du Plateau des Bornes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15269033,
+    "name": "Sentier des lacs",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15269074,
+    "name": "BSM <> Arc 1600 par Courbaton",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15269720,
+    "name": "BSM <> Arc 1600 par Plan Devin",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15269817,
+    "name": "K2 - Landry Aiguille Grive",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 12.7 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15269844,
+    "name": "La Croix de Colomban",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15269936,
+    "name": "Mont Gerbet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15284338,
+    "name": "Boucle des Vignes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15284514,
+    "name": "Boucle de Miage",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15297405,
+    "name": "La Chapelle de Ligny",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15297548,
+    "name": "Boucle de Pralère",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15311376,
+    "name": "Col d'Aussois",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15315698,
+    "name": "Boucle des Carriers",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15401749,
+    "name": "Littoral du Léman",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15409470,
+    "name": "Littoral du Léman",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15452202,
+    "name": "L'Agriculture en Pays de Seyssel",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15511830,
+    "name": "Tour du Mont Peney",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 15513056,
+    "name": "Grand Tour du Lachat",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15515244,
+    "name": "Sentier Thématique du Capitaine Anjot",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15517123,
+    "name": "Circuit du Lachat",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15519570,
+    "name": "Circuit du Nant du Sappey",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15519992,
+    "name": "Circuit de la Têtaz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15520221,
+    "name": "Circuit de la Buffaz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15523007,
+    "name": "Boucle du Mont Veyrier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15524579,
+    "name": "Les Tours Saint-Jacques",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15524646,
+    "name": "Le Balcon du Semnoz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 15524736,
+    "name": "Montagne du Charbon depuis Montgellaz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15538993,
+    "name": "Boucle des Bochettes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15542625,
+    "name": "Le Roc de Nantbellet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15543220,
+    "name": "Les Hameaux de Montmin",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15543806,
+    "name": "Montagne du Lachat",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15545863,
+    "name": "Circuit des Murailles",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15575610,
+    "name": "Tour de l'Adran",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15578384,
+    "name": "Tour de la Tulle",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15578489,
+    "name": "Porte des Aravis par la Combe Creuse",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15578937,
+    "name": "Le Refuge de la Bombardellaz par le Lac de Tardevant",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15581109,
+    "name": "Tour du Roc des Tours et Lac de Lessy",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15594624,
+    "name": "Lac de Lessy par Paradis",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15602644,
+    "name": "La Boucle des Rochers de Leschaux",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15606287,
+    "name": "Boucle Touvière-Caronière",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15608044,
+    "name": "Les Vuardes et alpage de Vormy",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15634204,
+    "name": "L'Aiguille Percée",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15652608,
+    "name": "Tour du Mont Lachat de Châtillon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15652769,
+    "name": "Sentier du Gypaète",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15652863,
+    "name": "Boucle des Bénés",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15665872,
+    "name": "Boucle des Alpages",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15667036,
+    "name": "Tour de l'Arbaron",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15669050,
+    "name": "Boucle l'alpage et son histoire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15676096,
+    "name": "Les alpages du Lachat d'en Haut",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 15676685,
+    "name": "Boucle des Balcons d'Assy",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15681824,
+    "name": "Boucle de Pormenaz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15685469,
+    "name": "Aiguillette des Houches",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 15927441,
+    "name": "Sentier des Cascades",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16065682,
+    "name": "Grande Traversée des Alpes - variante Montchavin (ancien tracé principal)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16077747,
+    "name": "Petit Balcon Sud",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16077761,
+    "name": "Grand Balcon Sud",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16085062,
+    "name": "Chemin du Montenvers",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16234309,
+    "name": "Variante GR Balcon du Léman",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16243844,
+    "name": "Les Forts de l'Esseillon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16322464,
+    "name": "Grande cascade de la Doria",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 16322563,
+    "name": "Croix du Nivolet depuis Lovettaz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 16322583,
+    "name": "Croix du Nivolet depuis le Sire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16322636,
+    "name": "L'alpage et le Col d'Orgeval",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16363589,
+    "name": "Les Chalets de la Fullie",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16363972,
+    "name": "Mont Julioz",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16365057,
+    "name": "Pointe de Chaurionde",
+    "reasons": [
+      "distance 14.8 km > 12 km"
+    ]
+  },
+  {
+    "id": 16387514,
+    "name": "La Dent du Chat depuis le Col du Chat",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16388118,
+    "name": "Le sommet du Mont Granier",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 16395403,
+    "name": "Mont Trélod",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16502889,
+    "name": "Tour des Aiguilles d'Arves (étape 6)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16527401,
+    "name": "Tour des Aiguilles d'Arves (étape 7)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16527940,
+    "name": "Tour des Aiguilles d'Arves (étape 1)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16527958,
+    "name": "Tour des Aiguilles d'Arves (étape 2)",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16528056,
+    "name": "Tour des Aiguilles d'Arves (étape 3)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16528099,
+    "name": "Tour des Aiguilles d'Arves (étape 5)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 16528130,
+    "name": "Tour du Pays des Aiguilles d'Arves (variante)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17423929,
+    "name": "Pic du Marcelly",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 17812719,
+    "name": "Chemin de Pierre Grosse",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17871672,
+    "name": "Grand Tour de Tarentaise 1. La Léchère -> La Coire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17871882,
+    "name": "Grand Tour de Tarentaise 2. La Coire -> Refuge de Presset",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17871893,
+    "name": "Grand Tour de Tarentaise 3. Refuge de Presset -> Les Chapieux",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17873103,
+    "name": "Grand Tour de Tarentaise - Traversée Les Chapieux -> Col du Petit Saint-Bernard",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17876649,
+    "name": "Grand Tour de Tarentaise - 1. Traversée du col du Petit-Saint-Bernard -> L'Archeboc",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17876766,
+    "name": "Grand Tour de Tarentaise - 2. Refuge de l'Archeboc -> Le Monal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17877185,
+    "name": "Grand Tour de Tarentaise - 3. Le Monal -> Le Villaret du Nial",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17877230,
+    "name": "Grand Tour de Tarentaise - 4. Le Villaret du Nial -> Val d'Isère",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17877712,
+    "name": "Grand Tour de Tarentaise - 1. Val d'Isère -> Col du Palet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17877713,
+    "name": "Grand Tour de Tarentaise - Traversée de la Vanoise de refuge en refuge",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17880049,
+    "name": "Grand Tour de Tarentaise - 2. Refuge du Col du Palet -> Champagny-le-Haut",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17926590,
+    "name": "Trail du Galibier de repli 2024",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 50.5 km > 12 km"
+    ]
+  },
+  {
+    "id": 17941502,
+    "name": "Boucle du Replat",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 17953238,
+    "name": "Notre-Dame des Vernettes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 18007521,
+    "name": "Lac de Pormenaz par la Chorde",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 18357192,
+    "name": "Chemin de la Pomme",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19074152,
+    "name": "Col de Valmeinier - Col des Muandes",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19074153,
+    "name": "Col de Valmeinier - Col de la Chapelle",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19095414,
+    "name": "Cirque des Fonts",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way"
+    ]
+  },
+  {
+    "id": 19190881,
+    "name": "Circuit des Euphorbes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19234896,
+    "name": "Villa Gallo Romaine",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19291040,
+    "name": "Promenons-nous... dans la forêt de Tal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19292086,
+    "name": "À la découverte de Mercury",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19317161,
+    "name": "Forêt de Mercury",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19317238,
+    "name": "À l'assaut du fort de Tamié",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19349009,
+    "name": "Mont de Grésy",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19349037,
+    "name": "Étang de Grésy",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19349083,
+    "name": "Saint-Vital à Cléry",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19351578,
+    "name": "Chemin de Szombathely, Col du Petit Saint-Bernard - Moûtiers",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19351611,
+    "name": "De Saint-Vital à Frontenex",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19358512,
+    "name": "Parcours découverte Chef-lieu de Tournon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19358589,
+    "name": "La Tourmotte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19360813,
+    "name": "Pointe de la Fougère",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19360910,
+    "name": "Tour du Grand Roc",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19372965,
+    "name": "Col du Haut du Four",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19373365,
+    "name": "Tour de Verrens",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19424979,
+    "name": "Littoral du Léman",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19427625,
+    "name": "Littoral du Léman",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19449357,
+    "name": "Chemin des Villages",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19453097,
+    "name": "Lac de Pormenaz",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19456213,
+    "name": "La Thuile",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19456214,
+    "name": "La Belle Étoile (aller-retour)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19456215,
+    "name": "La Belle Étoile (boucle)",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19456216,
+    "name": "Vallon de Tamié",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457245,
+    "name": "Entre Grignon et Monthion",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457246,
+    "name": "Randonnée en forêt sur les hauteurs de Grignon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457247,
+    "name": "Forêt de Rhonne",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457248,
+    "name": "L'Oratoire",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457249,
+    "name": "Forêt du Rhonne version courte",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457250,
+    "name": "Itinérance : La Roche Pourrie",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19457251,
+    "name": "Blockhaus du Laitelet",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19467193,
+    "name": "Trail du Galibier",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 53.3 km > 12 km"
+    ]
+  },
+  {
+    "id": 19517021,
+    "name": "Sentier de l'Homme Cairn",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19520900,
+    "name": "Le Col de Martignare et la Crête de la Buffe",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "distance 20 km > 12 km"
+    ]
+  },
+  {
+    "id": 19531869,
+    "name": "La Combe - La Flachère",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19531934,
+    "name": "Plan des Queux",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19531936,
+    "name": "La Gittaz - Le Daillait",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19536683,
+    "name": "Sentier des Monts du Fût",
+    "reasons": [
+      "distance 13 km > 12 km"
+    ]
+  },
+  {
+    "id": 19536725,
+    "name": "Sentier balcon du Nielard",
+    "reasons": [
+      "distance 14.5 km > 12 km"
+    ]
+  },
+  {
+    "id": 19538533,
+    "name": "Cheval Noir",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19540860,
+    "name": "Sentier du col du Bonnet du Prêtre",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19540878,
+    "name": "Lac de la Montagnette",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19541185,
+    "name": "Mont de la Chambre au départ des Ménuires",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19541238,
+    "name": "Val Thorens - Les Ménuires",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19541548,
+    "name": "Col de la Vallée Étroite",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19542465,
+    "name": "Sentier Balcon de la Masse",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19542489,
+    "name": "Sentier Balcon du Lou",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19547702,
+    "name": "Tour de Césarches",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19547703,
+    "name": "Château de Cornillon",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19547705,
+    "name": "Les Côteaux du Tal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19548660,
+    "name": "Forêt du Tal",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19550126,
+    "name": "Mont de la Chambre au départ de Val Thorens",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19550138,
+    "name": "Le Sentier Balcon",
+    "reasons": [
+      "distance 12.5 km > 12 km",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19550277,
+    "name": "Tougnète 1",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19581858,
+    "name": "Chapelle Saint-Clément",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19581859,
+    "name": "Fort du Mont",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19735011,
+    "name": "Chemin de la Poterne des Vignes",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19735012,
+    "name": "À l'assaut du Fort du Mont",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 19856890,
+    "name": "Col de la Madeleine",
+    "reasons": [
+      "distance 17.1 km > 12 km"
+    ]
+  },
+  {
+    "id": 20085742,
+    "name": "Ancien projet de tracé de la N202",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20254527,
+    "name": "Trail 6",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20269020,
+    "name": "Désouverte du vallon de Plan du Lai, montée a la Croix de Rognier",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20269028,
+    "name": "Traversée de Cuchet à Lescherette par col des Veaux",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20269030,
+    "name": "Découverte du vallon de la Pierre et de la Valette",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20282786,
+    "name": "Sentier de Cyprien",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20336143,
+    "name": "Chemin de Szombathely, Moûtiers - Pontcharra",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20336332,
+    "name": "KV de Manigod",
+    "reasons": [
+      "not a loop (loops-only mode)"
+    ]
+  },
+  {
+    "id": 20339747,
+    "name": "Chemin de Szombathely, Pontcharra - Saint-Pierre de Paladru",
+    "reasons": [
+      "contains T3+/ferrata/ladder/dog=no way",
+      "not a loop (loops-only mode)"
+    ]
+  }
+]
