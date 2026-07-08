@@ -38,26 +38,49 @@ const OVERPASS_URLS = process.env.OVERPASS_URL
 // Overpass etiquette: identify the app so requests aren't treated as anonymous bots.
 const USER_AGENT = 'DoloPaws-trail-fetcher/1.0 (+https://dolopaws.com)';
 
-const OUTPUT_PATH = path.resolve(__dirname, '..', 'dog-friendly-routes.geojson');
-const OVERRIDES_PATH = path.resolve(__dirname, '..', 'data', 'dog-route-overrides.json');
+// Same named-area + admin-level approach for every region. NOTE the admin
+// levels differ by country: Italian regions are admin_level=4, French
+// departments are admin_level=6.
+const REGIONS = {
+  dolomites: {
+    label: 'Dolomites',
+    adminLevel: 4,
+    isoRegex: '^(IT-32|IT-34)$',                 // Trentino-Alto Adige, Veneto
+    bbox: '46.15,11.0,46.85,12.55',              // Bolzano/Bressanone -> Belluno
+    routesFile: 'dog-friendly-routes.geojson',
+    accessFile: path.join('data', 'access-points.geojson'),
+    reviewFile: path.join('data', 'dog-route-review.json')
+  },
+  savoy: {
+    label: 'Savoy (Savoie + Haute-Savoie)',
+    adminLevel: 6,
+    isoRegex: '^(FR-73|FR-74)$',                 // Savoie, Haute-Savoie
+    bbox: '45.00,5.60,46.45,7.10',               // Maurienne -> Lake Geneva -> Mont Blanc
+    routesFile: 'dog-friendly-routes-savoy.geojson',
+    accessFile: path.join('data', 'access-points-savoy.geojson'),
+    reviewFile: path.join('data', 'dog-route-review-savoy.json')
+  }
+};
 
-// Same named-area + admin_level approach that already works for the water queries.
-// Trentino-Alto Adige (IT-32) and Veneto (IT-34) cover the Dolomites proper;
-// add IT-25 (Lombardia) / IT-36 (Friuli) here if you want wider coverage.
-const REGION_ISO_REGEX = '^(IT-32|IT-34)$';
+const ARGS = process.argv.slice(2);
+const REGION_KEY = strArg('--region', 'dolomites');
+const REGION = REGIONS[REGION_KEY];
+if (!REGION) {
+  console.error(`Unknown --region "${REGION_KEY}". Available: ${Object.keys(REGIONS).join(', ')}`);
+  process.exit(1);
+}
+
+const OUTPUT_PATH = path.resolve(__dirname, '..', REGION.routesFile);
+const OVERRIDES_PATH = path.resolve(__dirname, '..', 'data', 'dog-route-overrides.json'); // shared: OSM relation ids are globally unique
 
 // sac_scale values considered NOT dog friendly (T3 and above)
 const HARD_SAC = '^(demanding_mountain_hiking|alpine_hiking|demanding_alpine_hiking|difficult_alpine_hiking)$';
 
-const ARGS = process.argv.slice(2);
 const MAX_KM = numArg('--max-km', 20);        // routes longer than this are dropped
 const LOOPS_ONLY = ARGS.includes('--loops-only');
-const DOLOMITES_ONLY = ARGS.includes('--dolomites-only');
+// --bbox-only restricts to the region's mountain bbox (--dolomites-only kept as alias)
+const BBOX_ONLY = ARGS.includes('--bbox-only') || ARGS.includes('--dolomites-only');
 const LOOP_CLOSE_METERS = 300;                 // start/end closer than this => loop
-
-// Rough bounding box of the Dolomites proper (south,west,north,east):
-// from Bolzano/Bressanone in the NW down to Belluno in the SE.
-const DOLOMITES_BBOX = '46.15,11.0,46.85,12.55';
 
 function numArg(flag, fallback) {
   const i = ARGS.indexOf(flag);
@@ -66,13 +89,19 @@ function numArg(flag, fallback) {
   return Number.isFinite(v) ? v : fallback;
 }
 
+function strArg(flag, fallback) {
+  const i = ARGS.indexOf(flag);
+  if (i === -1 || i === ARGS.length - 1) return fallback;
+  return ARGS[i + 1];
+}
+
 /* ---------------------------------------------------------------- Overpass */
 
 function buildPhase1Query() {
-  const bbox = DOLOMITES_ONLY ? `(${DOLOMITES_BBOX})` : '';
+  const bbox = BBOX_ONLY ? `(${REGION.bbox})` : '';
   return [
     '[out:json][timeout:180];',
-    `area["boundary"="administrative"]["admin_level"="4"]["ISO3166-2"~"${REGION_ISO_REGEX}"]->.regions;`,
+    `area["boundary"="administrative"]["admin_level"="${REGION.adminLevel}"]["ISO3166-2"~"${REGION.isoRegex}"]->.regions;`,
     `relation(area.regions)${bbox}["type"="route"]["route"~"^(hiking|foot)$"]["name"]->.routes;`,
     '.routes out tags;',
     // Member ways that make a route unsuitable for dogs:
@@ -113,13 +142,13 @@ function buildWayTagsQuery(relationIds) {
 function buildAccessPointsQuery() {
   return [
     '[out:json][timeout:300];',
-    `node["amenity"="parking"](${DOLOMITES_BBOX});`,
+    `node["amenity"="parking"](${REGION.bbox});`,
     'out center tags;',
-    `way["amenity"="parking"](${DOLOMITES_BBOX});`,
+    `way["amenity"="parking"](${REGION.bbox});`,
     'out center tags;',
-    `node["aerialway"="station"](${DOLOMITES_BBOX});`,
+    `node["aerialway"="station"](${REGION.bbox});`,
     'out center tags;',
-    `node["highway"="bus_stop"](${DOLOMITES_BBOX});`,
+    `node["highway"="bus_stop"](${REGION.bbox});`,
     'out center tags;'
   ].join('\n');
 }
@@ -459,7 +488,7 @@ async function main() {
         };
       })
       .filter(Boolean);
-    const apPath = path.resolve(__dirname, '..', 'data', 'access-points.geojson');
+    const apPath = path.resolve(__dirname, '..', REGION.accessFile);
     await fs.writeFile(apPath, JSON.stringify({
       type: 'FeatureCollection',
       generatedAt: new Date().toISOString(),
@@ -472,7 +501,7 @@ async function main() {
   }
 
   // Review file so rejects can be rescued via the overrides file.
-  const reviewPath = path.resolve(__dirname, '..', 'data', 'dog-route-review.json');
+  const reviewPath = path.resolve(__dirname, '..', REGION.reviewFile);
   await fs.writeFile(reviewPath, JSON.stringify(rejected, null, 2));
   console.log(`[done] Rejection reasons -> ${reviewPath} (rescue any via dog-route-overrides.json)`);
 }
