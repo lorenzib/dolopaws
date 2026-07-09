@@ -9,8 +9,9 @@
   --card:#FFFFFF;
   --ink:#2E4034;
   --ink-soft:#6B7A6E;
-  --accent:#D6A038;
-  --accent-hover:#C08F2E;
+  --accent:#3E7A91;        /* deep glacier — text links, borders, buttons with white text */
+  --accent-hover:#33667A;
+  --accent-light:#6FA8BE;   /* glacier lake — map markers, light fills */
   --success:#4A7856;
   --success-dim:#E4EADF;
   --sage-dim:#E4EADF;
@@ -146,15 +147,15 @@ img,svg{max-width:100%;height:auto;}
   padding:14px 26px;
   border-radius:var(--radius-pill);
   border:none;
-  background:var(--accent);
-  color:#fff;
+  background:var(--accent-light);
+  color:#1E3A44;
   font-weight:700;
   font-size:14px;
   text-decoration:none;
   cursor:pointer;
   font-family:'Inter', sans-serif;
 }
-.btn-primary:hover{background:var(--accent-hover);}
+.btn-primary:hover{background:#5B94AA;}
 
 .trust-row{
   display:flex;

@@ -112,8 +112,8 @@ function setupElevationProfile(map, t){
     svg.appendChild(label);
   });
 
-  const cursorLine = mk('line', { y1: padT, y2: VH-padB, stroke: '#D6A038', 'stroke-width': '1.5', 'stroke-dasharray': '3 3', opacity: '0' });
-  const cursorDot = mk('circle', { r: '4', fill: '#D6A038', stroke: '#fff', 'stroke-width': '1.5', opacity: '0' });
+  const cursorLine = mk('line', { y1: padT, y2: VH-padB, stroke: '#6FA8BE', 'stroke-width': '1.5', 'stroke-dasharray': '3 3', opacity: '0' });
+  const cursorDot = mk('circle', { r: '4', fill: '#6FA8BE', stroke: '#fff', 'stroke-width': '1.5', opacity: '0' });
   svg.appendChild(cursorLine);
   svg.appendChild(cursorDot);
 
@@ -121,7 +121,7 @@ function setupElevationProfile(map, t){
   map.addSource('elev-cursor', { type: 'geojson', data: { type: 'Point', coordinates: t.path[0].slice().reverse() } });
   map.addLayer({
     id: 'elev-cursor-layer', type: 'circle', source: 'elev-cursor',
-    paint: { 'circle-radius': 6, 'circle-color': '#D6A038', 'circle-stroke-color': '#fff', 'circle-stroke-width': 2, 'circle-opacity': 0 },
+    paint: { 'circle-radius': 6, 'circle-color': '#6FA8BE', 'circle-stroke-color': '#fff', 'circle-stroke-width': 2, 'circle-opacity': 0 },
   });
 
   function highlightAtKm(km){
@@ -592,7 +592,7 @@ function init(){
             .addTo(map);
         }
       } else {
-        new maplibregl.Marker({ color: '#D6A038' }).setLngLat([t.lng, t.lat]).addTo(map);
+        new maplibregl.Marker({ color: '#6FA8BE' }).setLngLat([t.lng, t.lat]).addTo(map);
         const legend = document.getElementById('mapLegend');
         if(legend){
           legend.insertAdjacentHTML('beforeend',

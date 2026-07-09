@@ -117,102 +117,87 @@ let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
 function createMapOverlayControls(map, containerId, allLiftMarkers){
   const container = document.getElementById(containerId);
   if(!container) return;
-  
   container.style.position = container.style.position || 'relative';
-  
-  // Create a button group container
-  const buttonGroup = document.createElement('div');
-  buttonGroup.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;display:flex;flex-direction:column;gap:8px;';
-  container.appendChild(buttonGroup);
-  
-  // Track visibility state
-  const overlayStates = {
-    routes: false,
-    lifts: false,
-    fountains: false,
-    huts: false,
-    barsCafes: false,
+
+  // UI: one compact "Layers" button that expands into a chip panel —
+  // replaces the old stack of full-width buttons that covered a third of
+  // the map on mobile.
+  const overlayStates = { routes: false, lifts: false, fountains: false, huts: false, barsCafes: false };
+  let dogFilterOn = false;
+
+  const layersBtn = document.createElement('button');
+  layersBtn.type = 'button';
+  layersBtn.textContent = '🗺️ Layers';
+  layersBtn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:6;padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
+  container.appendChild(layersBtn);
+
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:absolute;bottom:48px;left:10px;z-index:6;background:#fff;border:1px solid var(--paper-line);border-radius:12px;padding:10px;display:none;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:170px;';
+  container.appendChild(panel);
+
+  layersBtn.addEventListener('click', () => {
+    const open = panel.style.display === 'flex';
+    panel.style.display = open ? 'none' : 'flex';
+    layersBtn.textContent = open ? '🗺️ Layers' : '✕ Close layers';
+  });
+
+  function chipStyle(el, on){
+    el.style.cssText = 'padding:7px 12px;border-radius:999px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid ' +
+      (on ? 'var(--ink);background:var(--ink);color:#fff;' : 'var(--paper-line);background:none;color:var(--ink);') +
+      "font-family:'Inter',sans-serif;text-align:left;";
+  }
+
+  const LAYER_SETS = {
+    routes:   ['waymarked-hiking-layer'],
+    lifts:    ['trailmap-gondolas-labels'],
+    fountains:['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'],
+    huts:     ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'],
+    barsCafes:['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'],
   };
-  
-  // Helper function to create a button
-  function createButton(label, overlayKey, sourceIds = []){
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = label;
-    btn.style.cssText = 'padding:7px 14px;border-radius:8px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:all 0.2s ease;';
-    btn.addEventListener('mouseover', () => btn.style.opacity = '0.9');
-    btn.addEventListener('mouseout', () => btn.style.opacity = '1');
-    
-    btn.addEventListener('click', () => {
-      overlayStates[overlayKey] = !overlayStates[overlayKey];
-      const visibility = overlayStates[overlayKey] ? 'visible' : 'none';
-      
-      // Update layer visibility based on overlay type
-      if(overlayKey === 'routes'){
-        map.setLayoutProperty('waymarked-hiking-layer', 'visibility', visibility);
-      } else if(overlayKey === 'lifts'){
-        map.setLayoutProperty('trailmap-gondolas-line', 'visibility', visibility);
-        map.setLayoutProperty('trailmap-gondolas-labels', 'visibility', visibility);
-        // For DOM elements, use 'visible'/'hidden' not 'visible'/'none'
-        const markerVisibility = visibility === 'visible' ? 'visible' : 'hidden';
-        if(allLiftMarkers) allLiftMarkers.forEach(el => { el.style.visibility = markerVisibility; });
-      } else if(overlayKey === 'fountains'){
-        // Toggle water sources layers (using map layers, not DOM markers)
-        ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
-      } else if(overlayKey === 'huts'){
-        // Toggle mountain huts layers
-        ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
-      } else if(overlayKey === 'barsCafes'){
-        // Toggle bars & cafés layers
-        ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
-          if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
-      }
-      
-      // Update button text and style
-      updateButtonAppearance(btn, overlayKey, overlayStates[overlayKey]);
+
+  function applyVisibility(key){
+    const visibility = overlayStates[key] ? 'visible' : 'none';
+    LAYER_SETS[key].forEach(id => {
+      if(map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visibility);
     });
-    
-    buttonGroup.appendChild(btn);
-    return btn;
+    if(key === 'lifts' && allLiftMarkers){
+      allLiftMarkers.forEach(el => { el.style.visibility = overlayStates.lifts ? 'visible' : 'hidden'; });
+    }
   }
-  
-  function updateButtonAppearance(btn, overlayKey, isVisible){
-    const labels = {
-      routes: isVisible ? '🥾 Hide trail routes' : '🥾 Show trail routes',
-      lifts: isVisible ? '🚡 Hide lifts' : '🚡 Show lifts',
-      fountains: isVisible ? '💧 Hide fountains' : '💧 Show fountains',
-      huts: isVisible ? '🏔️ Hide mountain huts' : '🏔️ Show mountain huts',
-      barsCafes: isVisible ? '🍽️ Hide food & drink' : '🍽️ Show food & drink',
-    };
-    btn.textContent = labels[overlayKey];
-    btn.style.opacity = isVisible ? '1' : '0.8';
+
+  function mkChip(label, key){
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.textContent = label;
+    chipStyle(chip, overlayStates[key]);
+    chip.addEventListener('click', () => {
+      overlayStates[key] = !overlayStates[key];
+      applyVisibility(key);
+      chipStyle(chip, overlayStates[key]);
+      renderMapLegend();
+    });
+    panel.appendChild(chip);
+    return chip;
   }
-  
-  // Create the two buttons (lifts are always visible, just clickable)
-  const routesBtn = createButton('🥾 Show trail routes', 'routes');
-  const fountainsBtn = createButton('💧 Show fountains', 'fountains');
-  const hutsBtn = createButton('🏔️ Show mountain huts', 'huts');
-  const barsCafesBtn = createButton('🍽️ Show food & drink', 'barsCafes');
+
+  mkChip('🥾 Trail routes', 'routes');
+  mkChip('🚡 Lift stations & names', 'lifts');
+  mkChip('💧 Fountains', 'fountains');
+  mkChip('🏔️ Mountain huts', 'huts');
+  const barsChip = mkChip('🍽️ Food & drink', 'barsCafes');
 
   // 🐾 Dog-friendly filter — narrows food & drink to places OSM marks
-  // dog=yes/leashed or with outdoor seating (the practical proxy in Italy);
-  // dog=no is always excluded. Implemented by swapping the source data
-  // rather than a layer filter, because a filter alone wouldn't change
+  // dog=yes/leashed or with outdoor seating; dog=no always excluded.
+  // Swaps the source data because a layer filter alone wouldn't change
   // the cluster bubbles' counts.
-  let dogFilterOn = false;
-  const dogBtn = document.createElement('button');
-  dogBtn.type = 'button';
-  dogBtn.textContent = '🐾 Dog-friendly only';
-  dogBtn.style.cssText = 'padding:7px 14px;border-radius:8px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:all 0.2s ease;';
-  dogBtn.addEventListener('click', () => {
+  const dogChip = document.createElement('button');
+  dogChip.type = 'button';
+  dogChip.textContent = '🐾 Dog-friendly only';
+  chipStyle(dogChip, false);
+  dogChip.addEventListener('click', () => {
     if(!window._dolopawsBars) return; // GeoJSON not loaded yet
-    const src = map.getSource('bars-cafes');
-    if(!src) return;
+    const srcData = map.getSource('bars-cafes');
+    if(!srcData) return;
     dogFilterOn = !dogFilterOn;
     const feats = dogFilterOn
       ? window._dolopawsBars.filter(f => {
@@ -221,22 +206,35 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
           return p.dog === 'yes' || p.dog === 'leashed' || p.outdoor_seating === 'yes';
         })
       : window._dolopawsBars;
-    src.setData({ type: 'FeatureCollection', features: feats });
-    // Turning the filter on while the layer is hidden would look like a
-    // dead button — make the layer visible too.
+    srcData.setData({ type: 'FeatureCollection', features: feats });
     if(dogFilterOn && !overlayStates.barsCafes){
       overlayStates.barsCafes = true;
-      ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(id => {
-        if(map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'visible');
-      });
-      updateButtonAppearance(barsCafesBtn, 'barsCafes', true);
+      applyVisibility('barsCafes');
+      chipStyle(barsChip, true);
     }
-    dogBtn.textContent = dogFilterOn ? '🐾 Showing dog-friendly only' : '🐾 Dog-friendly only';
-    dogBtn.style.background = dogFilterOn ? 'var(--accent)' : 'var(--ink)';
+    chipStyle(dogChip, dogFilterOn);
+    renderMapLegend();
   });
-  buttonGroup.appendChild(dogBtn);
-}
+  panel.appendChild(dogChip);
 
+  // UI: dynamic legend — only describes what is actually visible on the
+  // map right now, instead of a fixed list of every possible layer.
+  function renderMapLegend(){
+    const legend = document.getElementById('trailMapLegend');
+    if(!legend) return;
+    const line = (color, label) => `<span><span style="width:14px;height:3px;background:${color};display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>${label}</span>`;
+    const dash = (color, label) => `<span><span style="width:14px;height:0;border-top:2px dashed ${color};display:inline-block;margin-right:4px;vertical-align:middle;"></span>${label}</span>`;
+    const dot = (color, label) => `<span><span style="width:9px;height:9px;background:${color};display:inline-block;border-radius:50%;margin-right:4px;vertical-align:middle;border:1px solid #fff;"></span>${label}</span>`;
+    let html = line('#2C5C34', 'Low-risk') + line('#8A5A16', 'Moderate') + line('#9C3A25', 'Caution')
+      + line('#4E90A8', 'Confirmed summer lift') + dash('#5A5548', 'Lift, season unconfirmed');
+    if(overlayStates.fountains) html += dot('#4E90A8', 'Drinking water');
+    if(overlayStates.huts) html += dot('#8A5A16', 'Mountain hut');
+    if(overlayStates.barsCafes) html += dot('#C4652F', 'Food & drink');
+    if(dogFilterOn) html += `<span style="font-weight:700;color:var(--ink);">🐾 dog-friendly filter on</span>`;
+    legend.innerHTML = html;
+  }
+  renderMapLegend();
+}
 
 function renderGondolas(map, sourceId){
   if(typeof gondolas === 'undefined' || !gondolas.length) return null;
@@ -383,9 +381,9 @@ function initGuestMap(){
       }
       const trailNumber = t.ref ? `Trail ${t.ref}<br>` : '';
       const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
-        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#D6A038;text-decoration:none;">Trail details →</a>`
+        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">Trail details →</a>`
       );
-      new maplibregl.Marker({ color: '#D6A038' }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
+      new maplibregl.Marker({ color: '#6FA8BE' }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
       bounds.extend([markerLng, markerLat]);
     });
     guestMapInstance.fitBounds(bounds, { padding: 40, maxZoom: 10 });
@@ -564,7 +562,7 @@ function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.textContent = 'View 3D';
-  btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
+  btn.style.cssText = 'position:absolute;bottom:10px;left:104px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
   container.appendChild(btn);
 
   let is3D = false; // clean, flat, label-first map by default
@@ -656,9 +654,9 @@ function updateMapMarkers(list){
       [markerLat, markerLng] = t.path[0];
     }
     const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
-      `<b>${t.name}</b><br>${t.score}% match<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#D6A038;text-decoration:none;">Trail details →</a>`
+      `<b>${t.name}</b><br>${t.score}% match<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">Trail details →</a>`
     );
-    const marker = new maplibregl.Marker({ color: '#D6A038' })
+    const marker = new maplibregl.Marker({ color: '#6FA8BE' })
       .setLngLat([markerLng, markerLat])
       .setPopup(popup)
       .addTo(trailMapInstance);
@@ -927,7 +925,13 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
   const newHome = document.getElementById('newCustomerHomepage');
   const returningHome = document.getElementById('returningCustomerHomepage');
   const browseNavLink = document.getElementById('browseNavLink');
-  if(browseNavLink) browseNavLink.href = user ? 'my-trails.html' : 'browse-trails.html';
+  if(browseNavLink){
+    browseNavLink.href = user ? 'my-trails.html' : 'browse-trails.html';
+    // UI: the label must match the destination — it used to say "Browse
+    // our trails" while linking to My trails for logged-in users.
+    const navSpan = browseNavLink.querySelector('span');
+    if(navSpan) navSpan.textContent = user ? 'My trails' : 'Browse our trails';
+  }
   if(!newHome || !returningHome) return;
 
   if(user && window.DoloPawsAuth){
