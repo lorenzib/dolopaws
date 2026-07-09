@@ -60,10 +60,26 @@ function initHikeMode(map, trail){
   // ---- State ---------------------------------------------------------------
   let active = false;
   let watchId = null;
+  let lastTileError = 0;   // last failed tile/style fetch — signals the map may grey out
   let wakeLock = null;
   let lastIdx = 0;          // last snapped path index — used for monotonic bias
   let offRouteStreak = 0;   // consecutive fixes far from the route
   let firstFix = true;
+
+  // Map tile fetches fail silently when the connection drops mid-hike —
+  // navigator.onLine often stays true on a weak mountain signal, so track
+  // actual failed fetches too.
+  map.on('error', (e) => {
+    const msg = e && e.error && (e.error.message || String(e.error));
+    if (msg && /fetch|network|failed|abort/i.test(msg)) lastTileError = Date.now();
+  });
+
+  function offlineNote(){
+    const offline = !navigator.onLine || (Date.now() - lastTileError < 30000);
+    return offline
+      ? `<br><span style="font-weight:400;opacity:.85;">📵 Offline — the map may grey out, but your position, distances and warnings keep working. GPS needs no internet.</span>`
+      : '';
+  }
 
   // ---- Wake lock: keep the screen on while hiking --------------------------
   async function acquireWakeLock(){
@@ -126,7 +142,7 @@ function initHikeMode(map, trail){
 
     // Far from the trail entirely (driving there, wrong valley…)
     if (snap.minDist > 2000){
-      panel.innerHTML = `You're ${(snap.minDist / 1000).toFixed(1)} km from this route`;
+      panel.innerHTML = `You're ${(snap.minDist / 1000).toFixed(1)} km from this route` + offlineNote();
       banner.style.display = 'none';
       offRouteStreak = 0;
       return;
@@ -151,7 +167,8 @@ function initHikeMode(map, trail){
     const decision = nextAhead(trail.decisionPoints, currentKm, 'instruction');
     if (decision && decision.ahead < 0.5) parts.push(`🔀 ahead: ${decision.label}`);
     panel.innerHTML = parts.join(' · ')
-      + (accuracy > 40 ? `<br><span style="font-weight:400;opacity:.8;">GPS accuracy ±${Math.round(accuracy)} m</span>` : '');
+      + (accuracy > 40 ? `<br><span style="font-weight:400;opacity:.8;">GPS accuracy ±${Math.round(accuracy)} m</span>` : '')
+      + offlineNote();
 
     // Drive the elevation-profile cursor from live position, if the page has one.
     if (typeof window._dolopawsElevHighlight === 'function'){
