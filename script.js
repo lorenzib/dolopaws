@@ -187,7 +187,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
       lifts: isVisible ? '🚡 Hide lifts' : '🚡 Show lifts',
       fountains: isVisible ? '💧 Hide fountains' : '💧 Show fountains',
       huts: isVisible ? '🏔️ Hide mountain huts' : '🏔️ Show mountain huts',
-      barsCafes: isVisible ? '🍺 Hide bars & cafés' : '🍺 Show bars & cafés',
+      barsCafes: isVisible ? '🍽️ Hide food & drink' : '🍽️ Show food & drink',
     };
     btn.textContent = labels[overlayKey];
     btn.style.opacity = isVisible ? '1' : '0.8';
@@ -197,7 +197,44 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   const routesBtn = createButton('🥾 Show trail routes', 'routes');
   const fountainsBtn = createButton('💧 Show fountains', 'fountains');
   const hutsBtn = createButton('🏔️ Show mountain huts', 'huts');
-  const barsCafesBtn = createButton('🍺 Show bars & cafés', 'barsCafes');
+  const barsCafesBtn = createButton('🍽️ Show food & drink', 'barsCafes');
+
+  // 🐾 Dog-friendly filter — narrows food & drink to places OSM marks
+  // dog=yes/leashed or with outdoor seating (the practical proxy in Italy);
+  // dog=no is always excluded. Implemented by swapping the source data
+  // rather than a layer filter, because a filter alone wouldn't change
+  // the cluster bubbles' counts.
+  let dogFilterOn = false;
+  const dogBtn = document.createElement('button');
+  dogBtn.type = 'button';
+  dogBtn.textContent = '🐾 Dog-friendly only';
+  dogBtn.style.cssText = 'padding:7px 14px;border-radius:8px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:all 0.2s ease;';
+  dogBtn.addEventListener('click', () => {
+    if(!window._dolopawsBars) return; // GeoJSON not loaded yet
+    const src = map.getSource('bars-cafes');
+    if(!src) return;
+    dogFilterOn = !dogFilterOn;
+    const feats = dogFilterOn
+      ? window._dolopawsBars.filter(f => {
+          const p = f.properties || {};
+          if(p.dog === 'no') return false;
+          return p.dog === 'yes' || p.dog === 'leashed' || p.outdoor_seating === 'yes';
+        })
+      : window._dolopawsBars;
+    src.setData({ type: 'FeatureCollection', features: feats });
+    // Turning the filter on while the layer is hidden would look like a
+    // dead button — make the layer visible too.
+    if(dogFilterOn && !overlayStates.barsCafes){
+      overlayStates.barsCafes = true;
+      ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(id => {
+        if(map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'visible');
+      });
+      updateButtonAppearance(barsCafesBtn, 'barsCafes', true);
+    }
+    dogBtn.textContent = dogFilterOn ? '🐾 Showing dog-friendly only' : '🐾 Dog-friendly only';
+    dogBtn.style.background = dogFilterOn ? 'var(--accent)' : 'var(--ink)';
+  });
+  buttonGroup.appendChild(dogBtn);
 }
 
 
@@ -1197,6 +1234,10 @@ function initializeHutsBars(map) {
       // icons can be enriched with these richer OSM tags (Tier 2).
       if (typeof registerPoiFeatures === 'function') registerPoiFeatures([...huts, ...bars]);
 
+      // Keep the split sets accessible for the dog-friendly filter toggle.
+      window._dolopawsHuts = huts;
+      window._dolopawsBars = bars;
+
       map.addSource('mountain-huts', {
         type: 'geojson',
         data: { type: 'FeatureCollection', features: huts },
@@ -1288,10 +1329,14 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
     else if (props.amenity === 'pub') placeType = '🍻 Pub';
     else if (props.amenity === 'cafe') placeType = '☕ Café';
     else if (props.amenity === 'restaurant') placeType = '🍽️ Restaurant';
+    else if (props.amenity === 'fast_food') placeType = '🍔 Fast food';
+    else if (props.amenity === 'ice_cream') placeType = '🍦 Ice cream';
+    else if (props.amenity === 'biergarten') placeType = '🍺 Beer garden';
 
     let content = `<b>${placeType}</b>`;
     if (props.name) content += `<br><b>${props.name}</b>`;
     if (props.ele) content += `<br>⛰️ ${props.ele} m elevation`;
+    if (props.cuisine) content += `<br>🍴 ${String(props.cuisine).split(';').join(', ').replace(/_/g, ' ')}`;
     if (props.opening_hours) content += `<br>🕐 ${props.opening_hours}`;
     if (props.phone || props['contact:phone']) content += `<br>📞 ${props.phone || props['contact:phone']}`;
     if (props.website || props['contact:website']) {
@@ -1299,6 +1344,17 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
       content += `<br>🔗 <a href="${url}" target="_blank" rel="noopener">Website</a>`;
     }
     if (props.dog === 'yes') content += `<br>🐕 Dogs welcome`;
+    else if (props.dog === 'leashed') content += `<br>🦮 Dogs on leash`;
+    else if (props.dog === 'no') content += `<br>🚫 No dogs`;
+    if (props.outdoor_seating && props.outdoor_seating !== 'no') content += `<br>🪑 Outdoor seating`;
+    // No dog tag yet? Let users add one — it lands in OSM and flows back
+    // to DoloPaws on the next monthly POI refresh.
+    if (!props.dog && props['@id']) {
+      const idParts = String(props['@id']).split('/');
+      if (idParts.length === 2) {
+        content += `<br><span style="font-size:11px;color:#8b8578;">Know if dogs are welcome here? <a href="https://www.openstreetmap.org/edit?${idParts[0]}=${idParts[1]}" target="_blank" rel="noopener">Add it to OpenStreetMap ↗</a></span>`;
+      }
+    }
 
     new maplibregl.Popup({ offset: 10 })
       .setLngLat(feature.geometry.coordinates)
