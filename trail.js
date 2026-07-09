@@ -601,6 +601,9 @@ function init(){
       }
 
       if (typeof makeBasemapPoisClickable === 'function') makeBasemapPoisClickable(map);
+
+      // Community dog-safety flags — list, map markers, report modal.
+      if (typeof initTrailReports === 'function') initTrailReports(map, t);
     });
   }
 

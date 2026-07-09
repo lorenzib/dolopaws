@@ -18,7 +18,7 @@ import {
 import {
   getFirestore, doc, getDoc, setDoc, deleteDoc,
   collection, addDoc, serverTimestamp, query, where, Timestamp,
-  getCountFromServer
+  getCountFromServer, getDocs
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
@@ -221,6 +221,114 @@ async function getWeeklyHikeCount(trailId) {
   }
 }
 
-window.DoloPawsCommunity = { recordHikeStart, getWeeklyHikeCount };
+// ============================================================
+// COMMUNITY — dog-safety flags, reviews, abuse reports.
+// Security is enforced by Firestore rules; these functions just write
+// well-formed documents and never break the page on failure.
+// ============================================================
+async function addFlag(trailId, type, km, text) {
+  if (!currentUser) return { ok: false, message: "Log in to post a report." };
+  try {
+    const dog = await getDogProfile();
+    await addDoc(collection(db, "flags"), {
+      trailId: String(trailId).slice(0, 80),
+      uid: currentUser.uid,
+      type,
+      km: (typeof km === "number" && isFinite(km)) ? km : null,
+      text: String(text || "").slice(0, 300),
+      dogContext: dog ? { name: dog.name || null, breed: dog.breed || null } : null,
+      status: "active",
+      createdAt: serverTimestamp(),
+    });
+    return { ok: true };
+  } catch (e) {
+    console.error("addFlag failed:", e);
+    return { ok: false, message: "Could not save your report — please try again." };
+  }
+}
+
+async function getActiveFlags(trailId) {
+  try {
+    // Two equality filters only — Firestore merges single-field indexes,
+    // so no composite index setup is needed. Sorting happens client-side.
+    const q = query(collection(db, "flags"),
+      where("trailId", "==", String(trailId).slice(0, 80)),
+      where("status", "==", "active"));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    console.error("getActiveFlags failed:", e);
+    return [];
+  }
+}
+
+async function deleteFlag(flagId) {
+  if (!currentUser) return false;
+  try { await deleteDoc(doc(db, "flags", flagId)); return true; }
+  catch (e) { return false; }
+}
+
+async function setReview(trailId, rating, text, hikedOn) {
+  if (!currentUser) return { ok: false, message: "Log in to review." };
+  try {
+    const dog = await getDogProfile();
+    const id = `${String(trailId).slice(0, 80)}_${currentUser.uid}`;
+    await setDoc(doc(db, "reviews", id), {
+      trailId: String(trailId).slice(0, 80),
+      uid: currentUser.uid,
+      rating: Math.max(1, Math.min(5, Math.round(rating))),
+      text: String(text || "").slice(0, 1000),
+      dogContext: dog ? { name: dog.name || null, breed: dog.breed || null } : null,
+      hikedOn: hikedOn || null,
+      status: "visible",
+      createdAt: serverTimestamp(),
+    });
+    return { ok: true };
+  } catch (e) {
+    console.error("setReview failed:", e);
+    return { ok: false, message: "Could not save your review — please try again." };
+  }
+}
+
+async function getReviews(trailId) {
+  try {
+    const q = query(collection(db, "reviews"),
+      where("trailId", "==", String(trailId).slice(0, 80)),
+      where("status", "==", "visible"));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    return [];
+  }
+}
+
+async function deleteMyReview(trailId) {
+  if (!currentUser) return false;
+  try {
+    await deleteDoc(doc(db, "reviews", `${String(trailId).slice(0, 80)}_${currentUser.uid}`));
+    return true;
+  } catch (e) { return false; }
+}
+
+async function reportContent(targetType, targetId, reason) {
+  if (!currentUser) return false;
+  try {
+    await addDoc(collection(db, "reports"), {
+      targetType: String(targetType).slice(0, 20),
+      targetId: String(targetId).slice(0, 100),
+      uid: currentUser.uid,
+      reason: String(reason || "").slice(0, 200),
+      createdAt: serverTimestamp(),
+    });
+    return true;
+  } catch (e) { return false; }
+}
+
+window.DoloPawsCommunity = {
+  recordHikeStart, getWeeklyHikeCount,
+  addFlag, getActiveFlags, deleteFlag,
+  setReview, getReviews, deleteMyReview,
+  reportContent,
+};
 
 window.dispatchEvent(new CustomEvent('dolopaws-auth-ready'));

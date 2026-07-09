@@ -71,6 +71,15 @@
   <ol id="trailDirections" style="margin:0;padding-left:22px;color:var(--ink);font-size:14px;line-height:1.9;"></ol>
 </div>
 
+<div class="wrap" id="trailReportsWrap" style="padding-top:24px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+    <h2 style="font-size:18px;margin:0;">Trail reports from the community</h2>
+    <button id="addReportBtn" type="button" style="padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">⚠️ Report something</button>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;">Recent dog-safety observations from hikers. These appear alongside DoloPaws' verified rating — they never replace it.</p>
+  <div id="trailFlagsList"></div>
+</div>
+
 <div class="wrap" style="padding-top:24px;padding-bottom:60px;display:grid;grid-template-columns:1fr 1fr;gap:32px;">
   <div>
     <h2 style="font-size:18px;margin-bottom:10px;">About this trail</h2>
@@ -96,6 +105,7 @@
 <script src="regions-config.js" defer></script>
 <script src="basemap-poi-click.js" defer></script>
 <script src="hike-mode.js" defer></script>
+<script src="trail-reports.js" defer></script>
 <script src="trail.js" defer></script>
 </body>
 </html>
