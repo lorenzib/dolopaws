@@ -67,7 +67,7 @@ function renderTeaser(){
   grid.innerHTML = picks.map(t => `
     <div class="teaser-card">
       <div class="photo">${t.imageIcon
-        ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+        ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
         : (pathThumbnailSvg(t.path) || '')}</div>
       <div class="row">
         <div class="name">${t.name}</div>
@@ -825,7 +825,7 @@ async function renderReturningHomepage(profile){
   listEl.innerHTML = pageList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
-    const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
+    const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
     return `
     <div class="trail-card" id="trail-card-${t.id}" data-id="${t.id}">
       <div class="photo" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>

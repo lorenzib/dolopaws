@@ -104,9 +104,18 @@
 
     // Full cards, clickable through to the trail page — only the
     // personalized match score stays behind creating a profile.
-    list.innerHTML = trails.map(t => {
+    // Paginated: 15 cards per page.
+    const PER_PAGE = 15;
+    let page = 1;
+
+    function renderPage(){
+      const totalPages = Math.max(1, Math.ceil(trails.length / PER_PAGE));
+      if(page > totalPages) page = totalPages;
+      const pageTrails = trails.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+      list.innerHTML = pageTrails.map(t => {
       const thumb = t.imageIcon
-        ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+        ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
         : miniPathSvg(t.path);
       const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
       const provenance = t.curated === false
@@ -127,7 +136,38 @@
           <div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">Trail details →</div>
         </div>
       </a>`;
-    }).join('');
+      }).join('');
+
+      if(totalPages > 1){
+        const nav = document.createElement('div');
+        nav.style.cssText = 'grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;';
+        const mkBtn = (label, disabled, delta) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = label;
+          b.disabled = disabled;
+          b.style.cssText = 'padding:9px 18px;border-radius:999px;border:1.5px solid ' +
+            (disabled ? 'var(--paper-line);background:none;color:var(--ink-soft);cursor:default;opacity:.5;'
+                      : 'var(--ink);background:var(--ink);color:#fff;cursor:pointer;') +
+            "font-size:12.5px;font-weight:700;font-family:'Inter',sans-serif;";
+          if(!disabled) b.addEventListener('click', () => {
+            page += delta;
+            renderPage();
+            list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+          return b;
+        };
+        nav.appendChild(mkBtn('← Previous', page === 1, -1));
+        const info = document.createElement('span');
+        info.style.cssText = 'font-size:12.5px;color:var(--ink-soft);font-weight:600;';
+        info.textContent = `Page ${page} of ${totalPages}`;
+        nav.appendChild(info);
+        nav.appendChild(mkBtn('Next →', page === totalPages, 1));
+        list.appendChild(nav);
+      }
+    }
+
+    renderPage();
   });
 </script>
 </body>
