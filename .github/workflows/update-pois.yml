@@ -1,0 +1,31 @@
+name: Update POIs (food, drink, huts)
+
+on:
+  workflow_dispatch: {}        # "Run workflow" button in the Actions tab
+  schedule:
+    - cron: '0 5 2 * *'        # 2nd of each month, offset from the routes run
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-pois:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch huts, bars, cafés and restaurants from OSM
+        run: node scripts/fetch-huts-bars.js
+
+      - name: Commit updated POIs
+        run: |
+          git config user.name "dolopaws-bot"
+          git config user.email "actions@github.com"
+          git add huts-bars-all-regions.geojson
+          git diff --cached --quiet || git commit -m "Monthly POI refresh (food, drink, huts)"
+          git pull --rebase origin main
+          git push
