@@ -7,9 +7,15 @@
  * Popup tiers:
  *   1. Generic: name + human-readable type (from the vector tile's
  *      class/subclass properties), plus elevation for peaks.
- *   2. Enriched: if the same place exists in DoloPaws' own POI data
- *      (huts-bars-all-regions.geojson, registered via registerPoiFeatures),
- *      the popup upgrades to opening hours, phone, website, dogs-welcome.
+ *   2. Enriched from local data: if the same place exists in DoloPaws' own
+ *      POI data (huts-bars-all-regions.geojson, registered via
+ *      registerPoiFeatures), the popup shows opening hours, phone, website,
+ *      dogs-welcome instantly.
+ *   2b. Enriched live from OSM: when there's no local match, a small
+ *      Overpass query (40 m around the icon, sent from the visitor's own
+ *      browser) fetches the place's full OSM tags — website, phone, hours,
+ *      cuisine, dog policy, Wikipedia — and the open popup updates in
+ *      place. Fails silently (e.g. offline), leaving the Tier-1 popup.
  *   3. Escape hatch: every popup ends with a "more info" OpenStreetMap
  *      link, so no click ever dead-ends.
  *
@@ -63,6 +69,31 @@ function escHtml(s){
     c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// Turns a set of OSM tags (from local GeoJSON or a live Overpass result)
+// into popup detail lines. Shared by Tier 2 and Tier 2b so both render
+// identically.
+function buildDetailLines(tags){
+  if (!tags) return '';
+  let html = '';
+  if (tags.opening_hours) html += `<br>🕐 ${escHtml(tags.opening_hours)}`;
+  const phone = tags.phone || tags['contact:phone'];
+  if (phone) html += `<br>📞 <a href="tel:${escHtml(String(phone).replace(/\s/g,''))}">${escHtml(phone)}</a>`;
+  const site = tags.website || tags['contact:website'] || tags.url;
+  if (site && /^https?:\/\//.test(site))
+    html += `<br>🔗 <a href="${escHtml(site)}" target="_blank" rel="noopener">Website</a>`;
+  if (tags.cuisine)
+    html += `<br>🍴 ${escHtml(String(tags.cuisine).split(';').join(', ').replace(/_/g,' '))}`;
+  if (tags.dog === 'yes') html += `<br>🐕 Dogs welcome`;
+  else if (tags.dog === 'leashed') html += `<br>🦮 Dogs on leash`;
+  else if (tags.dog === 'no') html += `<br>🚫 No dogs`;
+  // e.g. "it:Lago di Braies" → link to Italian Wikipedia article
+  if (tags.wikipedia && /^[a-z]{2,3}:./.test(tags.wikipedia)){
+    const [lang, ...title] = tags.wikipedia.split(':');
+    html += `<br>📖 <a href="https://${escHtml(lang)}.wikipedia.org/wiki/${encodeURIComponent(title.join(':'))}" target="_blank" rel="noopener">Wikipedia</a>`;
+  }
+  return html;
+}
+
 function makeBasemapPoisClickable(map){
   map.on('click', (e) => {
     // 1) If the click landed on a DoloPaws layer, its own handler owns it —
@@ -90,29 +121,37 @@ function makeBasemapPoisClickable(map){
       ? poi.geometry.coordinates : [e.lngLat.lng, e.lngLat.lat];
     const lng = coords[0], lat = coords[1];
 
-    let html = `<b>${escHtml(name)}</b><br>${poiLabel(p)}`;
-    if (p.ele) html += `<br>⛰️ ${escHtml(p.ele)} m`;
+    let baseHtml = `<b>${escHtml(name)}</b><br>${poiLabel(p)}`;
+    if (p.ele) baseHtml += `<br>⛰️ ${escHtml(p.ele)} m`;
 
-    // Tier 2: enrich from DoloPaws' own loaded POI data.
-    const match = findOwnPoiMatch(name, lng, lat);
-    if (match) {
-      if (match.opening_hours) html += `<br>🕐 ${escHtml(match.opening_hours)}`;
-      const phone = match.phone || match['contact:phone'];
-      if (phone) html += `<br>📞 ${escHtml(phone)}`;
-      const site = match.website || match['contact:website'];
-      if (site && /^https?:\/\//.test(site))
-        html += `<br>🔗 <a href="${escHtml(site)}" target="_blank" rel="noopener">Website</a>`;
-      if (match.dog === 'yes') html += `<br>🐕 Dogs welcome`;
-    }
-
-    // Tier 3: never dead-end — link out for anything we can't enrich.
-    html += `<div style="margin-top:6px;font-size:11px;color:#8b8578;">`
+    // Tier 3 footer: never dead-end — link out for anything we can't enrich.
+    const footer = `<div style="margin-top:6px;font-size:11px;color:#8b8578;">`
           + `from OpenStreetMap · <a href="https://www.openstreetmap.org/search`
           + `?query=${encodeURIComponent(name)}#map=18/${lat.toFixed(5)}/${lng.toFixed(5)}"`
           + ` target="_blank" rel="noopener">more info ↗</a></div>`;
 
-    new maplibregl.Popup({ offset: 10, closeOnClick: true, maxWidth: '260px' })
-      .setLngLat(e.lngLat).setHTML(html).addTo(map);
+    const popup = new maplibregl.Popup({ offset: 10, closeOnClick: true, maxWidth: '260px' })
+      .setLngLat(e.lngLat).addTo(map);
+
+    // Tier 2: instant enrichment from DoloPaws' own loaded POI data.
+    const localMatch = findOwnPoiMatch(name, lng, lat);
+    if (localMatch) {
+      popup.setHTML(baseHtml + buildDetailLines(localMatch) + footer);
+      return;
+    }
+
+    // Tier 2b: live lookup of the full OSM tags for this place. Show the
+    // basic popup immediately with a quiet loading hint, then update the
+    // popup in place when (if) details arrive.
+    popup.setHTML(baseHtml
+      + `<div style="margin-top:4px;font-size:11px;color:#8b8578;font-style:italic;">looking up details…</div>`
+      + footer);
+
+    fetchOsmDetails(name, lng, lat).then(tags => {
+      if (!popup.isOpen()) return; // user already closed it — don't reopen
+      const details = buildDetailLines(tags);
+      popup.setHTML(baseHtml + details + footer);
+    });
   });
 
   // Pointer cursor over base-map POIs — throttled via requestAnimationFrame
@@ -137,6 +176,47 @@ function makeBasemapPoisClickable(map){
       }
     });
   });
+}
+
+// ---- Tier 2b: live OSM tag lookup via Overpass -----------------------------
+// One tiny query per clicked landmark, sent from the visitor's own browser
+// (so the rate-limit issues the build pipeline had with shared GitHub IPs
+// don't apply). Results are cached for the session so re-clicking the same
+// icon is free. Any failure — offline, timeout, 429 — resolves to null and
+// the popup simply keeps its basic content.
+const _osmDetailCache = new Map();
+
+function fetchOsmDetails(name, lng, lat){
+  const key = `${name}|${lat.toFixed(4)}|${lng.toFixed(4)}`;
+  if (_osmDetailCache.has(key)) return Promise.resolve(_osmDetailCache.get(key));
+
+  const query = `[out:json][timeout:8];nwr(around:40,${lat.toFixed(6)},${lng.toFixed(6)})["name"];out tags center 12;`;
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), 9000) : null;
+
+  return fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'data=' + encodeURIComponent(query),
+    signal: controller ? controller.signal : undefined,
+  })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (timer) clearTimeout(timer);
+      if (!data || !Array.isArray(data.elements)) return null;
+      const nameLc = String(name).toLowerCase();
+      // Prefer an exact name match; fall back to partial (OSM name vs the
+      // tile's possibly-localized label can differ slightly).
+      const exact = data.elements.find(el => el.tags && el.tags.name &&
+        el.tags.name.toLowerCase() === nameLc);
+      const partial = data.elements.find(el => el.tags && el.tags.name &&
+        (el.tags.name.toLowerCase().includes(nameLc) ||
+         nameLc.includes(el.tags.name.toLowerCase())));
+      const tags = (exact || partial) ? (exact || partial).tags : null;
+      _osmDetailCache.set(key, tags);
+      return tags;
+    })
+    .catch(() => { if (timer) clearTimeout(timer); return null; });
 }
 
 // ---- Tier 2 support: index of DoloPaws' own POI data ----------------------
