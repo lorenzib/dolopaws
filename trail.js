@@ -266,6 +266,23 @@ function init(){
   document.getElementById('trailDesc').textContent = t.desc || '';
   document.getElementById('trailTips').textContent = t.tips ? `Tip: ${t.tips}` : '';
 
+  // Community v0: "N dogs hiked this trail this week" — anonymous counts
+  // from hike-mode starts. Deliberately renders NOTHING at zero: an empty
+  // trail should look quiet, not dead.
+  function showWeeklyHikes(){
+    if (!window.DoloPawsCommunity) return;
+    window.DoloPawsCommunity.getWeeklyHikeCount(t.id).then(n => {
+      if (!n || n < 1) return;
+      const el = document.createElement('div');
+      el.style.cssText = 'margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);';
+      el.textContent = `🐾 ${n} dog${n === 1 ? '' : 's'} hiked this trail this week`;
+      const badges = document.getElementById('trailBadges');
+      if (badges && badges.parentNode) badges.parentNode.insertBefore(el, badges.nextSibling);
+    });
+  }
+  if (window.DoloPawsCommunity) showWeeklyHikes();
+  else window.addEventListener('dolopaws-auth-ready', showWeeklyHikes, { once: true });
+
   // Provenance banner: imported (OSM) vs verified (curated) trails.
   (function () {
     const descEl = document.getElementById('trailDesc');

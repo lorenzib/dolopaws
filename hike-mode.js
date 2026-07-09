@@ -196,6 +196,16 @@ function initHikeMode(map, trail){
     startBtn.style.background = '#9C3A25';
     panel.style.display = 'block';
     panel.innerHTML = 'Getting your position…';
+    // Community v0: one anonymous count event per trail per device per day
+    // (localStorage guard stops pause/resume from double-counting).
+    try {
+      const guardKey = `dolopaws-hiked-${trail.id}-${new Date().toISOString().slice(0, 10)}`;
+      if (!localStorage.getItem(guardKey) && window.DoloPawsCommunity) {
+        window.DoloPawsCommunity.recordHikeStart(trail.id).then(ok => {
+          if (ok) localStorage.setItem(guardKey, '1');
+        });
+      }
+    } catch (e) { /* private browsing etc. — skip silently */ }
     acquireWakeLock();
     watchId = navigator.geolocation.watchPosition(onFix, onError, {
       enableHighAccuracy: true,

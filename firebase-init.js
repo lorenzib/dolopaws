@@ -16,7 +16,9 @@ import {
   EmailAuthProvider, reauthenticateWithPopup
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, deleteDoc
+  getFirestore, doc, getDoc, setDoc, deleteDoc,
+  collection, addDoc, serverTimestamp, query, where, Timestamp,
+  getCountFromServer
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
@@ -186,5 +188,39 @@ window.DoloPawsAuth = {
     }
   },
 };
+
+// ============================================================
+// COMMUNITY v0 — anonymous "dogs hiked this week" counter.
+// One event per hike start: trail id + server timestamp, nothing else.
+// No identity, no location. Subcollection-per-trail layout means the
+// weekly count query only needs a single-field index (no composite
+// index setup required in the Firebase console).
+// ============================================================
+async function recordHikeStart(trailId) {
+  try {
+    await addDoc(collection(db, "hikeEvents", String(trailId).slice(0, 80), "events"), {
+      startedAt: serverTimestamp(),
+    });
+    return true;
+  } catch (e) {
+    return false; // counter is a nice-to-have — never break hike mode over it
+  }
+}
+
+async function getWeeklyHikeCount(trailId) {
+  try {
+    const weekAgo = Timestamp.fromMillis(Date.now() - 7 * 24 * 3600 * 1000);
+    const q = query(
+      collection(db, "hikeEvents", String(trailId).slice(0, 80), "events"),
+      where("startedAt", ">", weekAgo)
+    );
+    const snap = await getCountFromServer(q); // aggregation: counts server-side
+    return snap.data().count;
+  } catch (e) {
+    return null;
+  }
+}
+
+window.DoloPawsCommunity = { recordHikeStart, getWeeklyHikeCount };
 
 window.dispatchEvent(new CustomEvent('dolopaws-auth-ready'));
