@@ -840,7 +840,7 @@ async function renderReturningHomepage(profile){
     prevBtn.addEventListener('click', () => {
       currentPage--;
       renderReturningHomepage(profile);
-      listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      countEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     const nextBtn = document.createElement('button');
     nextBtn.textContent = 'Next →';
@@ -850,7 +850,7 @@ async function renderReturningHomepage(profile){
     nextBtn.addEventListener('click', () => {
       currentPage++;
       renderReturningHomepage(profile);
-      listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      countEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     const pageIndicator = document.createElement('span');
     pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
