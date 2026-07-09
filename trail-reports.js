@@ -153,7 +153,7 @@ function initTrailReports(map, trail){
     const maxKm = trail.distance || 10;
     overlay.innerHTML = `
       <div class="modal" style="max-width:420px;">
-        <button type="button" class="modal-close" data-close>&times;</button>
+        <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
         <h2 style="font-size:19px;">Report something on this trail</h2>
         <p class="hint">Help the next dog owner. Your report shows alongside DoloPaws' verified rating — it never replaces it.</p>
         <div data-types style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;">

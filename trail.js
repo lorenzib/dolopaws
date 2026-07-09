@@ -371,7 +371,10 @@ function init(){
           `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">Live forecast via Open-Meteo</div>`;
         weatherEl.hidden = false;
       })
-      .catch(() => { /* weather is a nice-to-have — fail silently, don't break the page */ });
+      .catch(() => {
+        weatherEl.innerHTML = '<span style="color:var(--ink-soft);">Live weather unavailable right now.</span>';
+        weatherEl.hidden = false;
+      });
   }
   document.getElementById('trailDetailContent').innerHTML = renderTrailDetailContent(t);
 

@@ -35,7 +35,7 @@
 
 <div id="authModal" class="modal-overlay" hidden>
   <div class="modal">
-    <button id="authClose" class="modal-close">&times;</button>
+    <button id="authClose" class="modal-close" aria-label="Close">&times;</button>
     <h2 id="authTitle">Log in</h2>
     <p class="hint" id="authHint">Save trails to your account so they follow you across devices.</p>
     <div id="authError" class="auth-error" hidden></div>
@@ -80,26 +80,53 @@
   window.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('simpleTrailsList');
     if(!list || typeof trails === 'undefined') return;
-    if(window.DoloPawsRegions) window.DoloPawsRegions.assign(trails);
 
-    const heading = document.getElementById('trailCountHeading');
-    if(heading) heading.textContent = `All ${trails.length} trails`;
+    // Tiny route-shape thumbnail drawn from the trail's real GPS path —
+    // used when a trail has no photo (same idea as the logged-in cards).
+    function miniPathSvg(path){
+      if(!Array.isArray(path) || path.length < 2) return '';
+      const lats = path.map(p => p[0]), lngs = path.map(p => p[1]);
+      const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+      const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+      const W = 220, H = 140, pad = 16;
+      const spanLat = (maxLat - minLat) || 1e-4, spanLng = (maxLng - minLng) || 1e-4;
+      const s = Math.min((W - pad*2)/spanLng, (H - pad*2)/spanLat);
+      const pts = path.map(([lat,lng]) =>
+        `${(pad + (lng-minLng)*s + (W-pad*2-spanLng*s)/2).toFixed(1)},${(pad + (maxLat-lat)*s + (H-pad*2-spanLat*s)/2).toFixed(1)}`).join(' ');
+      return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;display:block;background:var(--sage-dim);"><polyline points="${pts}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+    }
 
-    const card = t => `
-      <div class="simple-card">
-        <div class="photo"></div>
-        <div class="name">${t.name}${t.curated === false ? ' <span style="font-size:10px;color:#00695c;">🗺️</span>' : ' <span style="font-size:10px;">🐾</span>'}</div>
-      </div>`;
+    const SAFETY = {
+      'low-risk': ['Low-risk', '#E4EADF', '#2C5C34'],
+      'moderate': ['Moderate', '#F6EAD5', '#8A5A16'],
+      'caution':  ['Caution',  '#FBEAE6', '#9C3A25'],
+    };
 
-    const regions = [['dolomites','Dolomites','Italy'],['savoy','Savoy','France']];
-    list.style.display = 'block';
-    list.innerHTML = regions.map(([key, label, country]) => {
-      const rt = trails.filter(t => t.region === key);
-      if(!rt.length) return '';
+    // Full cards, clickable through to the trail page — only the
+    // personalized match score stays behind creating a profile.
+    list.innerHTML = trails.map(t => {
+      const thumb = t.imageIcon
+        ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+        : miniPathSvg(t.path);
+      const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
+      const provenance = t.curated === false
+        ? `<span style="font-size:11px;font-weight:700;color:#00695c;background:#e0f2f1;padding:2px 8px;border-radius:10px;white-space:nowrap;">🗺️ Imported</span>`
+        : `<span style="font-size:11px;font-weight:700;color:#fff;background:var(--ink);padding:2px 8px;border-radius:10px;white-space:nowrap;">🐾 Verified</span>`;
+      const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
+        .filter(Boolean).join(' · ');
       return `
-        <div class="region-section-header">${label}</div>
-        <div class="region-section-sub">${country} · ${rt.length} trails</div>
-        <div class="simple-grid">${rt.map(card).join('')}</div>`;
+      <a href="trail.html?id=${t.id}" class="simple-card" style="text-decoration:none;display:block;color:inherit;">
+        <div class="photo">${thumb}</div>
+        <div style="padding:12px 14px;">
+          <div class="name" style="padding:0;">${t.name}</div>
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;">${meta}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+            <span style="font-size:11px;font-weight:700;background:${s[1]};color:${s[2]};padding:2px 8px;border-radius:10px;">${s[0]}</span>
+            ${provenance}
+          </div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">Trail details →</div>
+        </div>
+      </a>`;
     }).join('');
   });
 </script>

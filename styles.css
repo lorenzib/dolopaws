@@ -175,6 +175,18 @@ img,svg{max-width:100%;height:auto;}
   margin:0 auto;
 }
 @media (max-width:640px){ .teaser{padding:40px 24px;} }
+
+/* ---------- MOBILE PASS ---------- */
+@media (max-width:640px){
+  /* Maps deserve most of a phone screen, not a 340px letterbox */
+  #trailMap{height:55vh !important;}
+  #trailDetailMap{height:62vh !important;}
+  /* Comfortable tap targets */
+  .adj-pill, .area-pill{padding:10px 16px !important;}
+  .fav-btn{padding:11px 22px;}
+  .topnav .links{gap:16px;font-size:12.5px;}
+  .topnav .brand img{width:36px;height:36px;}
+}
 .teaser h2{
   font-size:22px;
   text-align:center;
