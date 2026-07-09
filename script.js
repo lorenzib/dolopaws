@@ -96,6 +96,7 @@ if(unlockBtn) unlockBtn.addEventListener('click', goToProfileCreation);
 // genuine "new since last visit" detection (not a decorative badge).
 // ============================================================
 const NEW_MATCH_THRESHOLD = 70; // trails scoring at/above this count as "a match" for new-match tracking
+const PAGE_SIZE = 15;            // number of trail cards shown per page on the returning homepage
 let adjustOverride = null; // session-only override, never saved to the profile
 let currentFavorites = {};
 
@@ -113,6 +114,7 @@ let activeArea = 'all';            // legacy, kept for safety
 let activeRegion = 'dolomites';
 let activeValley = 'all';
 let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
+let currentPage = 1;               // current pagination page for the returning homepage trail list
 
 function createMapOverlayControls(map, containerId, allLiftMarkers){
   const container = document.getElementById(containerId);
@@ -706,18 +708,21 @@ function renderAreaFilters(profile){
     tab.addEventListener('click', () => {
       activeRegion = tab.dataset.region;
       activeValley = 'all'; // valleys are region-scoped
+      currentPage = 1;
       renderReturningHomepage(profile);
     });
   });
   row.querySelectorAll('[data-valley]').forEach(pill => {
     pill.addEventListener('click', () => {
       activeValley = pill.dataset.valley;
+      currentPage = 1;
       renderReturningHomepage(profile);
     });
   });
   row.querySelectorAll('.prov-opt').forEach(opt => {
     opt.addEventListener('click', () => {
       activeProvenance = opt.dataset.prov;
+      currentPage = 1;
       renderReturningHomepage(profile);
     });
   });
@@ -764,9 +769,19 @@ async function renderReturningHomepage(profile){
   if(activeProvenance === 'verified') displayList = displayList.filter(t => t.curated !== false);
   if(activeProvenance === 'imported') displayList = displayList.filter(t => t.curated === false);
 
-  countEl.textContent = showingSavedOnly
-    ? `${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
-    : `${displayList.length} trails`;
+  const totalItems = displayList.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  if(currentPage > totalPages) currentPage = totalPages;
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageEnd = Math.min(pageStart + PAGE_SIZE, totalItems);
+
+  if(totalItems === 0){
+    countEl.textContent = showingSavedOnly ? '0 saved trails' : '0 trails';
+  } else {
+    countEl.textContent = showingSavedOnly
+      ? `Showing ${pageStart + 1}–${pageEnd} of ${totalItems} saved trail${totalItems === 1 ? '' : 's'}`
+      : `Showing ${pageStart + 1}–${pageEnd} of ${totalItems} trail${totalItems === 1 ? '' : 's'}`;
+  }
 
   updateMapMarkers(displayList);
 
@@ -775,7 +790,7 @@ async function renderReturningHomepage(profile){
     savedTrailsBtn.classList.toggle('active', showingSavedOnly);
   }
 
-  if(displayList.length === 0){
+  if(totalItems === 0){
     const label = activeValley !== 'all' ? activeValley : (activeRegion === 'savoy' ? 'Savoy' : 'the Dolomites');
     const msg = showingSavedOnly && activeValley !== 'all'
       ? `No saved trails in ${label}. Try a different valley, or go back to all trails.`
@@ -786,7 +801,9 @@ async function renderReturningHomepage(profile){
     return;
   }
 
-  listEl.innerHTML = displayList.map(t => {
+  const pageList = displayList.slice(pageStart, pageEnd);
+
+  listEl.innerHTML = pageList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
     const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
@@ -811,6 +828,38 @@ async function renderReturningHomepage(profile){
       </div>
     </div>`;
   }).join('');
+
+  if(totalPages > 1){
+    const paginationEl = document.createElement('div');
+    paginationEl.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:12px;margin-top:28px;flex-wrap:wrap;';
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '← Prev';
+    prevBtn.className = 'area-pill';
+    prevBtn.disabled = currentPage === 1;
+    if(currentPage === 1) prevBtn.style.opacity = '0.4';
+    prevBtn.addEventListener('click', () => {
+      currentPage--;
+      renderReturningHomepage(profile);
+      listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = 'Next →';
+    nextBtn.className = 'area-pill';
+    nextBtn.disabled = currentPage === totalPages;
+    if(currentPage === totalPages) nextBtn.style.opacity = '0.4';
+    nextBtn.addEventListener('click', () => {
+      currentPage++;
+      renderReturningHomepage(profile);
+      listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    const pageIndicator = document.createElement('span');
+    pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    pageIndicator.style.cssText = 'font-size:13px;color:var(--ink-soft);';
+    paginationEl.appendChild(prevBtn);
+    paginationEl.appendChild(pageIndicator);
+    paginationEl.appendChild(nextBtn);
+    listEl.appendChild(paginationEl);
+  }
 
   listEl.querySelectorAll('.save-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -853,6 +902,7 @@ const savedTrailsBtn = document.getElementById('savedTrailsBtn');
 if(savedTrailsBtn){
   savedTrailsBtn.addEventListener('click', () => {
     showingSavedOnly = !showingSavedOnly;
+    currentPage = 1;
     renderReturningHomepage(currentProfileForAdjust);
   });
 }
@@ -868,6 +918,7 @@ if(adjustCloseBtn){
     adjustPanel.hidden = true;
     adjustToggle.hidden = false;
     adjustOverride = null;
+    currentPage = 1;
     renderReturningHomepage(currentProfileForAdjust);
   });
 }
@@ -892,6 +943,7 @@ document.querySelectorAll('.adj-pill-row').forEach(row => {
       adjustOverride = {...base};
     }
     adjustOverride[group] = pill.dataset.value;
+    currentPage = 1;
     renderReturningHomepage(currentProfileForAdjust);
   });
 });
@@ -921,6 +973,7 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     newHome.hidden = true;
     returningHome.hidden = false;
     adjustOverride = null;
+    currentPage = 1;
     initTrailMap();
 
     const profile = await window.DoloPawsAuth.getDogProfile();
