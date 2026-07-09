@@ -329,6 +329,13 @@ function initGuestMap(){
     scrollZoom: false,
   });
 
+  guestMapInstance.addControl(new maplibregl.GeolocateControl({
+    positionOptions: { enableHighAccuracy: true },
+    trackUserLocation: true,
+    showUserHeading: true,
+    fitBoundsOptions: { maxZoom: 15.5 },
+  }), 'top-right');
+
   guestMapInstance.on('load', () => {
     addTerrainSource(guestMapInstance);
     increaseLabelDensity(guestMapInstance);
@@ -405,6 +412,12 @@ function initTrailMap(){
     scrollZoom: false,
   });
   trailMapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
+  trailMapInstance.addControl(new maplibregl.GeolocateControl({
+    positionOptions: { enableHighAccuracy: true },
+    trackUserLocation: true,
+    showUserHeading: true,
+    fitBoundsOptions: { maxZoom: 15.5 },
+  }), 'top-right');
 
   trailMapInstance.on('load', () => {
     addTerrainSource(trailMapInstance);

@@ -144,6 +144,9 @@ function setupElevationProfile(map, t){
     if(src){ src.setData({ type: 'Point', coordinates: [lng, lat] }); map.setPaintProperty('elev-cursor-layer', 'circle-opacity', 1); }
   }
 
+  // Let hike-mode.js drive the same cursor from live GPS position.
+  window._dolopawsElevHighlight = highlightAtKm;
+
   svg.addEventListener('mousemove', (ev) => {
     const rect = svg.getBoundingClientRect();
     const px = (ev.clientX - rect.left) / rect.width * VW;
@@ -402,6 +405,14 @@ function init(){
       pitch: 0, // clean, flat, label-first by default — 3D is opt-in via the toggle
     });
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    // Live blue-dot location control — tap to see yourself on the map,
+    // with heading arrow and follow-me tracking (Google Maps-style).
+    map.addControl(new maplibregl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+      showUserHeading: true,
+      fitBoundsOptions: { maxZoom: 15.5 },
+    }), 'top-right');
 
     map.on('load', () => {
       addTerrainSource(map);
@@ -490,6 +501,9 @@ function init(){
         map.fitBounds(bounds, { padding: 60, maxZoom: 17 });
 
         setupElevationProfile(map, t);
+
+        // "Start hike" companion — live progress, off-route warning, wake lock.
+        if (typeof initHikeMode === 'function') initHikeMode(map, t);
 
         // Rifugi and water-source icons — positioned using the REAL GPS
         // path, not guessed coordinates. Km markers were recorded against
