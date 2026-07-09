@@ -111,7 +111,13 @@ function effectiveOverrides(profile){
 
 let guestMapInstance = null;
 let showingSavedOnly = false;
-let activeArea = 'all';            // legacy, kept for safety
+let activeArea = 'all';
+
+// Pagination for the trail list — 15 cards per page. The map always shows
+// ALL trails matching the current filters; only the card list paginates.
+const TRAILS_PER_PAGE = 15;
+let currentPage = 1;
+let lastFilterKey = '';            // legacy, kept for safety
 let activeRegion = 'dolomites';
 let activeValley = 'all';
 let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
@@ -129,8 +135,8 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
 
   const layersBtn = document.createElement('button');
   layersBtn.type = 'button';
-  layersBtn.textContent = '🗺️ Layers';
-  layersBtn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:6;padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
+  layersBtn.textContent = 'Layers';
+  layersBtn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:6;height:34px;padding:0 16px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:\'Inter\',sans-serif;'
   container.appendChild(layersBtn);
 
   const panel = document.createElement('div');
@@ -140,7 +146,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   layersBtn.addEventListener('click', () => {
     const open = panel.style.display === 'flex';
     panel.style.display = open ? 'none' : 'flex';
-    layersBtn.textContent = open ? '🗺️ Layers' : '✕ Close layers';
+    layersBtn.textContent = open ? 'Layers' : 'Close ✕';
   });
 
   function chipStyle(el, on){
@@ -385,7 +391,7 @@ function initGuestMap(){
       const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
         `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">Trail details →</a>`
       );
-      new maplibregl.Marker({ color: '#6FA8BE' }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
+      new maplibregl.Marker({ element: makeTrailDot() }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
       bounds.extend([markerLng, markerLat]);
     });
     guestMapInstance.fitBounds(bounds, { padding: 40, maxZoom: 10 });
@@ -563,8 +569,8 @@ function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
 
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.textContent = 'View 3D';
-  btn.style.cssText = 'position:absolute;bottom:10px;left:104px;z-index:5;padding:7px 14px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);';
+  btn.textContent = '3D';
+  btn.style.cssText = 'position:absolute;bottom:10px;left:88px;z-index:5;height:34px;padding:0 14px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:\'Inter\',sans-serif;'
   container.appendChild(btn);
 
   let is3D = false; // clean, flat, label-first map by default
@@ -580,12 +586,12 @@ function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
         }, map.getLayer('trail-paths-line') ? 'trail-paths-line' : undefined);
       }
       map.easeTo({ pitch: defaultPitch || 0, duration: 500 });
-      btn.textContent = 'View flat';
+      btn.textContent = '2D';
     } else {
       map.setTerrain(null);
       if(map.getLayer('hillshade-layer')) map.removeLayer('hillshade-layer');
       map.easeTo({ pitch: 0, duration: 500 });
-      btn.textContent = 'View 3D';
+      btn.textContent = '3D';
     }
     is3D = !is3D;
   });
@@ -599,6 +605,16 @@ function addTerrainSource(map){
     encoding: 'terrarium',
     maxzoom: 15,
   });
+}
+
+// Compact dot marker for trails — replaces MapLibre's default teardrop
+// pin, which turns into a wall of signposts with 100+ trails on screen.
+function makeTrailDot(){
+  const el = document.createElement('div');
+  el.style.cssText = 'width:15px;height:15px;border-radius:50%;background:#6FA8BE;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer;transition:transform .12s ease;';
+  el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.45)'; });
+  el.addEventListener('mouseleave', () => { el.style.transform = 'scale(1)'; });
+  return el;
 }
 
 function jumpToCard(trailId){
@@ -658,7 +674,7 @@ function updateMapMarkers(list){
     const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
       `<b>${t.name}</b><br>${t.score}% match<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">Trail details →</a>`
     );
-    const marker = new maplibregl.Marker({ color: '#6FA8BE' })
+    const marker = new maplibregl.Marker({ element: makeTrailDot() })
       .setLngLat([markerLng, markerLat])
       .setPopup(popup)
       .addTo(trailMapInstance);
@@ -783,6 +799,13 @@ async function renderReturningHomepage(profile){
 
   updateMapMarkers(displayList);
 
+  // Reset to page 1 whenever the filters change; clamp if the list shrank.
+  const filterKey = `${activeArea}|${showingSavedOnly}`;
+  if (filterKey !== lastFilterKey){ currentPage = 1; lastFilterKey = filterKey; }
+  const totalPages = Math.max(1, Math.ceil(displayList.length / TRAILS_PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const pageList = displayList.slice((currentPage - 1) * TRAILS_PER_PAGE, currentPage * TRAILS_PER_PAGE);
+
   if(savedTrailsBtn){
     savedTrailsBtn.textContent = showingSavedOnly ? '← All trails' : 'Saved trails';
     savedTrailsBtn.classList.toggle('active', showingSavedOnly);
@@ -799,7 +822,7 @@ async function renderReturningHomepage(profile){
     return;
   }
 
-  listEl.innerHTML = displayList.map(t => {
+  listEl.innerHTML = pageList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
     const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
@@ -838,6 +861,34 @@ async function renderReturningHomepage(profile){
   listEl.querySelectorAll('.photo[data-trail-id]').forEach(el => {
     el.addEventListener('click', () => focusMapOnTrail(el.dataset.trailId, displayList));
   });
+
+  // Pagination controls
+  if (totalPages > 1){
+    const nav = document.createElement('div');
+    nav.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:14px;margin-top:18px;';
+    const mkBtn = (label, disabled, delta) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.disabled = disabled;
+      b.style.cssText = 'padding:9px 18px;border-radius:999px;border:1.5px solid var(--paper-line);background:' +
+        (disabled ? 'none;color:var(--ink-soft);cursor:default;opacity:.5;' : 'var(--ink);color:#fff;cursor:pointer;border-color:var(--ink);') +
+        "font-size:12.5px;font-weight:700;font-family:'Inter',sans-serif;";
+      if (!disabled) b.addEventListener('click', () => {
+        currentPage += delta;
+        renderReturningHomepage(profile);
+        listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      return b;
+    };
+    nav.appendChild(mkBtn('← Previous', currentPage === 1, -1));
+    const info = document.createElement('span');
+    info.style.cssText = 'font-size:12.5px;color:var(--ink-soft);font-weight:600;';
+    info.textContent = `Page ${currentPage} of ${totalPages}`;
+    nav.appendChild(info);
+    nav.appendChild(mkBtn('Next →', currentPage === totalPages, 1));
+    listEl.appendChild(nav);
+  }
 }
 
 function focusMapOnTrail(trailId, list){
