@@ -501,19 +501,21 @@ function increaseLabelDensity(map){
   const layers = map.getStyle().layers || [];
   layers.forEach(layer => {
     if(layer.type !== 'symbol') return;
+    const sl = layer['source-layer'];
+    // Only boost PLACE names (towns, villages, hamlets) and mountain peaks:
+    // clearing their minzoom makes them appear even when zoomed far out,
+    // which is the effect that was actually wanted. Everything else (POI
+    // icons, road names, house numbers) keeps the style's own collision
+    // rules — forcing those all visible at once made town centers like
+    // Canazei unreadably dense.
+    if(sl !== 'place' && sl !== 'mountain_peak') return;
     try {
-      map.setLayoutProperty(layer.id, 'text-allow-overlap', true);
-      map.setLayoutProperty(layer.id, 'icon-allow-overlap', true);
-      map.setLayoutProperty(layer.id, 'text-optional', true);
-      // The overlap settings above only stop labels being hidden due to
-      // crowding — they don't touch a layer's own built-in minzoom, which
-      // is the actual reason a wide, zoomed-out overview map shows far
-      // fewer labels than a zoomed-in single-trail view: many place-name
-      // layers in a style simply don't exist below a certain zoom at all.
-      // Clearing that floor makes every label the style is capable of
-      // showing become a candidate at any zoom, so overlap logic (not a
-      // hard cutoff) becomes the only thing controlling what's visible.
       map.setLayerZoomRange(layer.id, 0, 24);
+      map.setLayoutProperty(layer.id, 'text-optional', true);
+      // NOTE: deliberately NOT setting text-allow-overlap/icon-allow-overlap
+      // anymore — that disabled collision detection entirely and was the
+      // root cause of the overcrowded map. MapLibre's collision logic now
+      // prunes overlapping labels automatically at every zoom.
     } catch(e) { /* some layers may not support one of these props — skip silently */ }
   });
 }
