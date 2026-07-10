@@ -59,6 +59,23 @@
     <section class="guide-section">
       <h2>Your dog</h2>
       <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:16px;">Save your dog's details so the trail finder can start pre-set to their fitness level.</p>
+
+      <div class="field-label" style="margin-bottom:20px;">Dog's photo
+        <div style="display:flex;align-items:center;gap:16px;margin-top:10px;">
+          <div class="dog-photo-circle" id="dogPhotoCircle">
+            <span id="dogPhotoFallback" aria-hidden="true">🐾</span>
+            <img id="dogPhotoImg" alt="Your dog" hidden>
+          </div>
+          <div>
+            <label for="dogPhotoInput" class="dog-photo-upload-btn"><span aria-hidden="true">📸</span> <span data-i18n="account.photo.upload">Upload a photo</span></label>
+            <input type="file" id="dogPhotoInput" accept="image/*" style="display:none;">
+            <button type="button" id="dogPhotoRemoveBtn" hidden class="dog-photo-remove-btn" data-i18n="account.photo.remove">Remove photo</button>
+            <p id="dogPhotoStatus" style="margin:6px 0 0;font-size:12px;" hidden></p>
+            <p style="margin:6px 0 0;font-size:12px;color:var(--ink-soft);line-height:1.4;" data-i18n="account.photo.hint">Saved in your browser and shown on the home screen.</p>
+          </div>
+        </div>
+      </div>
+
       <label class="field-label">Dog's name
         <input type="text" id="dogName" placeholder="Rex">
       </label>

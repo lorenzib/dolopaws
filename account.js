@@ -23,6 +23,98 @@
   const saveDogBtn = document.getElementById('saveDogBtn');
   const dogStatus = document.getElementById('dogStatus');
 
+  // ---------- Dog photo upload ----------
+  const DOG_PHOTO_KEY = 'dolopaws-dog-photo';
+  const DOG_PHOTO_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+  const dogPhotoInput = document.getElementById('dogPhotoInput');
+  const dogPhotoImg = document.getElementById('dogPhotoImg');
+  const dogPhotoFallback = document.getElementById('dogPhotoFallback');
+  const dogPhotoRemoveBtn = document.getElementById('dogPhotoRemoveBtn');
+  const dogPhotoStatus = document.getElementById('dogPhotoStatus');
+
+  function showDogPhoto(dataUrl){
+    if(!dogPhotoImg) return;
+    dogPhotoImg.src = dataUrl;
+    dogPhotoImg.hidden = false;
+    if(dogPhotoFallback) dogPhotoFallback.style.display = 'none';
+    if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = false;
+  }
+  function clearDogPhoto(){
+    if(!dogPhotoImg) return;
+    dogPhotoImg.src = '';
+    dogPhotoImg.hidden = true;
+    if(dogPhotoFallback) dogPhotoFallback.style.display = '';
+    if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = true;
+    if(dogPhotoInput) dogPhotoInput.value = '';
+  }
+
+  // Load saved photo on page open
+  try {
+    const saved = localStorage.getItem(DOG_PHOTO_KEY);
+    if(saved) showDogPhoto(saved);
+  } catch(e){}
+
+  if(dogPhotoInput){
+    dogPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+
+      // Validate file type (accept attribute is client-side only; verify here too)
+      if(!file.type.startsWith('image/')){
+        if(dogPhotoStatus){
+          dogPhotoStatus.hidden = false;
+          dogPhotoStatus.style.color = '#9C3A25';
+          dogPhotoStatus.textContent = window.t ? window.t('account.photo.typeError') : 'Please select an image file.';
+        }
+        dogPhotoInput.value = '';
+        return;
+      }
+
+      // Validate file size (2 MB limit to avoid localStorage quota issues)
+      if(file.size > DOG_PHOTO_MAX_BYTES){
+        if(dogPhotoStatus){
+          dogPhotoStatus.hidden = false;
+          dogPhotoStatus.style.color = '#9C3A25';
+          dogPhotoStatus.textContent = window.t ? window.t('account.photo.sizeError') : 'Photo must be smaller than 2 MB.';
+        }
+        dogPhotoInput.value = '';
+        return;
+      }
+
+      if(dogPhotoStatus) dogPhotoStatus.hidden = true;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const dataUrl = evt.target.result;
+        let saved = false;
+        try {
+          localStorage.setItem(DOG_PHOTO_KEY, dataUrl);
+          saved = true;
+        } catch(storageErr){
+          console.warn('Could not save dog photo to localStorage:', storageErr);
+        }
+        if(saved){
+          showDogPhoto(dataUrl);
+        } else {
+          // Storage quota exceeded or unavailable — warn user and revert input
+          if(dogPhotoStatus){
+            dogPhotoStatus.hidden = false;
+            dogPhotoStatus.style.color = '#9C3A25';
+            dogPhotoStatus.textContent = window.t ? window.t('account.photo.storageError') : 'Photo could not be saved — your browser storage may be full.';
+          }
+          dogPhotoInput.value = '';
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  if(dogPhotoRemoveBtn){
+    dogPhotoRemoveBtn.addEventListener('click', () => {
+      try { localStorage.removeItem(DOG_PHOTO_KEY); } catch(e){}
+      clearDogPhoto();
+    });
+  }
+
   const showDeleteBtn = document.getElementById('showDeleteBtn');
   const deleteConfirmBox = document.getElementById('deleteConfirmBox');
   const deletePasswordField = document.getElementById('deletePasswordField');
