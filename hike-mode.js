@@ -191,6 +191,8 @@ function initHikeMode(map, trail){
     active = true;
     firstFix = true;
     offRouteStreak = 0;
+    // A hiker needs a navigation screen, not an article: go fullscreen.
+    if (window.DoloPawsMapFS) window.DoloPawsMapFS.enter();
     startBtn.textContent = window.t('hike.end');
     startBtn.style.background = '#9C3A25';
     panel.style.display = 'block';
@@ -215,6 +217,7 @@ function initHikeMode(map, trail){
 
   function stopHike(keepPanel){
     active = false;
+    if (window.DoloPawsMapFS) window.DoloPawsMapFS.exit();
     if (watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
     if (wakeLock){ try { wakeLock.release(); } catch (e) {} wakeLock = null; }
     startBtn.textContent = window.t('hike.start');

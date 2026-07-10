@@ -1,72 +1,4 @@
 
-// ============================================================
-// FITNESS DEFAULTS — used both to derive the guest teaser scores
-// and to score the real returning-user list against a saved profile.
-// ============================================================
-const FITNESS_DEFAULTS = {
-  low:      { terrain:'0', distance:'5'  },
-  moderate: { terrain:'1', distance:'10' },
-  high:     { terrain:'2', distance:'99' },
-};
-
-function scoreTrail(t, overrides){
-  let score = 100;
-  const terrain = parseInt(overrides.terrain, 10);
-  let maxDistance = parseFloat(overrides.distance);
-
-  // Energy level: Low caps effective distance at 5 km; High sets it to 99 km (no effective limit).
-  // Medium (or unset) leaves the profile-derived distance unchanged.
-  const energy = overrides.energy;
-  if(energy === 'low') maxDistance = Math.min(maxDistance, 5);
-  else if(energy === 'high') maxDistance = 99;
-  // energy === 'medium' or undefined: no additional change to maxDistance
-
-  const hazardMult = overrides.hazardMult || 1;       // 1.5 for fragile dogs (joints/back/senior)
-  const exposureExtra = overrides.exposureExtra || 0; // extra exposure penalty for fragile dogs
-
-  // Terrain difficulty vs this dog's effective terrain tolerance
-  if(t.terrainRank > terrain) score -= (t.terrainRank - terrain) * 30;
-
-  // Distance vs this dog's effective daily range
-  if(t.distance > maxDistance) score -= Math.min(35, (t.distance - maxDistance) * 5);
-
-  // Exposure — narrow ledges / drop-offs are a caution for every dog, and
-  // a stronger one for seniors, joint/back issues, or impaired vision.
-  if(t.exposure) score -= 30 + exposureExtra;
-
-  // Heat risk — a baseline penalty applies to every dog; heat-sensitive
-  // dogs (breed traits or declared health conditions) take a heavier hit.
-  if(t.heatRisk === 'high') score -= overrides.heatSensitive ? 25 : 12;
-  else if(t.heatRisk === 'moderate') score -= overrides.heatSensitive ? 10 : 4;
-
-  // Shade coverage — low shade compounds heat risk for every dog, not
-  // just dogs flagged as heat-sensitive.
-  if(t.shadeCoverage < 20) score -= 10;
-  else if(t.shadeCoverage < 40) score -= 5;
-
-  // Surface hazards — sharp rock, loose scree, fixed cables, etc.
-  // Fragile dogs feel each hazard harder (bigger multiplier and cap).
-  if(t.surfaceHazards && t.surfaceHazards.length > 0){
-    score -= Math.min(hazardMult > 1 ? 30 : 20, Math.round(t.surfaceHazards.length * 8 * hazardMult));
-  }
-
-  // Imported (OSM) trails carry no exposure/heat/shade measurements, so
-  // without this they'd all sit at 100% and make the ranking meaningless.
-  // Estimate conservatively from what the import DOES know, and cap the
-  // score so an estimate can never outrank a verified measurement.
-  if(t.curated === false){
-    if(t.exposure === undefined && t.safetyLevel === 'caution') score -= 15;
-    if(t.heatRisk === undefined) score -= overrides.heatSensitive ? 10 : 4;
-    score = Math.min(score, 92);
-  }
-
-  return Math.max(5, Math.round(score));
-}
-
-function matchColor(n){
-  return n >= 85 ? 'var(--success)' : n >= 60 ? '#8A5A16' : 'var(--ink-soft)';
-}
-const SAFETY_DOT = { 'low-risk': '#2C5C34', 'moderate': '#8A5A16', 'caution': '#9C3A25' };
 
 function safetyLabel(level){
   if(level === 'low-risk') return t('safety.low');
@@ -131,83 +63,6 @@ let adjustOverride = null; // session-only override, never saved to the profile
 let showFullList = false;  // homepage: top matches first, full catalog on demand
 const TOP_MATCHES = 6;
 let currentFavorites = {};
-
-// ---- Profile triage: breed traits + age + weight + health conditions ----
-// Turns the saved dog profile into effective scoring inputs. The exact
-// rules and numbers are documented in SCORING.md — keep the two in sync.
-
-const AGE_BAND_MID = { 'u1':0.5, '1-2':1.5, '3-4':3.5, '5-6':5.5, '7-8':7.5, '9-10':9.5, '11-12':11.5, '13plus':14 };
-const WEIGHT_BAND_MID = { 'u5':4, '5-10':7.5, '10-15':12.5, '15-20':17.5, '20-30':25, '30-40':35, '40-55':47.5, '55plus':60 };
-
-function dogAgeYears(profile){
-  if(profile.dob){
-    const d = new Date(profile.dob);
-    if(!isNaN(d)) return Math.max(0, (Date.now() - d.getTime()) / 31557600000);
-  }
-  if(profile.ageBand && AGE_BAND_MID[profile.ageBand] != null) return AGE_BAND_MID[profile.ageBand];
-  if(typeof profile.age === 'number') return profile.age; // legacy plain number
-  return null;
-}
-
-function dogWeightKg(profile){
-  if(profile.weightBand && WEIGHT_BAND_MID[profile.weightBand] != null) return WEIGHT_BAND_MID[profile.weightBand];
-  if(typeof profile.weight === 'number') return profile.weight; // legacy plain number
-  return null;
-}
-
-function dogConditions(profile){
-  if(Array.isArray(profile.conditions)) return profile.conditions;
-  // Legacy profiles: two booleans instead of the conditions list.
-  return [profile.jointIssues && 'joints', profile.heatIssues && 'heat'].filter(Boolean);
-}
-
-function effectiveOverrides(profile){
-  if(adjustOverride) return adjustOverride;
-  const defaults = FITNESS_DEFAULTS[profile.fitness] || FITNESS_DEFAULTS.moderate;
-  const traits = (typeof breedTraits === 'function') ? breedTraits(profile.breed)
-    : { heatSensitive: (typeof HEAT_SENSITIVE_BREEDS !== 'undefined') && HEAT_SENSITIVE_BREEDS.includes(profile.breed) };
-  const conds = dogConditions(profile);
-  const age = dogAgeYears(profile);
-  const kg = dogWeightKg(profile);
-
-  const puppy = age != null && age < 1;
-  const senior = age != null && age >= 8;
-  const verySenior = age != null && age >= 11;
-  const orthopedic = conds.includes('joints') || conds.includes('back')
-    || conds.includes('recovering') || traits.backRisk;
-  const giant = traits.giant || (kg != null && kg >= 45);
-
-  // Terrain tolerance: start from fitness, then subtract for life stage
-  // and orthopedic risk; short legs and giant builds cap at "mixed rock".
-  let terrain = parseInt(defaults.terrain, 10);
-  if(puppy || senior) terrain -= 1;
-  if(orthopedic) terrain -= 1;
-  if((traits.shortLegged || giant) && terrain > 1) terrain = 1;
-  terrain = Math.max(0, terrain);
-
-  // Daily range: start from fitness, then scale down for life stage,
-  // heart/weight issues, orthopedic risk, and toy builds.
-  let distance = parseFloat(defaults.distance);
-  if(puppy || verySenior) distance *= 0.5;
-  else if(senior) distance *= 0.75;
-  if(conds.includes('cardiac')) distance *= 0.6;
-  if(conds.includes('joints') || conds.includes('back')) distance *= 0.75;
-  if(conds.includes('overweight')) distance *= 0.75;
-  if(kg != null && kg < 5) distance *= 0.8;
-  distance = Math.max(2, Math.round(distance * 10) / 10);
-
-  const heatSensitive = !!(traits.heatSensitive || conds.includes('heat')
-    || conds.includes('cardiac') || conds.includes('overweight'));
-  const fragile = orthopedic || senior;
-
-  return {
-    terrain: String(terrain),
-    distance: String(distance),
-    heatSensitive,
-    hazardMult: fragile ? 1.5 : 1,
-    exposureExtra: (fragile || conds.includes('vision')) ? 10 : 0,
-  };
-}
 
 let guestMapInstance = null;
 let showingSavedOnly = false;
@@ -890,7 +745,7 @@ async function renderReturningHomepage(profile){
   renderAreaFilters(profile);
 
   const name = (profile && profile.name) ? profile.name : 'there';
-  const overrides = profile ? effectiveOverrides(profile) : { terrain:'1', distance:'10', heatSensitive:false };
+  const overrides = profile ? effectiveOverrides(profile, adjustOverride) : { terrain:'1', distance:'10', heatSensitive:false };
 
   const scored = trails.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
 
@@ -1115,7 +970,7 @@ document.querySelectorAll('.adj-pill-row').forEach(row => {
 
     const group = row.dataset.group;
     if(!adjustOverride){
-      const base = currentProfileForAdjust ? effectiveOverrides(currentProfileForAdjust) : { terrain:'1', distance:'10', heatSensitive:false };
+      const base = currentProfileForAdjust ? effectiveOverrides(currentProfileForAdjust, null) : { terrain:'1', distance:'10', heatSensitive:false };
       adjustOverride = {...base};
     }
     adjustOverride[group] = pill.dataset.value;

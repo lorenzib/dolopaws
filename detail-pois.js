@@ -161,6 +161,9 @@ function initDetailPois(map, trail){
       addPoiLayerSet('detail-bars', bars, 'food');
       // Feed the base-map click enrichment on this page too.
       if (typeof registerPoiFeatures === 'function') registerPoiFeatures(near);
+      if (typeof window.onDetailPoisReady === 'function'){
+        try { window.onDetailPoisReady(near); } catch (e) {}
+      }
     })
     .catch(() => { /* nearby POIs are a bonus — never break the page */ });
 
@@ -170,6 +173,9 @@ function initDetailPois(map, trail){
     .then(data => {
       if (!data) return;
       const near = (data.features || []).filter(inBox);
+      if (typeof window.onDetailWaterReady === 'function'){
+        try { window.onDetailWaterReady(near); } catch (e) {}
+      }
       addPoiLayerSet('detail-water', near, 'water');
     })
     .catch(() => {});

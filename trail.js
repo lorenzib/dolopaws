@@ -419,6 +419,139 @@ function improveLoopStart(trail){
   });
 }
 
+
+// ============================================================
+// "FROM PARKING TO PAWS" — one named, km-ordered itinerary that
+// replaces the separate directions/rifugi/water lists. Base steps
+// (parking, start, decision points, finish) render immediately;
+// named amenities from the OSM files arrive asynchronously via
+// detail-pois.js callbacks and slot in by km.
+// ============================================================
+const itin = { trail: null, items: [], cumKm: null };
+
+function itinIcon(kind){
+  const S = 'width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;"';
+  if(kind === 'park') return `<svg ${S}><rect x="3" y="3" width="18" height="18" rx="5" fill="#378ADD"/><path d="M9 17V7h4a3.2 3.2 0 010 6.4H9" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  if(kind === 'flag') return `<svg ${S}><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"/><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"/></svg>`;
+  if(kind === 'food') return `<svg ${S}><path d="M5 9h11v6a4 4 0 01-4 4H9a4 4 0 01-4-4z" fill="#BA7517"/><path d="M16 10h1.6a2.2 2.2 0 010 4.4H16" fill="none" stroke="#BA7517" stroke-width="1.8"/><path d="M8.5 6.5c0-1 .8-1.4.8-2.3M12 6.5c0-1 .8-1.4.8-2.3" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>`;
+  if(kind === 'hut') return `<svg ${S}><path d="M4 11l8-7 8 7" fill="none" stroke="#8A5A16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" fill="#D6A038" stroke="#8A5A16" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 19v-5h4v5" fill="#8A5A16"/></svg>`;
+  if(kind === 'water') return `<svg ${S}><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"/></svg>`;
+  if(kind === 'switch') return `<svg ${S}><path d="M12 20v-8M12 12L6.5 6M12 12l5.5-6" fill="none" stroke="#7F77DD" stroke-width="2.2" stroke-linecap="round"/><circle cx="6.5" cy="6" r="1.7" fill="#7F77DD"/><circle cx="17.5" cy="6" r="1.7" fill="#AFA9EC"/></svg>`;
+  return `<svg ${S}><ellipse cx="12" cy="15.5" rx="4" ry="3.4" fill="#1D9E75"/><ellipse cx="7" cy="10.8" rx="1.5" ry="2" fill="#5DCAA5"/><ellipse cx="10.5" cy="8.6" rx="1.5" ry="2" fill="#5DCAA5"/><ellipse cx="14" cy="8.6" rx="1.5" ry="2" fill="#5DCAA5"/><ellipse cx="17.5" cy="10.8" rx="1.5" ry="2" fill="#5DCAA5"/></svg>`;
+}
+
+function itinCumKm(path){
+  const cum = [0];
+  for(let i = 1; i < path.length; i++) cum.push(cum[i-1] + distMeters(path[i-1], path[i]) / 1000);
+  return cum;
+}
+
+function itinEsc(x){
+  return String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+function itinRender(){
+  const box = document.getElementById('trailItinerary');
+  if(!box || !itin.trail) return;
+  const items = itin.items.slice().sort((a, b) => a.sort - b.sort);
+  box.innerHTML = items.map(it =>
+    `<div class="itin-row">${itinIcon(it.icon)}<span>${it.html}</span></div>`).join('');
+}
+
+function itinAdd(icon, sort, html){
+  itin.items.push({ icon, sort, html });
+}
+
+function itinKmLabel(km){
+  return `<b style="font-weight:700;">Km ${km % 1 === 0 ? km : km.toFixed(1)}</b>`;
+}
+
+function buildItinerary(t){
+  itin.trail = t;
+  itin.items = [];
+  itin.cumKm = Array.isArray(t.path) && t.path.length > 1 ? itinCumKm(t.path) : null;
+  const isLoop = Array.isArray(t.path) && t.path.length > 1
+    && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
+
+  // 1. Parking / access — the named startPoint label plus a real nav link.
+  const sp = t.startPoint || { lat: t.lat, lng: t.lng, label: '' };
+  const mapsUrl = `https://www.google.com/maps?q=${sp.lat},${sp.lng}`;
+  const parkLabel = sp.label ? itinEsc(sp.label) : window.t('trail.itinParkFallback');
+  itinAdd('park', -2, `${parkLabel} · <a href="${mapsUrl}" target="_blank" rel="noopener">${window.t('trail.openMaps')}</a>`);
+
+  // 2. The start flag.
+  itinAdd('flag', -1, window.t('trail.itinStart'));
+
+  // 3. Curated rifugi and water points (they carry real names + km).
+  (Array.isArray(t.rifugi) ? t.rifugi : []).forEach(r => {
+    if(r.km > 0) itinAdd('hut', r.km, `${itinKmLabel(r.km)} — ${itinEsc(r.name)}`);
+  });
+  (Array.isArray(t.waterSources) ? t.waterSources : []).forEach(w => {
+    if(w.km > 0) itinAdd('water', w.km, `${itinKmLabel(w.km)} — ${itinEsc(w.label)}`);
+  });
+
+  // 4. Decision points — where the route switches numbered trails.
+  (Array.isArray(t.decisionPoints) ? t.decisionPoints : []).forEach(d => {
+    itinAdd('switch', d.km, `${itinKmLabel(d.km)} — ${itinEsc(d.instruction)}`);
+  });
+
+  // 5. Closing step.
+  itinAdd('paw', 1e9, isLoop
+    ? window.t('trail.itinLoopEnd', {d: t.distance})
+    : window.t('trail.itinEnd', {d: t.distance}));
+
+  itinRender();
+
+  // 6. Named amenities from the OSM datasets, joined to their km on the
+  // route (only places within ~120 m of the actual path).
+  const MAX_OFF_M = 120;
+  function kmOnPath(lat, lng){
+    if(!itin.cumKm) return null;
+    let best = -1, bestD = Infinity;
+    for(let i = 0; i < t.path.length; i++){
+      const d = distMeters(t.path[i], [lat, lng]);
+      if(d < bestD){ bestD = d; best = i; }
+    }
+    return bestD <= MAX_OFF_M ? { km: itin.cumKm[best], off: bestD } : null;
+  }
+  const seen = new Set(itin.items.map(i => i.html.toLowerCase()));
+
+  window.onDetailPoisReady = (features) => {
+    let added = 0;
+    (features || []).forEach(f => {
+      if(added >= 4) return;
+      const p = f.properties || {};
+      if(!p.name) return;
+      const [lng, lat] = f.geometry.coordinates;
+      const hit = kmOnPath(lat, lng);
+      if(!hit || hit.km <= 0.05) return;
+      const nameKey = p.name.toLowerCase();
+      if([...seen].some(h => h.includes(nameKey))) return;
+      const isHut = p.tourism === 'alpine_hut' || p.tourism === 'wilderness_hut' || p.amenity === 'shelter';
+      itinAdd(isHut ? 'hut' : 'food', hit.km, `${itinKmLabel(Math.round(hit.km*10)/10)} — ${itinEsc(p.name)}`);
+      seen.add(nameKey);
+      added++;
+    });
+    if(added) itinRender();
+  };
+
+  window.onDetailWaterReady = (features) => {
+    // Only fill from OSM when the trail has no curated water list.
+    if(Array.isArray(t.waterSources) && t.waterSources.length) return;
+    let added = 0;
+    (features || []).forEach(f => {
+      if(added >= 2) return;
+      const [lng, lat] = f.geometry.coordinates;
+      const hit = kmOnPath(lat, lng);
+      if(!hit || hit.km <= 0.05) return;
+      const label = (f.properties && f.properties.name) ? f.properties.name : window.t('legend.water');
+      itinAdd('water', hit.km, `${itinKmLabel(Math.round(hit.km*10)/10)} — ${itinEsc(label)}`);
+      added++;
+    });
+    if(added) itinRender();
+  };
+}
+
 const params = new URLSearchParams(window.location.search);
 const trailId = params.get('id');
 
@@ -438,6 +571,7 @@ function init(){
 }
 
 function renderTrail(t){
+  buildItinerary(t);
   document.title = `${t.name} — DoloPaws`;
   document.getElementById('pageTitle').textContent = `${t.name} — DoloPaws`;
   document.getElementById('trailName').textContent = t.name;
@@ -458,11 +592,10 @@ function renderTrail(t){
     if (!window.DoloPawsCommunity) return;
     window.DoloPawsCommunity.getWeeklyHikeCount(t.id).then(n => {
       if (!n || n < 1) return;
-      const el = document.createElement('div');
-      el.style.cssText = 'margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);';
-      el.textContent = n === 1 ? window.t('trail.hikedWeek1') : window.t('trail.hikedWeek', {n});
-      const badges = document.getElementById('trailBadges');
-      if (badges && badges.parentNode) badges.parentNode.insertBefore(el, badges.nextSibling);
+      const chip = document.getElementById('dogsChip');
+      if (!chip) return;
+      chip.textContent = n === 1 ? window.t('trail.dogsWeek1') : window.t('trail.dogsWeek', {n});
+      chip.hidden = false;
     });
   }
   if (window.DoloPawsCommunity) showWeeklyHikes();
@@ -502,22 +635,38 @@ function renderTrail(t){
   // `elevation` field for ascent is more trustworthy, and since every trail
   // here is a loop (same start/end point), descent is the same figure —
   // net elevation change over a full loop is ~0 by definition.
-  if(Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1){
-    const elevs = t.elevationProfile.map(p => p.elev);
+  // Facts live inside the dark hero now — one place, no duplicates.
+  (function(){
+    const factsEl = document.getElementById('trailFacts');
+    if(!factsEl) return;
     const facts = [
-      [window.t('trail.fact.distance'), `${t.distance} km`],
-      [window.t('trail.fact.ascent'), `${t.elevation} m`],
-      [window.t('trail.fact.descent'), `${t.elevation} m`],
-      [window.t('trail.fact.high'), `${Math.max(...elevs)} m`],
-      [window.t('trail.fact.low'), `${Math.min(...elevs)} m`],
-      [window.t('trail.fact.duration'), `${t.hours} h`],
+      [`${t.distance} km`, window.t('trail.fact.distance')],
+      [`${t.elevation} m`, window.t('trail.fact.ascent')],
+      [`${t.hours} h`, window.t('trail.fact.duration')],
     ];
-    document.getElementById('quickFacts').innerHTML = facts.map(([label, val]) => `
-      <div style="text-align:center;">
-        <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em;">${label}</div>
-        <div style="font-size:16px;font-weight:700;color:var(--ink);margin-top:2px;">${val}</div>
-      </div>`).join('');
-  }
+    if(Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1){
+      facts.splice(2, 0, [`${Math.max(...t.elevationProfile.map(p => p.elev))} m`, window.t('trail.fact.high')]);
+    }
+    factsEl.innerHTML = facts.map(([val, label]) =>
+      `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('')
+      + `<span class="f safe"><b>${safetyLabel(t.safetyLevel)}</b><span>${window.t('trail.fact.terrain')}</span></span>`;
+
+    // Personal match — needs a logged-in profile; guests just see the facts.
+    function paintMatch(){
+      if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser || typeof scoreTrail !== 'function') return;
+      window.DoloPawsAuth.getDogProfile().then(profile => {
+        if(!profile) return;
+        const n = scoreTrail(t, effectiveOverrides(profile, null));
+        const el = document.getElementById('trailMatch');
+        if(!el) return;
+        el.textContent = (t.curated === false ? '≈' : '') + n + '% ' +
+          window.t('trail.matchFor', {name: profile.name || window.t('trail.yourDog')});
+        el.hidden = false;
+      });
+    }
+    if(window.DoloPawsAuth) paintMatch();
+    else window.addEventListener('dolopaws-auth-ready', paintMatch, { once: true });
+  })();
 
   // Tag badges — derived only from data that already exists on the trail,
   // never invented just to fill space.
@@ -556,6 +705,11 @@ function renderTrail(t){
           65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
           80:'Rain showers',95:'Thunderstorm',
         })[c.weathercode] || (isIt ? 'Variabile' : 'Mixed conditions');
+        const chip = document.getElementById('weatherChip');
+        if(chip){
+          chip.textContent = `${c.temperature_2m}°C · ${codeText} · ${window.t('trail.weatherWind')} ${c.windspeed_10m} km/h`;
+          chip.hidden = false;
+        }
         weatherEl.innerHTML = `<b>${window.t('trail.weatherNow')}</b> ${c.temperature_2m}°C, ${codeText}, ${window.t('trail.weatherWind')} ${c.windspeed_10m} km/h` +
           (c.precipitation > 0 ? `, ${c.precipitation}mm precipitation` : '') +
           `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">${window.t('trail.weatherVia')}</div>`;
@@ -580,8 +734,15 @@ function renderTrail(t){
           ${(lang === 'it' && i.it) ? i.it : i.en}
           <div style="font-size:11.5px;color:var(--ink-soft);margin-top:6px;">${window.t('trail.source')}: ${i.url ? `<a href="${i.url}" target="_blank" rel="noopener">${i.source}</a>` : i.source}</div>
         </div>`).join('');
-    const coords = document.getElementById('trailCoords');
-    if (coords && coords.parentNode) coords.parentNode.appendChild(box);
+    const gtk = document.getElementById('goodToKnowBox');
+    if (gtk){
+      box.style.cssText = '';
+      box.querySelector('h2').remove(); // card already has the heading
+      gtk.appendChild(box);
+    } else {
+      const coords = document.getElementById('trailCoords');
+      if (coords && coords.parentNode) coords.parentNode.appendChild(box);
+    }
   }
 
   // Build turn-by-turn directions for trails stitched from more than one
@@ -631,6 +792,19 @@ function renderTrail(t){
       pitch: 0, // clean, flat, label-first by default — 3D is opt-in via the toggle
     });
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+    // Fullscreen map — manual ⤢ toggle, and automatic during hike mode.
+    const mapBox = document.getElementById('trailMapBox');
+    const expandBtn = document.getElementById('mapExpandBtn');
+    function setMapFS(on){
+      if(!mapBox) return;
+      mapBox.classList.toggle('map-fs', on);
+      document.body.classList.toggle('map-fs-open', on);
+      if(expandBtn) expandBtn.textContent = on ? '✕' : '⤢';
+      setTimeout(() => map.resize(), 60);
+    }
+    window.DoloPawsMapFS = { enter: () => setMapFS(true), exit: () => setMapFS(false) };
+    if(expandBtn) expandBtn.addEventListener('click', () => setMapFS(!mapBox.classList.contains('map-fs')));
     // Live blue-dot location control — tap to see yourself on the map,
     // with heading arrow and follow-me tracking (Google Maps-style).
     map.addControl(new maplibregl.GeolocateControl({
