@@ -118,17 +118,16 @@
 <!-- RETURNING-VISITOR HOMEPAGE (shown once logged in) -->
 <div id="returningCustomerHomepage" hidden>
   <div class="wrap" style="padding-top:32px;">
-    <div style="background:var(--sage-dim);border-radius:12px;padding:22px 28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-      <div>
-        <h1 id="returningHeading" style="font-size:24px;margin-bottom:6px;">Welcome back</h1>
-        <p class="sub" id="returningSubline" style="font-size:13px;margin:0;">Loading your matches…</p>
-      </div>
+    <div style="background:var(--sage-dim);border-radius:12px;padding:22px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
       <div id="dogPhotoBubble" class="dog-photo-bubble" hidden>
         <div class="dog-bubble-photo">
           <span class="dog-bubble-fallback" aria-hidden="true">🐾</span>
           <img id="dogBubbleImg" alt="Your dog's photo" hidden>
         </div>
-        <div class="dog-bubble-speech" data-i18n="home.bubble">Where are we heading today?</div>
+      </div>
+      <div style="flex:1;min-width:240px;">
+        <h1 id="returningHeading" class="dog-speech-cloud">“Where are we heading today?”</h1>
+        <p class="sub" id="returningSubline" style="font-size:13px;margin:10px 0 0;">Loading your matches…</p>
       </div>
     </div>
   </div>

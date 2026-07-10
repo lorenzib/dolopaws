@@ -550,7 +550,7 @@ img,svg{max-width:100%;height:auto;}
 .dog-photo-remove-btn:hover{color:var(--ink);}
 
 /* ---- Dog photo bubble (returning homepage) ---- */
-.dog-photo-bubble{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0;}
+.dog-photo-bubble{display:flex;align-items:center;flex-shrink:0;}
 .dog-bubble-photo{
   position:relative;width:68px;height:68px;border-radius:50%;
   border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.18);
@@ -559,20 +559,21 @@ img,svg{max-width:100%;height:auto;}
 }
 .dog-bubble-fallback{font-size:28px;line-height:1;pointer-events:none;}
 #dogBubbleImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-.dog-bubble-speech{
-  background:var(--ink);color:#fff;font-size:11px;font-weight:700;
-  border-radius:10px;padding:5px 10px;white-space:nowrap;text-align:center;
-  position:relative;
+.dog-speech-cloud{
+  position:relative;display:inline-block;background:#fff;
+  border:1.5px solid var(--paper-line);border-radius:18px;
+  padding:10px 20px;font-size:21px;line-height:1.35;margin:0;
 }
-.dog-bubble-speech::before{
-  content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);
-  width:0;height:0;
-  border-left:5px solid transparent;
-  border-right:5px solid transparent;
-  border-bottom:6px solid var(--ink);
+.dog-speech-cloud::before{
+  content:'';position:absolute;left:-7px;top:50%;
+  transform:translateY(-50%) rotate(45deg);
+  width:12px;height:12px;background:#fff;
+  border-left:1.5px solid var(--paper-line);
+  border-bottom:1.5px solid var(--paper-line);
 }
 @media (max-width:520px){
-  .dog-photo-bubble{display:none;}
+  .dog-bubble-photo{width:52px;height:52px;}
+  .dog-speech-cloud{font-size:17px;padding:8px 14px;}
 }
 
 /* ---- Adjust-for-today toggle button ---- */
@@ -637,3 +638,10 @@ img,svg{max-width:100%;height:auto;}
   .guide-acc>summary{font-size:17px;padding:14px 16px;}
   .guide-acc-body{padding:4px 16px 12px;}
 }
+
+/* ---- Match-first trail cards (logged-in homepage) ---- */
+.match-col{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:72px;border-left:1px dashed var(--paper-line);padding-left:14px;}
+.match-num{font-size:22px;font-weight:800;line-height:1;font-family:'Inter',sans-serif;}
+.match-lbl{font-size:10.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+.match-est{font-size:10px;color:var(--ink-soft);font-style:italic;}
+@media (max-width:640px){ .match-col{min-width:60px;padding-left:10px;} .match-num{font-size:19px;} }

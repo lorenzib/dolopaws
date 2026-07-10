@@ -50,8 +50,23 @@ function scoreTrail(t, overrides){
     score -= Math.min(hazardMult > 1 ? 30 : 20, Math.round(t.surfaceHazards.length * 8 * hazardMult));
   }
 
+  // Imported (OSM) trails carry no exposure/heat/shade measurements, so
+  // without this they'd all sit at 100% and make the ranking meaningless.
+  // Estimate conservatively from what the import DOES know, and cap the
+  // score so an estimate can never outrank a verified measurement.
+  if(t.curated === false){
+    if(t.exposure === undefined && t.safetyLevel === 'caution') score -= 15;
+    if(t.heatRisk === undefined) score -= overrides.heatSensitive ? 10 : 4;
+    score = Math.min(score, 92);
+  }
+
   return Math.max(5, Math.round(score));
 }
+
+function matchColor(n){
+  return n >= 85 ? 'var(--success)' : n >= 60 ? '#8A5A16' : 'var(--ink-soft)';
+}
+const SAFETY_DOT = { 'low-risk': '#2C5C34', 'moderate': '#8A5A16', 'caution': '#9C3A25' };
 
 function safetyLabel(level){
   if(level === 'low-risk') return t('safety.low');
@@ -113,6 +128,8 @@ if(unlockBtn) unlockBtn.addEventListener('click', () => { window.location.href =
 // ============================================================
 const NEW_MATCH_THRESHOLD = 70; // trails scoring at/above this count as "a match" for new-match tracking
 let adjustOverride = null; // session-only override, never saved to the profile
+let showFullList = false;  // homepage: top matches first, full catalog on demand
+const TOP_MATCHES = 6;
 let currentFavorites = {};
 
 // ---- Profile triage: breed traits + age + weight + health conditions ----
@@ -892,11 +909,13 @@ async function renderReturningHomepage(profile){
     await window.DoloPawsAuth.setLastMatches(currentTopIds);
   }
 
-  heading.textContent = profile && profile.name ? t('home.welcomeFor', {name}) : t('home.welcome');
-  const baseSubline = newIds.size > 0
-    ? (newIds.size === 1 ? t('home.newMatch1') : t('home.newMatches', {n: newIds.size}))
-    : profile && profile.name ? t('home.rankedFor', {name}) : t('home.addDetails');
-  subline.innerHTML = `${baseSubline} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">${t('home.editProfile')}</a>`;
+  // The cloud is Eddie speaking — one line, no counts, true for any area.
+  heading.textContent = '\u201C' + t('home.bubble') + '\u201D';
+  const pickLine = profile && profile.name ? t('home.pickArea', {name}) : t('home.pickAreaNoName');
+  const newsLine = newIds.size > 0
+    ? ' ' + (newIds.size === 1 ? t('home.newMatch1') : t('home.newMatches', {n: newIds.size}))
+    : '';
+  subline.innerHTML = `${pickLine}${newsLine} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">${t('home.editProfile')}</a>`;
 
   let displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
   displayList = displayList.filter(t => t.region === activeRegion);
@@ -913,9 +932,13 @@ async function renderReturningHomepage(profile){
   // Reset to page 1 whenever the filters change; clamp if the list shrank.
   const filterKey = `${activeArea}|${showingSavedOnly}`;
   if (filterKey !== lastFilterKey){ currentPage = 1; lastFilterKey = filterKey; }
-  const totalPages = Math.max(1, Math.ceil(displayList.length / TRAILS_PER_PAGE));
+  const collapsed = !showFullList && !showingSavedOnly && displayList.length > TOP_MATCHES + 2;
+  const totalPages = collapsed ? 1 : Math.max(1, Math.ceil(displayList.length / TRAILS_PER_PAGE));
   if (currentPage > totalPages) currentPage = totalPages;
-  const pageList = displayList.slice((currentPage - 1) * TRAILS_PER_PAGE, currentPage * TRAILS_PER_PAGE);
+  const pageList = collapsed
+    ? displayList.slice(0, TOP_MATCHES)
+    : displayList.slice((currentPage - 1) * TRAILS_PER_PAGE, currentPage * TRAILS_PER_PAGE);
+  if(collapsed) countEl.textContent = t('home.topOf', {a: Math.min(TOP_MATCHES, displayList.length), b: displayList.length});
 
   if(savedTrailsBtn){
     savedTrailsBtn.textContent = showingSavedOnly ? t('home.allTrailsBtn') : t('home.savedTrails');
@@ -933,28 +956,39 @@ async function renderReturningHomepage(profile){
     return;
   }
 
-  listEl.innerHTML = pageList.map(t => {
+  const adjustActive = !!adjustOverride;
+  const fitCount = displayList.filter(x => x.score >= 60).length;
+  const summaryBar = adjustActive
+    ? `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:12px;background:var(--sage-dim);border-radius:12px;font-size:12.5px;font-weight:600;color:var(--ink);">${t('home.fitLine', {a: fitCount, b: displayList.length})}</div>`
+    : '';
+
+  listEl.innerHTML = summaryBar + pageList.map(t => {
     const isFav = !!currentFavorites[t.id];
     const isNew = newIds.has(t.id);
+    const isEst = t.curated === false;
+    const dim = adjustActive && t.score < 60;
     const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
     return `
-    <div class="trail-card" id="trail-card-${t.id}" data-id="${t.id}">
+    <div class="trail-card" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
       <div class="photo" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
       <div class="body">
         <div class="top-row">
-          <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
           ${t.curated !== false ? `<span class="badge-pill badge-verified">${window.t('badge.verified')}</span>` : `<span class="badge-pill badge-imported">${window.t('badge.imported')}</span>`}
           ${isNew ? `<span class="badge-pill badge-new">${window.t('badge.new')}</span>` : ''}
           <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
-            <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${window.t('card.match', {n: t.score})}</span>
             <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? window.t('card.saved') : window.t('card.save')}</button>
           </div>
         </div>
         <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
-        <div class="meta">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h</div>
+        <div class="meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="width:9px;height:9px;border-radius:50%;background:${SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)'};flex:none;"></span>${safetyLabel(t.safetyLevel)} · ${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
         ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">${window.t('card.routeShape')}</div>` : ''}
         <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">${window.t('card.details')}</a>
+      </div>
+      <div class="match-col">
+        <span class="match-num" style="color:${matchColor(t.score)};">${isEst ? '≈' : ''}${t.score}%</span>
+        <span class="match-lbl">${window.t('card.matchWord')}</span>
+        ${isEst ? `<span class="match-est">${window.t('card.estimated')}</span>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -973,8 +1007,26 @@ async function renderReturningHomepage(profile){
     el.addEventListener('click', () => focusMapOnTrail(el.dataset.trailId, displayList));
   });
 
+  // Top-matches ↔ full-catalog toggle
+  if(collapsed){
+    const more = document.createElement('button');
+    more.type = 'button';
+    more.className = 'page-btn';
+    more.style.cssText = 'display:block;margin:18px auto 0;';
+    more.textContent = t('home.showAll', {n: displayList.length});
+    more.addEventListener('click', () => { showFullList = true; currentPage = 1; renderReturningHomepage(profile); });
+    listEl.appendChild(more);
+  } else if(showFullList && !showingSavedOnly && displayList.length > TOP_MATCHES + 2){
+    const less = document.createElement('button');
+    less.type = 'button';
+    less.style.cssText = 'display:block;margin:16px auto 0;background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;';
+    less.textContent = t('home.showTop');
+    less.addEventListener('click', () => { showFullList = false; currentPage = 1; renderReturningHomepage(profile); listEl.scrollIntoView({behavior:'smooth', block:'start'}); });
+    listEl.appendChild(less);
+  }
+
   // Pagination controls
-  if (totalPages > 1){
+  if (!collapsed && totalPages > 1){
     const nav = document.createElement('div');
     nav.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:14px;margin-top:18px;';
     const mkBtn = (label, disabled, delta) => {
@@ -1114,7 +1166,11 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     const dogBubbleImg = document.getElementById('dogBubbleImg');
     if(dogBubble){
       try {
-        const photo = localStorage.getItem('dolopaws-dog-photo');
+        // Account photo wins (synced across devices); per-uid cache as
+        // fallback; the old device-only key last, for pre-sync visitors.
+        const photo = (profile && profile.photo)
+          || localStorage.getItem('dolopaws-dog-photo-' + user.uid)
+          || localStorage.getItem('dolopaws-dog-photo');
         if(photo && dogBubbleImg){
           dogBubbleImg.src = photo;
           dogBubbleImg.hidden = false;
