@@ -676,3 +676,7 @@ body.map-fs-open{overflow:hidden;}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media (max-width:760px){ .about-grid{grid-template-columns:1fr;} }
 .trail-sources{margin:16px 0 0;font-size:11px;color:var(--ink-soft);}
+
+/* ---- Trail map legend chips ---- */
+.legend-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.legend-chips .sign-chip{padding:5px 12px 5px 9px;font-weight:600;font-size:12px;}

@@ -62,24 +62,17 @@
     <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⤢</button>
   </div>
   <details class="map-key"><summary data-i18n="trail.mapKey">Map key</summary>
-  <div id="mapLegend" style="display:flex;gap:20px;margin-top:10px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;">
-    <span class="dp-legend-item"><span data-dp-icon="switch" data-dp-icon-mode="legend" data-dp-icon-color="#D6A038" aria-hidden="true"></span><span data-i18n="legendTrail.switch">Trail switch</span></span>
-    <span class="dp-legend-item"><span data-dp-icon="start" data-dp-icon-mode="legend" data-dp-icon-color="#2E4034" aria-hidden="true"></span><span data-i18n="legendTrail.start">Recommended start</span></span>
-    <span id="routeSwatch" style="width:16px;height:3px;background:#D6A038;display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span id="routeSwatchLabel">Trail route</span>
-    <span data-i18n="legendTrail.dir">➤ Direction of travel</span>
-    <span><span style="width:14px;height:3px;background:#4E90A8;display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span data-i18n="legend.liftConfirmed">Confirmed summer lift</span></span>
-    <span><span style="width:14px;height:0;border-top:2px dashed #5A5548;display:inline-block;margin-right:4px;vertical-align:middle;"></span><span data-i18n="legend.liftUnknown">Lift, season unconfirmed</span></span>
-    <span class="dp-legend-item"><span data-dp-icon="hut" data-dp-icon-mode="legend" data-dp-icon-color="#8A5A16" aria-hidden="true"></span><span data-i18n="legend.hut">Mountain hut</span></span>
-    <span class="dp-legend-item"><span data-dp-icon="food" data-dp-icon-mode="legend" data-dp-icon-color="#C4652F" aria-hidden="true"></span><span data-i18n="legend.food">Food & drink</span></span>
-    <span class="dp-legend-item"><span data-dp-icon="water" data-dp-icon-mode="legend" data-dp-icon-color="#4E90A8" aria-hidden="true"></span><span data-i18n="legend.water">Drinking water</span></span>
+  <div id="mapLegend" style="margin-top:10px;">
+    <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
+    <div id="legendChips" class="legend-chips"></div>
   </div>
 
   </details>
 
   <div id="elevationProfileWrap" style="margin-top:12px;" hidden>
     <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">
-      <span>Elevation profile</span>
-      <span id="elevReadout" style="color:var(--ink);font-weight:700;">hover the graph →</span>
+      <span data-i18n="trail.elevTitle">Elevation profile</span>
+      <span id="elevReadout" style="color:var(--ink);font-weight:700;" data-i18n="trail.elevHint">hover the graph →</span>
     </div>
     <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
   </div>
@@ -87,7 +80,7 @@
 
   <div class="tg-right">
     <div class="itin-card">
-      <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">From parking to paws</h2>
+      <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
       <div id="trailItinerary" class="itin-list"></div>
     </div>
   </div>
@@ -99,12 +92,14 @@
 </div>
 
 <div class="wrap" id="trailReportsWrap" style="padding-top:24px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
-    <h2 style="font-size:18px;margin:0;">Trail reports from the community</h2>
-    <button id="addReportBtn" type="button" style="padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">⚠️ Report something</button>
+  <div class="guide-section" style="margin:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+      <h2 style="font-size:17px;margin:0;" data-i18n="reports.title">Trail reports from the community</h2>
+      <button id="addReportBtn" type="button" style="padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;" data-i18n="reports.button">⚠️ Report something</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;" data-i18n="reports.intro">Recent dog-safety observations from hikers. These appear alongside DoloPaws' verified rating — they never replace it.</p>
+    <div id="trailFlagsList"></div>
   </div>
-  <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;">Recent dog-safety observations from hikers. These appear alongside DoloPaws' verified rating — they never replace it.</p>
-  <div id="trailFlagsList"></div>
 </div>
 
 <div class="wrap" style="padding-top:24px;padding-bottom:20px;">

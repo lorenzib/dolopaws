@@ -179,7 +179,7 @@ function addTerrainToggle(map, containerId, exaggeration, pitch3D){
 
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.textContent = 'View 3D terrain';
+  btn.textContent = window.t('trail.view3d');
   btn.className = 'map-btn';
   btn.style.left = '10px';
   container.appendChild(btn);
@@ -197,12 +197,12 @@ function addTerrainToggle(map, containerId, exaggeration, pitch3D){
         }, 'waymarked-hiking-layer'); // keep hillshade below the trail overlay and labels
       }
       map.easeTo({ pitch: pitch3D || 0, duration: 500 });
-      btn.textContent = 'View flat map';
+      btn.textContent = window.t('trail.viewFlat');
     } else {
       map.setTerrain(null);
       if(map.getLayer('hillshade-layer')) map.removeLayer('hillshade-layer');
       map.easeTo({ pitch: 0, duration: 500 });
-      btn.textContent = 'View 3D terrain';
+      btn.textContent = window.t('trail.view3d');
     }
     is3D = !is3D;
   });
@@ -429,6 +429,27 @@ function improveLoopStart(trail){
 // ============================================================
 const itin = { trail: null, items: [], cumKm: null };
 
+// Curated trail data stores labels in English; translate the known
+// templates on the fly in Italian mode (same approach as imported descs).
+function trLabel(label){
+  if(!label || (window.DoloPawsI18n && window.DoloPawsI18n.lang) !== 'it') return label;
+  const RULES = [
+    [/^Start here — main parking area at (.+)$/, 'Parti qui — parcheggio principale a $1'],
+    [/^Start here — main lake access & parking, by (.+)$/, 'Parti qui — accesso principale al lago e parcheggio, presso $1'],
+    [/^Route start per OpenStreetMap — best parking\/access not yet verified$/, 'Inizio del percorso secondo OpenStreetMap — parcheggio/accesso migliore non ancora verificato'],
+    [/^Lakeside fountain$/, 'Fontana in riva al lago'],
+    [/^Trailhead fountain$/, 'Fontana alla partenza'],
+    [/^Village fountain$/, 'Fontana del paese'],
+    [/^Waterfall stream$/, 'Torrente della cascata'],
+    [/^Stream crossing$/, 'Attraversamento del torrente'],
+    [/^Drinking water \(OSM-verified location\)$/, 'Acqua potabile (posizione verificata su OSM)'],
+    [/^Mountain\/upper station$/, 'Stazione a monte'],
+    [/^Valley\/lower station$/, 'Stazione a valle'],
+  ];
+  for(const [re, out] of RULES){ if(re.test(label)) return label.replace(re, out); }
+  return label;
+}
+
 function itinIcon(kind){
   const S = 'width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;"';
   if(kind === 'park') return `<svg ${S}><rect x="3" y="3" width="18" height="18" rx="5" fill="#378ADD"/><path d="M9 17V7h4a3.2 3.2 0 010 6.4H9" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -466,6 +487,34 @@ function itinKmLabel(km){
   return `<b style="font-weight:700;">Km ${km % 1 === 0 ? km : km.toFixed(1)}</b>`;
 }
 
+function renderLegendChips(t){
+  const box = document.getElementById('legendChips');
+  if(!box) return;
+  const chips = [];
+  const chip = (iconHtml, label) => chips.push(`<span class="sign-chip">${iconHtml}<span>${label}</span></span>`);
+  const swatch = (css) => `<span style="width:16px;height:0;${css};flex:none;"></span>`;
+
+  chip(itinIcon('flag'), window.t('legendTrail.start').replace('🚩 ', ''));
+  chip(swatch(`border-top:3px solid ${safetyColor(t.safetyLevel)};border-radius:2px`),
+       window.t('trail.route', {label: safetyLabel(t.safetyLevel)}));
+  chip('<span style="font-size:13px;flex:none;">➤</span>', window.t('legendTrail.dir').replace('➤ ', ''));
+  if(Array.isArray(t.decisionPoints) && t.decisionPoints.length){
+    chip(itinIcon('switch'), window.t('legendTrail.switch').replace('🔀 ', ''));
+  }
+  // Lift entries only when a lift actually exists near this trail.
+  const liftNear = (typeof gondolas !== 'undefined' && Array.isArray(gondolas)) && gondolas.some(g =>
+    g.from && g.to && [g.from, g.to].some(st =>
+      typeof st.lat === 'number' && Math.abs(st.lat - t.lat) < 0.05 && Math.abs(st.lng - t.lng) < 0.07));
+  if(liftNear){
+    chip(swatch('border-top:3px solid #4E90A8;border-radius:2px'), window.t('legend.liftConfirmed'));
+    chip(swatch('border-top:2px dashed #5A5548'), window.t('legend.liftUnknown'));
+  }
+  chip(itinIcon('hut'), window.t('legend.hut'));
+  chip(itinIcon('food'), window.t('legend.food'));
+  chip(itinIcon('water'), window.t('legend.water'));
+  box.innerHTML = chips.join('');
+}
+
 function buildItinerary(t){
   itin.trail = t;
   itin.items = [];
@@ -476,7 +525,7 @@ function buildItinerary(t){
   // 1. Parking / access — the named startPoint label plus a real nav link.
   const sp = t.startPoint || { lat: t.lat, lng: t.lng, label: '' };
   const mapsUrl = `https://www.google.com/maps?q=${sp.lat},${sp.lng}`;
-  const parkLabel = sp.label ? itinEsc(sp.label) : window.t('trail.itinParkFallback');
+  const parkLabel = sp.label ? itinEsc(trLabel(sp.label)) : window.t('trail.itinParkFallback');
   itinAdd('park', -2, `${parkLabel} · <a href="${mapsUrl}" target="_blank" rel="noopener">${window.t('trail.openMaps')}</a>`);
 
   // 2. The start flag.
@@ -487,7 +536,7 @@ function buildItinerary(t){
     if(r.km > 0) itinAdd('hut', r.km, `${itinKmLabel(r.km)} — ${itinEsc(r.name)}`);
   });
   (Array.isArray(t.waterSources) ? t.waterSources : []).forEach(w => {
-    if(w.km > 0) itinAdd('water', w.km, `${itinKmLabel(w.km)} — ${itinEsc(w.label)}`);
+    if(w.km > 0) itinAdd('water', w.km, `${itinKmLabel(w.km)} — ${itinEsc(trLabel(w.label))}`);
   });
 
   // 4. Decision points — where the route switches numbered trails.
@@ -572,6 +621,7 @@ function init(){
 
 function renderTrail(t){
   buildItinerary(t);
+  renderLegendChips(t);
   document.title = `${t.name} — DoloPaws`;
   document.getElementById('pageTitle').textContent = `${t.name} — DoloPaws`;
   document.getElementById('trailName').textContent = t.name;
@@ -752,7 +802,7 @@ function renderTrail(t){
   if(Array.isArray(t.path) && ((Array.isArray(t.decisionPoints) && t.decisionPoints.length > 0) || t.startPoint)){
     const totalKm = t.distance;
     const firstStep = t.startPoint
-      ? window.t('trail.dirStart', {label: t.startPoint.label})
+      ? window.t('trail.dirStart', {label: trLabel(t.startPoint.label)})
       : window.t('trail.dirStartAt', {name: (t.rifugi || []).find(r => r.km === 0)?.name || t.area});
     const steps = [firstStep];
 
@@ -934,7 +984,7 @@ function renderTrail(t){
         if(t.startPoint){
           new maplibregl.Marker({ element: makeIconEl('start', '#2E4034'), offset: [-14, -14] })
             .setLngLat([t.startPoint.lng, t.startPoint.lat])
-            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${t.startPoint.label}</b>`))
+            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${trLabel(t.startPoint.label)}</b>`))
             .addTo(map);
         }
       } else {
@@ -956,7 +1006,7 @@ function renderTrail(t){
   // Save button — reflects and updates real account state, same pattern as the trail cards.
   const saveBtn = document.getElementById('detailSaveBtn');
   function paintSaveBtn(isFav){
-    saveBtn.textContent = isFav ? 'Saved' : 'Save';
+    saveBtn.textContent = isFav ? window.t('card.saved') : window.t('card.save');
     saveBtn.classList.toggle('saved', isFav);
   }
   window.addEventListener('dolopaws-auth-changed', async (e) => {
