@@ -23,14 +23,26 @@
   const saveDogBtn = document.getElementById('saveDogBtn');
   const dogStatus = document.getElementById('dogStatus');
 
-  // ---------- Dog photo upload ----------
-  const DOG_PHOTO_KEY = 'dolopaws-dog-photo';
-  const DOG_PHOTO_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+  // ---------- Dog photo — synced to the account ----------
+  // The photo is downscaled in the browser to a small thumbnail and saved
+  // into the user's own Firestore document (users/{uid} → dog.photo), so it
+  // follows the account to any device they log in from. localStorage is
+  // only a fast local cache, keyed by uid so two accounts sharing one
+  // browser never see each other's dog. A Firestore document caps at 1 MB;
+  // the ~300 px JPEG thumbnail (~20–40 KB) stays far below that.
+  const LEGACY_PHOTO_KEY = 'dolopaws-dog-photo';   // pre-sync, device-only key
+  const PHOTO_INPUT_MAX_BYTES = 8 * 1024 * 1024;   // cap BEFORE downscaling
+  const PHOTO_MAX_PX = 300;
   const dogPhotoInput = document.getElementById('dogPhotoInput');
   const dogPhotoImg = document.getElementById('dogPhotoImg');
   const dogPhotoFallback = document.getElementById('dogPhotoFallback');
   const dogPhotoRemoveBtn = document.getElementById('dogPhotoRemoveBtn');
   const dogPhotoStatus = document.getElementById('dogPhotoStatus');
+
+  function photoCacheKey(){
+    const u = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    return u ? 'dolopaws-dog-photo-' + u.uid : null;
+  }
 
   function showDogPhoto(dataUrl){
     if(!dogPhotoImg) return;
@@ -47,71 +59,89 @@
     if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = true;
     if(dogPhotoInput) dogPhotoInput.value = '';
   }
+  function photoStatus(text, ok){
+    if(!dogPhotoStatus) return;
+    dogPhotoStatus.hidden = false;
+    dogPhotoStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
+    dogPhotoStatus.textContent = text;
+  }
+  function tKey(key, fallback){
+    if(!window.t) return fallback;
+    const s = window.t(key);
+    return s === key ? fallback : s;
+  }
 
-  // Load saved photo on page open
-  try {
-    const saved = localStorage.getItem(DOG_PHOTO_KEY);
-    if(saved) showDogPhoto(saved);
-  } catch(e){}
+  // Shrink to a thumbnail in the browser: the profile circle only shows
+  // ~150 px, and small thumbnails are what make account sync possible.
+  function downscalePhoto(file){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        try {
+          const scale = Math.min(1, PHOTO_MAX_PX / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          URL.revokeObjectURL(url);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        } catch (e) { URL.revokeObjectURL(url); reject(e); }
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('decode failed')); };
+      img.src = url;
+    });
+  }
 
   if(dogPhotoInput){
     dogPhotoInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if(!file) return;
 
-      // Validate file type (accept attribute is client-side only; verify here too)
       if(!file.type.startsWith('image/')){
-        if(dogPhotoStatus){
-          dogPhotoStatus.hidden = false;
-          dogPhotoStatus.style.color = '#9C3A25';
-          dogPhotoStatus.textContent = window.t ? window.t('account.photo.typeError') : 'Please select an image file.';
-        }
+        photoStatus(tKey('account.photo.typeError', 'Please select an image file.'), false);
         dogPhotoInput.value = '';
         return;
       }
-
-      // Validate file size (2 MB limit to avoid localStorage quota issues)
-      if(file.size > DOG_PHOTO_MAX_BYTES){
-        if(dogPhotoStatus){
-          dogPhotoStatus.hidden = false;
-          dogPhotoStatus.style.color = '#9C3A25';
-          dogPhotoStatus.textContent = window.t ? window.t('account.photo.sizeError') : 'Photo must be smaller than 2 MB.';
-        }
+      if(file.size > PHOTO_INPUT_MAX_BYTES){
+        photoStatus(tKey('account.photo.sizeError', 'Photo must be smaller than 8 MB.'), false);
         dogPhotoInput.value = '';
         return;
       }
-
       if(dogPhotoStatus) dogPhotoStatus.hidden = true;
 
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        const dataUrl = evt.target.result;
-        let saved = false;
-        try {
-          localStorage.setItem(DOG_PHOTO_KEY, dataUrl);
-          saved = true;
-        } catch(storageErr){
-          console.warn('Could not save dog photo to localStorage:', storageErr);
+      downscalePhoto(file).then((dataUrl) => {
+        showDogPhoto(dataUrl);
+        const key = photoCacheKey();
+        try { if(key) localStorage.setItem(key, dataUrl); } catch (err) { /* cache only */ }
+
+        if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
+          window.DoloPawsAuth.setDogProfile({ photo: dataUrl }).then((ok) => {
+            photoStatus(ok
+              ? tKey('account.photo.synced', 'Photo saved to your account — it will show on any device you log in from.')
+              : tKey('account.photo.localOnly', "Photo saved on this device — couldn't reach your account just now."), ok);
+          });
         }
-        if(saved){
-          showDogPhoto(dataUrl);
-        } else {
-          // Storage quota exceeded or unavailable — warn user and revert input
-          if(dogPhotoStatus){
-            dogPhotoStatus.hidden = false;
-            dogPhotoStatus.style.color = '#9C3A25';
-            dogPhotoStatus.textContent = window.t ? window.t('account.photo.storageError') : 'Photo could not be saved — your browser storage may be full.';
-          }
-          dogPhotoInput.value = '';
-        }
-      };
-      reader.readAsDataURL(file);
+      }).catch(() => {
+        photoStatus(tKey('account.photo.typeError', 'Please select an image file.'), false);
+        dogPhotoInput.value = '';
+      });
     });
   }
   if(dogPhotoRemoveBtn){
     dogPhotoRemoveBtn.addEventListener('click', () => {
-      try { localStorage.removeItem(DOG_PHOTO_KEY); } catch(e){}
+      const key = photoCacheKey();
+      try {
+        if(key) localStorage.removeItem(key);
+        localStorage.removeItem(LEGACY_PHOTO_KEY);
+      } catch(e){}
       clearDogPhoto();
+      if(dogPhotoStatus) dogPhotoStatus.hidden = true;
+      if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
+        window.DoloPawsAuth.setDogProfile({ photo: null });
+      }
     });
   }
 
@@ -271,6 +301,32 @@
       }
 
       const profile = await window.DoloPawsAuth.getDogProfile();
+
+      // Photo: the account copy always wins. A photo saved on this device
+      // before sync existed (old device-only key) gets migrated up to the
+      // account once, then the old key is removed.
+      const pKey = 'dolopaws-dog-photo-' + user.uid;
+      if(profile && profile.photo){
+        showDogPhoto(profile.photo);
+        try { localStorage.setItem(pKey, profile.photo); } catch(e){}
+      } else {
+        let local = null;
+        try { local = localStorage.getItem(pKey) || localStorage.getItem(LEGACY_PHOTO_KEY); } catch(e){}
+        if(local){
+          showDogPhoto(local);
+          window.DoloPawsAuth.setDogProfile({ photo: local }).then((ok) => {
+            if(ok){
+              try {
+                localStorage.setItem(pKey, local);
+                localStorage.removeItem(LEGACY_PHOTO_KEY);
+              } catch(e){}
+            }
+          });
+        } else {
+          clearDogPhoto();
+        }
+      }
+
       if(profile){
         dogName.value = profile.name || '';
         dogFitness.value = profile.fitness || 'moderate';

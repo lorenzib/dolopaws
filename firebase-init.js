@@ -63,7 +63,9 @@ async function getDogProfile() {
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if (!snap.exists()) return null;
     const data = snap.data();
-    if (data.dog && data.dog.name) return data.dog;
+    // Any dog object counts — a user may save a photo before their first
+    // full profile save, and that photo must still load on other devices.
+    if (data.dog && (data.dog.name || data.dog.photo || data.dog.breed)) return data.dog;
     if (Array.isArray(data.dogs) && data.dogs.length > 0) {
       const migrated = data.dogs[0];
       await setDoc(doc(db, "users", currentUser.uid), { dog: migrated }, { merge: true });
