@@ -16,7 +16,7 @@ function scoreTrail(t, overrides){
 
   // Energy level: Low caps effective distance at 5 km; High lifts it to 99 km.
   const energy = overrides.energy;
-  if(energy === 'low')  maxDistance = Math.min(maxDistance, 5);
+  if(energy === 'low') maxDistance = Math.min(maxDistance, 5);
   else if(energy === 'high') maxDistance = 99;
 
   const hazardMult = overrides.hazardMult || 1;       // 1.5 for fragile dogs (joints/back/senior)

@@ -29,6 +29,7 @@
   const dogPhotoImg = document.getElementById('dogPhotoImg');
   const dogPhotoFallback = document.getElementById('dogPhotoFallback');
   const dogPhotoRemoveBtn = document.getElementById('dogPhotoRemoveBtn');
+  const dogPhotoStatus = document.getElementById('dogPhotoStatus');
 
   function showDogPhoto(dataUrl){
     if(!dogPhotoImg) return;
@@ -59,10 +60,24 @@
       const reader = new FileReader();
       reader.onload = (evt) => {
         const dataUrl = evt.target.result;
-        try { localStorage.setItem(DOG_PHOTO_KEY, dataUrl); } catch(storageErr){
+        let saved = false;
+        try {
+          localStorage.setItem(DOG_PHOTO_KEY, dataUrl);
+          saved = true;
+        } catch(storageErr){
           console.warn('Could not save dog photo to localStorage:', storageErr);
         }
-        showDogPhoto(dataUrl);
+        if(saved){
+          showDogPhoto(dataUrl);
+        } else {
+          // Storage quota exceeded or unavailable — warn user and revert input
+          if(dogPhotoStatus){
+            dogPhotoStatus.hidden = false;
+            dogPhotoStatus.style.color = '#9C3A25';
+            dogPhotoStatus.textContent = 'Photo could not be saved — your browser storage may be full.';
+          }
+          dogPhotoInput.value = '';
+        }
       };
       reader.readAsDataURL(file);
     });
