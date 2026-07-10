@@ -97,6 +97,19 @@
       <path d="M12 17h.01"></path>
     `,
   };
+  // Multicolor glyphs — the same drawings used in the trail itinerary, so
+  // the map bubbles, the Layers chips and the legend all speak one language.
+  const COLOR_GLYPHS = {
+    water: '<path d="M12 4c2.9 3.4 4.6 6 4.6 8.4a4.6 4.6 0 11-9.2 0C7.4 10 9.1 7.4 12 4z" fill="#378ADD"/>',
+    hut: '<path d="M5 11.2l7-6.2 7 6.2" fill="none" stroke="#8A5A16" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 10.4V18h10.4v-7.6" fill="#D6A038" stroke="#8A5A16" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.4 18v-4.2h3.2V18" fill="#8A5A16"/>',
+    food: '<path d="M6 9.5h9.5v5a3.5 3.5 0 01-3.5 3.5H9.5A3.5 3.5 0 016 14.5z" fill="#BA7517"/><path d="M15.5 10.5h1.4a2 2 0 010 4h-1.4" fill="none" stroke="#BA7517" stroke-width="1.6"/><path d="M9 7.2c0-.9.7-1.2.7-2M12 7.2c0-.9.7-1.2.7-2" stroke="#BA7517" stroke-width="1.4" stroke-linecap="round" fill="none"/>',
+    lifts: '<path d="M4 7h16" stroke="#5A5548" stroke-width="1.6" stroke-linecap="round"/><path d="M12 7v3" stroke="#5A5548" stroke-width="1.6"/><rect x="8" y="10" width="8" height="7" rx="2" fill="#4E90A8"/><rect x="10" y="11.8" width="4" height="2.6" rx="0.8" fill="#fff"/>',
+    routes: '<path d="M6.5 18c2-5 5.5-8.5 11-11" fill="none" stroke="#2C5C34" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 3.4"/><circle cx="6.5" cy="18" r="1.8" fill="#2C5C34"/><path d="M17.5 4.2l2.6 1-1 2.5-2.6-1z" fill="#E24B4A"/>',
+    dog: '<ellipse cx="12" cy="15" rx="3.7" ry="3.1" fill="#1D9E75"/><ellipse cx="7.4" cy="10.6" rx="1.4" ry="1.9" fill="#5DCAA5"/><ellipse cx="10.7" cy="8.7" rx="1.4" ry="1.9" fill="#5DCAA5"/><ellipse cx="13.9" cy="8.7" rx="1.4" ry="1.9" fill="#5DCAA5"/><ellipse cx="17" cy="10.6" rx="1.4" ry="1.9" fill="#5DCAA5"/>',
+    start: '<path d="M8 20V4.5" stroke="#2E4034" stroke-width="1.9" stroke-linecap="round"/><path d="M8 5.5h9l-2.2 3.2L17 12H8z" fill="#E24B4A"/>',
+    switch: '<path d="M12 19.5v-7M12 12.5L7 7M12 12.5L17 7" fill="none" stroke="#7F77DD" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="7" r="1.6" fill="#7F77DD"/><circle cx="17" cy="7" r="1.6" fill="#AFA9EC"/>',
+  };
+
   const VALID_MODES = new Set(['inline', 'legend', 'marker', 'map']);
   const SAFE_COLOR = /^(currentColor|#[0-9a-fA-F]{6})$/;
 
@@ -147,8 +160,21 @@
     const normalizedKey = normalizeIconKey(iconKey);
     const mode = normalizeMode(options.mode || 'inline');
     const size = normalizeSize(options.size, mode);
-    const color = normalizeColor(options.color || getCategoryColor(normalizedKey), normalizedKey);
     const badge = mode === 'legend' || mode === 'marker' || mode === 'map';
+
+    // Multicolor drawings: colorful glyph on a soft white bubble (badges)
+    // or bare (inline chips) — matches the itinerary icons exactly.
+    if(COLOR_GLYPHS[normalizedKey]){
+      const bubble = badge
+        ? '<circle cx="12" cy="12" r="10.2" fill="#ffffff" stroke="#D8D5C8" stroke-width="1"></circle>'
+        : '';
+      const inner = badge
+        ? `<g transform="translate(12 12) scale(0.78) translate(-12 -12)">${COLOR_GLYPHS[normalizedKey]}</g>`
+        : COLOR_GLYPHS[normalizedKey];
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="dp-icon-svg dp-icon-svg--${escapeHtml(mode)}" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" aria-hidden="true">${bubble}${inner}</svg>`;
+    }
+
+    const color = normalizeColor(options.color || getCategoryColor(normalizedKey), normalizedKey);
     const stroke = badge ? '#ffffff' : color;
     const strokeWidth = badge ? 1.8 : 1.9;
     const background = badge ? `<circle cx="12" cy="12" r="9" fill="${color}" stroke="#ffffff" stroke-width="1.5"></circle>` : '';

@@ -654,8 +654,11 @@ function updateMapMarkers(list){
     } else if(Array.isArray(t.path) && t.path.length > 0){
       [markerLat, markerLng] = t.path[0];
     }
+    const isEstPopup = t.curated === false;
     const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
-      `<b>${t.name}</b><br>${window.t('card.match', {n: t.score})}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">${window.t('card.details')}</a>`
+      `<b>${t.name}</b>
+       <div class="popup-match"><span style="font-size:21px;font-weight:800;color:${matchColor(t.score)};">${isEstPopup ? '≈' : ''}${t.score}%</span><span class="match-lbl">${window.t('card.matchWord')}</span>${isEstPopup ? `<span class="match-est">${window.t('card.estimated')}</span>` : ''}</div>
+       <a href="trail.html?id=${t.id}" style="display:inline-block;font-weight:700;color:#3E7A91;text-decoration:none;">${window.t('card.details')}</a>`
     );
     const marker = new maplibregl.Marker({ element: makeTrailDot() })
       .setLngLat([markerLng, markerLat])
@@ -838,7 +841,10 @@ async function renderReturningHomepage(profile){
         <div class="meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="width:9px;height:9px;border-radius:50%;background:${SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)'};flex:none;"></span>${safetyLabel(t.safetyLevel)} · ${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
         ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">${window.t('card.routeShape')}</div>` : ''}
-        <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">${window.t('card.details')}</a>
+        <div style="display:flex;gap:16px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+          <a href="trail.html?id=${t.id}" style="font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">${window.t('card.details')}</a>
+          <button type="button" class="locate-btn" data-id="${t.id}">${window.t('card.locate')}</button>
+        </div>
       </div>
       <div class="match-col">
         <span class="match-num" style="color:${matchColor(t.score)};">${isEst ? '≈' : ''}${t.score}%</span>
@@ -860,6 +866,10 @@ async function renderReturningHomepage(profile){
 
   listEl.querySelectorAll('.photo[data-trail-id]').forEach(el => {
     el.addEventListener('click', () => focusMapOnTrail(el.dataset.trailId, displayList));
+  });
+
+  listEl.querySelectorAll('.locate-btn').forEach(btn => {
+    btn.addEventListener('click', () => focusMapOnTrail(btn.dataset.id, displayList));
   });
 
   // Top-matches ↔ full-catalog toggle
