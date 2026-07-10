@@ -21,9 +21,9 @@
 <div class="topnav">
   <a class="brand" href="index.html"><img src="logo.svg" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
-    <a href="index.html">Home</a>
+    <a href="index.html" data-i18n="nav.home">Home</a>
     <a href="browse-trails.html" id="browseNavLink">Browse our trails</a>
-    <a href="safety-guide.html">Dog safety guide</a>
+    <a href="safety-guide.html" data-i18n="nav.guide">Dog safety guide</a>
     <button id="accountBtn" class="account-btn">Log in</button>
   </div>
 </div>
@@ -32,29 +32,29 @@
 <div id="authModal" class="modal-overlay" hidden>
   <div class="modal">
     <button id="authClose" class="modal-close" aria-label="Close">&times;</button>
-    <h2 id="authTitle">Log in</h2>
-    <p class="hint" id="authHint">Save trails to your account so they follow you across devices.</p>
+    <h2 id="authTitle" data-i18n="nav.login">Log in</h2>
+    <p class="hint" id="authHint" data-i18n="auth.hint">Save trails to your account so they follow you across devices.</p>
 
     <div id="authError" class="auth-error" hidden></div>
 
     <form id="authForm">
-      <label class="field-label">Email
+      <label class="field-label"><span data-i18n="auth.email">Email</span>
         <input type="email" id="authEmail" required autocomplete="email">
       </label>
-      <label class="field-label">Password
+      <label class="field-label"><span data-i18n="auth.password">Password</span>
         <input type="password" id="authPassword" required autocomplete="current-password" minlength="6">
       </label>
-      <button type="button" id="forgotPasswordBtn" class="forgot-link">Forgot password?</button>
-      <button type="submit" class="auth-submit" id="authSubmit">Log in</button>
+      <button type="button" id="forgotPasswordBtn" class="forgot-link" data-i18n="auth.forgot">Forgot password?</button>
+      <button type="submit" class="auth-submit" id="authSubmit" data-i18n="nav.login">Log in</button>
     </form>
 
-    <div class="auth-divider"><span>or</span></div>
+    <div class="auth-divider"><span data-i18n="auth.or">or</span></div>
 
-    <button id="googleBtn" class="google-btn">Continue with Google</button>
+    <button id="googleBtn" class="google-btn" data-i18n="auth.google">Continue with Google</button>
 
     <p class="auth-toggle">
-      <span id="authToggleText">Don't have an account?</span>
-      <button id="authToggleBtn" type="button">Sign up</button>
+      <span id="authToggleText" data-i18n="auth.noAccount">Don't have an account?</span>
+      <button id="authToggleBtn" type="button" data-i18n="auth.signup">Sign up</button>
     </p>
   </div>
 </div>
@@ -64,9 +64,9 @@
   <!-- HERO -->
   <div class="hero-split">
     <div class="hero-left">
-      <h1>The trail guide that asks about your dog before your fitness level</h1>
-      <p class="sub">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</p>
-      <button id="createProfileBtn" class="btn-primary">Create your dog's profile →</button>
+      <h1 data-i18n="hero.h1">The trail guide that asks about your dog before your fitness level</h1>
+      <p class="sub" data-i18n="hero.sub">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</p>
+      <button id="createProfileBtn" class="btn-primary" data-i18n="hero.cta">Create your dog's profile →</button>
 
       <div class="trust-row">
         <span>
@@ -74,21 +74,21 @@
             <path d="M12 3l7 3v5c0 4.5-2.8 8.3-7 10-4.2-1.7-7-5.5-7-10V6l7-3z"/>
             <path d="M9 12l2 2 4-4"/>
           </svg>
-          Scored on 6 real safety factors
+          <span data-i18n="trust.scored">Scored on 6 real safety factors</span>
         </span>
         <span>
           <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="9"/>
             <path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/>
           </svg>
-          Built by people who hike here
+          <span data-i18n="trust.built">Built by people who hike here</span>
         </span>
         <span>
           <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M21 12a9 9 0 1 1-3-6.7"/>
             <path d="M21 3v6h-6"/>
           </svg>
-          Updated as conditions change
+          <span data-i18n="trust.updated">Updated as conditions change</span>
         </span>
       </div>
     </div>
@@ -97,10 +97,10 @@
 
   <!-- PARTIAL-REVEAL TEASER -->
   <div class="teaser">
-    <h2>These trails are already scored. Add your dog's details to reveal their exact match.</h2>
+    <h2 data-i18n="teaser.h2">These trails are already scored. Add your dog's details to reveal their exact match.</h2>
     <div class="teaser-grid" id="teaserGrid"></div>
     <div class="teaser-cta">
-      <button id="unlockBtn" class="btn-primary" style="background:var(--ink);border:none;">Unlock all our trails →</button>
+      <button id="unlockBtn" class="btn-primary" style="background:var(--ink);border:none;" data-i18n="teaser.unlock">Unlock all our trails →</button>
     </div>
   </div>
 </div>
@@ -117,10 +117,10 @@
   <div class="wrap" id="returningResults" style="padding-top:24px;padding-bottom:60px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <button id="savedTrailsBtn" class="area-pill">Saved trails</button>
+        <button id="savedTrailsBtn" class="area-pill" data-i18n="home.savedTrails">Saved trails</button>
         <span style="font-size:12.5px;color:var(--ink-soft);" id="returningCount"></span>
       </div>
-      <div id="adjustToggle" style="font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;white-space:nowrap;">Adjust for today's conditions →</div>
+      <div id="adjustToggle" style="font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;white-space:nowrap;" data-i18n="home.adjust">Adjust for today's conditions →</div>
     </div>
 
     <!-- TEMPORARY OVERRIDE PANEL — session-only, never touches the saved profile -->
@@ -131,25 +131,25 @@
 
     <div id="adjustPanel" hidden style="background:#EAF1F4;border:1.5px dashed var(--accent);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;">Adjusting for today only</div>
-        <div id="adjustCloseBtn" style="font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;">✕ Close</div>
+        <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;" data-i18n="adjust.title">Adjusting for today only</div>
+        <div id="adjustCloseBtn" style="font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;" data-i18n="adjust.close">✕ Close</div>
       </div>
-      <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;">This won't change your saved profile — just today's list.</p>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;" data-i18n="adjust.note">This won't change your saved profile — just today's list.</p>
 
       <div style="margin-bottom:14px;">
-        <div style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Terrain today</div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;" data-i18n="adjust.terrain">Terrain today</div>
         <div class="adj-pill-row" data-group="terrain" style="display:flex;gap:8px;flex-wrap:wrap;">
-          <div class="adj-pill" data-value="0">Paved / packed dirt only</div>
-          <div class="adj-pill" data-value="1">Gravel &amp; mixed rock OK</div>
-          <div class="adj-pill" data-value="2">Loose rock / scree OK</div>
+          <div class="adj-pill" data-value="0" data-i18n="adjust.t0">Paved / packed dirt only</div>
+          <div class="adj-pill" data-value="1" data-i18n="adjust.t1">Gravel &amp; mixed rock OK</div>
+          <div class="adj-pill" data-value="2" data-i18n="adjust.t2">Loose rock / scree OK</div>
         </div>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Distance today</div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;" data-i18n="adjust.distance">Distance today</div>
         <div class="adj-pill-row" data-group="distance" style="display:flex;gap:8px;flex-wrap:wrap;">
-          <div class="adj-pill" data-value="5">Up to 5 km</div>
-          <div class="adj-pill" data-value="10">Up to 10 km</div>
-          <div class="adj-pill" data-value="99">No limit</div>
+          <div class="adj-pill" data-value="5" data-i18n="adjust.d5">Up to 5 km</div>
+          <div class="adj-pill" data-value="10" data-i18n="adjust.d10">Up to 10 km</div>
+          <div class="adj-pill" data-value="99" data-i18n="adjust.dNo">No limit</div>
         </div>
       </div>
     </div>
@@ -159,8 +159,9 @@
 </div>
 
 
-<footer class="site-footer">DoloPaws &#124; Dolomites trail guide for dogs and their humans.</footer>
+<footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; Dolomites trail guide for dogs and their humans.</footer>
 
+<script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>

@@ -42,9 +42,9 @@ function scoreTrail(t, overrides){
 }
 
 function safetyLabel(level){
-  if(level === 'low-risk') return 'Low-risk terrain';
-  if(level === 'moderate') return 'Moderate — some caution';
-  return 'Caution — exposed sections';
+  if(level === 'low-risk') return t('safety.low');
+  if(level === 'moderate') return t('safety.moderate');
+  return t('safety.caution');
 }
 function safetyClass(level){
   if(level === 'low-risk') return 'safety-low';
@@ -73,7 +73,7 @@ function renderTeaser(){
         <div class="name">${t.name}</div>
         <div class="match">${scoreTrail(t, generic)}%</div>
       </div>
-      <div class="meta">${t.ref ? `Trail ${t.ref} · ` : ''}${t.area} · ${t.distance} km</div>
+      <div class="meta">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km</div>
     </div>
   `).join('');
 }
@@ -135,7 +135,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
 
   const layersBtn = document.createElement('button');
   layersBtn.type = 'button';
-  layersBtn.textContent = 'Layers';
+  layersBtn.textContent = t('map.layers');
   layersBtn.className = 'map-btn';
   layersBtn.style.left = '10px';
   container.appendChild(layersBtn);
@@ -147,7 +147,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   layersBtn.addEventListener('click', () => {
     const open = panel.style.display === 'flex';
     panel.style.display = open ? 'none' : 'flex';
-    layersBtn.textContent = open ? 'Layers' : 'Close ✕';
+    layersBtn.textContent = open ? t('map.layers') : t('map.closeLayers');
   });
 
   function chipStyle(el, on){
@@ -187,11 +187,11 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     return chip;
   }
 
-  mkChip('🥾 Trail routes', 'routes');
-  mkChip('🚡 Lift stations & names', 'lifts');
-  mkChip('💧 Fountains', 'fountains');
-  mkChip('🏔️ Mountain huts', 'huts');
-  const barsChip = mkChip('🍽️ Food & drink', 'barsCafes');
+  mkChip(t('chips.routes'), 'routes');
+  mkChip(t('chips.lifts'), 'lifts');
+  mkChip(t('chips.fountains'), 'fountains');
+  mkChip(t('chips.huts'), 'huts');
+  const barsChip = mkChip(t('chips.food'), 'barsCafes');
 
   // 🐾 Dog-friendly filter — narrows food & drink to places OSM marks
   // dog=yes/leashed or with outdoor seating; dog=no always excluded.
@@ -199,7 +199,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   // the cluster bubbles' counts.
   const dogChip = document.createElement('button');
   dogChip.type = 'button';
-  dogChip.textContent = '🐾 Dog-friendly only';
+  dogChip.textContent = t('chips.dog');
   chipStyle(dogChip, false);
   dogChip.addEventListener('click', () => {
     if(!window._dolopawsBars) return; // GeoJSON not loaded yet
@@ -232,12 +232,12 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     const line = (color, label) => `<span><span style="width:14px;height:3px;background:${color};display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>${label}</span>`;
     const dash = (color, label) => `<span><span style="width:14px;height:0;border-top:2px dashed ${color};display:inline-block;margin-right:4px;vertical-align:middle;"></span>${label}</span>`;
     const dot = (color, label) => `<span><span style="width:9px;height:9px;background:${color};display:inline-block;border-radius:50%;margin-right:4px;vertical-align:middle;border:1px solid #fff;"></span>${label}</span>`;
-    let html = line('#2C5C34', 'Low-risk') + line('#8A5A16', 'Moderate') + line('#9C3A25', 'Caution')
-      + line('#4E90A8', 'Confirmed summer lift') + dash('#5A5548', 'Lift, season unconfirmed');
-    if(overlayStates.fountains) html += dot('#4E90A8', 'Drinking water');
-    if(overlayStates.huts) html += dot('#8A5A16', 'Mountain hut');
-    if(overlayStates.barsCafes) html += dot('#C4652F', 'Food & drink');
-    if(dogFilterOn) html += `<span style="font-weight:700;color:var(--ink);">🐾 dog-friendly filter on</span>`;
+    let html = line('#2C5C34', t('legend.low')) + line('#8A5A16', t('legend.moderate')) + line('#9C3A25', t('legend.caution'))
+      + line('#4E90A8', t('legend.liftConfirmed')) + dash('#5A5548', t('legend.liftUnknown'));
+    if(overlayStates.fountains) html += dot('#4E90A8', t('legend.water'));
+    if(overlayStates.huts) html += dot('#8A5A16', t('legend.hut'));
+    if(overlayStates.barsCafes) html += dot('#C4652F', t('legend.food'));
+    if(dogFilterOn) html += `<span style="font-weight:700;color:var(--ink);">${t('legend.dogOn')}</span>`;
     legend.innerHTML = html;
   }
   renderMapLegend();
@@ -388,9 +388,9 @@ function initGuestMap(){
       } else if(Array.isArray(t.path) && t.path.length > 0){
         [markerLat, markerLng] = t.path[0];
       }
-      const trailNumber = t.ref ? `Trail ${t.ref}<br>` : '';
+      const trailNumber = t.ref ? window.t('card.trailRef', {ref: t.ref}) + '<br>' : '';
       const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
-        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">Trail details →</a>`
+        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">${window.t('card.details')}</a>`
       );
       new maplibregl.Marker({ element: makeTrailDot() }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
       bounds.extend([markerLng, markerLat]);
@@ -672,7 +672,7 @@ function updateMapMarkers(list){
       [markerLat, markerLng] = t.path[0];
     }
     const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
-      `<b>${t.name}</b><br>${t.score}% match<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">Trail details →</a>`
+      `<b>${t.name}</b><br>${window.t('card.match', {n: t.score})}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">${window.t('card.details')}</a>`
     );
     const marker = new maplibregl.Marker({ element: makeTrailDot() })
       .setLngLat([markerLng, markerLat])
@@ -715,17 +715,17 @@ function renderAreaFilters(profile){
     <div class="region-tabs">
       ${['dolomites','savoy'].map(r => `
         <button class="region-tab ${r === activeRegion ? 'active' : ''}" data-region="${r}">
-          ${r === 'dolomites' ? 'Dolomites' : 'Savoy'} <span class="count">${regionCounts[r]}</span>
+          ${r === 'dolomites' ? t('region.dolomites') : t('region.savoy')} <span class="count">${regionCounts[r]}</span>
         </button>`).join('')}
     </div>
     <div class="prov-row">
       <div class="valley-pills">
-        <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">All valleys</div>
+        <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">${t('areas.allValleys')}</div>
         ${valleys.map(([v, n]) => `
           <div class="area-pill ${v === activeValley ? 'active' : ''}" data-valley="${v}">${v} <span class="pill-count">${n}</span></div>`).join('')}
       </div>
       <div class="prov-toggle">
-        ${[['all','All'],['verified','🐾 Verified'],['imported','🗺️ Imported']].map(([k, label]) => `
+        ${[['all', t('filter.all')],['verified', t('filter.verified')],['imported', t('filter.imported')]].map(([k, label]) => `
           <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}">${label}</div>`).join('')}
       </div>
     </div>
@@ -781,11 +781,11 @@ async function renderReturningHomepage(profile){
     await window.DoloPawsAuth.setLastMatches(currentTopIds);
   }
 
-  heading.textContent = profile && profile.name ? `Welcome back — trail matches for ${name}` : 'Welcome back';
+  heading.textContent = profile && profile.name ? t('home.welcomeFor', {name}) : t('home.welcome');
   const baseSubline = newIds.size > 0
-    ? `${newIds.size} new match${newIds.size === 1 ? '' : 'es'} since your last visit.`
-    : profile && profile.name ? `Ranked for ${name}'s saved profile.` : 'Add your dog’s details to personalize this list.';
-  subline.innerHTML = `${baseSubline} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">Edit profile →</a>`;
+    ? (newIds.size === 1 ? t('home.newMatch1') : t('home.newMatches', {n: newIds.size}))
+    : profile && profile.name ? t('home.rankedFor', {name}) : t('home.addDetails');
+  subline.innerHTML = `${baseSubline} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">${t('home.editProfile')}</a>`;
 
   let displayList = showingSavedOnly ? scored.filter(t => currentFavorites[t.id]) : scored;
   displayList = displayList.filter(t => t.region === activeRegion);
@@ -794,8 +794,8 @@ async function renderReturningHomepage(profile){
   if(activeProvenance === 'imported') displayList = displayList.filter(t => t.curated === false);
 
   countEl.textContent = showingSavedOnly
-    ? `${displayList.length} saved trail${displayList.length === 1 ? '' : 's'}`
-    : `${displayList.length} trails`;
+    ? (displayList.length === 1 ? t('home.nSaved1') : t('home.nSaved', {n: displayList.length}))
+    : t('home.nTrails', {n: displayList.length});
 
   updateMapMarkers(displayList);
 
@@ -807,17 +807,17 @@ async function renderReturningHomepage(profile){
   const pageList = displayList.slice((currentPage - 1) * TRAILS_PER_PAGE, currentPage * TRAILS_PER_PAGE);
 
   if(savedTrailsBtn){
-    savedTrailsBtn.textContent = showingSavedOnly ? '← All trails' : 'Saved trails';
+    savedTrailsBtn.textContent = showingSavedOnly ? t('home.allTrailsBtn') : t('home.savedTrails');
     savedTrailsBtn.classList.toggle('active', showingSavedOnly);
   }
 
   if(displayList.length === 0){
-    const label = activeValley !== 'all' ? activeValley : (activeRegion === 'savoy' ? 'Savoy' : 'the Dolomites');
+    const label = activeValley !== 'all' ? activeValley : (activeRegion === 'savoy' ? t('region.savoy') : t('region.theDolomites'));
     const msg = showingSavedOnly && activeValley !== 'all'
-      ? `No saved trails in ${label}. Try a different valley, or go back to all trails.`
+      ? t('home.noSavedValley', {label})
       : showingSavedOnly
-        ? `You haven't saved any trails yet. Click "Save" on a trail below to keep it here.`
-        : `No trails in ${label}. Try a different valley or filter.`;
+        ? t('home.noSaved')
+        : t('home.noTrailsValley', {label});
     listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">${msg}</div>`;
     return;
   }
@@ -832,18 +832,18 @@ async function renderReturningHomepage(profile){
       <div class="body">
         <div class="top-row">
           <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
-          ${t.curated !== false ? `<span class="badge-pill badge-verified">🐾 VERIFIED BY DOLOPAWS</span>` : `<span class="badge-pill badge-imported">🗺️ IMPORTED</span>`}
-          ${isNew ? `<span class="badge-pill badge-new">NEW MATCH</span>` : ''}
+          ${t.curated !== false ? `<span class="badge-pill badge-verified">${window.t('badge.verified')}</span>` : `<span class="badge-pill badge-imported">${window.t('badge.imported')}</span>`}
+          ${isNew ? `<span class="badge-pill badge-new">${window.t('badge.new')}</span>` : ''}
           <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
-            <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
-            <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>
+            <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${window.t('card.match', {n: t.score})}</span>
+            <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? window.t('card.saved') : window.t('card.save')}</button>
           </div>
         </div>
         <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
-        <div class="meta">${t.ref ? `Trail ${t.ref} · ` : ''}${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h</div>
+        <div class="meta">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h</div>
         <span class="tag">${t.terrainType}</span>
-        ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">↑ actual route shape, from real trail data</div>` : ''}
-        <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">Trail details →</a>
+        ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">${window.t('card.routeShape')}</div>` : ''}
+        <a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">${window.t('card.details')}</a>
       </div>
     </div>`;
   }).join('');
@@ -879,12 +879,12 @@ async function renderReturningHomepage(profile){
       });
       return b;
     };
-    nav.appendChild(mkBtn('← Previous', currentPage === 1, -1));
+    nav.appendChild(mkBtn(t('page.prev'), currentPage === 1, -1));
     const info = document.createElement('span');
     info.className = 'page-info';
-    info.textContent = `Page ${currentPage} of ${totalPages}`;
+    info.textContent = t('page.of', {a: currentPage, b: totalPages});
     nav.appendChild(info);
-    nav.appendChild(mkBtn('Next →', currentPage === totalPages, 1));
+    nav.appendChild(mkBtn(t('page.next'), currentPage === totalPages, 1));
     listEl.appendChild(nav);
   }
 }

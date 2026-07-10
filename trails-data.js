@@ -14,7 +14,9 @@ const trails = [
     ],
     rifugi:[],
     desc:"A real, GPS-verified loop from Compatsch using trails 7, 6, and 30 — confirmed by multiple independent hiking guides as wide gravel and paved paths, suitable even for all-terrain strollers. Europe's largest high-alpine meadow, gently rolling and wide open.",
-    tips:"Multiple entry points; go early to find free parking, or take the cable car up from Ortisei/Siusi. This loop skips the longer Saltria detour some guides include via trail 9 — it's the shorter, easier variant of that bigger circuit."
+    tips:"Multiple entry points; go early to find free parking, or take the cable car up from Ortisei/Siusi. This loop skips the longer Saltria detour some guides include via trail 9 — it's the shorter, easier variant of that bigger circuit.",
+    descIt:"Un vero anello GPS-verificato da Compatsch lungo i sentieri 7, 6 e 30 — confermato da più guide escursionistiche indipendenti come percorso largo, in ghiaia e asfalto, adatto perfino ai passeggini da trekking. Il più grande altopiano alpino d'Europa, dolcemente ondulato e aperto.",
+    tipsIt:"Diversi punti di accesso; arriva presto per trovare parcheggio gratuito, oppure sali in funivia da Ortisei/Siusi. Questo anello evita la deviazione più lunga per Saltria via sentiero 9 — è la variante più corta e facile di quel circuito.",
   },
   {
     id:'seceda', name:'Seceda Ridge Trail', area:'Val Gardena', lat:46.599, lng:11.68,
@@ -25,7 +27,9 @@ const trails = [
     waterSources:[{km:1,label:'Gondola station fountain'},{km:4,label:'Rest-area spring'}],
     rifugi:[{km:3,name:'Rifugio Firenze'},{km:6,name:'Baita Troier'}],
     desc:"Sweeping ridge views over Val Gardena with rest areas and water along the way. Reached via the Ortisei–Furnes gondola.",
-    tips:"Keep dogs on lead near the ridge edges; the gondola will want a muzzle carried."
+    tips:"Keep dogs on lead near the ridge edges; the gondola will want a muzzle carried.",
+    descIt:"Vista spettacolare sulla Val Gardena dal crinale, con aree di sosta e acqua lungo il percorso. Si raggiunge con la cabinovia Ortisei–Furnes.",
+    tipsIt:"Tieni il cane al guinzaglio vicino ai bordi del crinale; in cabinovia è richiesta la museruola al seguito.",
   },
   {
     id:'santa-maddalena', name:'Santa Maddalena Viewpoint', area:'Val di Funes', lat:46.647, lng:11.728,
@@ -36,7 +40,9 @@ const trails = [
     waterSources:[{km:0,label:'Village fountain'}],
     rifugi:[],
     desc:"The postcard shot of the Dolomites — a church backed by the Odle peaks. The short out-and-back suits any dog.",
-    tips:"Mostly open meadow with little shade — bring water for warm days."
+    tips:"Mostly open meadow with little shade — bring water for warm days.",
+    descIt:"La cartolina delle Dolomiti — la chiesetta con le Odle alle spalle. Il breve percorso andata e ritorno è adatto a qualsiasi cane.",
+    tipsIt:"Prevalentemente prati aperti con poca ombra — porta acqua nelle giornate calde.",
   },
   {
     id:'tre-cime', name:'Tre Cime di Lavaredo Loop', area:'Sesto Dolomites', lat:46.618, lng:12.301,
@@ -50,7 +56,9 @@ const trails = [
     rifugi:[{km:0,name:'Rifugio Auronzo',lat:46.612205,lng:12.296095},{km:2.1,name:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:5.3,name:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
     startPoint:{lat:46.612205,lng:12.296095,label:'Start here — Rifugio Auronzo toll-road parking'},
     desc:"The classic loop around the iconic three peaks. Wide, well-graded path — one of the friendliest big-name hikes for dogs.",
-    tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early."
+    tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early.",
+    descIt:"Il classico anello attorno alle iconiche tre cime. Sentiero largo e ben tenuto — una delle grandi escursioni più adatte ai cani.",
+    tipsIt:"Parte e arriva al Rifugio Auronzo, su strada a pedaggio. Molto frequentato — arriva presto.",
   },
   {
     id:'cadini', name:'Cadini di Misurina Viewpoint', area:'Sesto Dolomites', lat:46.61, lng:12.265,
@@ -61,7 +69,9 @@ const trails = [
     waterSources:[],
     rifugi:[{km:0,name:'Rifugio Auronzo'}],
     desc:"A short but steep out-and-back to a jagged, fantasy-film viewpoint. Narrow sections with real drop-offs near the top.",
-    tips:"Skip this one in wet weather or with a dog unsure on narrow terrain."
+    tips:"Skip this one in wet weather or with a dog unsure on narrow terrain.",
+    descIt:"Un andata e ritorno breve ma ripido fino a un punto panoramico da film fantasy. Tratti stretti con veri strapiombi vicino alla cima.",
+    tipsIt:"Da evitare con pioggia o con un cane insicuro sui passaggi stretti.",
   },
   {
     id:'prato-piazza', name:'Prato Piazza (Plätzwiese)', area:'Fanes-Sennes-Prags', lat:46.701, lng:12.105,
@@ -72,7 +82,9 @@ const trails = [
     waterSources:[{km:0,label:'Trailhead fountain'},{km:3,label:'Meadow spring'}],
     rifugi:[{km:1,name:'Rifugio Prato Piazza'},{km:4,name:'Rifugio Vallandro'}],
     desc:"Wide alpine meadows with views to Tre Cime and Monte Cristallo, plus a WWI-era fort to explore along the way.",
-    tips:"Rocky in patches but no exposure — a relaxed, scenic option away from the busiest crowds."
+    tips:"Rocky in patches but no exposure — a relaxed, scenic option away from the busiest crowds.",
+    descIt:"Ampi prati alpini con vista su Tre Cime e Monte Cristallo, più un forte della Prima guerra mondiale da esplorare lungo il percorso.",
+    tipsIt:"Roccioso a tratti ma senza esposizione — un'opzione rilassata e panoramica lontano dalla folla.",
   },
   {
     id:'nuvolau', name:'Passo Giau to Rifugio Nuvolau', area:'Cortina / Ampezzo', lat:46.488, lng:12.053,
@@ -83,7 +95,9 @@ const trails = [
     waterSources:[],
     rifugi:[{km:3,name:'Rifugio Nuvolau',lat:46.495231,lng:12.045752}],
     desc:"A steady, rewarding climb from the 2236 m pass up to one of the best 360° viewpoints in the Dolomites.",
-    tips:"Starts already at altitude — go slow with dogs unused to thin air, and carry all the water you'll need."
+    tips:"Starts already at altitude — go slow with dogs unused to thin air, and carry all the water you'll need.",
+    descIt:"Una salita costante e gratificante dal passo a 2236 m fino a uno dei migliori punti panoramici a 360° delle Dolomiti.",
+    tipsIt:"Si parte già in quota — vai piano con i cani non abituati all'aria rarefatta e porta tutta l'acqua che ti serve.",
   },
   {
     id:'sassolungo', name:'Sassolungo–Sassopiatto Loop', area:'Val Gardena / Passo Sella', lat:46.531, lng:11.753,
@@ -94,7 +108,9 @@ const trails = [
     waterSources:[{km:3,label:'Waterfall stream'}],
     rifugi:[{km:4,name:'Rifugio Sasso Piatto'},{km:8,name:'Rifugio Sandro Pertini'},{km:11,name:'Rifugio Vicenza'}],
     desc:"A big day out circling the Sassolungo massif via scree slopes and a chain of rifugi, with a waterfall en route.",
-    tips:"Only for very fit, trail-hardened dogs — long, rocky, with real elevation."
+    tips:"Only for very fit, trail-hardened dogs — long, rocky, with real elevation.",
+    descIt:"Una grande giornata attorno al massiccio del Sassolungo tra ghiaioni e una catena di rifugi, con una cascata lungo il percorso.",
+    tipsIt:"Solo per cani molto allenati e abituati ai sentieri — lungo, roccioso e con un dislivello importante.",
   },
   {
     id:'lago-braies', name:'Lago di Braies Loop', area:'Prags Valley', lat:46.695, lng:12.085, imageIcon:'images/lago-di-braies.webp',
@@ -107,7 +123,9 @@ const trails = [
     rifugi:[{km:0,name:'Lakeside hotel café',lat:46.69932,lng:12.08516}],
     startPoint:{lat:46.69932,lng:12.08516,label:'Start here — main lake access & parking, by Hotel Lago di Braies'},
     desc:"A flat, easy circuit around one of the Dolomites' most photographed lakes. Gentle enough for any dog.",
-    tips:"Extremely popular — expect crowds and paid parking; arrive at opening time."
+    tips:"Extremely popular — expect crowds and paid parking; arrive at opening time.",
+    descIt:"Un giro piatto e facile attorno a uno dei laghi più fotografati delle Dolomiti. Adatto a qualsiasi cane.",
+    tipsIt:"Estremamente frequentato — aspettati folla e parcheggio a pagamento; arriva all'apertura.",
   },
   {
     id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega", lat:46.4091, lng:11.5752, imageIcon:'images/lago-di-carezza.webp',
@@ -120,7 +138,9 @@ const trails = [
     rifugi:[],
     startPoint:{lat:46.41032,lng:11.57585,label:'Start here — main parking area at Lago di Carezza'},
     desc:"A short, flat, mostly forested path around a small, vividly colored lake — a perfect low-effort stop.",
-    tips:"Lake is fenced off (no swimming) but it's a lovely easy leg-stretch for older or less mobile dogs."
+    tips:"Lake is fenced off (no swimming) but it's a lovely easy leg-stretch for older or less mobile dogs.",
+    descIt:"Un sentiero breve, pianeggiante e in gran parte nel bosco attorno a un piccolo lago dai colori vivissimi — una sosta perfetta a basso sforzo.",
+    tipsIt:"Il lago è recintato (niente bagno), ma è una bella passeggiata facile per cani anziani o meno mobili.",
   },
   {
     id:'lago-sorapis', name:'Lago di Sorapis Trail', area:"Cortina d'Ampezzo", lat:46.546, lng:12.226,
@@ -131,7 +151,9 @@ const trails = [
     waterSources:[{km:2,label:'Stream crossing'},{km:5,label:'Lake shore'}],
     rifugi:[],
     desc:"A striking turquoise glacial lake, but the path in has narrow, exposed sections with fixed cables in places.",
-    tips:"Only for sure-footed, confident dogs — this is not a beginner trail despite how popular it is."
+    tips:"Only for sure-footed, confident dogs — this is not a beginner trail despite how popular it is.",
+    descIt:"Uno spettacolare lago glaciale turchese, ma il sentiero di accesso ha tratti stretti ed esposti, in alcuni punti attrezzati con cavi fissi.",
+    tipsIt:"Solo per cani sicuri e con passo fermo — non è un sentiero per principianti, nonostante la popolarità.",
   },
   {
     id:'valley-view', name:'Valley View Trail (partial)', area:'Near Val di Funes', lat:46.64, lng:11.72,
@@ -142,7 +164,9 @@ const trails = [
     waterSources:[{km:1,label:'Creek'},{km:4,label:'Farm fountain'}],
     rifugi:[],
     desc:"A quiet, little-known trail through meadows, creeks, and small farms — a mellow rest-day walk away from the crowds.",
-    tips:"Part of a much longer 35 km route; pick one section rather than attempting the whole thing."
+    tips:"Part of a much longer 35 km route; pick one section rather than attempting the whole thing.",
+    descIt:"Un sentiero tranquillo e poco conosciuto tra prati, ruscelli e piccoli masi — una camminata rilassante lontano dalla folla.",
+    tipsIt:"Fa parte di un percorso molto più lungo di 35 km; scegli un tratto invece di tentare l'intero.",
   },
   {
     id:'durrenstein', name:'Plätzwiese to Dürrenstein', area:'Fanes-Sennes-Prags', lat:46.71, lng:12.13,
@@ -153,7 +177,9 @@ const trails = [
     waterSources:[],
     rifugi:[{km:0,name:'Rifugio Prato Piazza'}],
     desc:"A dramatic ridge hike to a Dolomite panorama, with one short section equipped with a fixed rope near the top.",
-    tips:"Stop at the secondary summit if your dog isn't confident on exposed rock — the view is still superb from there."
+    tips:"Stop at the secondary summit if your dog isn't confident on exposed rock — the view is still superb from there.",
+    descIt:"Un'escursione spettacolare in cresta con panorama dolomitico, con un breve tratto attrezzato con corda fissa vicino alla cima.",
+    tipsIt:"Fermati alla cima secondaria se il tuo cane non è sicuro sulla roccia esposta — la vista è superba anche da lì.",
   },
   {
     id:'piancavallo', name:'Piancavallo Malghe Loop', area:'Friulian Dolomites, Pordenone', lat:46.093, lng:12.43,
@@ -164,7 +190,9 @@ const trails = [
     waterSources:[{km:2,label:'Waterfall stream'},{km:5,label:'Malga fountain'}],
     rifugi:[{km:5,name:'Malga di Piancavallo'}],
     desc:"Rolling mountain pastures in the quieter Friulian Dolomites, passing a waterfall along the way.",
-    tips:"A good pick if you want real mountain scenery without the Val Gardena / Cortina crowds."
+    tips:"A good pick if you want real mountain scenery without the Val Gardena / Cortina crowds.",
+    descIt:"Pascoli ondulati nelle più tranquille Dolomiti Friulane, con una cascata lungo il percorso.",
+    tipsIt:"Un'ottima scelta se cerchi vera montagna senza la folla di Val Gardena e Cortina.",
   },
   {
     id:'lago-barcis', name:'Lake Barcis Loop', area:'Friulian Dolomites, Pordenone', lat:46.25, lng:12.57,
@@ -175,7 +203,9 @@ const trails = [
     waterSources:[{km:0,label:'Lakeside fountain'}],
     rifugi:[],
     desc:"An easy loop around an emerald-green lake with mountain views — relaxed and dog-friendly start to finish.",
-    tips:"The nearby Dint Skywalk viewing platform may not allow dogs — plan to skip it if hiking with yours."
+    tips:"The nearby Dint Skywalk viewing platform may not allow dogs — plan to skip it if hiking with yours.",
+    descIt:"Un anello facile attorno a un lago verde smeraldo con vista sulle montagne — rilassante e dog-friendly dall'inizio alla fine.",
+    tipsIt:"La vicina piattaforma panoramica Dint Skywalk potrebbe non ammettere i cani — prevedi di saltarla se sei con il tuo.",
   },
   {
     id:'geotrail-bulla', name:'Geotrail Bula / Pufels / Bulla', area:'Val Gardena', lat:46.5789, lng:11.6031,
@@ -192,7 +222,9 @@ const trails = [
       {km:4.47,name:'Bulla village (St. Leonard Church)',lat:46.56513,lng:11.6355}
     ],
     desc:"A real, GPS-verified geological education trail between Passo Pinei and the village of Bulla — 8 information panels explain how the Dolomites formed, including a spot where you physically cross the 252-million-year-old Permian-Triassic boundary. Confirmed dog-friendly (leashed, off-leash in some areas) by multiple independent trail guides.",
-    tips:"Reachable by bus (line 172) from Ortisei, or park at Passo Pinei. Best June through October. Moderate terrain with some real ascent/descent — not the flattest option on this list, but not technical either."
+    tips:"Reachable by bus (line 172) from Ortisei, or park at Passo Pinei. Best June through October. Moderate terrain with some real ascent/descent — not the flattest option on this list, but not technical either.",
+    descIt:"Un vero sentiero geologico-didattico GPS-verificato tra Passo Pinei e il paese di Bulla — 8 pannelli informativi spiegano come si sono formate le Dolomiti, incluso un punto in cui si attraversa fisicamente il limite Permiano-Triassico di 252 milioni di anni fa. Confermato dog-friendly (al guinzaglio, libero in alcune zone) da più guide indipendenti.",
+    tipsIt:"Raggiungibile in autobus (linea 172) da Ortisei, o parcheggia al Passo Pinei. Ideale da giugno a ottobre. Terreno moderato con salite e discese vere — non il più piatto della lista, ma nemmeno tecnico.",
   },
   {
     id:'giro-del-bulacia', name:'Giro del Bulacia', area:'Tires / Fiè allo Sciliar', lat:46.545689, lng:11.6124627,
@@ -206,7 +238,9 @@ const trails = [
     rifugi:[{km:null,name:'Tschötsch Alm'},{km:null,name:'Rifugio Puflatsch'},{km:null,name:'Baita Arnica'}],
     startPoint:{lat:46.545689,lng:11.6124627,label:'Start here — Compaccio/Kompatsch area parking'},
     desc:"GPS-verified closed loop (Waymarked Trails relation 9483250) near Bulaccia in the Sciliar-Catinaccio park, officially marked as a \"PU\" trail. Confirmed dog-friendly via an independent hiking blog account of the route done together with a dog. Passes Tschötsch Alm, Rifugio Puflatsch, and the Panche delle Streghe (Witches' Benches) viewpoint.",
-    tips:"There's an electrified cattle gate partway up — approach calmly and guide your dog through rather than letting them investigate it. Skip this trail if there's heavy snow cover (avalanche risk on some sections). Elevation profile and exact water-source/rifugio positions along the km-marks are not yet verified — treat as approximate."
+    tips:"There's an electrified cattle gate partway up — approach calmly and guide your dog through rather than letting them investigate it. Skip this trail if there's heavy snow cover (avalanche risk on some sections). Elevation profile and exact water-source/rifugio positions along the km-marks are not yet verified — treat as approximate.",
+    descIt:"Anello chiuso GPS-verificato (relazione Waymarked Trails 9483250) presso la Bulaccia nel parco Sciliar-Catinaccio, segnalato ufficialmente come sentiero \"PU\". Confermato dog-friendly dal racconto indipendente di un'escursione fatta con un cane. Passa per la Tschötsch Alm, il Rifugio Puflatsch e il punto panoramico delle Panche delle Streghe.",
+    tipsIt:"A metà salita c'è un cancello elettrificato per il bestiame — avvicinati con calma e accompagna il cane nel passaggio senza lasciarglielo ispezionare. Evita il sentiero con molta neve (rischio valanghe su alcuni tratti). Profilo altimetrico e posizioni esatte di fonti e rifugi lungo i km non ancora verificati — considerali approssimativi.",
   },
   {
     id:'sentiero-hans-e-paula-steger', name:'Sentiero Hans e Paula Steger', area:'Compaccio / Saltria, Alpe di Siusi', lat:46.5423615, lng:11.6174164,
@@ -220,7 +254,9 @@ const trails = [
     rifugi:[{km:null,name:'Malga Laranzer'}],
     startPoint:{lat:46.5423615,lng:11.6174164,label:'Start here — Compaccio/Compatsch, Alpe di Siusi cable car mountain station'},
     desc:"GPS-verified path (Waymarked Trails relation 10399914) from Compaccio to Saltria on the Alpe di Siusi, dedicated to alpine skiing pioneers Hans Steger and Paula Wiesinger. Wide, easy, mostly flat with panoramic views of Sassolungo and Sasso Piatto. Explicitly confirmed dog-friendly by an independent source (\"Si può fare con i cani? Sì.\").",
-    tips:"Part of the route crosses a cattle pasture with calves present — keep dogs close. Return the way you came, or take the Almbus back from Saltria to Compaccio. Exact water-source and rifugio km-marks are approximate, not GPS-verified."
+    tips:"Part of the route crosses a cattle pasture with calves present — keep dogs close. Return the way you came, or take the Almbus back from Saltria to Compaccio. Exact water-source and rifugio km-marks are approximate, not GPS-verified.",
+    descIt:"Percorso GPS-verificato (relazione Waymarked Trails 10399914) da Compaccio a Saltria sull'Alpe di Siusi, dedicato ai pionieri dello sci Hans Steger e Paula Wiesinger. Largo, facile, quasi tutto pianeggiante, con vista panoramica su Sassolungo e Sasso Piatto. Confermato esplicitamente dog-friendly da una fonte indipendente (\"Si può fare con i cani? Sì.\").",
+    tipsIt:"Parte del percorso attraversa un pascolo con vitelli — tieni il cane vicino. Torna per la stessa via, oppure prendi l'Almbus da Saltria a Compaccio. I km esatti di fonti d'acqua e rifugi sono approssimativi, non GPS-verificati.",
   },
   {
     id:'sentiero-del-trenino', name:'Sentiero del Trenino', area:'Val Gardena (Ortisei – Santa Cristina – Selva)', lat:46.5752019, lng:11.6452059,
@@ -234,7 +270,9 @@ const trails = [
     rifugi:[],
     startPoint:{lat:46.5752019,lng:11.6452059,label:'Start here — can begin from Ortisei, Santa Cristina, or Selva di Val Gardena'},
     desc:"GPS-verified path (Waymarked Trails relation 9445694) along the old Val Gardena narrow-gauge railway line (1916–1960), connecting Ortisei, Santa Cristina, and Selva. Historical information boards throughout; a restored railway tunnel is walkable near Santa Cristina. Official Val Gardena tourism source rates it \"facile\" (easy) with no particular safety risks, and it's explicitly described elsewhere as ideal to walk with dogs.",
-    tips:"Very gentle, wide, stroller/bike-accessible in parts — a great low-effort option. Multiple access points along the valley floor, so you can walk just one section if you don't want the full 12km."
+    tips:"Very gentle, wide, stroller/bike-accessible in parts — a great low-effort option. Multiple access points along the valley floor, so you can walk just one section if you don't want the full 12km.",
+    descIt:"Percorso GPS-verificato (relazione Waymarked Trails 9445694) lungo la vecchia ferrovia a scartamento ridotto della Val Gardena (1916–1960), che collega Ortisei, Santa Cristina e Selva. Pannelli storici lungo tutto il tracciato; vicino a Santa Cristina si attraversa a piedi una galleria ferroviaria restaurata. La fonte ufficiale del turismo della Val Gardena lo classifica \"facile\" e senza rischi particolari, ed è descritto altrove come ideale da percorrere con i cani.",
+    tipsIt:"Molto dolce, largo, in parte accessibile a passeggini e bici — un'ottima opzione a basso sforzo. Diversi punti di accesso lungo il fondovalle, quindi puoi percorrerne anche solo un tratto se non vuoi fare tutti i 12 km.",
   },
   {
     id:'giro-del-sasso-lungo', name:'Giro del Sasso Lungo', area:'Passo Sella / Sassolungo, Val Gardena', lat:46.5092544, lng:11.7574789,
@@ -248,7 +286,9 @@ const trails = [
     rifugi:[],
     startPoint:{lat:46.5092544,lng:11.7574789,label:'Start here — Passo Sella, paid parking lot behind Hotel Passo Sella'},
     desc:"Route around the Sasso Lungo massif built from three verified OSM/Waymarked Trails sources (relations 9435720, 1640019, and a local bridging segment of Alta Via 9 delle Dolomiti, relation 11094256), deliberately avoiding trail 525 and the Forcella del Sassolungo climb — confirmed to stay 1.48km+ clear of the Forcella at every point, so there's no cable-assisted exposed section on this route. Confirmed dog-friendly for the official long variant of this hike via AllTrails (\"Dogs are welcome and may be off-leash in some areas\") — this route covers similar lower-elevation territory.",
-    tips:"NOT a perfectly closed loop — a 225m gap remains between the start and end of the GPS track (down from 3.17km before adding the Alta Via 9 bridging segment), plus one internal ~920m jump partway through where two source segments meet. This is a long day out (18km) — better suited to fit dogs. The bridging segment hasn't been individually checked for hazards, so keep extra attention there until it's verified on the ground."
+    tips:"NOT a perfectly closed loop — a 225m gap remains between the start and end of the GPS track (down from 3.17km before adding the Alta Via 9 bridging segment), plus one internal ~920m jump partway through where two source segments meet. This is a long day out (18km) — better suited to fit dogs. The bridging segment hasn't been individually checked for hazards, so keep extra attention there until it's verified on the ground.",
+    descIt:"Percorso attorno al massiccio del Sasso Lungo costruito da tre fonti OSM/Waymarked Trails verificate (relazioni 9435720, 1640019 e un segmento locale di raccordo dell'Alta Via 9 delle Dolomiti, relazione 11094256), che evita deliberatamente il sentiero 525 e la salita alla Forcella del Sassolungo — confermato a più di 1,48 km dalla Forcella in ogni punto, quindi senza tratti esposti attrezzati. Confermato dog-friendly per la variante lunga ufficiale via AllTrails — questo percorso copre un territorio simile a quota più bassa.",
+    tipsIt:"NON è un anello perfettamente chiuso — resta un varco di 225 m tra inizio e fine della traccia GPS, più un salto interno di ~920 m dove si incontrano due segmenti. È una lunga giornata (18 km) — adatta a cani allenati. Il segmento di raccordo non è stato verificato singolarmente sul terreno: massima attenzione lì finché non lo sarà.",
   },
 ];
 

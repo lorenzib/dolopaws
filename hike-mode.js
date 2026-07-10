@@ -44,7 +44,7 @@ function initHikeMode(map, trail){
   // ---- UI elements ---------------------------------------------------------
   const startBtn = document.createElement('button');
   startBtn.type = 'button';
-  startBtn.textContent = '🐾 Start hike';
+  startBtn.textContent = window.t ? window.t('hike.start') : '🐾 Start hike';
   startBtn.style.cssText = 'position:absolute;top:10px;left:10px;z-index:6;padding:9px 18px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);';
   container.appendChild(startBtn);
 
@@ -53,7 +53,7 @@ function initHikeMode(map, trail){
   container.appendChild(panel);
 
   const banner = document.createElement('div');
-  banner.textContent = '⚠️ You seem to have left the marked route';
+  banner.textContent = window.t ? window.t('hike.offRoute') : '⚠️ Off route';
   banner.style.cssText = 'position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:7;padding:9px 16px;border-radius:12px;background:#9C3A25;color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.35);display:none;white-space:nowrap;';
   container.appendChild(banner);
 
@@ -77,7 +77,7 @@ function initHikeMode(map, trail){
   function offlineNote(){
     const offline = !navigator.onLine || (Date.now() - lastTileError < 30000);
     return offline
-      ? `<br><span style="font-weight:400;opacity:.85;">📵 Offline — the map may grey out, but your position, distances and warnings keep working. GPS needs no internet.</span>`
+      ? `<br><span style="font-weight:400;opacity:.85;">${window.t('hike.offline')}</span>`
       : '';
   }
 
@@ -142,7 +142,7 @@ function initHikeMode(map, trail){
 
     // Far from the trail entirely (driving there, wrong valley…)
     if (snap.minDist > 2000){
-      panel.innerHTML = `You're ${(snap.minDist / 1000).toFixed(1)} km from this route` + offlineNote();
+      panel.innerHTML = window.t('hike.far', {d: (snap.minDist / 1000).toFixed(1)}) + offlineNote();
       banner.style.display = 'none';
       offRouteStreak = 0;
       return;
@@ -159,15 +159,15 @@ function initHikeMode(map, trail){
     }
 
     // Progress readout
-    const parts = [`Km ${currentKm.toFixed(1)} of ${statedKm}`];
+    const parts = [window.t('hike.kmOf', {a: currentKm.toFixed(1), b: statedKm})];
     const water = nextAhead(trail.waterSources, currentKm, 'label');
-    if (water) parts.push(`💧 in ${water.ahead.toFixed(1)} km`);
+    if (water) parts.push(window.t('hike.waterIn', {d: water.ahead.toFixed(1)}));
     const hut = nextAhead(trail.rifugi, currentKm, 'name');
-    if (hut) parts.push(`🏠 ${hut.label} in ${hut.ahead.toFixed(1)} km`);
+    if (hut) parts.push(window.t('hike.hutIn', {name: hut.label, d: hut.ahead.toFixed(1)}));
     const decision = nextAhead(trail.decisionPoints, currentKm, 'instruction');
-    if (decision && decision.ahead < 0.5) parts.push(`🔀 ahead: ${decision.label}`);
+    if (decision && decision.ahead < 0.5) parts.push(window.t('hike.ahead', {what: decision.label}));
     panel.innerHTML = parts.join(' · ')
-      + (accuracy > 40 ? `<br><span style="font-weight:400;opacity:.8;">GPS accuracy ±${Math.round(accuracy)} m</span>` : '')
+      + (accuracy > 40 ? `<br><span style="font-weight:400;opacity:.8;">${window.t('hike.gps', {m: Math.round(accuracy)})}</span>` : '')
       + offlineNote();
 
     // Drive the elevation-profile cursor from live position, if the page has one.
@@ -178,12 +178,11 @@ function initHikeMode(map, trail){
 
   function onError(err){
     if (err.code === 1){ // PERMISSION_DENIED
-      panel.innerHTML = 'Location permission needed.<br>'
-        + '<span style="font-weight:400;">Enable it for dolopaws.com in your browser settings, then tap Start hike again.</span>';
+      panel.innerHTML = window.t('hike.permission');
       stopHike(true);
       panel.style.display = 'block';
     } else {
-      panel.innerHTML = 'Waiting for GPS signal…';
+      panel.innerHTML = window.t('hike.waiting');
     }
   }
 
@@ -192,10 +191,10 @@ function initHikeMode(map, trail){
     active = true;
     firstFix = true;
     offRouteStreak = 0;
-    startBtn.textContent = '✕ End hike';
+    startBtn.textContent = window.t('hike.end');
     startBtn.style.background = '#9C3A25';
     panel.style.display = 'block';
-    panel.innerHTML = 'Getting your position…';
+    panel.innerHTML = window.t('hike.getting');
     // Community v0: one anonymous count event per trail per device per day
     // (localStorage guard stops pause/resume from double-counting).
     try {
@@ -218,7 +217,7 @@ function initHikeMode(map, trail){
     active = false;
     if (watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
     if (wakeLock){ try { wakeLock.release(); } catch (e) {} wakeLock = null; }
-    startBtn.textContent = '🐾 Start hike';
+    startBtn.textContent = window.t('hike.start');
     startBtn.style.background = 'var(--ink)';
     if (!keepPanel) panel.style.display = 'none';
     banner.style.display = 'none';

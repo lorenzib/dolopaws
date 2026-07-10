@@ -26,9 +26,9 @@
 <div class="topnav">
   <a class="brand" href="index.html"><img src="logo.svg" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
-    <a href="index.html">Home</a>
-    <a href="browse-trails.html">Browse our trails</a>
-    <a href="safety-guide.html">Dog safety guide</a>
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="browse-trails.html" data-i18n="nav.browse">Browse our trails</a>
+    <a href="safety-guide.html" data-i18n="nav.guide">Dog safety guide</a>
     <button id="accountBtn" class="account-btn">Log in</button>
   </div>
 </div>
@@ -36,40 +36,41 @@
 <div id="authModal" class="modal-overlay" hidden>
   <div class="modal">
     <button id="authClose" class="modal-close" aria-label="Close">&times;</button>
-    <h2 id="authTitle">Log in</h2>
-    <p class="hint" id="authHint">Save trails to your account so they follow you across devices.</p>
+    <h2 id="authTitle" data-i18n="nav.login">Log in</h2>
+    <p class="hint" id="authHint" data-i18n="auth.hint">Save trails to your account so they follow you across devices.</p>
     <div id="authError" class="auth-error" hidden></div>
     <form id="authForm">
-      <label class="field-label">Email
+      <label class="field-label"><span data-i18n="auth.email">Email</span>
         <input type="email" id="authEmail" required autocomplete="email">
       </label>
-      <label class="field-label">Password
+      <label class="field-label"><span data-i18n="auth.password">Password</span>
         <input type="password" id="authPassword" required autocomplete="current-password" minlength="6">
       </label>
-      <button type="button" id="forgotPasswordBtn" class="forgot-link">Forgot password?</button>
-      <button type="submit" class="auth-submit" id="authSubmit">Log in</button>
+      <button type="button" id="forgotPasswordBtn" class="forgot-link" data-i18n="auth.forgot">Forgot password?</button>
+      <button type="submit" class="auth-submit" id="authSubmit" data-i18n="nav.login">Log in</button>
     </form>
-    <div class="auth-divider"><span>or</span></div>
-    <button id="googleBtn" class="google-btn">Continue with Google</button>
+    <div class="auth-divider"><span data-i18n="auth.or">or</span></div>
+    <button id="googleBtn" class="google-btn" data-i18n="auth.google">Continue with Google</button>
     <p class="auth-toggle">
-      <span id="authToggleText">Don't have an account?</span>
-      <button id="authToggleBtn" type="button">Sign up</button>
+      <span id="authToggleText" data-i18n="auth.noAccount">Don't have an account?</span>
+      <button id="authToggleBtn" type="button" data-i18n="auth.signup">Sign up</button>
     </p>
   </div>
 </div>
 
 <div class="guide-hero">
-  <div class="eyebrow">Dolomites &amp; Savoy</div>
-  <h1 id="trailCountHeading" style="font-size:clamp(28px,5vw,38px);margin-top:14px;">All our trails</h1>
-  <p class="sub" style="margin-top:14px;">A quick look at every trail we cover. <a href="account.html" style="color:var(--accent);font-weight:700;">Create your dog's profile</a> to see safety scores, terrain detail, and matches picked for them.</p>
+  <div class="eyebrow" data-i18n="browse.eyebrow">Dolomites &amp; Savoy</div>
+  <h1 id="trailCountHeading" style="font-size:clamp(28px,5vw,38px);margin-top:14px;" data-i18n="browse.h1">All our trails</h1>
+  <p class="sub" style="margin-top:14px;" data-i18n="browse.sub">A quick look at every trail we cover. <a href="account.html" style="color:var(--accent);font-weight:700;">Create your dog's profile</a> to see safety scores, terrain detail, and matches picked for them.</p>
 </div>
 
 <div class="wrap" style="padding-bottom:60px;">
   <div class="simple-grid" id="simpleTrailsList"></div>
 </div>
 
-<footer class="site-footer">DoloPaws &#124; Dolomites trail guide for dogs and their humans.</footer>
+<footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; Dolomites trail guide for dogs and their humans.</footer>
 
+<script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="trails-data.js" defer></script>
 <script src="osm-trails-data.js" defer></script>
@@ -119,8 +120,8 @@
         : miniPathSvg(t.path);
       const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
       const provenance = t.curated === false
-        ? `<span class="badge-pill badge-imported">🗺️ Imported</span>`
-        : `<span class="badge-pill badge-verified">🐾 Verified</span>`;
+        ? `<span class="badge-pill badge-imported">${window.t('badge.importedS')}</span>`
+        : `<span class="badge-pill badge-verified">${window.t('badge.verifiedS')}</span>`;
       const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
         .filter(Boolean).join(' · ');
       return `
@@ -133,7 +134,7 @@
             <span style="font-size:11px;font-weight:700;background:${s[1]};color:${s[2]};padding:2px 8px;border-radius:10px;">${s[0]}</span>
             ${provenance}
           </div>
-          <div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">Trail details →</div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>
         </div>
       </a>`;
       }).join('');
@@ -154,12 +155,12 @@
           });
           return b;
         };
-        nav.appendChild(mkBtn('← Previous', page === 1, -1));
+        nav.appendChild(mkBtn(t('page.prev'), page === 1, -1));
         const info = document.createElement('span');
         info.className = 'page-info';
-        info.textContent = `Page ${page} of ${totalPages}`;
+        info.textContent = t('page.of', {a: page, b: totalPages});
         nav.appendChild(info);
-        nav.appendChild(mkBtn('Next →', page === totalPages, 1));
+        nav.appendChild(mkBtn(t('page.next'), page === totalPages, 1));
         list.appendChild(nav);
       }
     }

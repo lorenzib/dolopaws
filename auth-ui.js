@@ -31,16 +31,16 @@
     mode = newMode;
     errorBox.hidden = true;
     if(mode === 'login'){
-      title.textContent = 'Log in';
-      submitBtn.textContent = 'Log in';
-      toggleText.textContent = "Don't have an account?";
-      toggleBtn.textContent = 'Sign up';
+      title.textContent = window.t('nav.login');
+      submitBtn.textContent = window.t('nav.login');
+      toggleText.textContent = window.t('auth.noAccount');
+      toggleBtn.textContent = window.t('auth.signup');
       passwordInput.autocomplete = 'current-password';
     } else {
-      title.textContent = 'Create your account';
-      submitBtn.textContent = 'Sign up';
-      toggleText.textContent = 'Already have an account?';
-      toggleBtn.textContent = 'Log in';
+      title.textContent = window.t('auth.createTitle');
+      submitBtn.textContent = window.t('auth.signup');
+      toggleText.textContent = window.t('auth.haveAccount');
+      toggleBtn.textContent = window.t('nav.login');
       passwordInput.autocomplete = 'new-password';
     }
   }
@@ -54,7 +54,7 @@
     if(!window.DoloPawsAuth) return;
     const email = emailInput.value.trim();
     if(!email){
-      errorBox.textContent = 'Enter your email above first, then click "Forgot password?"';
+      errorBox.textContent = window.t('auth.forgotFirst');
       errorBox.hidden = false;
       return;
     }
@@ -117,7 +117,7 @@
   waitForAuth(() => {
     window.DoloPawsAuth.onChange((user) => {
       if(accountBtn){
-        accountBtn.textContent = user ? 'My account' : 'Log in';
+        accountBtn.textContent = user ? window.t('nav.account') : window.t('nav.login');
       }
       window.dispatchEvent(new CustomEvent('dolopaws-auth-changed', { detail: { user } }));
     });

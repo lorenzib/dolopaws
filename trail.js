@@ -1,7 +1,7 @@
 function safetyLabel(level){
-  if(level === 'low-risk') return 'Low-risk terrain';
-  if(level === 'moderate') return 'Moderate — some caution';
-  return 'Caution — exposed sections';
+  if(level === 'low-risk') return t('safety.low');
+  if(level === 'moderate') return t('safety.moderate');
+  return t('safety.caution');
 }
 function safetyColor(level){
   if(level === 'low-risk') return '#2C5C34';
@@ -21,24 +21,24 @@ function renderTrailDetailContent(t){
 
   const rifugiHtml = rifugi.length > 0
     ? `<ul style="margin:0 0 14px;padding-left:18px;">${rifugi.map(r => `<li>Km ${r.km} — ${r.name}</li>`).join('')}</ul>`
-    : `<p style="margin:0 0 14px;">No rifugi along this route.</p>`;
+    : `<p style="margin:0 0 14px;">${window.t('trail.noRifugi')}</p>`;
 
   const waterHtml = water.length > 0
     ? `<ul style="margin:0 0 14px;padding-left:18px;">${water.map(w => `<li>Km ${w.km} — ${w.label}</li>`).join('')}</ul>`
-    : `<p style="margin:0 0 14px;">No drinking water sources recorded along this route — bring enough for your dog.</p>`;
+    : `<p style="margin:0 0 14px;">${window.t('trail.noWater')}</p>`;
 
   return `
     <div style="margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">🏔️ Rifugi on the way</div>
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.rifugiHead')}</div>
       ${rifugiHtml}
     </div>
     <div style="margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">💧 Drinking water</div>
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.waterHead')}</div>
       ${waterHtml}
     </div>
     <div style="margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">🪑 Resting stations</div>
-      <p style="margin:0;font-style:italic;">Not tracked separately yet — rifugi above often double as rest stops.</p>
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.restHead')}</div>
+      <p style="margin:0;font-style:italic;">${window.t('trail.restNote')}</p>
     </div>
   `;
 }
@@ -249,8 +249,8 @@ function init(){
   const t = (typeof trails !== 'undefined') ? trails.find(x => x.id === trailId) : null;
 
   if(!t){
-    document.getElementById('trailName').textContent = 'Trail not found';
-    document.getElementById('trailMeta').textContent = 'This trail may have moved — try browsing all trails instead.';
+    document.getElementById('trailName').textContent = t('trail.notFound');
+    document.getElementById('trailMeta').textContent = t('trail.notFoundSub');
     document.getElementById('detailSaveBtn').hidden = true;
     return;
   }
@@ -262,11 +262,11 @@ function init(){
     `${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h · ${t.terrainType}`;
   document.getElementById('trailBadges').innerHTML =
     `<span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>` +
-    (t.paid ? `<span class="tag">Paid access</span>` : '');
+    (t.paid ? `<span class="tag">${window.t('card.paid')}</span>` : '');
   document.getElementById('routeSwatch').style.background = safetyColor(t.safetyLevel);
-  document.getElementById('routeSwatchLabel').textContent = `Trail route (${safetyLabel(t.safetyLevel)})`;
-  document.getElementById('trailDesc').textContent = t.desc || '';
-  document.getElementById('trailTips').textContent = t.tips ? `Tip: ${t.tips}` : '';
+  document.getElementById('routeSwatchLabel').textContent = window.t('trail.route', {label: safetyLabel(t.safetyLevel)});
+  document.getElementById('trailDesc').textContent = trField(t, 'desc');
+  document.getElementById('trailTips').textContent = t.tips ? window.t('trail.tip', {tip: trField(t, 'tips')}) : '';
 
   // Community v0: "N dogs hiked this trail this week" — anonymous counts
   // from hike-mode starts. Deliberately renders NOTHING at zero: an empty
@@ -277,7 +277,7 @@ function init(){
       if (!n || n < 1) return;
       const el = document.createElement('div');
       el.style.cssText = 'margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);';
-      el.textContent = `🐾 ${n} dog${n === 1 ? '' : 's'} hiked this trail this week`;
+      el.textContent = n === 1 ? window.t('trail.hikedWeek1') : window.t('trail.hikedWeek', {n});
       const badges = document.getElementById('trailBadges');
       if (badges && badges.parentNode) badges.parentNode.insertBefore(el, badges.nextSibling);
     });
@@ -293,12 +293,11 @@ function init(){
     box.id = 'osmProvenance';
     if (t.curated === false) {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #00897b;background:#e0f2f1;border-radius:6px;font-size:13px;line-height:1.5;';
-      box.innerHTML = '🗺️ <strong>Imported trail</strong> — route, elevation, fountains and rifugi come from verified map data, '
-        + 'but DoloPaws hasn\'t field-reviewed this trail yet.'
-        + (t.waymarkedtrails ? ` <a href="${t.waymarkedtrails}" target="_blank" rel="noopener">View source route on Waymarked Trails ↗</a>` : '');
+      box.innerHTML = window.t('trail.importedBox')
+        + (t.waymarkedtrails ? ` <a href="${t.waymarkedtrails}" target="_blank" rel="noopener">${window.t('trail.viewSource')}</a>` : '');
     } else {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #2E4034;background:#eef3ef;border-radius:6px;font-size:13px;line-height:1.5;';
-      box.innerHTML = '🐾 <strong>Verified by DoloPaws</strong> — route, terrain, water points and dog-specific details individually checked against independent sources.';
+      box.innerHTML = window.t('trail.verifiedBox');
     }
     descEl.parentNode.insertBefore(box, descEl);
   })();
@@ -308,7 +307,7 @@ function init(){
   const coordSource = t.startPoint || t;
   if(typeof coordSource.lat === 'number'){
     document.getElementById('trailCoords').textContent =
-      `Trailhead coordinates: ${coordSource.lat.toFixed(5)}, ${coordSource.lng.toFixed(5)}`;
+      `${window.t('trail.coords')} ${coordSource.lat.toFixed(5)}, ${coordSource.lng.toFixed(5)}`;
   }
 
   // Quick facts — ascent/descent, highest/lowest point.
@@ -323,12 +322,12 @@ function init(){
   if(Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1){
     const elevs = t.elevationProfile.map(p => p.elev);
     const facts = [
-      ['Distance', `${t.distance} km`],
-      ['Ascent', `${t.elevation} m`],
-      ['Descent', `${t.elevation} m`],
-      ['Highest point', `${Math.max(...elevs)} m`],
-      ['Lowest point', `${Math.min(...elevs)} m`],
-      ['Duration', `${t.hours} h`],
+      [window.t('trail.fact.distance'), `${t.distance} km`],
+      [window.t('trail.fact.ascent'), `${t.elevation} m`],
+      [window.t('trail.fact.descent'), `${t.elevation} m`],
+      [window.t('trail.fact.high'), `${Math.max(...elevs)} m`],
+      [window.t('trail.fact.low'), `${Math.min(...elevs)} m`],
+      [window.t('trail.fact.duration'), `${t.hours} h`],
     ];
     document.getElementById('quickFacts').innerHTML = facts.map(([label, val]) => `
       <div style="text-align:center;">
@@ -342,12 +341,12 @@ function init(){
   const tags = [];
   if(Array.isArray(t.path) && t.path.length > 1){
     const first = t.path[0], last = t.path[t.path.length-1];
-    if(Math.hypot(first[0]-last[0], first[1]-last[1]) * 111000 < 30) tags.push('🔁 Loop route');
+    if(Math.hypot(first[0]-last[0], first[1]-last[1]) * 111000 < 30) tags.push(window.t('trail.tag.loop'));
   }
-  if(t.rifugi && t.rifugi.length > 0) tags.push('🍽️ Rest stops on route');
-  if(t.terrainRank === 0) tags.push('👨‍👩‍👧 Family-friendly');
-  if(/geolog/i.test(t.desc || '')) tags.push('🪨 Geological interest');
-  if(!t.paid) tags.push('🎟️ Free access');
+  if(t.rifugi && t.rifugi.length > 0) tags.push(window.t('trail.tag.rest'));
+  if(t.terrainRank === 0) tags.push(window.t('trail.tag.family'));
+  if(/geolog/i.test(t.desc || '')) tags.push(window.t('trail.tag.geo'));
+  if(!t.paid) tags.push(window.t('trail.tag.free'));
   document.getElementById('trailTags').innerHTML = tags.map(tag =>
     `<span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:12px;background:var(--sage-dim);color:var(--ink);">${tag}</span>`
   ).join('');
@@ -368,13 +367,13 @@ function init(){
           65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
           80:'Rain showers',95:'Thunderstorm',
         }[c.weathercode] || 'Mixed conditions';
-        weatherEl.innerHTML = `<b>Weather at the trailhead right now:</b> ${c.temperature_2m}°C, ${codeText}, wind ${c.windspeed_10m} km/h` +
+        weatherEl.innerHTML = `<b>${window.t('trail.weatherNow')}</b> ${c.temperature_2m}°C, ${codeText}, ${window.t('trail.weatherWind')} ${c.windspeed_10m} km/h` +
           (c.precipitation > 0 ? `, ${c.precipitation}mm precipitation` : '') +
-          `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">Live forecast via Open-Meteo</div>`;
+          `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">${window.t('trail.weatherVia')}</div>`;
         weatherEl.hidden = false;
       })
       .catch(() => {
-        weatherEl.innerHTML = '<span style="color:var(--ink-soft);">Live weather unavailable right now.</span>';
+        weatherEl.innerHTML = `<span style="color:var(--ink-soft);">${window.t('trail.weatherUnavail')}</span>`;
         weatherEl.hidden = false;
       });
   }
@@ -388,7 +387,7 @@ function init(){
     const totalKm = t.distance;
     const firstStep = t.startPoint
       ? `${t.startPoint.label} (km 0).`
-      : `Start at ${(t.rifugi || []).find(r => r.km === 0)?.name || t.area} (km 0).`;
+      : window.t('trail.dirStartAt', {name: (t.rifugi || []).find(r => r.km === 0)?.name || t.area});
     const steps = [firstStep];
 
     if(Array.isArray(t.decisionPoints) && t.decisionPoints.length > 0){
@@ -397,7 +396,7 @@ function init(){
       // they're literally the same spot.
       const byKm = new Map();
       (t.rifugi || []).filter(r => r.km > 0).forEach(r => {
-        byKm.set(r.km, [...(byKm.get(r.km) || []), { text: `pass ${r.name}`, name: r.name }]);
+        byKm.set(r.km, [...(byKm.get(r.km) || []), { text: window.t('trail.dirPass', {name: r.name}), name: r.name }]);
       });
       t.decisionPoints.forEach(d => {
         const existing = byKm.get(d.km) || [];
@@ -408,10 +407,10 @@ function init(){
         byKm.set(d.km, [...deduped, { text: instructionText }]);
       });
       const events = [...byKm.entries()].sort((a, b) => a[0] - b[0]);
-      events.forEach(([km, items]) => steps.push(`Km ${km}: ${items.map(i => i.text).join(', then ')}.`));
+      events.forEach(([km, items]) => steps.push(`Km ${km}: ${items.map(i => i.text).join(window.t('trail.dirThen'))}.`));
     }
 
-    steps.push(`Continue back to the start, completing the loop at km ${totalKm}.`);
+    steps.push(window.t('trail.dirEnd', {n: totalKm}));
 
     document.getElementById('trailDirections').innerHTML = steps.map(s => `<li>${s}</li>`).join('');
     document.getElementById('directionsWrap').hidden = false;

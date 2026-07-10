@@ -20,26 +20,27 @@
 <div class="topnav">
   <a class="brand" href="index.html"><img src="logo.svg" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
-    <a href="index.html">Home</a>
+    <a href="index.html" data-i18n="nav.home">Home</a>
     <a href="my-trails.html">Browse our trails</a>
-    <a href="safety-guide.html">Dog safety guide</a>
+    <a href="safety-guide.html" data-i18n="nav.guide">Dog safety guide</a>
     <button id="accountBtn" class="account-btn">My account</button>
   </div>
 </div>
 
 <div class="guide-hero">
-  <div class="eyebrow">Dog safety guide</div>
-  <h1 style="font-size:clamp(28px,5vw,38px);margin-top:14px;">Hiking with your dog at altitude</h1>
-  <p class="sub" id="guideSubline" style="margin-top:14px;">Checking your login status…</p>
+  <div class="eyebrow" data-i18n="guide.eyebrow">Dog safety guide</div>
+  <h1 style="font-size:clamp(28px,5vw,38px);margin-top:14px;" data-i18n="guide.h1">Hiking with your dog at altitude</h1>
+  <p class="sub" id="guideSubline" style="margin-top:14px;" data-i18n="guide.checking">Checking your login status…</p>
 </div>
 
 <div id="loggedOutState" hidden style="text-align:center;padding:40px 20px;">
-  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">This guide is available to logged-in accounts only.</p>
-  <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Go to homepage to log in</a>
+  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;" data-i18n="guide.loggedOutMsg">This guide is available to logged-in accounts only.</p>
+  <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;" data-i18n="guide.goHome">Go to homepage to log in</a>
 </div>
 
 <div id="loggedInState" hidden>
   <div class="guide-article">
+  <div data-lang-block="en">
 
     <section class="guide-section">
       <h2>Protecting paw pads on rocky terrain</h2>
@@ -117,11 +118,91 @@
     </section>
 
   </div>
+  <div data-lang-block="it" hidden>
+
+    <section class="guide-section">
+      <h2>Proteggere i polpastrelli su terreno roccioso</h2>
+      <p>Il calcare delle Dolomiti è spesso tagliente anziché liscio e levigato, e i ghiaioni concentrano sotto le zampe una gran quantità di roccia piccola, instabile e abrasiva. Polpastrelli che non hanno problemi sui sentieri nel bosco di casa possono consumarsi più in fretta del previsto in una giornata intera su questo tipo di superficie.</p>
+      <ul>
+        <li>Controlla i polpastrelli alle soste — cerca arrossamenti, tagli o sensibilità insolita prima di proseguire.</li>
+        <li>Valuta le scarpette da trekking per qualsiasi percorso segnalato con ghiaioni o roccia tagliente, soprattutto sulle distanze lunghe.</li>
+        <li>Abitua il cane al terreno roccioso gradualmente durante la vacanza, invece di iniziare dal percorso più duro.</li>
+        <li>La roccia fredda o bagnata del primo mattino può essere abrasiva quanto quella calda del pomeriggio — conta la consistenza, non solo la temperatura.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section">
+      <h2>Riconoscere presto il colpo di calore</h2>
+      <p>I prati alpini aperti e le creste esposte offrono poca ombra anche quando la temperatura dell'aria sembra moderata — in quota l'esposizione al sole è più intensa di quanto sembri. Lo stress da caldo nei cani peggiora più in fretta di quanto la maggior parte dei proprietari si aspetti, e quando l'ansimare sembra grave, spesso il cane è già in difficoltà.</p>
+      <ul>
+        <li>Primi segnali: ansimare più del dovuto per il ritmo, cercare l'ombra spontaneamente, rallentare in piano.</li>
+        <li>Segnali di aggravamento: gengive o lingua rosso acceso, andatura instabile, riluttanza a proseguire — fermati subito e raffredda il cane se li noti.</li>
+        <li>Raffreddamento sul sentiero: bagna pancia e polpastrelli con acqua fresca (non gelata), spostati all'ombra e aspetta — non proseguire "fino al prossimo punto di sosta".</li>
+        <li>Prevenire batte curare: nelle giornate calde scegli percorsi più ombreggiati e parti presto per evitare il sole di mezzogiorno sui tratti esposti.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section">
+      <h2>Adattarsi alla quota con cuccioli e cani anziani</h2>
+      <p>Molti punti di partenza famosi delle Dolomiti si trovano già a 1.800–2.300 m: un'escursione può iniziare a una quota che il tuo cane non ha mai sperimentato prima ancora di fare un passo. Cuccioli e cani anziani sono più sensibili di un adulto in forma.</p>
+      <ul>
+        <li>I cuccioli vanno abituati gradualmente a distanza e dislivello — il primo viaggio sulle Dolomiti non è il momento di tentare una lunga cresta.</li>
+        <li>I cani anziani possono stancarsi in salita ben prima di mostrare segni evidenti — meglio percorsi più corti con tratti pianeggianti frequenti che lunghe salite costanti.</li>
+        <li>Entrambi beneficiano di percorsi con rifugi o punti d'acqua frequenti — non solo per bere, ma come occasioni naturali e senza pressione per riposare.</li>
+        <li>Gli anelli pianeggianti dei laghi a bassa quota (come Lago di Carezza o Lago di Braies) sono un ottimo primo giorno prima di tentare qualcosa di più alto.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section">
+      <h2>Conosci la corporatura del tuo cane: avvertenze per gruppi di razze</h2>
+      <p>Lo stesso sentiero può essere una passeggiata per un cane e un rischio concreto per un altro — e la differenza di solito è l'anatomia, non la forma fisica. Questi sono i gruppi di razze per cui la montagna richiede accorgimenti specifici.</p>
+
+      <h3 style="font-size:15px;margin:18px 0 8px;">Razze brachicefale (muso corto) — Bulldog, Carlini, Bouledogue francesi, Boxer, Boston Terrier, Shih Tzu</h3>
+      <ul>
+        <li>Le vie aeree accorciate rendono l'ansimare — il principale sistema di raffreddamento del cane — molto meno efficace. Queste razze si surriscaldano a temperature e ritmi che gli altri cani non notano nemmeno, e la quota peggiora le cose: aria più rarefatta significa meno ossigeno a ogni respiro attraverso vie aeree già ristrette.</li>
+        <li>In estate considera ad alto rischio qualsiasi percorso esposto e senza ombra, a prescindere da distanza e difficoltà. Per queste razze la partenza all'alba non è un consiglio: è il piano.</li>
+        <li>Un respiro rumoroso e affaticato che non si calma entro un paio di minuti di sosta è un segnale per tornare indietro, non per riposare.</li>
+        <li>Preferisci brevi anelli sui laghi con accesso all'acqua a qualsiasi salita prolungata — la salita stessa è un carico cardio-respiratorio che questi cani non riescono a smaltire.</li>
+      </ul>
+
+      <h3 style="font-size:15px;margin:18px 0 8px;">Razze giganti e pesanti — Bovari del bernese, San Bernardo, Alani, Terranova, Mastini</h3>
+      <ul>
+        <li>Il peso moltiplica l'impatto in discesa. Una lunga discesa su calcare duro carica le articolazioni molto più della salita — scegli anelli con discese graduali e lascia che sia il cane a dettare un passo lento.</li>
+        <li>Displasia di anca e gomito sono comuni in queste razze; un cane che accorcia il passo o "saltella" in salita ti sta dicendo qualcosa. Meglio percorsi corti con tratti in piano che un'unica lunga salita.</li>
+        <li>Il doppio mantello fatto per l'inverno rende il caldo estivo un fattore serio anche nelle razze che amano la neve — in una giornata calda comportati come faresti con una razza brachicefala.</li>
+        <li>Molte cabinovie che accettano cani richiedono la museruola e alcune hanno limiti pratici di taglia — verifica il singolo impianto prima di costruirci attorno un itinerario.</li>
+      </ul>
+
+      <h3 style="font-size:15px;margin:18px 0 8px;">Razze piccole e a zampe corte — Bassotti, Corgi, Jack Russell, piccoli terrier</h3>
+      <ul>
+        <li>Ghiaioni e pietraie che un Labrador scavalca sono pareti da arrampicata per zampe corte — lo stesso "tratto roccioso" significa uno sforzo molto diverso a seconda della lunghezza delle zampe. Attenzione ai salti ripetuti giù dalle rocce, che caricano la colonna nelle razze a schiena lunga come i Bassotti.</li>
+        <li>La distanza scala in modo diverso: 10 km sono molti più passi per un Corgi che per un Collie. Dimezza le tue aspettative di distanza all'inizio e osserva come recupera.</li>
+        <li>I corpi piccoli perdono calore in fretta da bagnati — un temporale alpino o un bagno a fine giornata infreddolisce un terrier di 6 kg molto prima di dare fastidio a un cane grande. Porta qualcosa di asciutto per loro.</li>
+      </ul>
+
+      <h3 style="font-size:15px;margin:18px 0 8px;">Razze da pastore — Border Collie, Pastori australiani, Shetland, Cattle Dog</h3>
+      <ul>
+        <li>Il problema raramente è la forma fisica — è l'istinto. I pascoli alpini con bovini e pecore al pascolo libero sono esattamente lo stimolo per cui queste razze sono programmate, e il bestiame con madri protettive (o cani da guardiania) non tollera di essere radunato. Tieni le razze da pastore al guinzaglio in qualsiasi pascolo, punto.</li>
+        <li>Questi cani nascondono la fatica dietro la motivazione: continuerebbero a "lavorare" ben oltre il ragionevole. Imponi tu le pause che non si prenderebbero da soli.</li>
+      </ul>
+
+      <h3 style="font-size:15px;margin:18px 0 8px;">Levrieri e razze magre — Greyhound, Whippet, Vizsla, Pointer</h3>
+      <ul>
+        <li>Poco grasso corporeo e pelo sottile: questi cani prendono freddo da fermi — il picnic in vetta piacevole per te è una sessione di brividi per loro. Un cappottino leggero per le soste si guadagna il posto nello zaino.</li>
+        <li>La pelle sottile si taglia facilmente su calcare tagliente e arbusti fitti; alle pause controlla zampe e fianchi, non solo i polpastrelli.</li>
+      </ul>
+
+      <p style="font-size:13px;color:var(--ink-soft);">I punteggi di compatibilità DoloPaws pesano già la sensibilità al caldo per le razze più colpite — ma un punteggio non vede il meteo di oggi né il tuo cane specifico. Quando il profilo del tuo cane e la giornata sono in disaccordo, credi alla giornata.</p>
+    </section>
+
+  </div>
+  </div>
   <div class="wrap">
-    <div class="site-footer" style="padding-top:0;">This guide is general information, not veterinary advice. If your dog shows signs of heat stress, injury, or exhaustion on trail, prioritize getting them to shade, water, and — if symptoms don't resolve quickly — a vet.</div>
+    <div class="site-footer" style="padding-top:0;" data-i18n="guide.disclaimer">This guide is general information, not veterinary advice. If your dog shows signs of heat stress, injury, or exhaustion on trail, prioritize getting them to shade, water, and — if symptoms don't resolve quickly — a vet.</div>
   </div>
 </div>
 
+<script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="auth-ui.js" defer></script>
 <script>
@@ -137,12 +218,12 @@
     waitForAuth(() => {
       window.DoloPawsAuth.onChange((user) => {
         if(!user){
-          guideSubline.textContent = "You're not logged in.";
+          guideSubline.textContent = window.t('guide.notLogged');
           loggedOutState.hidden = false;
           loggedInState.hidden = true;
           return;
         }
-        guideSubline.textContent = "The things that cause the most trouble on alpine trails aren't the elevation — they're paws, heat, pace, and knowing your dog's build.";
+        guideSubline.textContent = window.t('guide.subline');
         loggedOutState.hidden = true;
         loggedInState.hidden = false;
       });

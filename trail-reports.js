@@ -55,7 +55,7 @@ function initTrailReports(map, trail){
     if (!dc || (!dc.name && !dc.breed)) return '';
     const who = [dc.name ? `${dc.name}'s human` : null, dc.breed || null]
       .filter(Boolean).join(' · ');
-    return ` · reported by ${trEsc(who)}`;
+    return window.t('reports.reportedBy', {who: trEsc(who)});
   }
 
   function render(flags){
@@ -70,7 +70,7 @@ function initTrailReports(map, trail){
       ? window.DoloPawsAuth.currentUser.uid : null;
 
     if (flags.length === 0){
-      listEl.innerHTML = `<p style="font-size:13.5px;color:var(--ink-soft);margin:0;">No community reports for this trail yet. Hiked it recently? Let other dog owners know if you spotted anything.</p>`;
+      listEl.innerHTML = `<p style="font-size:13.5px;color:var(--ink-soft);margin:0;">${window.t('reports.empty')}</p>`;
     } else {
       listEl.innerHTML = flags.map(f => {
         const t = FLAG_TYPES[f.type] || FLAG_TYPES.other;
@@ -82,14 +82,14 @@ function initTrailReports(map, trail){
         const kmChip = (typeof f.km === 'number')
           ? `<span style="font-size:11px;font-weight:700;background:rgba(0,0,0,.07);padding:2px 8px;border-radius:10px;margin-left:8px;">km ${f.km}</span>` : '';
         const staleNote = stale
-          ? `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;font-style:italic;">from last season — unconfirmed</div>` : '';
+          ? `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;font-style:italic;">${window.t('reports.stale')}</div>` : '';
         const removeLink = (uid && f.uid === uid)
-          ? ` · <a href="#" data-remove="${trEsc(f.id)}" style="color:#9C3A25;">Remove</a>` : '';
+          ? ` · <a href="#" data-remove="${trEsc(f.id)}" style="color:#9C3A25;">${window.t('reports.remove')}</a>` : '';
         const reportLink = (uid && f.uid !== uid)
-          ? ` · <a href="#" data-report="${trEsc(f.id)}" style="color:var(--ink-soft);">Report</a>` : '';
+          ? ` · <a href="#" data-report="${trEsc(f.id)}" style="color:var(--ink-soft);">${window.t('reports.report')}</a>` : '';
         return `
         <div style="background:${bg};border:1.5px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:10px;${stale ? 'opacity:.75;' : ''}">
-          <div style="font-weight:700;color:var(--ink);font-size:13.5px;">${t.icon} ${t.label}${kmChip}</div>
+          <div style="font-weight:700;color:var(--ink);font-size:13.5px;">${t.icon} ${window.t('flag.' + f.type)}${kmChip}</div>
           ${f.text ? `<div style="font-size:13px;color:var(--ink);margin-top:5px;">${trEsc(f.text)}</div>` : ''}
           <div style="font-size:11.5px;color:var(--ink-soft);margin-top:5px;">${dateStr}${dogContextLine(f)}${removeLink}${reportLink}</div>
           ${staleNote}
@@ -101,7 +101,7 @@ function initTrailReports(map, trail){
     listEl.querySelectorAll('[data-remove]').forEach(a => {
       a.addEventListener('click', async (e) => {
         e.preventDefault();
-        if (!confirm('Remove your report?')) return;
+        if (!confirm(window.t('reports.confirmRemove'))) return;
         await window.DoloPawsCommunity.deleteFlag(a.dataset.remove);
         load();
       });
@@ -110,7 +110,7 @@ function initTrailReports(map, trail){
       a.addEventListener('click', async (e) => {
         e.preventDefault();
         await window.DoloPawsCommunity.reportContent('flag', a.dataset.report, 'inappropriate or inaccurate');
-        a.replaceWith(Object.assign(document.createElement('span'), { textContent: ' · reported ✓' }));
+        a.replaceWith(Object.assign(document.createElement('span'), { textContent: window.t('reports.reported') }));
       });
     });
 
@@ -129,7 +129,7 @@ function initTrailReports(map, trail){
         const marker = new maplibregl.Marker({ element: el, offset: [0, 0] })
           .setLngLat([lng, lat])
           .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(
-            `<b>${t.icon} ${t.label}</b><br>Km ${f.km}${f.text ? `<br>${trEsc(f.text)}` : ''}<br><small>Community report</small>`))
+            `<b>${t.icon} ${window.t('flag.' + f.type)}</b><br>Km ${f.km}${f.text ? `<br>${trEsc(f.text)}` : ''}<br><small>${window.t('reports.community')}</small>`))
           .addTo(map);
         flagMarkers.push(marker);
       });
@@ -155,22 +155,22 @@ function initTrailReports(map, trail){
     overlay.innerHTML = `
       <div class="modal" style="max-width:420px;">
         <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
-        <h2 style="font-size:19px;">Report something on this trail</h2>
-        <p class="hint">Help the next dog owner. Your report shows alongside DoloPaws' verified rating — it never replaces it.</p>
+        <h2 style="font-size:19px;">${window.t('reports.modalTitle')}</h2>
+        <p class="hint">${window.t('reports.modalHint')}</p>
         <div data-types style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;">
           ${Object.entries(FLAG_TYPES).map(([key, t]) => `
-            <button type="button" data-type="${key}" style="padding:10px 8px;border-radius:10px;border:1.5px solid var(--paper-line);background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;">${t.icon} ${t.label}</button>`).join('')}
+            <button type="button" data-type="${key}" style="padding:10px 8px;border-radius:10px;border:1.5px solid var(--paper-line);background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;">${t.icon} ${window.t('flag.' + key)}</button>`).join('')}
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink);margin-bottom:6px;">
-          <input type="checkbox" data-haskm> I know roughly where it was
+          <input type="checkbox" data-haskm> ${window.t('reports.knowWhere')}
         </label>
         <div data-kmrow hidden style="margin-bottom:12px;">
           <input type="range" data-km min="0" max="${maxKm}" step="0.1" value="0" style="width:100%;">
-          <div style="font-size:12px;color:var(--ink-soft);text-align:center;">at km <b data-kmval>0</b> of ${maxKm}</div>
+          <div style="font-size:12px;color:var(--ink-soft);text-align:center;">${window.t('reports.atKm', {max: maxKm})}</div>
         </div>
-        <textarea data-text maxlength="300" rows="3" placeholder="Anything the next hiker should know? (optional, max 300 characters)" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
+        <textarea data-text maxlength="300" rows="3" placeholder="${window.t('reports.placeholder')}" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
         <div data-err style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
-        <button type="button" data-submit class="auth-submit" style="margin-top:12px;">Post report</button>
+        <button type="button" data-submit class="auth-submit" style="margin-top:12px;">${window.t('reports.post')}</button>
       </div>`;
     document.body.appendChild(overlay);
 
@@ -199,18 +199,18 @@ function initTrailReports(map, trail){
     overlay.querySelector('[data-submit]').addEventListener('click', async () => {
       const err = overlay.querySelector('[data-err]');
       if (!selectedType){
-        err.textContent = 'Pick what kind of report this is.'; err.hidden = false; return;
+        err.textContent = window.t('reports.pickType'); err.hidden = false; return;
       }
       const km = hasKm.checked ? Math.round(parseFloat(kmInput.value) * 10) / 10 : null;
       const text = overlay.querySelector('[data-text]').value.trim();
       const submitBtn = overlay.querySelector('[data-submit]');
-      submitBtn.disabled = true; submitBtn.textContent = 'Posting…';
+      submitBtn.disabled = true; submitBtn.textContent = window.t('reports.posting');
       const res = await window.DoloPawsCommunity.addFlag(trail.id, selectedType, km, text);
       if (res.ok){ close(); load(); }
       else {
-        err.textContent = res.message || 'Could not save — try again.';
+        err.textContent = res.message || window.t('reports.error');
         err.hidden = false;
-        submitBtn.disabled = false; submitBtn.textContent = 'Post report';
+        submitBtn.disabled = false; submitBtn.textContent = window.t('reports.post');
       }
     });
   }
