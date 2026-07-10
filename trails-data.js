@@ -59,6 +59,11 @@ const trails = [
     tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early.",
     descIt:"Il classico anello attorno alle iconiche tre cime. Sentiero largo e ben tenuto — una delle grandi escursioni più adatte ai cani.",
     tipsIt:"Parte e arriva al Rifugio Auronzo, su strada a pedaggio. Molto frequentato — arriva presto.",
+    insights:[
+      {en:"During the First World War the front line between Italy and Austria-Hungary ran right through this massif — trenches, tunnels and fortifications of the open-air war memorial around Monte Paterno are still visible from the loop.", it:"Durante la Prima guerra mondiale il fronte tra Italia e Austria-Ungheria passava proprio per questo massiccio — trincee, gallerie e fortificazioni del museo all'aperto attorno al Monte Paterno sono ancora visibili dal sentiero.", source:"Tre Cime / Drei Zinnen Nature Park"},
+      {en:"The three towers are dolomite rock — fossilised reef from a tropical sea of the Triassic. The name honours Déodat de Dolomieu, the French geologist who first described the mineral in 1791.", it:"Le tre cime sono in roccia dolomia — scogliera fossile di un mare tropicale del Triassico. Il nome onora Déodat de Dolomieu, il geologo francese che per primo descrisse il minerale nel 1791.", source:"UNESCO World Heritage Centre", url:"https://whc.unesco.org/en/list/1237/"},
+      {en:"The whole loop stays above 2,200 m: weather can flip fast even in August. Pack a dry layer for short-haired dogs and start early — you'll beat both the storms and the crowds.", it:"L'intero anello resta sopra i 2.200 m: il meteo può cambiare in fretta anche ad agosto. Porta qualcosa di asciutto per i cani a pelo corto e parti presto — eviterai temporali e folla.", source:"DoloPaws field notes"},
+    ],
   },
   {
     id:'cadini', name:'Cadini di Misurina Viewpoint', area:'Sesto Dolomites', lat:46.61, lng:12.265,
@@ -126,6 +131,11 @@ const trails = [
     tips:"Extremely popular — expect crowds and paid parking; arrive at opening time.",
     descIt:"Un giro piatto e facile attorno a uno dei laghi più fotografati delle Dolomiti. Adatto a qualsiasi cane.",
     tipsIt:"Estremamente frequentato — aspettati folla e parcheggio a pagamento; arriva all'apertura.",
+    insights:[
+      {en:"Lago di Braies is a natural landslide-dammed lake: an ancient rockfall from the Croda del Becco sealed the valley floor, and the water level still swings noticeably between snowmelt and late summer.", it:"Il Lago di Braies è un lago di sbarramento naturale: un'antica frana dalla Croda del Becco chiuse il fondovalle, e il livello dell'acqua varia ancora sensibilmente tra il disgelo e la tarda estate.", source:"IDM Südtirol / South Tyrol tourism", url:"https://www.suedtirol.info"},
+      {en:"The pale rock all around is fossilised Triassic reef more than 200 million years old — the geological uniqueness that made the Dolomites a UNESCO World Heritage Site in 2009.", it:"La roccia chiara tutt'intorno è scogliera fossile del Triassico, di oltre 200 milioni di anni — l'unicità geologica che ha reso le Dolomiti Patrimonio dell'Umanità UNESCO nel 2009.", source:"UNESCO World Heritage Centre", url:"https://whc.unesco.org/en/list/1237/"},
+      {en:"Best practice with dogs: arrive before about 9:00 — later the shuttle crowds pack the boathouse corner. The east shore keeps its shade longer, which paws appreciate on warm mornings.", it:"Con i cani conviene arrivare prima delle 9:00 — più tardi la folla delle navette riempie l'angolo del pontile. La sponda est resta in ombra più a lungo, un sollievo per le zampe nelle mattine calde.", source:"DoloPaws field notes"},
+    ],
   },
   {
     id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega", lat:46.4091, lng:11.5752, imageIcon:'images/lago-di-carezza.webp',
@@ -141,6 +151,11 @@ const trails = [
     tips:"Lake is fenced off (no swimming) but it's a lovely easy leg-stretch for older or less mobile dogs.",
     descIt:"Un sentiero breve, pianeggiante e in gran parte nel bosco attorno a un piccolo lago dai colori vivissimi — una sosta perfetta a basso sforzo.",
     tipsIt:"Il lago è recintato (niente bagno), ma è una bella passeggiata facile per cani anziani o meno mobili.",
+    insights:[
+      {en:"Ladin legend says a sorcerer, rejected by the water nymph Ondina, shattered a rainbow into the lake in his rage — hence its Ladin name 'Lec de Ergobando', the rainbow lake.", it:"La leggenda ladina narra che uno stregone, respinto dalla ninfa Ondina, in un impeto d'ira frantumò un arcobaleno nel lago — da qui il nome ladino 'Lec de Ergobando', il lago dell'arcobaleno.", source:"Val d'Ega / Eggental tourism", url:"https://www.eggental.com"},
+      {en:"The lake has no surface inflow or outflow — it is fed by underground springs from the Latemar massif, which is why its size and colour change dramatically with the seasons.", it:"Il lago non ha immissari né emissari in superficie — è alimentato da sorgenti sotterranee del massiccio del Latemar, ed è per questo che dimensioni e colore cambiano così tanto con le stagioni.", source:"Val d'Ega / Eggental tourism", url:"https://www.eggental.com"},
+      {en:"Best practice with dogs: the shoreline is fenced (no swimming), so bring water rather than counting on the lake. Short, flat and partly boardwalked, it's an ideal first-day acclimatisation walk at altitude.", it:"Con i cani: la riva è recintata (niente bagno), quindi porta acqua invece di contare sul lago. Corto, piano e in parte su passerelle, è la passeggiata ideale per il primo giorno di acclimatamento in quota.", source:"DoloPaws field notes"},
+    ],
   },
   {
     id:'lago-sorapis', name:'Lago di Sorapis Trail', area:"Cortina d'Ampezzo", lat:46.546, lng:12.226,

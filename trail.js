@@ -36,10 +36,6 @@ function renderTrailDetailContent(t){
       <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.waterHead')}</div>
       ${waterHtml}
     </div>
-    <div style="margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.restHead')}</div>
-      <p style="margin:0;font-style:italic;">${window.t('trail.restNote')}</p>
-    </div>
   `;
 }
 
@@ -242,26 +238,31 @@ function addTerrainSource(map){
   });
 }
 
-// Lifts near this trail — same data the homepage map shows (the global
-// `gondolas` array from trails-data.js), filtered to a 10 km radius so a
-// single trail page doesn't render 700+ lift lines and 1,400 markers.
-function renderNearbyLifts(map, t){
-  if (typeof gondolas === 'undefined' || !Array.isArray(gondolas)) return;
-  if (typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
-  const near = gondolas.filter(g => {
-    if (!g.from || typeof g.from.lat !== 'number') return false;
-    const d = Math.hypot((g.from.lat - t.lat) * 111000,
-                         (g.from.lng - t.lng) * 111000 * Math.cos(t.lat * Math.PI / 180));
-    return d < 10000;
-  });
-  if (!near.length) return;
+// Lifts on the trail detail map — ALL of them, same data as the homepage
+// (the global `gondolas` array from trails-data.js). Lines and stations are
+// GeoJSON layers rather than DOM markers, so rendering all ~700 lifts and
+// ~1,400 stations costs nothing.
+function renderAllLifts(map){
+  if (typeof gondolas === 'undefined' || !Array.isArray(gondolas) || !gondolas.length) return;
 
-  const features = near.map(g => ({
-    type: 'Feature',
-    properties: { name: g.name, note: g.note || '', status: g.status },
-    geometry: { type: 'LineString', coordinates: [[g.from.lng, g.from.lat], [g.to.lng, g.to.lat]] },
-  }));
-  map.addSource('detail-gondolas', { type: 'geojson', data: { type: 'FeatureCollection', features } });
+  const lineFeatures = [], stationFeatures = [];
+  gondolas.forEach(g => {
+    if (!g.from || !g.to || typeof g.from.lat !== 'number' || typeof g.to.lat !== 'number') return;
+    lineFeatures.push({
+      type: 'Feature',
+      properties: { name: g.name, note: g.note || '', status: g.status },
+      geometry: { type: 'LineString', coordinates: [[g.from.lng, g.from.lat], [g.to.lng, g.to.lat]] },
+    });
+    [g.from, g.to].forEach(st => {
+      stationFeatures.push({
+        type: 'Feature',
+        properties: { name: g.name, label: st.label || '', note: g.note || '' },
+        geometry: { type: 'Point', coordinates: [st.lng, st.lat] },
+      });
+    });
+  });
+
+  map.addSource('detail-gondolas', { type: 'geojson', data: { type: 'FeatureCollection', features: lineFeatures } });
   map.addLayer({
     id: 'detail-gondolas-line',
     type: 'line',
@@ -274,23 +275,22 @@ function renderNearbyLifts(map, t){
       'line-dasharray': ['match', ['get', 'status'], 'summer', ['literal', [1, 0]], ['literal', [2, 1]]],
     },
   });
-  map.on('click', 'detail-gondolas-line', (e) => {
-    const p = e.features[0].properties;
-    new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat).setHTML(`<b>${p.name}</b><br>${p.note}`).addTo(map);
+  map.addSource('detail-gondola-stations', { type: 'geojson', data: { type: 'FeatureCollection', features: stationFeatures } });
+  map.addLayer({
+    id: 'detail-gondola-stations-layer',
+    type: 'circle',
+    source: 'detail-gondola-stations',
+    paint: { 'circle-radius': 5, 'circle-color': '#4E90A8', 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff' },
   });
-  map.on('mouseenter', 'detail-gondolas-line', () => { map.getCanvas().style.cursor = 'pointer'; });
-  map.on('mouseleave', 'detail-gondolas-line', () => { map.getCanvas().style.cursor = ''; });
 
-  near.forEach(g => {
-    [g.from, g.to].forEach(st => {
-      if (!st || typeof st.lat !== 'number') return;
-      const el = document.createElement('div');
-      el.className = 'dp-marker';
-      el.style.background = '#4E90A8';
-      el.textContent = '🚡';
-      new maplibregl.Marker({ element: el })
-        .setLngLat([st.lng, st.lat])
-        .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b>${st.label ? '<br>' + st.label : ''}${g.note ? '<br>' + g.note : ''}`))
+  ['detail-gondolas-line', 'detail-gondola-stations-layer'].forEach(id => {
+    map.on('mouseenter', id, () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', id, () => { map.getCanvas().style.cursor = ''; });
+    map.on('click', id, (e) => {
+      const p = e.features[0].properties;
+      new maplibregl.Popup({ offset: 10 })
+        .setLngLat(e.lngLat)
+        .setHTML(`<b>🚡 ${p.name}</b>${p.label ? '<br>' + p.label : ''}${p.note ? '<br>' + p.note : ''}`)
         .addTo(map);
     });
   });
@@ -433,6 +433,22 @@ function init(){
   }
   document.getElementById('trailDetailContent').innerHTML = renderTrailDetailContent(t);
 
+  // "Good to know" — curated insights (history, geology, best practice)
+  // with cited sources, for trails that have them in trails-data.js.
+  if (Array.isArray(t.insights) && t.insights.length){
+    const lang = (window.DoloPawsI18n && window.DoloPawsI18n.lang) || 'en';
+    const box = document.createElement('div');
+    box.style.cssText = 'margin-top:20px;';
+    box.innerHTML = `<h2 style="font-size:18px;margin-bottom:10px;">${window.t('trail.insightsTitle')}</h2>` +
+      t.insights.map(i => `
+        <div style="background:var(--card);border:1px solid var(--paper-line);border-radius:12px;padding:12px 16px;margin-bottom:10px;font-size:13.5px;color:var(--ink);line-height:1.55;">
+          ${(lang === 'it' && i.it) ? i.it : i.en}
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:6px;">${window.t('trail.source')}: ${i.url ? `<a href="${i.url}" target="_blank" rel="noopener">${i.source}</a>` : i.source}</div>
+        </div>`).join('');
+    const coords = document.getElementById('trailCoords');
+    if (coords && coords.parentNode) coords.parentNode.appendChild(box);
+  }
+
   // Build turn-by-turn directions for trails stitched from more than one
   // numbered route, or a simpler start-only note for single-path loops
   // (a lake loop doesn't need "switch trails" instructions, but it still
@@ -440,7 +456,7 @@ function init(){
   if(Array.isArray(t.path) && ((Array.isArray(t.decisionPoints) && t.decisionPoints.length > 0) || t.startPoint)){
     const totalKm = t.distance;
     const firstStep = t.startPoint
-      ? `${t.startPoint.label} (km 0).`
+      ? window.t('trail.dirStart', {label: t.startPoint.label})
       : window.t('trail.dirStartAt', {name: (t.rifugi || []).find(r => r.km === 0)?.name || t.area});
     const steps = [firstStep];
 
@@ -493,7 +509,7 @@ function init(){
       addTerrainSource(map);
       increaseLabelDensity(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
-      renderNearbyLifts(map, t);
+      renderAllLifts(map);
       if (typeof initDetailPois === 'function') initDetailPois(map, t);
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
@@ -582,53 +598,13 @@ function init(){
         // "Start hike" companion — live progress, off-route warning, wake lock.
         if (typeof initHikeMode === 'function') initHikeMode(map, t);
 
-        // Rifugi and water-source icons — positioned using the REAL GPS
-        // path, not guessed coordinates. Km markers were recorded against
-        // the trail's stated distance, so we convert to a fraction of that
-        // distance, then find the matching point on the real path.
-        //
-        // OFFSET NOTE: rifugi/water/decision/start markers frequently share
-        // the exact same coordinate (e.g. a rifugio + fountain both at km 0,
-        // right at the trailhead). Without an offset, later-added markers
-        // render on top of earlier ones and silently hide them - this is
-        // what happened to lago-braies's rifugio marker (identical coords
-        // to its water source AND start flag, buried under both). Each
-        // marker type now gets its own quadrant, matching the existing
-        // pattern used for decisionPoints [14,-14] and startPoint [-14,-14]:
-        //   startPoint (🚩)      -> top-left  [-14, -14]  (existing)
-        //   decisionPoints (🔀)  -> top-right [ 14, -14]  (existing)
-        //   rifugi (🏠)          -> bottom-left  [-14, 14]  (new)
-        //   waterSources (💧)    -> bottom-right [ 14, 14]  (new)
-        // This only separates markers of DIFFERENT types sharing a
-        // coordinate. Two rifugi (or two water sources) at the exact same
-        // point would still stack on each other - not handled here, since
-        // it wasn't the observed bug and no current trail data has that case.
-        (t.rifugi || []).forEach(r => {
-          let lat, lng;
-          if(typeof r.lat === 'number' && typeof r.lng === 'number'){
-            lat = r.lat; lng = r.lng; // verified real coordinates
-          } else {
-            const fraction = t.distance > 0 ? r.km / t.distance : 0;
-            [lat, lng] = pointAtFraction(t.path, fraction); // approximate fallback
-          }
-          new maplibregl.Marker({ element: makeIconEl('🏠', '#2E4034'), offset: [-14, 14] })
-            .setLngLat([lng, lat])
-            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${r.name}</b><br>Km ${r.km}`))
-            .addTo(map);
-        });
-        (t.waterSources || []).forEach(w => {
-          let lat, lng;
-          if(typeof w.lat === 'number' && typeof w.lng === 'number'){
-            lat = w.lat; lng = w.lng; // verified real coordinates
-          } else {
-            const fraction = t.distance > 0 ? w.km / t.distance : 0;
-            [lat, lng] = pointAtFraction(t.path, fraction); // approximate fallback
-          }
-          new maplibregl.Marker({ element: makeIconEl('💧', '#4E90A8'), offset: [14, 14] })
-            .setLngLat([lng, lat])
-            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${w.label}</b><br>Km ${w.km}`))
-            .addTo(map);
-        });
+        // NOTE: curated rifugi/water emoji markers used to be placed here
+        // from the trail's km data — removed: they duplicated the real OSM
+        // amenity dots (detail-pois.js), showing two markers for the same
+        // rifugio. The OSM dot layers are now the single amenity language
+        // on every map; the curated km list still renders as text in the
+        // "Trail details" column. Emoji markers remain only for things OSM
+        // can't know: recommended start, decision points, community flags.
 
         // Decision points — where a hiker needs to switch from one numbered
         // route onto another. Always real, verified coordinates (these come

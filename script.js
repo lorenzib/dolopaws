@@ -343,6 +343,16 @@ function initGuestMap(){
     fitBoundsOptions: { maxZoom: 15.5 },
   }), 'top-right');
 
+  // Teaser pill: how much is waiting behind the profile gate.
+  const guestMapEl = document.getElementById('guestPreviewMap');
+  if (guestMapEl && typeof trails !== 'undefined'){
+    guestMapEl.style.position = guestMapEl.style.position || 'relative';
+    const pill = document.createElement('div');
+    pill.textContent = t('guest.trailCount', {n: trails.length});
+    pill.style.cssText = 'position:absolute;top:10px;left:10px;z-index:5;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;';
+    guestMapEl.appendChild(pill);
+  }
+
   guestMapInstance.on('load', () => {
     addTerrainSource(guestMapInstance);
     increaseLabelDensity(guestMapInstance);
@@ -389,8 +399,9 @@ function initGuestMap(){
         [markerLat, markerLng] = t.path[0];
       }
       const trailNumber = t.ref ? window.t('card.trailRef', {ref: t.ref}) + '<br>' : '';
+      // Guests get name + area only — trail pages stay behind a profile.
       const popup = new maplibregl.Popup({ offset: 18 }).setHTML(
-        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><a href="trail.html?id=${t.id}" style="display:inline-block;margin-top:6px;font-weight:700;color:#3E7A91;text-decoration:none;">${window.t('card.details')}</a>`
+        `<b>${t.name}</b><br>${trailNumber}${t.area}<br><span style="display:inline-block;margin-top:6px;font-size:11.5px;color:var(--ink-soft);">${window.t('guest.lockedPopup')}</span>`
       );
       new maplibregl.Marker({ element: makeTrailDot() }).setLngLat([markerLng, markerLat]).setPopup(popup).addTo(guestMapInstance);
       bounds.extend([markerLng, markerLat]);
