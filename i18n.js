@@ -48,6 +48,8 @@
     'guest.lockedPopup': '🔒 Create your dog\'s profile to open trail pages',
     'quote.text': '“A walk is never just a walk when it\'s shared with a dog — it becomes an act of companionship, curiosity, and joy”',
     'trail.insightsTitle': 'Good to know',
+    'browse.lockedCta': '🔒 Log in to get access',
+    'browse.guestNote': 'Showing {shown} of {total} trails — log in or create a free profile to see them all.',
     'trail.source': 'Source',
     'teaser.h2': "These trails are already scored. Add your dog's details to reveal their exact match.",
     'teaser.unlock': 'Unlock all our trails →',
@@ -249,6 +251,8 @@
     'guest.lockedPopup': '🔒 Crea il profilo del tuo cane per aprire le pagine dei sentieri',
     'quote.text': '“Una passeggiata non è mai solo una passeggiata quando la condividi con un cane — diventa un gesto di complicità, curiosità e gioia”',
     'trail.insightsTitle': 'Da sapere',
+    'browse.lockedCta': '🔒 Accedi per sbloccare i dettagli',
+    'browse.guestNote': 'Mostriamo {shown} di {total} sentieri — accedi o crea un profilo gratuito per vederli tutti.',
     'trail.source': 'Fonte',
     'teaser.h2': 'Questi sentieri sono già valutati. Aggiungi i dati del tuo cane per scoprire la loro compatibilità esatta.',
     'teaser.unlock': 'Sblocca tutti i sentieri →',
@@ -496,7 +500,8 @@
     if (!links) return;
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = lang === 'it' ? 'EN' : 'IT';
+    btn.textContent = lang === 'it' ? '🌐 Lingua' : '🌐 Language';
+    btn.title = lang === 'it' ? 'Switch to English' : 'Passa all\'italiano';
     btn.setAttribute('aria-label', lang === 'it' ? 'Switch to English' : 'Passa all\'italiano');
     btn.style.cssText = 'border:1.5px solid var(--paper-line);background:none;color:var(--ink);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;font-family:\'Inter\',sans-serif;';
     btn.addEventListener('click', () => setLang(lang === 'it' ? 'en' : 'it'));

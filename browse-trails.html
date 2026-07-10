@@ -24,7 +24,7 @@
 <body>
 
 <div class="topnav">
-  <a class="brand" href="index.html"><img src="logo.svg?v=3" alt="DoloPaws logo">DoloPaws</a>
+  <a class="brand" href="index.html"><img src="logo.svg" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
     <a href="index.html" data-i18n="nav.home">Home</a>
     <a href="browse-trails.html" data-i18n="nav.browse">Browse our trails</a>
@@ -82,8 +82,6 @@
     const list = document.getElementById('simpleTrailsList');
     if(!list || typeof trails === 'undefined') return;
 
-    // Tiny route-shape thumbnail drawn from the trail's real GPS path —
-    // used when a trail has no photo (same idea as the logged-in cards).
     function miniPathSvg(path){
       if(!Array.isArray(path) || path.length < 2) return '';
       const lats = path.map(p => p[0]), lngs = path.map(p => p[1]);
@@ -103,41 +101,61 @@
       'caution':  ['Caution',  '#FBEAE6', '#9C3A25'],
     };
 
-    // Full cards, clickable through to the trail page — only the
-    // personalized match score stays behind creating a profile.
-    // Paginated: 15 cards per page.
+    // Guests browse the first two pages (30 trails) as a real preview;
+    // opening a trail page requires logging in. Logged-in users get the
+    // full list with normal links.
     const PER_PAGE = 15;
+    const GUEST_LIMIT = 30;
     let page = 1;
+    let loggedIn = false;
 
     function renderPage(){
-      const totalPages = Math.max(1, Math.ceil(trails.length / PER_PAGE));
+      const pool = loggedIn ? trails : trails.slice(0, GUEST_LIMIT);
+      const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
-      const pageTrails = trails.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+      const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
       list.innerHTML = pageTrails.map(t => {
-      const thumb = t.imageIcon
-        ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
-        : miniPathSvg(t.path);
-      const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
-      const provenance = t.curated === false
-        ? `<span class="badge-pill badge-imported">${window.t('badge.importedS')}</span>`
-        : `<span class="badge-pill badge-verified">${window.t('badge.verifiedS')}</span>`;
-      const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
-        .filter(Boolean).join(' · ');
-      return `
-      <a href="trail.html?id=${t.id}" class="simple-card" style="text-decoration:none;display:block;color:inherit;">
-        <div class="photo">${thumb}</div>
-        <div style="padding:12px 14px;">
-          <div class="name" style="padding:0;">${t.name}</div>
-          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;">${meta}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center;">
-            <span style="font-size:11px;font-weight:700;background:${s[1]};color:${s[2]};padding:2px 8px;border-radius:10px;">${s[0]}</span>
-            ${provenance}
+        const thumb = t.imageIcon
+          ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
+          : miniPathSvg(t.path);
+        const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
+        const provenance = t.curated === false
+          ? `<span class="badge-pill badge-imported">${window.t('badge.importedS')}</span>`
+          : `<span class="badge-pill badge-verified">${window.t('badge.verifiedS')}</span>`;
+        const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
+          .filter(Boolean).join(' · ');
+        const openAttr = loggedIn ? `href="trail.html?id=${t.id}"` : `href="#" data-locked="1"`;
+        const cta = loggedIn
+          ? `<div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>`
+          : `<div style="font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-top:8px;">${window.t('browse.lockedCta')}</div>`;
+        return `
+        <a ${openAttr} class="simple-card" style="text-decoration:none;display:block;color:inherit;">
+          <div class="photo">${thumb}</div>
+          <div style="padding:12px 14px;">
+            <div class="name" style="padding:0;">${t.name}</div>
+            <div style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;">${meta}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+              <span style="font-size:11px;font-weight:700;background:${s[1]};color:${s[2]};padding:2px 8px;border-radius:10px;">${s[0]}</span>
+              ${provenance}
+            </div>
+            ${cta}
           </div>
-          <div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>
-        </div>
-      </a>`;
+        </a>`;
       }).join('');
+
+      if(!loggedIn){
+        list.querySelectorAll('[data-locked]').forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+          });
+        });
+        const note = document.createElement('div');
+        note.style.cssText = 'grid-column:1/-1;text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:6px;';
+        note.textContent = window.t('browse.guestNote', {shown: Math.min(GUEST_LIMIT, trails.length), total: trails.length});
+        list.appendChild(note);
+      }
 
       if(totalPages > 1){
         const nav = document.createElement('div');
@@ -165,6 +183,10 @@
       }
     }
 
+    window.addEventListener('dolopaws-auth-changed', (e) => {
+      const next = !!(e.detail && e.detail.user);
+      if(next !== loggedIn){ loggedIn = next; page = 1; renderPage(); }
+    });
     renderPage();
   });
 </script>
