@@ -354,11 +354,6 @@ function initGuestMap(){
     pill.style.cssText = 'position:absolute;top:10px;left:10px;z-index:5;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;';
     guestMapEl.appendChild(pill);
 
-    // Expansion banner — glacier accent so it reads as news, not chrome.
-    const banner = document.createElement('div');
-    banner.textContent = t('guest.franceBanner');
-    banner.style.cssText = 'position:absolute;top:48px;left:10px;z-index:5;background:var(--accent-light);color:#1E3A44;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.2);pointer-events:none;';
-    guestMapEl.appendChild(banner);
   }
 
   guestMapInstance.on('load', () => {
@@ -1000,7 +995,7 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     // UI: the label must match the destination — it used to say "Browse
     // our trails" while linking to My trails for logged-in users.
     const navSpan = browseNavLink.querySelector('span');
-    if(navSpan) navSpan.textContent = user ? 'My trails' : 'Browse our trails';
+    if(navSpan) navSpan.textContent = user ? t('nav.myTrails') : t('nav.browse');
   }
   if(!newHome || !returningHome) return;
 

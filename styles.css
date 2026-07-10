@@ -511,7 +511,7 @@ img,svg{max-width:100%;height:auto;}
 
 /* Card badges */
 .badge-pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;}
-.badge-verified{color:#fff;background:var(--ink);}
+.badge-verified{color:var(--ink);background:var(--sage-dim);}
 .badge-imported{color:#00695c;background:#e0f2f1;}
 .badge-new{color:#fff;background:var(--accent);}
 
@@ -519,3 +519,6 @@ img,svg{max-width:100%;height:auto;}
 .page-btn{padding:9px 18px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:#fff;font-size:12.5px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
 .page-btn:disabled{border-color:var(--paper-line);background:none;color:var(--ink-soft);cursor:default;opacity:.55;}
 .page-info{font-size:12.5px;color:var(--ink-soft);font-weight:600;}
+
+/* Hero CTA: a button, not a banner — cap its width */
+.hero-left .btn-primary{align-self:flex-start;width:auto;padding-left:34px;padding-right:34px;}

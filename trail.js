@@ -415,12 +415,18 @@ function init(){
       .then(data => {
         if(!data.current) return;
         const c = data.current;
-        const codeText = {
+        const isIt = (window.DoloPawsI18n && window.DoloPawsI18n.lang) === 'it';
+        const codeText = (isIt ? {
+          0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Coperto',
+          45:'Nebbia',48:'Nebbia',51:'Pioviggine',61:'Pioggia debole',63:'Pioggia',
+          65:'Pioggia forte',71:'Neve debole',73:'Neve',75:'Neve forte',
+          80:'Rovesci',95:'Temporale',
+        } : {
           0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
           45:'Fog',48:'Fog',51:'Light drizzle',61:'Light rain',63:'Rain',
           65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
           80:'Rain showers',95:'Thunderstorm',
-        }[c.weathercode] || 'Mixed conditions';
+        })[c.weathercode] || (isIt ? 'Variabile' : 'Mixed conditions');
         weatherEl.innerHTML = `<b>${window.t('trail.weatherNow')}</b> ${c.temperature_2m}°C, ${codeText}, ${window.t('trail.weatherWind')} ${c.windspeed_10m} km/h` +
           (c.precipitation > 0 ? `, ${c.precipitation}mm precipitation` : '') +
           `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">${window.t('trail.weatherVia')}</div>`;
