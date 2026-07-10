@@ -45,9 +45,9 @@
     'trust.updated': 'Updated as conditions change',
     'trust.breeds': 'Scores adapt to your dog\'s breed and build',
     'guest.trailCount': '{n} dog-friendly trails mapped',
-    'guest.franceBanner': 'Bonjour! DoloPaws now sniffs around the French Alps too',
+    'guest.franceBanner': 'Ooh là là: our paws just crossed into the French Alps',
     'guest.lockedPopup': 'Create your dog\'s profile to open trail pages',
-    'quote.text': '“A walk is never just a walk when it\'s shared with a dog — it becomes an act of companionship, curiosity, and joy”',
+    'quote.text': '“A walk is never just a walk when it\'s shared with a dog; it becomes an act of companionship, curiosity, and joy”',
     'trail.insightsTitle': 'Good to know',
     'browse.lockedCta': 'Log in to see trail details',
     'browse.guestNote': 'Showing {shown} of {total} trails. Log in or create a free profile to see them all.',
@@ -226,7 +226,7 @@
     'region.theDolomites': 'the Dolomites',
     'home.noSavedValley': 'No saved trails in {label}. Try a different valley, or go back to all trails.',
     'home.noTrailsValley': 'No trails in {label}. Try a different valley or filter.',
-    'footer.line': 'DoloPaws | Dolomites trail guide for dogs and their humans.',
+    'footer.line': 'DoloPaws | A personalised trail guide for dogs and their humans.',
   },
   it: {
     'nav.home': 'Home',
@@ -251,9 +251,9 @@
     'trust.updated': 'Aggiornato al cambiare delle condizioni',
     'trust.breeds': 'I punteggi si adattano a razza e corporatura del tuo cane',
     'guest.trailCount': '{n} sentieri dog-friendly mappati',
-    'guest.franceBanner': 'Bonjour! DoloPaws ora annusa anche le Alpi francesi',
+    'guest.franceBanner': 'Ooh là là: le nostre zampe hanno appena varcato le Alpi francesi',
     'guest.lockedPopup': 'Crea il profilo del tuo cane per aprire le pagine dei sentieri',
-    'quote.text': '“Una passeggiata non è mai solo una passeggiata quando la condividi con un cane — diventa un gesto di complicità, curiosità e gioia”',
+    'quote.text': '“Una passeggiata non è mai solo una passeggiata quando la condividi con un cane; diventa un gesto di complicità, curiosità e gioia”',
     'trail.insightsTitle': 'Da sapere',
     'browse.lockedCta': 'Accedi per vedere i dettagli',
     'browse.guestNote': 'Mostriamo {shown} di {total} sentieri. Accedi o crea un profilo gratuito per vederli tutti.',
@@ -432,7 +432,7 @@
     'region.theDolomites': 'le Dolomiti',
     'home.noSavedValley': 'Nessun sentiero salvato in {label}. Prova un\'altra valle o torna a tutti i sentieri.',
     'home.noTrailsValley': 'Nessun sentiero in {label}. Prova un\'altra valle o un altro filtro.',
-    'footer.line': 'DoloPaws | La guida ai sentieri delle Dolomiti per i cani e i loro umani.',
+    'footer.line': 'DoloPaws | Una guida ai sentieri personalizzata per i cani e i loro umani.',
   }};
 
   // ---- Language resolution ---------------------------------------------------
