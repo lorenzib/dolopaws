@@ -15,9 +15,11 @@ function scoreTrail(t, overrides){
   let maxDistance = parseFloat(overrides.distance);
 
   // Energy level: Low caps effective distance at 5 km; High lifts it to 99 km.
+  // Medium (or unset) leaves the profile-derived distance unchanged.
   const energy = overrides.energy;
   if(energy === 'low') maxDistance = Math.min(maxDistance, 5);
   else if(energy === 'high') maxDistance = 99;
+  // energy === 'medium' or undefined: no additional change to maxDistance
 
   const hazardMult = overrides.hazardMult || 1;       // 1.5 for fragile dogs (joints/back/senior)
   const exposureExtra = overrides.exposureExtra || 0; // extra exposure penalty for fragile dogs

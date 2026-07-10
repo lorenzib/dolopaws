@@ -57,6 +57,32 @@
     dogPhotoInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if(!file) return;
+
+      // Validate file type (accept attribute is client-side only; verify here too)
+      if(!file.type.startsWith('image/')){
+        if(dogPhotoStatus){
+          dogPhotoStatus.hidden = false;
+          dogPhotoStatus.style.color = '#9C3A25';
+          dogPhotoStatus.textContent = window.t ? window.t('account.photo.typeError') : 'Please select an image file.';
+        }
+        dogPhotoInput.value = '';
+        return;
+      }
+
+      // Validate file size (2 MB limit to avoid localStorage quota issues)
+      const MAX_BYTES = 2 * 1024 * 1024;
+      if(file.size > MAX_BYTES){
+        if(dogPhotoStatus){
+          dogPhotoStatus.hidden = false;
+          dogPhotoStatus.style.color = '#9C3A25';
+          dogPhotoStatus.textContent = window.t ? window.t('account.photo.sizeError') : 'Photo must be smaller than 2 MB.';
+        }
+        dogPhotoInput.value = '';
+        return;
+      }
+
+      if(dogPhotoStatus) dogPhotoStatus.hidden = true;
+
       const reader = new FileReader();
       reader.onload = (evt) => {
         const dataUrl = evt.target.result;
