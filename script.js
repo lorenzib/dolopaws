@@ -91,7 +91,9 @@ renderTeaser();
 const createProfileBtn = document.getElementById('createProfileBtn');
 if(createProfileBtn) createProfileBtn.addEventListener('click', goToProfileCreation);
 const unlockBtn = document.getElementById('unlockBtn');
-if(unlockBtn) unlockBtn.addEventListener('click', goToProfileCreation);
+// The teaser button previews the catalog (30 trails visible, details
+// locked behind login) instead of jumping straight to signup.
+if(unlockBtn) unlockBtn.addEventListener('click', () => { window.location.href = 'browse-trails.html'; });
 
 // ============================================================
 // RETURNING VISITOR — real profile, real scoring, real favorites,
@@ -351,6 +353,12 @@ function initGuestMap(){
     pill.textContent = t('guest.trailCount', {n: trails.length});
     pill.style.cssText = 'position:absolute;top:10px;left:10px;z-index:5;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;';
     guestMapEl.appendChild(pill);
+
+    // Expansion banner — glacier accent so it reads as news, not chrome.
+    const banner = document.createElement('div');
+    banner.textContent = t('guest.franceBanner');
+    banner.style.cssText = 'position:absolute;top:48px;left:10px;z-index:5;background:var(--accent-light);color:#1E3A44;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.2);pointer-events:none;';
+    guestMapEl.appendChild(banner);
   }
 
   guestMapInstance.on('load', () => {
