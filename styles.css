@@ -498,16 +498,20 @@ img,svg{max-width:100%;height:auto;}
    One visual language for every JS-generated element, defined once:
    map markers, map controls, card badges, pagination. */
 
-/* Map markers — emoji-in-circle (POIs) and plain dot (trails) */
-.dp-marker{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;}
+/* Map markers — shared SVG badge markers plus plain dot (trails) */
+.dp-marker{width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.dp-marker .dp-icon-svg{display:block;}
 .dp-marker-dot{width:15px;height:15px;border-radius:50%;background:var(--accent-light);border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer;transition:transform .12s ease;}
 .dp-marker-dot:hover{transform:scale(1.45);}
+.dp-icon-host,.dp-chip-label,.dp-legend-item{display:inline-flex;align-items:center;gap:7px;}
+.dp-icon-host .dp-icon-svg,.dp-chip-label .dp-icon-svg,.dp-legend-item .dp-icon-svg{display:block;flex:none;}
 
 /* Map controls — white buttons matching MapLibre's own control style */
 .map-btn{position:absolute;bottom:10px;z-index:6;height:34px;padding:0 16px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:'Inter',sans-serif;}
 .map-panel{position:absolute;bottom:48px;left:10px;z-index:6;background:#fff;border:1px solid var(--paper-line);border-radius:12px;padding:10px;display:none;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:170px;}
 .map-chip{padding:7px 12px;border-radius:999px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--paper-line);background:none;color:var(--ink);font-family:'Inter',sans-serif;text-align:left;}
 .map-chip.on{border-color:var(--ink);background:var(--ink);color:#fff;}
+.map-chip .dp-chip-label{pointer-events:none;}
 
 /* Card badges */
 .badge-pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;}

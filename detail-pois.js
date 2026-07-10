@@ -18,6 +18,8 @@
 
 function initDetailPois(map, trail){
   if (!trail || typeof trail.lat !== 'number' || typeof trail.lng !== 'number') return;
+  const icons = window.DoloPawsIcons;
+  const iconMinZoom = icons ? icons.ICON_MIN_ZOOM : 12;
 
   // Bounding box of the route (or trailhead) plus ~2 km padding.
   let minLat = trail.lat, maxLat = trail.lat, minLng = trail.lng, maxLng = trail.lng;
@@ -65,29 +67,83 @@ function initDetailPois(map, trail){
     return html;
   }
 
-  function addDotLayer(sourceId, features, colorExpr){
+  function addPoiLayerSet(sourceId, features, group){
     if (!features.length || map.getSource(sourceId)) return;
-    map.addSource(sourceId, { type: 'geojson', data: { type: 'FeatureCollection', features } });
+    const clusterColor = icons ? icons.getPoiClusterColor(group) : '#5A5548';
+    const circleColor = icons ? icons.getPoiCircleColorExpression(group) : '#5A5548';
+    map.addSource(sourceId, {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features },
+      cluster: true,
+      clusterRadius: group === 'food' ? 65 : 50,
+    });
     map.addLayer({
-      id: sourceId + '-layer',
+      id: sourceId + '-layer-lowzoom',
       type: 'circle',
       source: sourceId,
+      filter: ['!', ['has', 'point_count']],
+      maxzoom: iconMinZoom,
       paint: {
         'circle-radius': 5.5,
-        'circle-color': colorExpr,
+        'circle-color': circleColor,
         'circle-opacity': 0.85,
         'circle-stroke-width': 1.5,
         'circle-stroke-color': '#fff',
       },
     });
-    map.on('mouseenter', sourceId + '-layer', () => { map.getCanvas().style.cursor = 'pointer'; });
-    map.on('mouseleave', sourceId + '-layer', () => { map.getCanvas().style.cursor = ''; });
-    map.on('click', sourceId + '-layer', (e) => {
+    map.addLayer({
+      id: sourceId + '-layer',
+      type: 'symbol',
+      source: sourceId,
+      filter: ['!', ['has', 'point_count']],
+      minzoom: iconMinZoom,
+      layout: {
+        'icon-image': icons ? icons.getPoiMapIconExpression(group) : '',
+        'icon-size': 1,
+      },
+    });
+    map.addLayer({
+      id: sourceId + '-cluster',
+      type: 'circle',
+      source: sourceId,
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-radius': ['step', ['get', 'point_count'], 20, 5, 25, 10, 30],
+        'circle-color': clusterColor,
+        'circle-opacity': 0.72,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#fff',
+      },
+    });
+    map.addLayer({
+      id: sourceId + '-cluster-count',
+      type: 'symbol',
+      source: sourceId,
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': ['get', 'point_count'],
+        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+        'text-size': 12,
+      },
+      paint: { 'text-color': '#fff' },
+    });
+    [sourceId + '-layer', sourceId + '-layer-lowzoom'].forEach((layerId) => {
+      map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
+    });
+    [sourceId + '-layer', sourceId + '-layer-lowzoom'].forEach((layerId) => map.on('click', layerId, (e) => {
       const f = e.features[0];
       new maplibregl.Popup({ offset: 10, maxWidth: '260px' })
         .setLngLat(f.geometry.coordinates)
         .setHTML(poiPopupHtml(f.properties))
         .addTo(map);
+    }));
+    map.on('click', sourceId + '-cluster', (e) => {
+      const clusterId = e.features[0].properties.cluster_id;
+      const source = map.getSource(sourceId);
+      source.getClusterExpansionZoom(clusterId).then((zoom) => {
+        map.easeTo({ center: e.features[0].geometry.coordinates, zoom });
+      }).catch(() => {});
     });
   }
 
@@ -101,20 +157,8 @@ function initDetailPois(map, trail){
       const isHut = p => p && (p.tourism === 'alpine_hut' || p.tourism === 'wilderness_hut' || p.amenity === 'shelter');
       const huts = near.filter(f => isHut(f.properties));
       const bars = near.filter(f => !isHut(f.properties));
-      addDotLayer('detail-huts', huts, [
-        'case',
-        ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',
-        ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',
-        '#5A5548',
-      ]);
-      addDotLayer('detail-bars', bars, [
-        'case',
-        ['==', ['get', 'amenity'], 'bar'], '#9C3A25',
-        ['==', ['get', 'amenity'], 'pub'], '#7a2818',
-        ['==', ['get', 'amenity'], 'cafe'], '#D6A038',
-        ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',
-        '#5A5548',
-      ]);
+      addPoiLayerSet('detail-huts', huts, 'huts');
+      addPoiLayerSet('detail-bars', bars, 'food');
       // Feed the base-map click enrichment on this page too.
       if (typeof registerPoiFeatures === 'function') registerPoiFeatures(near);
     })
@@ -126,11 +170,7 @@ function initDetailPois(map, trail){
     .then(data => {
       if (!data) return;
       const near = (data.features || []).filter(inBox);
-      addDotLayer('detail-water', near, [
-        'case',
-        ['==', ['get', 'natural'], 'spring'], '#228B22',
-        '#4E90A8',
-      ]);
+      addPoiLayerSet('detail-water', near, 'water');
     })
     .catch(() => {});
 }

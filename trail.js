@@ -161,12 +161,15 @@ function setupElevationProfile(map, t){
   });
 }
 
-function makeIconEl(emoji, bgColor){
-  const el = document.createElement('div');
-  el.className = 'dp-marker';
-  el.style.background = bgColor;
-  el.textContent = emoji;
-  return el;
+function makeIconEl(iconKey, bgColor){
+  if(window.DoloPawsIcons) return window.DoloPawsIcons.createMarkerElement(iconKey, { color: bgColor });
+  const fallback = document.createElement('div');
+  fallback.className = 'dp-marker';
+  fallback.style.background = bgColor;
+  fallback.style.borderRadius = '50%';
+  fallback.style.border = '2px solid #fff';
+  fallback.textContent = '•';
+  return fallback;
 }
 
 function addTerrainToggle(map, containerId, exaggeration, pitch3D){
@@ -276,12 +279,24 @@ function renderAllLifts(map){
     },
   });
   map.addSource('detail-gondola-stations', { type: 'geojson', data: { type: 'FeatureCollection', features: stationFeatures } });
-  map.addLayer({
-    id: 'detail-gondola-stations-layer',
-    type: 'circle',
-    source: 'detail-gondola-stations',
-    paint: { 'circle-radius': 5, 'circle-color': '#4E90A8', 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff' },
-  });
+  if(window.DoloPawsIcons){
+    map.addLayer({
+      id: 'detail-gondola-stations-layer',
+      type: 'symbol',
+      source: 'detail-gondola-stations',
+      layout: {
+        'icon-image': window.DoloPawsIcons.getMapImageName('lifts'),
+        'icon-size': 1,
+      },
+    });
+  } else {
+    map.addLayer({
+      id: 'detail-gondola-stations-layer',
+      type: 'circle',
+      source: 'detail-gondola-stations',
+      paint: { 'circle-radius': 5, 'circle-color': '#4E90A8', 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff' },
+    });
+  }
 
   ['detail-gondolas-line', 'detail-gondola-stations-layer'].forEach(id => {
     map.on('mouseenter', id, () => { map.getCanvas().style.cursor = 'pointer'; });
@@ -511,7 +526,8 @@ function init(){
       fitBoundsOptions: { maxZoom: 15.5 },
     }), 'top-right');
 
-    map.on('load', () => {
+    map.on('load', async () => {
+      if(window.DoloPawsIcons) await window.DoloPawsIcons.registerMapImages(map);
       addTerrainSource(map);
       increaseLabelDensity(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
@@ -617,7 +633,7 @@ function init(){
         // from actual confirmed junctions between two GPX tracks, never
         // interpolated) so no fallback branch is needed here.
         (t.decisionPoints || []).forEach(d => {
-          new maplibregl.Marker({ element: makeIconEl('🔀', '#D6A038'), offset: [14, -14] })
+          new maplibregl.Marker({ element: makeIconEl('switch', '#D6A038'), offset: [14, -14] })
             .setLngLat([d.lng, d.lat])
             .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>Km ${d.km}</b><br>${d.instruction}`))
             .addTo(map);
@@ -628,7 +644,7 @@ function init(){
         // is worth calling out explicitly rather than leaving people to
         // guess where to begin.
         if(t.startPoint){
-          new maplibregl.Marker({ element: makeIconEl('🚩', '#2E4034'), offset: [-14, -14] })
+          new maplibregl.Marker({ element: makeIconEl('start', '#2E4034'), offset: [-14, -14] })
             .setLngLat([t.startPoint.lng, t.startPoint.lat])
             .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${t.startPoint.label}</b>`))
             .addTo(map);
