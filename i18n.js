@@ -27,6 +27,10 @@
     'nav.browse': 'Browse our trails',
     'nav.myTrails': 'My trails',
     'nav.guide': 'Dog safety guide',
+    'nav.about': 'About',
+    'about.eyebrow': 'About DoloPaws',
+    'about.h1': 'A trail guide that asks about your dog first',
+    'about.sub': 'Who we are, how we rate trails, and why you can trust what you see.',
     'nav.login': 'Log in',
     'nav.account': 'My account',
     'auth.hint': 'Save trails to your account so they follow you across devices.',
@@ -248,6 +252,10 @@
     'nav.browse': 'Esplora i sentieri',
     'nav.myTrails': 'I miei sentieri',
     'nav.guide': 'Guida sicurezza cani',
+    'nav.about': 'Chi siamo',
+    'about.eyebrow': 'Chi è DoloPaws',
+    'about.h1': 'Una guida ai sentieri che prima chiede del tuo cane',
+    'about.sub': 'Chi siamo, come valutiamo i sentieri e perché puoi fidarti di ciò che vedi.',
     'nav.login': 'Accedi',
     'nav.account': 'Il mio account',
     'auth.hint': 'Salva i sentieri sul tuo account e ritrovali su tutti i tuoi dispositivi.',
@@ -590,6 +598,7 @@
         'safety-guide.html': 'Guida sicurezza cani | DoloPaws',
         'account.html': 'Il mio account | DoloPaws',
         'my-trails.html': 'I miei sentieri | DoloPaws',
+        'about.html': 'Chi siamo | DoloPaws',
       };
       const page = (location.pathname.split('/').pop() || '');
       if (TITLES[page]) document.title = TITLES[page];
