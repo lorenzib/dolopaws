@@ -21,14 +21,21 @@
       window.location.href = 'account.html';
       return;
     }
+    // Pages like trail.html and safety-guide.html don't carry the modal
+    // markup; send the visitor to the homepage, which auto-opens it.
+    if(!modal){
+      window.location.href = 'index.html?login=1';
+      return;
+    }
     errorBox.hidden = true;
     form.reset();
     modal.hidden = false;
   }
-  function closeModal(){ modal.hidden = true; }
+  function closeModal(){ if(modal) modal.hidden = true; }
 
   function setMode(newMode){
     mode = newMode;
+    if(!modal) return;
     errorBox.hidden = true;
     if(mode === 'login'){
       title.textContent = window.t('nav.login');
@@ -46,6 +53,13 @@
   }
 
   if(accountBtn) accountBtn.addEventListener('click', openModal);
+
+  // Everything below only exists on pages that include the auth modal
+  // (index, browse). Wiring it unguarded crashed this whole script on the
+  // other pages, which froze the account button on its static text and
+  // silently disabled every login gate that relies on DoloPawsAuthUI.
+  if(modal){
+
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
@@ -101,6 +115,15 @@
       errorBox.hidden = false;
     }
   });
+
+  // Arriving from a modal-less page that asked for login? Open it now.
+  if(new URLSearchParams(window.location.search).get('login') === '1'){
+    window.addEventListener('dolopaws-auth-ready', () => {
+      if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)) openModal();
+    }, { once: true });
+  }
+
+  } // end if(modal)
 
   // Expose a way for other scripts (e.g. the homepage teaser CTA) to open
   // the modal already in signup mode.
