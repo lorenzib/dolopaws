@@ -74,7 +74,7 @@
           if(dogPhotoStatus){
             dogPhotoStatus.hidden = false;
             dogPhotoStatus.style.color = '#9C3A25';
-            dogPhotoStatus.textContent = 'Photo could not be saved — your browser storage may be full.';
+            dogPhotoStatus.textContent = window.t ? window.t('account.photo.storageError') : 'Photo could not be saved — your browser storage may be full.';
           }
           dogPhotoInput.value = '';
         }
