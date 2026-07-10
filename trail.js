@@ -494,6 +494,7 @@ function init(){
       increaseLabelDensity(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
       renderNearbyLifts(map, t);
+      if (typeof initDetailPois === 'function') initDetailPois(map, t);
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
       // data as our base map, but with their dedicated trail-route styling
