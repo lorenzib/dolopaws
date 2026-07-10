@@ -67,7 +67,7 @@ function initDetailPois(map, trail){
     return html;
   }
 
-  function addPoiLayer(sourceId, features, group){
+  function addPoiLayerSet(sourceId, features, group){
     if (!features.length || map.getSource(sourceId)) return;
     const clusterColor = icons ? icons.getPoiClusterColor(group) : '#5A5548';
     const circleColor = icons ? icons.getPoiCircleColorExpression(group) : '#5A5548';
@@ -157,8 +157,8 @@ function initDetailPois(map, trail){
       const isHut = p => p && (p.tourism === 'alpine_hut' || p.tourism === 'wilderness_hut' || p.amenity === 'shelter');
       const huts = near.filter(f => isHut(f.properties));
       const bars = near.filter(f => !isHut(f.properties));
-      addPoiLayer('detail-huts', huts, 'huts');
-      addPoiLayer('detail-bars', bars, 'food');
+      addPoiLayerSet('detail-huts', huts, 'huts');
+      addPoiLayerSet('detail-bars', bars, 'food');
       // Feed the base-map click enrichment on this page too.
       if (typeof registerPoiFeatures === 'function') registerPoiFeatures(near);
     })
@@ -170,7 +170,7 @@ function initDetailPois(map, trail){
     .then(data => {
       if (!data) return;
       const near = (data.features || []).filter(inBox);
-      addPoiLayer('detail-water', near, 'water');
+      addPoiLayerSet('detail-water', near, 'water');
     })
     .catch(() => {});
 }

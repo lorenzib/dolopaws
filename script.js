@@ -1473,7 +1473,10 @@ function initializeHutsBars(map) {
     });
 }
 
-// Shared helper: adds circle + cluster + count layers for one POI source
+// Shared helper: adds the full POI layer set for one clustered source.
+// `iconGroup` must be one of the shared icon registry groups ('water',
+// 'huts', 'food') so the high-zoom symbol layer can reuse the same
+// category SVGs and color mapping as the rest of the site.
 function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor, iconGroup) {
   const icons = window.DoloPawsIcons;
   const iconMinZoom = icons ? icons.ICON_MIN_ZOOM : 12;

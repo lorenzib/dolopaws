@@ -165,6 +165,9 @@ function makeIconEl(iconKey, bgColor){
   if(window.DoloPawsIcons) return window.DoloPawsIcons.createMarkerElement(iconKey, { color: bgColor });
   const fallback = document.createElement('div');
   fallback.className = 'dp-marker';
+  fallback.style.background = bgColor;
+  fallback.style.borderRadius = '50%';
+  fallback.style.border = '2px solid #fff';
   fallback.textContent = '•';
   return fallback;
 }
