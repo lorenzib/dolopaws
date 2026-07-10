@@ -18,7 +18,7 @@
 <body>
 
 <div class="topnav">
-  <a class="brand" href="index.html"><img src="logo.svg" alt="DoloPaws logo">DoloPaws</a>
+  <a class="brand" href="index.html"><img src="logo.svg?v=3" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
     <a href="index.html" data-i18n="nav.home">Home</a>
     <a href="my-trails.html">Browse our trails</a>
@@ -49,12 +49,14 @@
 <div class="wrap" style="padding-top:20px;">
   <div id="trailDetailMap" style="width:100%;height:480px;border-radius:16px;border:1px solid var(--paper-line);background:var(--sage-dim);overflow:hidden;"></div>
   <div id="mapLegend" style="display:flex;gap:20px;margin-top:10px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;">
-    <span>🏠 Rifugio</span>
-    <span>💧 Drinking water</span>
-    <span>🔀 Trail switch</span>
-    <span>🚩 Recommended start</span>
+    <span data-i18n="legendTrail.rifugio">🏠 Rifugio</span>
+    <span data-i18n="legendTrail.water">💧 Drinking water</span>
+    <span data-i18n="legendTrail.switch">🔀 Trail switch</span>
+    <span data-i18n="legendTrail.start">🚩 Recommended start</span>
     <span id="routeSwatch" style="width:16px;height:3px;background:#D6A038;display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span id="routeSwatchLabel">Trail route</span>
-    <span>➤ Direction of travel</span>
+    <span data-i18n="legendTrail.dir">➤ Direction of travel</span>
+    <span><span style="width:14px;height:3px;background:#4E90A8;display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span data-i18n="legend.liftConfirmed">Confirmed summer lift</span></span>
+    <span><span style="width:14px;height:0;border-top:2px dashed #5A5548;display:inline-block;margin-right:4px;vertical-align:middle;"></span><span data-i18n="legend.liftUnknown">Lift, season unconfirmed</span></span>
   </div>
 
   <div id="elevationProfileWrap" style="margin-top:18px;" hidden>

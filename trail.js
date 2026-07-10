@@ -242,6 +242,60 @@ function addTerrainSource(map){
   });
 }
 
+// Lifts near this trail — same data the homepage map shows (the global
+// `gondolas` array from trails-data.js), filtered to a 10 km radius so a
+// single trail page doesn't render 700+ lift lines and 1,400 markers.
+function renderNearbyLifts(map, t){
+  if (typeof gondolas === 'undefined' || !Array.isArray(gondolas)) return;
+  if (typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
+  const near = gondolas.filter(g => {
+    if (!g.from || typeof g.from.lat !== 'number') return false;
+    const d = Math.hypot((g.from.lat - t.lat) * 111000,
+                         (g.from.lng - t.lng) * 111000 * Math.cos(t.lat * Math.PI / 180));
+    return d < 10000;
+  });
+  if (!near.length) return;
+
+  const features = near.map(g => ({
+    type: 'Feature',
+    properties: { name: g.name, note: g.note || '', status: g.status },
+    geometry: { type: 'LineString', coordinates: [[g.from.lng, g.from.lat], [g.to.lng, g.to.lat]] },
+  }));
+  map.addSource('detail-gondolas', { type: 'geojson', data: { type: 'FeatureCollection', features } });
+  map.addLayer({
+    id: 'detail-gondolas-line',
+    type: 'line',
+    source: 'detail-gondolas',
+    layout: { 'line-join': 'round', 'line-cap': 'round' },
+    paint: {
+      'line-color': ['match', ['get', 'status'], 'summer', '#4E90A8', 'no-summer', '#9C3A25', '#5A5548'],
+      'line-width': 1.5,
+      'line-opacity': 0.9,
+      'line-dasharray': ['match', ['get', 'status'], 'summer', ['literal', [1, 0]], ['literal', [2, 1]]],
+    },
+  });
+  map.on('click', 'detail-gondolas-line', (e) => {
+    const p = e.features[0].properties;
+    new maplibregl.Popup({ offset: 10 }).setLngLat(e.lngLat).setHTML(`<b>${p.name}</b><br>${p.note}`).addTo(map);
+  });
+  map.on('mouseenter', 'detail-gondolas-line', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', 'detail-gondolas-line', () => { map.getCanvas().style.cursor = ''; });
+
+  near.forEach(g => {
+    [g.from, g.to].forEach(st => {
+      if (!st || typeof st.lat !== 'number') return;
+      const el = document.createElement('div');
+      el.className = 'dp-marker';
+      el.style.background = '#4E90A8';
+      el.textContent = '🚡';
+      new maplibregl.Marker({ element: el })
+        .setLngLat([st.lng, st.lat])
+        .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b>${st.label ? '<br>' + st.label : ''}${g.note ? '<br>' + g.note : ''}`))
+        .addTo(map);
+    });
+  });
+}
+
 const params = new URLSearchParams(window.location.search);
 const trailId = params.get('id');
 
@@ -439,6 +493,7 @@ function init(){
       addTerrainSource(map);
       increaseLabelDensity(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
+      renderNearbyLifts(map, t);
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
       // data as our base map, but with their dedicated trail-route styling

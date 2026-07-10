@@ -23,7 +23,10 @@ function initializeDogRoutes(map) {
 
       map.addSource('dog-routes', { type: 'geojson', data: geojsonData });
 
-      // Casing line (subtle white halo so routes read on top of terrain)
+      // Casing line (subtle white halo so routes read on top of terrain).
+      // Inserted BELOW the safety-colored trail lines: this overlay is the
+      // background network, and must never cover a safety rating.
+      const beforeId = map.getLayer('trail-paths-line') ? 'trail-paths-line' : undefined;
       if (!map.getLayer('dog-routes-casing')) {
         map.addLayer({
           id: 'dog-routes-casing',
@@ -31,10 +34,13 @@ function initializeDogRoutes(map) {
           source: 'dog-routes',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
           paint: { 'line-color': '#ffffff', 'line-width': 4, 'line-opacity': 0.6 }
-        });
+        }, beforeId);
       }
 
-      // Main line — loops get the brand green, out-and-back routes a softer teal
+      // Main line — NEUTRAL grey-blue on purpose: green/amber/red belong
+      // exclusively to the safety rating (this used to be green for loops,
+      // which read as "low-risk" against the legend and contradicted the
+      // trail page's own rating).
       if (!map.getLayer('dog-routes-line')) {
         map.addLayer({
           id: 'dog-routes-line',
@@ -42,11 +48,11 @@ function initializeDogRoutes(map) {
           source: 'dog-routes',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
           paint: {
-            'line-color': ['case', ['get', 'loop'], '#2e7d32', '#00897b'],
-            'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1.5, 13, 3],
-            'line-opacity': 0.9
+            'line-color': '#7E93A3',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1.2, 13, 2.5],
+            'line-opacity': 0.8
           }
-        });
+        }, beforeId);
       }
 
       // One popup instance, same duplicate-popup discipline as the water markers
