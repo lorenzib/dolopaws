@@ -138,14 +138,14 @@
         <button id="savedTrailsBtn" class="area-pill" data-i18n="home.savedTrails">Saved trails</button>
         <span style="font-size:12.5px;color:var(--ink-soft);" id="returningCount"></span>
       </div>
-      <button id="adjustToggle" class="adjust-toggle-btn" aria-expanded="false"><span aria-hidden="true">⚡</span> <span data-i18n="home.adjust">Adjust for today's conditions</span></button>
+      <button id="adjustToggle" class="adjust-toggle-btn" aria-expanded="false"><span data-dp-icon="adjust" data-dp-icon-mode="inline" aria-hidden="true"></span><span data-i18n="home.adjust">Adjust for today's conditions</span></button>
     </div>
 
     <!-- TEMPORARY OVERRIDE PANEL — session-only, never touches the saved profile -->
     <div id="adjustPanel" hidden class="adjust-panel">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <div style="font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;">
-          <span aria-hidden="true">⚡</span>
+          <span data-dp-icon="adjust" data-dp-icon-mode="inline" aria-hidden="true"></span>
           <span data-i18n="adjust.title">Adjusting for today only</span>
         </div>
         <div id="adjustCloseBtn" style="font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;" data-i18n="adjust.close">✕ Close</div>
@@ -197,6 +197,7 @@
 
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
+<script src="icon-system.js" defer></script>
 <script src="breeds-data.js" defer></script>
 <script src="trails-data.js" defer></script>
 <script src="osm-trails-data.js" defer></script>

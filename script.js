@@ -209,6 +209,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   const container = document.getElementById(containerId);
   if(!container) return;
   container.style.position = container.style.position || 'relative';
+  const icons = window.DoloPawsIcons;
 
   // UI: one compact "Layers" button that expands into a chip panel —
   // replaces the old stack of full-width buttons that covered a third of
@@ -240,9 +241,9 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   const LAYER_SETS = {
     routes:   ['waymarked-hiking-layer'],
     lifts:    ['trailmap-gondolas-labels'],
-    fountains:['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'],
-    huts:     ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'],
-    barsCafes:['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'],
+    fountains:['water-sources-layer-lowzoom', 'water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'],
+    huts:     ['mountain-huts-layer-lowzoom', 'mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'],
+    barsCafes:['bars-cafes-layer-lowzoom', 'bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'],
   };
 
   function applyVisibility(key){
@@ -258,7 +259,11 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   function mkChip(label, key){
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.textContent = label;
+    const iconKey = key === 'fountains' ? 'water'
+      : key === 'huts' ? 'hut'
+      : key === 'barsCafes' ? 'food'
+      : key;
+    chip.innerHTML = icons ? icons.chipHtml(iconKey, label) : label;
     chipStyle(chip, overlayStates[key]);
     chip.addEventListener('click', () => {
       overlayStates[key] = !overlayStates[key];
@@ -282,7 +287,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   // the cluster bubbles' counts.
   const dogChip = document.createElement('button');
   dogChip.type = 'button';
-  dogChip.textContent = t('chips.dog');
+  dogChip.innerHTML = icons ? icons.chipHtml('dog', t('chips.dog')) : t('chips.dog');
   chipStyle(dogChip, false);
   dogChip.addEventListener('click', () => {
     if(!window._dolopawsBars) return; // GeoJSON not loaded yet
@@ -314,13 +319,15 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     if(!legend) return;
     const line = (color, label) => `<span><span style="width:14px;height:3px;background:${color};display:inline-block;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>${label}</span>`;
     const dash = (color, label) => `<span><span style="width:14px;height:0;border-top:2px dashed ${color};display:inline-block;margin-right:4px;vertical-align:middle;"></span>${label}</span>`;
-    const dot = (color, label) => `<span><span style="width:9px;height:9px;background:${color};display:inline-block;border-radius:50%;margin-right:4px;vertical-align:middle;border:1px solid #fff;"></span>${label}</span>`;
+    const category = (iconKey, color, label) => icons
+      ? icons.legendItemHtml(iconKey, label, { color })
+      : `<span><span style="width:9px;height:9px;background:${color};display:inline-block;border-radius:50%;margin-right:4px;vertical-align:middle;border:1px solid #fff;"></span>${label}</span>`;
     let html = line('#2C5C34', t('legend.low')) + line('#8A5A16', t('legend.moderate')) + line('#9C3A25', t('legend.caution'))
       + line('#4E90A8', t('legend.liftConfirmed')) + dash('#5A5548', t('legend.liftUnknown'));
-    if(overlayStates.fountains) html += dot('#4E90A8', t('legend.water'));
-    if(overlayStates.huts) html += dot('#8A5A16', t('legend.hut'));
-    if(overlayStates.barsCafes) html += dot('#C4652F', t('legend.food'));
-    if(dogFilterOn) html += `<span style="font-weight:700;color:var(--ink);">${t('legend.dogOn')}</span>`;
+    if(overlayStates.fountains) html += category('water', '#4E90A8', t('legend.water'));
+    if(overlayStates.huts) html += category('hut', '#8A5A16', t('legend.hut'));
+    if(overlayStates.barsCafes) html += category('food', '#C4652F', t('legend.food'));
+    if(dogFilterOn) html += category('dog', '#2E4034', t('legend.dogOn'));
     legend.innerHTML = html;
   }
   renderMapLegend();
@@ -389,11 +396,10 @@ function renderGondolas(map, sourceId){
   const allLiftMarkers = [];
   gondolas.forEach(g => {
     [g.from, g.to].forEach(station => {
-      const el = document.createElement('div');
-      el.className = 'dp-marker';
-      el.style.background = '#4E90A8';
+      const el = window.DoloPawsIcons
+        ? window.DoloPawsIcons.createMarkerElement('lifts', { color: '#4E90A8' })
+        : Object.assign(document.createElement('div'), { className: 'dp-marker', textContent: '🚡' });
       el.style.visibility = 'hidden';
-      el.textContent = '🚡';
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat([station.lng, station.lat])
         .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${g.name}</b><br>${station.label}<br>${g.note}`))
@@ -445,11 +451,12 @@ function initGuestMap(){
 
   }
 
-  guestMapInstance.on('load', () => {
+  guestMapInstance.on('load', async () => {
     addTerrainSource(guestMapInstance);
     increaseLabelDensity(guestMapInstance);
     preventTransitPoiDuplication(guestMapInstance);
     addTerrainToggle(guestMapInstance, 'guestPreviewMap', 1.3, 0);
+    if(window.DoloPawsIcons) await window.DoloPawsIcons.registerMapImages(guestMapInstance);
     renderGondolas(guestMapInstance, 'guest-gondolas');
     if (typeof makeBasemapPoisClickable === 'function') makeBasemapPoisClickable(guestMapInstance);
     // Real route lines for any trail that has one — same data the logged-in map uses.
@@ -529,11 +536,12 @@ function initTrailMap(){
     fitBoundsOptions: { maxZoom: 15.5 },
   }), 'top-right');
 
-  trailMapInstance.on('load', () => {
+  trailMapInstance.on('load', async () => {
     addTerrainSource(trailMapInstance);
     increaseLabelDensity(trailMapInstance);
     preventTransitPoiDuplication(trailMapInstance);
     addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
+    if(window.DoloPawsIcons) await window.DoloPawsIcons.registerMapImages(trailMapInstance);
     
     const allLiftMarkers = renderGondolas(trailMapInstance, 'trailmap-gondolas');
     
@@ -1194,29 +1202,47 @@ function initializeWaterSources(map) {
  */
 function addWaterSourcesLayers(map) {
   console.log('📍 Adding water sources layers...');
+  const icons = window.DoloPawsIcons;
+  const iconMinZoom = icons ? icons.ICON_MIN_ZOOM : 12;
   
   // Unclustered points layer
-  if(!map.getLayer('water-sources-layer')){
+  if(!map.getLayer('water-sources-layer-lowzoom')){
     map.addLayer({
-      id: 'water-sources-layer',
+      id: 'water-sources-layer-lowzoom',
       type: 'circle',
       source: 'water-sources',
       filter: ['!', ['has', 'point_count']],
+      maxzoom: iconMinZoom,
       layout: { visibility: 'none' },  // ← ADDED: Default hidden
       paint: {
         'circle-radius': 5,
-        'circle-color': [
+        'circle-color': icons ? icons.getPoiCircleColorExpression('water') : [
           'case',
-          ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',  // Blue - fountains
-          ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',         // Dark blue - fountains
-          ['==', ['get', 'natural'], 'spring'], '#228B22',           // Green - springs
-          ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',       // Deep blue - taps
-          ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',      // Light blue - water points
-          '#5A5548'  // Grey - other
+          ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',
+          ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',
+          ['==', ['get', 'natural'], 'spring'], '#228B22',
+          ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',
+          ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',
+          '#5A5548',
         ],
         'circle-opacity': 0.75,
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'
+      }
+    });
+  }
+
+  if(!map.getLayer('water-sources-layer')){
+    map.addLayer({
+      id: 'water-sources-layer',
+      type: 'symbol',
+      source: 'water-sources',
+      filter: ['!', ['has', 'point_count']],
+      minzoom: iconMinZoom,
+      layout: {
+        visibility: 'none',
+        'icon-image': icons ? icons.getPoiMapIconExpression('water') : '',
+        'icon-size': 1,
       }
     });
   }
@@ -1265,16 +1291,18 @@ function addWaterSourcesLayers(map) {
   }
 
   // Interactive hover effect
-  map.on('mouseenter', 'water-sources-layer', () => {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'water-sources-layer', () => {
-    map.getCanvas().style.cursor = '';
+  ['water-sources-layer', 'water-sources-layer-lowzoom'].forEach((layerId) => {
+    map.on('mouseenter', layerId, () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', layerId, () => {
+      map.getCanvas().style.cursor = '';
+    });
   });
 
   // Click to show popup - remove old handler first to prevent duplicates
-  map.off('click', 'water-sources-layer');
-  map.on('click', 'water-sources-layer', (e) => {
+  ['water-sources-layer', 'water-sources-layer-lowzoom'].forEach((layerId) => map.off('click', layerId));
+  ['water-sources-layer', 'water-sources-layer-lowzoom'].forEach((layerId) => map.on('click', layerId, (e) => {
     const feature = e.features[0];
     const props = feature.properties;
     
@@ -1311,7 +1339,7 @@ function addWaterSourcesLayers(map) {
       .setLngLat(e.lngLat)
       .setHTML(content)
       .addTo(map);
-  });
+  }));
 
   // Click cluster to zoom in - remove old handler first to prevent duplicates
   map.off('click', 'water-sources-cluster');
@@ -1336,7 +1364,7 @@ function addWaterSourcesLayers(map) {
  * Toggle water sources visibility
  */
 function toggleWaterSources(map, show) {
-  const layers = ['water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'];
+  const layers = ['water-sources-layer-lowzoom', 'water-sources-layer', 'water-sources-cluster', 'water-sources-cluster-count'];
   layers.forEach(layerId => {
     if (map.getLayer(layerId)) {
       map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
@@ -1367,6 +1395,7 @@ function filterWaterSources(map, type) {
   }
   
   map.setFilter('water-sources-layer', filter);
+  if(map.getLayer('water-sources-layer-lowzoom')) map.setFilter('water-sources-layer-lowzoom', filter);
 }
 
 // ============================================================
@@ -1453,13 +1482,16 @@ function initializeHutsBars(map) {
 }
 
 // Shared helper: adds circle + cluster + count layers for one POI source
-function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
-  if(!map.getLayer(prefix + '-layer')){
+function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor, iconGroup) {
+  const icons = window.DoloPawsIcons;
+  const iconMinZoom = icons ? icons.ICON_MIN_ZOOM : 12;
+  if(!map.getLayer(prefix + '-layer-lowzoom')){
     map.addLayer({
-      id: prefix + '-layer',
+      id: prefix + '-layer-lowzoom',
       type: 'circle',
       source: sourceId,
       filter: ['!', ['has', 'point_count']],
+      maxzoom: iconMinZoom,
       layout: { visibility: 'none' },
       paint: {
         'circle-radius': 5,
@@ -1468,6 +1500,21 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'
       }
+    });
+  }
+
+  if(!map.getLayer(prefix + '-layer')){
+    map.addLayer({
+      id: prefix + '-layer',
+      type: 'symbol',
+      source: sourceId,
+      filter: ['!', ['has', 'point_count']],
+      minzoom: iconMinZoom,
+      layout: {
+        visibility: 'none',
+        'icon-image': icons ? icons.getPoiMapIconExpression(iconGroup) : '',
+        'icon-size': 1,
+      },
     });
   }
 
@@ -1505,12 +1552,14 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
   }
 
   // Hover cursor
-  map.on('mouseenter', prefix + '-layer', () => { map.getCanvas().style.cursor = 'pointer'; });
-  map.on('mouseleave', prefix + '-layer', () => { map.getCanvas().style.cursor = ''; });
+  [prefix + '-layer', prefix + '-layer-lowzoom'].forEach((layerId) => {
+    map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
+  });
 
   // Popup on click
-  map.off('click', prefix + '-layer');
-  map.on('click', prefix + '-layer', (e) => {
+  [prefix + '-layer', prefix + '-layer-lowzoom'].forEach((layerId) => map.off('click', layerId));
+  [prefix + '-layer', prefix + '-layer-lowzoom'].forEach((layerId) => map.on('click', layerId, (e) => {
     const feature = e.features[0];
     const props = feature.properties;
 
@@ -1553,7 +1602,7 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor) {
       .setLngLat(feature.geometry.coordinates)
       .setHTML(content)
       .addTo(map);
-  });
+  }));
 
   // Zoom into cluster on click
   map.off('click', prefix + '-cluster');
@@ -1572,22 +1621,36 @@ function addHutsBarsLayers(map) {
   console.log('📍 Adding mountain huts + bars/cafés layers...');
 
   // Mountain huts: color by hut type, brown clusters
-  addPoiLayerSet(map, 'mountain-huts', 'mountain-huts', [
-    'case',
-    ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',      // Brown - alpine huts (rifugi)
-    ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',  // Light brown - bivouacs
-    '#5A5548'                                                 // Grey - shelters
-  ], '#8A5A16');
+  addPoiLayerSet(
+    map,
+    'mountain-huts',
+    'mountain-huts',
+    window.DoloPawsIcons ? window.DoloPawsIcons.getPoiCircleColorExpression('huts') : [
+      'case',
+      ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',
+      ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',
+      '#5A5548',
+    ],
+    '#8A5A16',
+    'huts'
+  );
 
   // Bars & cafés: color by amenity, red clusters
-  addPoiLayerSet(map, 'bars-cafes', 'bars-cafes', [
-    'case',
-    ['==', ['get', 'amenity'], 'bar'], '#9C3A25',             // Red - bars
-    ['==', ['get', 'amenity'], 'pub'], '#7a2818',             // Dark red - pubs
-    ['==', ['get', 'amenity'], 'cafe'], '#D6A038',            // Gold - cafés
-    ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',      // Orange - restaurants
-    '#5A5548'
-  ], '#9C3A25');
+  addPoiLayerSet(
+    map,
+    'bars-cafes',
+    'bars-cafes',
+    window.DoloPawsIcons ? window.DoloPawsIcons.getPoiCircleColorExpression('food') : [
+      'case',
+      ['==', ['get', 'amenity'], 'bar'], '#9C3A25',
+      ['==', ['get', 'amenity'], 'pub'], '#7a2818',
+      ['==', ['get', 'amenity'], 'cafe'], '#D6A038',
+      ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',
+      '#5A5548',
+    ],
+    '#9C3A25',
+    'food'
+  );
 
   console.log('✅ Huts + bars/cafés layers added');
 }
@@ -1596,13 +1659,13 @@ function addHutsBarsLayers(map) {
  * Toggle helpers
  */
 function toggleMountainHuts(map, show) {
-  ['mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
+  ['mountain-huts-layer-lowzoom', 'mountain-huts-layer', 'mountain-huts-cluster', 'mountain-huts-cluster-count'].forEach(layerId => {
     if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
   });
 }
 
 function toggleBarsCafes(map, show) {
-  ['bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
+  ['bars-cafes-layer-lowzoom', 'bars-cafes-layer', 'bars-cafes-cluster', 'bars-cafes-cluster-count'].forEach(layerId => {
     if(map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', show ? 'visible' : 'none');
   });
 }
