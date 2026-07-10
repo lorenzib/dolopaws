@@ -96,9 +96,9 @@
     }
 
     const SAFETY = {
-      'low-risk': ['Low-risk', '#E4EADF', '#2C5C34'],
-      'moderate': ['Moderate', '#F6EAD5', '#8A5A16'],
-      'caution':  ['Caution',  '#FBEAE6', '#9C3A25'],
+      'low-risk': [window.t('legend.low'), '#E4EADF', '#2C5C34'],
+      'moderate': [window.t('legend.moderate'), '#F6EAD5', '#8A5A16'],
+      'caution':  [window.t('legend.caution'), '#FBEAE6', '#9C3A25'],
     };
 
     // Guests browse the first two pages (30 trails) as a real preview;
@@ -110,6 +110,14 @@
     let loggedIn = false;
 
     function renderPage(){
+      // The hero must tell the truth: guests see a PREVIEW, not the catalog.
+      const h1 = document.getElementById('trailCountHeading');
+      const sub = document.querySelector('.guide-hero .sub');
+      if(h1) h1.innerHTML = loggedIn ? window.t('browse.h1') : window.t('browse.h1Guest');
+      if(sub) sub.innerHTML = loggedIn
+        ? window.t('browse.sub')
+        : window.t('browse.subGuest', {shown: Math.min(GUEST_LIMIT, trails.length), total: trails.length});
+
       const pool = loggedIn ? trails : trails.slice(0, GUEST_LIMIT);
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
