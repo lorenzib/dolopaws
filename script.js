@@ -14,7 +14,7 @@ function scoreTrail(t, overrides){
   const terrain = parseInt(overrides.terrain, 10);
   let maxDistance = parseFloat(overrides.distance);
 
-  // Energy level: Low caps effective distance at 5 km; High lifts it to 99 km.
+  // Energy level: Low caps effective distance at 5 km; High sets it to 99 km (no effective limit).
   // Medium (or unset) leaves the profile-derived distance unchanged.
   const energy = overrides.energy;
   if(energy === 'low') maxDistance = Math.min(maxDistance, 5);

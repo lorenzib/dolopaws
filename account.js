@@ -25,6 +25,7 @@
 
   // ---------- Dog photo upload ----------
   const DOG_PHOTO_KEY = 'dolopaws-dog-photo';
+  const DOG_PHOTO_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
   const dogPhotoInput = document.getElementById('dogPhotoInput');
   const dogPhotoImg = document.getElementById('dogPhotoImg');
   const dogPhotoFallback = document.getElementById('dogPhotoFallback');
@@ -70,8 +71,7 @@
       }
 
       // Validate file size (2 MB limit to avoid localStorage quota issues)
-      const MAX_BYTES = 2 * 1024 * 1024;
-      if(file.size > MAX_BYTES){
+      if(file.size > DOG_PHOTO_MAX_BYTES){
         if(dogPhotoStatus){
           dogPhotoStatus.hidden = false;
           dogPhotoStatus.style.color = '#9C3A25';
