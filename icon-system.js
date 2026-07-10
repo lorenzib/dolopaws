@@ -152,7 +152,7 @@
     const stroke = badge ? '#ffffff' : color;
     const strokeWidth = badge ? 1.8 : 1.9;
     const background = badge ? `<circle cx="12" cy="12" r="9" fill="${color}" stroke="#ffffff" stroke-width="1.5"></circle>` : '';
-    return `<svg class="dp-icon-svg dp-icon-svg--${escapeHtml(mode)}" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" aria-hidden="true">
+    return `<svg xmlns="http://www.w3.org/2000/svg" class="dp-icon-svg dp-icon-svg--${escapeHtml(mode)}" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" aria-hidden="true">
       ${background}
       <g stroke="${stroke}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
         ${getIconMarkup(normalizedKey)}
@@ -268,19 +268,49 @@
     return getMapImageName('unknown');
   }
 
+  /**
+   * Rasterize an SVG string to ImageData via <img> + canvas.
+   *
+   * Why not map.loadImage(): MapLibre GL v4+ made loadImage Promise-based
+   * (the old callback form is silently ignored — awaiting a wrapper around
+   * it hangs forever and killed everything queued after it: layer setup,
+   * the Layers filter panel, POI clicks). And even the Promise form can't
+   * decode SVG data URIs in Chromium (createImageBitmap limitation).
+   * An HTMLImageElement decodes SVG data URIs everywhere.
+   * Always resolves (with null on failure) — never blocks map setup.
+   */
+  function rasterizeSvg(svgMarkup, pixelSize){
+    return new Promise((resolve) => {
+      try {
+        const img = new global.Image();
+        img.onload = () => {
+          try {
+            const canvas = global.document.createElement('canvas');
+            canvas.width = pixelSize;
+            canvas.height = pixelSize;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, pixelSize, pixelSize);
+            resolve(ctx.getImageData(0, 0, pixelSize, pixelSize));
+          } catch (e) { resolve(null); }
+        };
+        img.onerror = () => resolve(null);
+        img.src = svgDataUri(svgMarkup);
+      } catch (e) { resolve(null); }
+    });
+  }
+
   function registerMapImages(map){
-    if(!map || typeof map.loadImage !== 'function') return Promise.resolve();
+    if(!map || typeof map.addImage !== 'function' || !global.document) return Promise.resolve();
     const loads = Object.entries(MAP_ICON_VARIANTS).map(([variantKey, config]) => {
       const imageName = getMapImageName(variantKey);
       if(map.hasImage && map.hasImage(imageName)) return Promise.resolve();
       const svg = renderIconSvg(config.icon, { mode: 'map', color: config.color, size: 30 });
-      return new Promise((resolve) => {
-        map.loadImage(svgDataUri(svg), (error, image) => {
-          if(!error && image && (!map.hasImage || !map.hasImage(imageName))){
-            map.addImage(imageName, image, { pixelRatio: 2 });
+      return rasterizeSvg(svg, 60).then((imageData) => {
+        try {
+          if(imageData && (!map.hasImage || !map.hasImage(imageName))){
+            map.addImage(imageName, imageData, { pixelRatio: 2 });
           }
-          resolve();
-        });
+        } catch (e) { /* a missing icon must never break the map */ }
       });
     });
     return Promise.all(loads);

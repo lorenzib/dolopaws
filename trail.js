@@ -311,19 +311,133 @@ function renderAllLifts(map){
   });
 }
 
+// ============================================================
+// IMPORTED CIRCUITS — start where you can actually park.
+// OSM route relations have no official start point: the import stitches
+// their segments into one line and begins wherever stitching happened to
+// start, so a loop's km 0 can land mid-slope, far from any access.
+// Before rendering, look up real amenity=parking spots around the route
+// (Overpass, cached locally for 30 days) and rotate the loop so km 0
+// sits at the path point nearest a parking area. Everything downstream —
+// 🚩 flag, directions, arrows, weather anchor, hike mode — follows the
+// rotated order automatically. Falls back silently to the imported order
+// when no parking is close enough or the lookup fails or times out.
+// ============================================================
+const PARK_CACHE_TTL = 30 * 24 * 3600 * 1000;
+const PARK_MAX_DIST_M = 350;      // parking must be this close to the route
+const PARK_LOOKUP_WAIT_MS = 2800; // never block first paint longer than this
+
+function isLoopPath(path){
+  return Array.isArray(path) && path.length > 20 &&
+    distMeters(path[0], path[path.length - 1]) < 250;
+}
+
+function fetchNearbyParking(path){
+  let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+  path.forEach(([lat, lng]) => {
+    if(lat < minLat) minLat = lat;
+    if(lat > maxLat) maxLat = lat;
+    if(lng < minLng) minLng = lng;
+    if(lng > maxLng) maxLng = lng;
+  });
+  const PAD = 0.008; // ~800 m beyond the route's bounding box
+  const bbox = `${minLat - PAD},${minLng - PAD},${maxLat + PAD},${maxLng + PAD}`;
+  const query = `[out:json][timeout:8];(node["amenity"="parking"](${bbox});way["amenity"="parking"](${bbox}););out center 60;`;
+  const mirrors = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+  const tryMirror = (i) => fetch(mirrors[i], {
+    method: 'POST',
+    body: 'data=' + encodeURIComponent(query),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })
+    .then(r => { if(!r.ok) throw new Error('overpass ' + r.status); return r.json(); })
+    .catch(err => { if(i + 1 < mirrors.length) return tryMirror(i + 1); throw err; });
+  return tryMirror(0).then(data => (data.elements || []).map(el => {
+    const lat = el.lat != null ? el.lat : (el.center && el.center.lat);
+    const lng = el.lon != null ? el.lon : (el.center && el.center.lon);
+    return (lat == null || lng == null) ? null : { lat, lng, name: (el.tags && el.tags.name) || '' };
+  }).filter(Boolean));
+}
+
+function nearestPathIndex(path, pt){
+  let best = 0, bestD = Infinity;
+  for(let i = 0; i < path.length; i++){
+    const d = distMeters(path[i], [pt.lat, pt.lng]);
+    if(d < bestD){ bestD = d; best = i; }
+  }
+  return { index: best, dist: bestD };
+}
+
+function applyLoopRotation(trail, rot){
+  if(rot.index > 0){
+    const path = trail.path;
+    const closed = distMeters(path[0], path[path.length - 1]) < 30;
+    const open = closed ? path.slice(0, -1) : path.slice();
+    const rotated = open.slice(rot.index).concat(open.slice(0, rot.index));
+    rotated.push(rotated[0].slice()); // close the loop at the new start
+    trail.path = rotated;
+  }
+  trail.startPoint = {
+    lat: trail.path[0][0],
+    lng: trail.path[0][1],
+    label: rot.name
+      ? window.t('trail.startParkName', { name: rot.name })
+      : window.t('trail.startParking'),
+  };
+  trail.lat = trail.path[0][0];
+  trail.lng = trail.path[0][1];
+}
+
+function improveLoopStart(trail){
+  if(!trail || trail.curated !== false || !isLoopPath(trail.path)) return Promise.resolve();
+  const cacheKey = 'dolopaws-parkstart-' + trail.id;
+  try {
+    const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+    if(cached && Date.now() - cached.at < PARK_CACHE_TTL){
+      if(cached.rot) applyLoopRotation(trail, cached.rot);
+      return Promise.resolve();
+    }
+  } catch (e) { /* unreadable cache — just refetch */ }
+
+  const lookup = fetchNearbyParking(trail.path).then(parkings => {
+    let best = null;
+    parkings.forEach(p => {
+      const near = nearestPathIndex(trail.path, p);
+      if(near.dist <= PARK_MAX_DIST_M && (!best || near.dist < best.dist)){
+        best = { index: near.index, dist: near.dist, name: p.name };
+      }
+    });
+    const rot = best ? { index: best.index, name: best.name } : null;
+    try { localStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), rot })); } catch (e) {}
+    return rot;
+  }).catch(() => null);
+
+  // Wait briefly; if Overpass is slow, render with the imported order now —
+  // the lookup still finishes into the cache for the next visit.
+  const timeout = new Promise(res => setTimeout(() => res('timeout'), PARK_LOOKUP_WAIT_MS));
+  return Promise.race([lookup, timeout]).then(rot => {
+    if(rot && rot !== 'timeout') applyLoopRotation(trail, rot);
+  });
+}
+
 const params = new URLSearchParams(window.location.search);
 const trailId = params.get('id');
 
 function init(){
-  const t = (typeof trails !== 'undefined') ? trails.find(x => x.id === trailId) : null;
+  const trail = (typeof trails !== 'undefined') ? trails.find(x => x.id === trailId) : null;
 
-  if(!t){
-    document.getElementById('trailName').textContent = t('trail.notFound');
-    document.getElementById('trailMeta').textContent = t('trail.notFoundSub');
+  if(!trail){
+    document.getElementById('trailName').textContent = window.t('trail.notFound');
+    document.getElementById('trailMeta').textContent = window.t('trail.notFoundSub');
     document.getElementById('detailSaveBtn').hidden = true;
     return;
   }
 
+  // Imported circuits: settle the real-world start FIRST, so every consumer
+  // below (map, flag, directions, weather, hike mode) sees the same km 0.
+  improveLoopStart(trail).then(() => renderTrail(trail), () => renderTrail(trail));
+}
+
+function renderTrail(t){
   document.title = `${t.name} — DoloPaws`;
   document.getElementById('pageTitle').textContent = `${t.name} — DoloPaws`;
   document.getElementById('trailName').textContent = t.name;
