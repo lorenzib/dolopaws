@@ -82,29 +82,52 @@
       <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:16px;">This helps us flag trails that might not be a good fit — none of this is required.</p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <label class="field-label">Age (years)
-          <input type="number" id="dogAge" min="0" max="30" placeholder="e.g. 4">
+        <label class="field-label">Date of birth
+          <input type="date" id="dogDob">
         </label>
-        <label class="field-label">Weight (kg)
-          <input type="number" id="dogWeight" min="0" max="120" placeholder="e.g. 18">
+        <label class="field-label">Age, if you're unsure of the date
+          <select id="dogAgeBand">
+            <option value="">Select an age…</option>
+            <option value="u1">Under 1 year (puppy)</option>
+            <option value="1-2">1–2 years</option>
+            <option value="3-4">3–4 years</option>
+            <option value="5-6">5–6 years</option>
+            <option value="7-8">7–8 years</option>
+            <option value="9-10">9–10 years</option>
+            <option value="11-12">11–12 years</option>
+            <option value="13plus">13 years or older</option>
+          </select>
         </label>
       </div>
 
-      <label class="field-label" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-        <input type="checkbox" id="dogJointIssues" style="width:auto;margin:0;">
-        <span>Has joint or mobility issues (e.g. hip dysplasia, arthritis)</span>
-      </label>
-      <label class="field-label" id="dogJointDetailField" hidden>Tell us more
-        <input type="text" id="dogJointDetail" placeholder="e.g. mild hip dysplasia, avoid long descents">
+      <label class="field-label">Weight
+        <select id="dogWeightBand">
+          <option value="">Select a weight range…</option>
+          <option value="u5">Under 5 kg</option>
+          <option value="5-10">5–10 kg</option>
+          <option value="10-15">10–15 kg</option>
+          <option value="15-20">15–20 kg</option>
+          <option value="20-30">20–30 kg</option>
+          <option value="30-40">30–40 kg</option>
+          <option value="40-55">40–55 kg</option>
+          <option value="55plus">Over 55 kg</option>
+        </select>
       </label>
 
-      <label class="field-label" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-        <input type="checkbox" id="dogHeatIssues" style="width:auto;margin:0;">
-        <span>Sensitive to heat or has breathing difficulty</span>
-      </label>
-      <label class="field-label" id="dogHeatDetailField" hidden>Tell us more
-        <input type="text" id="dogHeatDetail" placeholder="e.g. brachycephalic, overheats quickly">
-      </label>
+      <div class="field-label" style="margin-top:4px;">Health conditions
+        <details id="dogCondBox" class="cond-box">
+          <summary id="dogCondSummary">None selected — tap to choose</summary>
+          <div class="cond-list">
+            <label><input type="checkbox" name="dogCond" value="joints"> Joint or mobility issues (hip or elbow dysplasia, arthritis, luxating patella)</label>
+            <label><input type="checkbox" name="dogCond" value="back"> Back or disc problems (e.g. IVDD)</label>
+            <label><input type="checkbox" name="dogCond" value="heat"> Heat sensitivity or breathing difficulty (incl. flat-nosed breeds)</label>
+            <label><input type="checkbox" name="dogCond" value="cardiac"> Heart condition</label>
+            <label><input type="checkbox" name="dogCond" value="recovering"> Recovering from injury or surgery</label>
+            <label><input type="checkbox" name="dogCond" value="vision"> Impaired vision or hearing</label>
+            <label><input type="checkbox" name="dogCond" value="overweight"> Overweight</label>
+          </div>
+        </details>
+      </div>
 
       <label class="field-label">Anything else worth knowing?
         <textarea id="dogHealthNotes" rows="3" placeholder="Allergies, medications, recent injuries, vet notes…" style="display:block;width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);resize:vertical;"></textarea>

@@ -522,3 +522,14 @@ img,svg{max-width:100%;height:auto;}
 
 /* Hero CTA: a button, not a banner — cap its width */
 .hero-left .btn-primary{align-self:flex-start;width:auto;padding-left:34px;padding-right:34px;}
+
+/* ---- Health conditions dropdown (account page) ---- */
+.cond-box{margin-top:6px;border:1.5px solid var(--paper-line);border-radius:10px;background:var(--bg);}
+.cond-box summary{list-style:none;cursor:pointer;padding:10px 12px;font-size:14px;font-weight:400;color:var(--ink);display:flex;justify-content:space-between;align-items:center;}
+.cond-box summary::-webkit-details-marker{display:none;}
+.cond-box summary::after{content:'▾';color:var(--ink-soft);font-size:12px;margin-left:8px;}
+.cond-box[open] summary{border-bottom:1.5px solid var(--paper-line);}
+.cond-box[open] summary::after{content:'▴';}
+.cond-list{padding:6px 12px 10px;display:flex;flex-direction:column;gap:2px;}
+.cond-list label{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;font-weight:400;color:var(--ink);padding:7px 2px;cursor:pointer;line-height:1.4;}
+.cond-list input[type=checkbox]{width:auto;margin:2px 0 0;flex:none;accent-color:var(--accent);}

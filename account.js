@@ -14,14 +14,11 @@
   const dogBreedOtherField = document.getElementById('dogBreedOtherField');
   const dogBreedOther = document.getElementById('dogBreedOther');
   const dogFitness = document.getElementById('dogFitness');
-  const dogAge = document.getElementById('dogAge');
-  const dogWeight = document.getElementById('dogWeight');
-  const dogJointIssues = document.getElementById('dogJointIssues');
-  const dogJointDetailField = document.getElementById('dogJointDetailField');
-  const dogJointDetail = document.getElementById('dogJointDetail');
-  const dogHeatIssues = document.getElementById('dogHeatIssues');
-  const dogHeatDetailField = document.getElementById('dogHeatDetailField');
-  const dogHeatDetail = document.getElementById('dogHeatDetail');
+  const dogDob = document.getElementById('dogDob');
+  const dogAgeBand = document.getElementById('dogAgeBand');
+  const dogWeightBand = document.getElementById('dogWeightBand');
+  const dogCondBox = document.getElementById('dogCondBox');
+  const dogCondSummary = document.getElementById('dogCondSummary');
   const dogHealthNotes = document.getElementById('dogHealthNotes');
   const saveDogBtn = document.getElementById('saveDogBtn');
   const dogStatus = document.getElementById('dogStatus');
@@ -42,13 +39,19 @@
     return 'Unknown';
   }
 
+  // ---------- Breed dropdown: full FCI nomenclature, grouped ----------
   const OTHER_VALUE = '__other__';
   function populateBreedOptions(){
-    const list = (typeof DOG_BREEDS !== 'undefined') ? DOG_BREEDS : [];
-    dogBreed.innerHTML =
-      `<option value="">Select a breed…</option>` +
-      list.map(b => `<option value="${b}">${b}</option>`).join('') +
-      `<option value="${OTHER_VALUE}">Other (not listed)</option>`;
+    const groups = (typeof FCI_BREED_GROUPS !== 'undefined') ? FCI_BREED_GROUPS : [];
+    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    let html = `<option value="">Select a breed…</option>`;
+    groups.forEach(g => {
+      html += `<optgroup label="${esc(g.label)}">`
+        + g.breeds.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('')
+        + `</optgroup>`;
+    });
+    html += `<optgroup label="Something else"><option value="${OTHER_VALUE}">Other (type it in)</option></optgroup>`;
+    dogBreed.innerHTML = html;
   }
   populateBreedOptions();
 
@@ -56,31 +59,86 @@
     dogBreedOtherField.hidden = dogBreed.value !== OTHER_VALUE;
   });
 
-  dogJointIssues.addEventListener('change', () => {
-    dogJointDetailField.hidden = !dogJointIssues.checked;
-  });
-  dogHeatIssues.addEventListener('change', () => {
-    dogHeatDetailField.hidden = !dogHeatIssues.checked;
-  });
+  // ---------- Date of birth / age band ----------
+  if (dogDob) dogDob.max = new Date().toISOString().slice(0, 10);
 
+  // ---------- Health conditions dropdown ----------
+  function condInputs(){
+    return Array.from(document.querySelectorAll('input[name="dogCond"]'));
+  }
+  function selectedConditions(){
+    return condInputs().filter(i => i.checked).map(i => i.value);
+  }
+  function updateCondSummary(){
+    const n = selectedConditions().length;
+    dogCondSummary.textContent = n === 0
+      ? 'None selected — tap to choose'
+      : (n === 1 ? '1 condition selected' : `${n} conditions selected`);
+  }
+  condInputs().forEach(i => i.addEventListener('change', updateCondSummary));
+
+  // ---------- Derivations kept in sync with script.js / SCORING.md ----------
+  const AGE_BAND_MID = { 'u1':0.5, '1-2':1.5, '3-4':3.5, '5-6':5.5, '7-8':7.5, '9-10':9.5, '11-12':11.5, '13plus':14 };
+  const WEIGHT_BAND_MID = { 'u5':4, '5-10':7.5, '10-15':12.5, '15-20':17.5, '20-30':25, '30-40':35, '40-55':47.5, '55plus':60 };
+
+  function ageYearsFrom(dobStr, band){
+    if(dobStr){
+      const d = new Date(dobStr);
+      if(!isNaN(d)) return Math.max(0, Math.round(((Date.now() - d.getTime()) / 31557600000) * 10) / 10);
+    }
+    if(band && AGE_BAND_MID[band] != null) return AGE_BAND_MID[band];
+    return null;
+  }
+  function ageBandFromYears(y){
+    if(y == null) return '';
+    if(y < 1) return 'u1';
+    if(y < 3) return '1-2';
+    if(y < 5) return '3-4';
+    if(y < 7) return '5-6';
+    if(y < 9) return '7-8';
+    if(y < 11) return '9-10';
+    if(y < 13) return '11-12';
+    return '13plus';
+  }
+  function weightBandFromKg(kg){
+    if(kg == null) return '';
+    if(kg < 5) return 'u5';
+    if(kg < 10) return '5-10';
+    if(kg < 15) return '10-15';
+    if(kg < 20) return '15-20';
+    if(kg < 30) return '20-30';
+    if(kg < 40) return '30-40';
+    if(kg < 55) return '40-55';
+    return '55plus';
+  }
+
+  // ---------- Save ----------
   saveDogBtn.addEventListener('click', async () => {
     if(!window.DoloPawsAuth) return;
     const finalBreed = dogBreed.value === OTHER_VALUE
       ? dogBreedOther.value.trim()
       : dogBreed.value;
+    const conditions = selectedConditions();
+    const ageYears = ageYearsFrom(dogDob.value, dogAgeBand.value);
+    const weightKg = WEIGHT_BAND_MID[dogWeightBand.value] != null
+      ? WEIGHT_BAND_MID[dogWeightBand.value] : null;
+
     saveDogBtn.disabled = true;
     saveDogBtn.textContent = 'Saving…';
     const ok = await window.DoloPawsAuth.setDogProfile({
       name: dogName.value.trim(),
       breed: finalBreed,
       fitness: dogFitness.value,
-      age: dogAge.value ? Number(dogAge.value) : null,
-      weight: dogWeight.value ? Number(dogWeight.value) : null,
-      jointIssues: dogJointIssues.checked,
-      jointDetail: dogJointIssues.checked ? dogJointDetail.value.trim() : '',
-      heatIssues: dogHeatIssues.checked,
-      heatDetail: dogHeatIssues.checked ? dogHeatDetail.value.trim() : '',
+      dob: dogDob.value || null,
+      ageBand: dogAgeBand.value || null,
+      weightBand: dogWeightBand.value || null,
+      conditions: conditions,
       healthNotes: dogHealthNotes.value.trim(),
+      // Legacy mirrors so any cached older script keeps working.
+      age: ageYears,
+      weight: weightKg,
+      jointIssues: conditions.includes('joints'),
+      heatIssues: conditions.includes('heat'),
     });
     saveDogBtn.disabled = false;
     saveDogBtn.textContent = 'Save dog profile';
@@ -124,6 +182,7 @@
       if(profile){
         dogName.value = profile.name || '';
         dogFitness.value = profile.fitness || 'moderate';
+
         const savedBreed = profile.breed || '';
         const isKnownBreed = (typeof DOG_BREEDS !== 'undefined') && DOG_BREEDS.includes(savedBreed);
         if(savedBreed && !isKnownBreed){
@@ -134,15 +193,31 @@
           dogBreed.value = savedBreed;
           dogBreedOtherField.hidden = true;
         }
-        dogAge.value = profile.age != null ? profile.age : '';
-        dogWeight.value = profile.weight != null ? profile.weight : '';
-        dogJointIssues.checked = !!profile.jointIssues;
-        dogJointDetailField.hidden = !profile.jointIssues;
-        dogJointDetail.value = profile.jointDetail || '';
-        dogHeatIssues.checked = !!profile.heatIssues;
-        dogHeatDetailField.hidden = !profile.heatIssues;
-        dogHeatDetail.value = profile.heatDetail || '';
-        dogHealthNotes.value = profile.healthNotes || '';
+
+        // Age: prefer stored DOB, then stored band, then migrate the old
+        // plain-number age into the nearest band.
+        dogDob.value = profile.dob || '';
+        dogAgeBand.value = profile.ageBand
+          || (profile.dob ? '' : ageBandFromYears(typeof profile.age === 'number' ? profile.age : null));
+
+        // Weight: stored band, else migrate old plain-number kg.
+        dogWeightBand.value = profile.weightBand
+          || weightBandFromKg(typeof profile.weight === 'number' ? profile.weight : null);
+
+        // Conditions: stored list, else migrate the two old booleans.
+        const conds = Array.isArray(profile.conditions)
+          ? profile.conditions
+          : [profile.jointIssues && 'joints', profile.heatIssues && 'heat'].filter(Boolean);
+        condInputs().forEach(i => { i.checked = conds.includes(i.value); });
+        updateCondSummary();
+
+        // Notes: keep old free-text detail fields visible after migration.
+        let notes = profile.healthNotes || '';
+        if(!Array.isArray(profile.conditions)){
+          const legacyBits = [profile.jointDetail, profile.heatDetail].filter(Boolean).join('. ');
+          if(legacyBits && !notes.includes(legacyBits)) notes = notes ? `${notes}. ${legacyBits}` : legacyBits;
+        }
+        dogHealthNotes.value = notes;
       }
     });
   });
