@@ -123,7 +123,8 @@ function initTrailReports(map, trail){
         const fraction = trail.distance > 0 ? f.km / trail.distance : 0;
         const [lat, lng] = pointAtFraction(trail.path, fraction);
         const el = document.createElement('div');
-        el.style.cssText = 'width:28px;height:28px;border-radius:50%;background:#9C3A25;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;';
+        el.className = 'dp-marker';
+        el.style.background = '#9C3A25';
         el.textContent = t.icon;
         const marker = new maplibregl.Marker({ element: el, offset: [0, 0] })
           .setLngLat([lng, lat])

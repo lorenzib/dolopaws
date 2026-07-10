@@ -136,11 +136,12 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   const layersBtn = document.createElement('button');
   layersBtn.type = 'button';
   layersBtn.textContent = 'Layers';
-  layersBtn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:6;height:34px;padding:0 16px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:\'Inter\',sans-serif;'
+  layersBtn.className = 'map-btn';
+  layersBtn.style.left = '10px';
   container.appendChild(layersBtn);
 
   const panel = document.createElement('div');
-  panel.style.cssText = 'position:absolute;bottom:48px;left:10px;z-index:6;background:#fff;border:1px solid var(--paper-line);border-radius:12px;padding:10px;display:none;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:170px;';
+  panel.className = 'map-panel';
   container.appendChild(panel);
 
   layersBtn.addEventListener('click', () => {
@@ -150,9 +151,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   });
 
   function chipStyle(el, on){
-    el.style.cssText = 'padding:7px 12px;border-radius:999px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid ' +
-      (on ? 'var(--ink);background:var(--ink);color:#fff;' : 'var(--paper-line);background:none;color:var(--ink);') +
-      "font-family:'Inter',sans-serif;text-align:left;";
+    el.className = 'map-chip' + (on ? ' on' : '');
   }
 
   const LAYER_SETS = {
@@ -308,7 +307,9 @@ function renderGondolas(map, sourceId){
   gondolas.forEach(g => {
     [g.from, g.to].forEach(station => {
       const el = document.createElement('div');
-      el.style.cssText = 'width:22px;height:22px;border-radius:50%;background:#4E90A8;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;visibility:hidden;';
+      el.className = 'dp-marker';
+      el.style.background = '#4E90A8';
+      el.style.visibility = 'hidden';
       el.textContent = '🚡';
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat([station.lng, station.lat])
@@ -570,7 +571,8 @@ function addTerrainToggle(map, containerId, exaggeration, defaultPitch){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.textContent = '3D';
-  btn.style.cssText = 'position:absolute;bottom:10px;left:88px;z-index:5;height:34px;padding:0 14px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:\'Inter\',sans-serif;'
+  btn.className = 'map-btn';
+  btn.style.left = '88px';
   container.appendChild(btn);
 
   let is3D = false; // clean, flat, label-first map by default
@@ -611,9 +613,7 @@ function addTerrainSource(map){
 // pin, which turns into a wall of signposts with 100+ trails on screen.
 function makeTrailDot(){
   const el = document.createElement('div');
-  el.style.cssText = 'width:15px;height:15px;border-radius:50%;background:#6FA8BE;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer;transition:transform .12s ease;';
-  el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.45)'; });
-  el.addEventListener('mouseleave', () => { el.style.transform = 'scale(1)'; });
+  el.className = 'dp-marker-dot';
   return el;
 }
 
@@ -832,8 +832,8 @@ async function renderReturningHomepage(profile){
       <div class="body">
         <div class="top-row">
           <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
-          ${t.curated !== false ? `<span style="font-size:11px;font-weight:700;color:#fff;background:#2E4034;padding:3px 8px;border-radius:10px;white-space:nowrap;">🐾 VERIFIED BY DOLOPAWS</span>` : `<span style="font-size:11px;font-weight:700;color:#00695c;background:#e0f2f1;padding:3px 8px;border-radius:10px;white-space:nowrap;">🗺️ IMPORTED</span>`}
-          ${isNew ? `<span style="font-size:11px;font-weight:700;color:#fff;background:var(--accent);padding:3px 8px;border-radius:10px;">NEW MATCH</span>` : ''}
+          ${t.curated !== false ? `<span class="badge-pill badge-verified">🐾 VERIFIED BY DOLOPAWS</span>` : `<span class="badge-pill badge-imported">🗺️ IMPORTED</span>`}
+          ${isNew ? `<span class="badge-pill badge-new">NEW MATCH</span>` : ''}
           <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
             <span style="font-weight:700;font-size:12px;color:var(--success);white-space:nowrap;">${t.score}% match</span>
             <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? 'Saved' : 'Save'}</button>
@@ -871,9 +871,7 @@ async function renderReturningHomepage(profile){
       b.type = 'button';
       b.textContent = label;
       b.disabled = disabled;
-      b.style.cssText = 'padding:9px 18px;border-radius:999px;border:1.5px solid var(--paper-line);background:' +
-        (disabled ? 'none;color:var(--ink-soft);cursor:default;opacity:.5;' : 'var(--ink);color:#fff;cursor:pointer;border-color:var(--ink);') +
-        "font-size:12.5px;font-weight:700;font-family:'Inter',sans-serif;";
+      b.className = 'page-btn';
       if (!disabled) b.addEventListener('click', () => {
         currentPage += delta;
         renderReturningHomepage(profile);
@@ -883,7 +881,7 @@ async function renderReturningHomepage(profile){
     };
     nav.appendChild(mkBtn('← Previous', currentPage === 1, -1));
     const info = document.createElement('span');
-    info.style.cssText = 'font-size:12.5px;color:var(--ink-soft);font-weight:600;';
+    info.className = 'page-info';
     info.textContent = `Page ${currentPage} of ${totalPages}`;
     nav.appendChild(info);
     nav.appendChild(mkBtn('Next →', currentPage === totalPages, 1));

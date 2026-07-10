@@ -167,7 +167,8 @@ function setupElevationProfile(map, t){
 
 function makeIconEl(emoji, bgColor){
   const el = document.createElement('div');
-  el.style.cssText = `width:28px;height:28px;border-radius:50%;background:${bgColor};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:14px;`;
+  el.className = 'dp-marker';
+  el.style.background = bgColor;
   el.textContent = emoji;
   return el;
 }
@@ -180,7 +181,8 @@ function addTerrainToggle(map, containerId, exaggeration, pitch3D){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.textContent = 'View 3D terrain';
-  btn.style.cssText = 'position:absolute;bottom:10px;left:10px;z-index:5;padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);';
+  btn.className = 'map-btn';
+  btn.style.left = '10px';
   container.appendChild(btn);
 
   let is3D = false; // clean, flat, label-first map by default

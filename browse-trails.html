@@ -119,8 +119,8 @@
         : miniPathSvg(t.path);
       const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
       const provenance = t.curated === false
-        ? `<span style="font-size:11px;font-weight:700;color:#00695c;background:#e0f2f1;padding:2px 8px;border-radius:10px;white-space:nowrap;">🗺️ Imported</span>`
-        : `<span style="font-size:11px;font-weight:700;color:#fff;background:var(--ink);padding:2px 8px;border-radius:10px;white-space:nowrap;">🐾 Verified</span>`;
+        ? `<span class="badge-pill badge-imported">🗺️ Imported</span>`
+        : `<span class="badge-pill badge-verified">🐾 Verified</span>`;
       const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
         .filter(Boolean).join(' · ');
       return `
@@ -146,10 +146,7 @@
           b.type = 'button';
           b.textContent = label;
           b.disabled = disabled;
-          b.style.cssText = 'padding:9px 18px;border-radius:999px;border:1.5px solid ' +
-            (disabled ? 'var(--paper-line);background:none;color:var(--ink-soft);cursor:default;opacity:.5;'
-                      : 'var(--ink);background:var(--ink);color:#fff;cursor:pointer;') +
-            "font-size:12.5px;font-weight:700;font-family:'Inter',sans-serif;";
+          b.className = 'page-btn';
           if(!disabled) b.addEventListener('click', () => {
             page += delta;
             renderPage();
@@ -159,7 +156,7 @@
         };
         nav.appendChild(mkBtn('← Previous', page === 1, -1));
         const info = document.createElement('span');
-        info.style.cssText = 'font-size:12.5px;color:var(--ink-soft);font-weight:600;';
+        info.className = 'page-info';
         info.textContent = `Page ${page} of ${totalPages}`;
         nav.appendChild(info);
         nav.appendChild(mkBtn('Next →', page === totalPages, 1));
