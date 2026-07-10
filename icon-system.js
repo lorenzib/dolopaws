@@ -25,7 +25,7 @@
     'hut-wilderness': { icon: 'hut', color: '#B0741C' },
     'hut-shelter': { icon: 'hut', color: '#5A5548' },
     'food-bar': { icon: 'food', color: '#9C3A25' },
-    'food-pub': { icon: 'food', color: '#7A2818' },
+    'food-pub': { icon: 'food', color: '#7a2818' },
     'food-cafe': { icon: 'food', color: '#D6A038' },
     'food-restaurant': { icon: 'food', color: '#C4652F' },
     'food-fast': { icon: 'food', color: '#C4652F' },
@@ -97,6 +97,8 @@
       <path d="M12 17h.01"></path>
     `,
   };
+  const VALID_MODES = new Set(['inline', 'legend', 'marker', 'map']);
+  const SAFE_COLOR = /^(currentColor|#[0-9a-fA-F]{6})$/;
 
   function escapeHtml(value){
     return String(value).replace(/[&<>"']/g, (char) => ({
@@ -120,10 +122,32 @@
     return BASE_COLORS[iconKey] || BASE_COLORS.unknown;
   }
 
+  function normalizeIconKey(iconKey){
+    return ICON_PATHS[iconKey] ? iconKey : 'unknown';
+  }
+
+  function normalizeMode(mode){
+    return VALID_MODES.has(mode) ? mode : 'inline';
+  }
+
+  function normalizeColor(color, iconKey){
+    return SAFE_COLOR.test(color || '') ? color : getCategoryColor(iconKey);
+  }
+
+  function defaultSizeForMode(mode){
+    return mode === 'legend' ? 18 : mode === 'marker' || mode === 'map' ? 28 : 16;
+  }
+
+  function normalizeSize(size, mode){
+    const normalized = Number(size);
+    return Number.isFinite(normalized) && normalized > 0 && normalized <= 64 ? normalized : defaultSizeForMode(mode);
+  }
+
   function renderIconSvg(iconKey, options = {}){
-    const mode = options.mode || 'inline';
-    const size = options.size || (mode === 'legend' ? 18 : mode === 'marker' || mode === 'map' ? 28 : 16);
-    const color = options.color || getCategoryColor(iconKey);
+    const normalizedKey = normalizeIconKey(iconKey);
+    const mode = normalizeMode(options.mode || 'inline');
+    const size = normalizeSize(options.size, mode);
+    const color = normalizeColor(options.color || getCategoryColor(normalizedKey), normalizedKey);
     const badge = mode === 'legend' || mode === 'marker' || mode === 'map';
     const stroke = badge ? '#ffffff' : color;
     const strokeWidth = badge ? 1.8 : 1.9;
@@ -131,9 +155,16 @@
     return `<svg class="dp-icon-svg dp-icon-svg--${escapeHtml(mode)}" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" aria-hidden="true">
       ${background}
       <g stroke="${stroke}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
-        ${getIconMarkup(iconKey)}
+        ${getIconMarkup(normalizedKey)}
       </g>
     </svg>`;
+  }
+
+  function createSvgElement(iconKey, options = {}){
+    if(!global.document || typeof global.DOMParser !== 'function') return null;
+    const parser = new global.DOMParser();
+    const doc = parser.parseFromString(renderIconSvg(iconKey, options), 'image/svg+xml');
+    return global.document.importNode(doc.documentElement, true);
   }
 
   function chipHtml(iconKey, label){
@@ -148,7 +179,8 @@
   function createMarkerElement(iconKey, options = {}){
     const el = global.document.createElement('div');
     el.className = 'dp-marker dp-marker--icon';
-    el.innerHTML = renderIconSvg(iconKey, { mode: 'marker', color: options.color || getCategoryColor(iconKey), size: options.size || 30 });
+    const svg = createSvgElement(iconKey, { mode: 'marker', color: options.color || getCategoryColor(iconKey), size: options.size || 30 });
+    if(svg) el.replaceChildren(svg);
     return el;
   }
 
@@ -257,12 +289,13 @@
   function hydrate(root){
     if(!root || typeof root.querySelectorAll !== 'function') return;
     root.querySelectorAll('[data-dp-icon]').forEach((el) => {
-      const iconKey = el.getAttribute('data-dp-icon') || 'unknown';
-      const mode = el.getAttribute('data-dp-icon-mode') || 'inline';
-      const color = el.getAttribute('data-dp-icon-color') || getCategoryColor(iconKey);
-      const size = Number(el.getAttribute('data-dp-icon-size')) || undefined;
+      const iconKey = normalizeIconKey(el.getAttribute('data-dp-icon') || 'unknown');
+      const mode = normalizeMode(el.getAttribute('data-dp-icon-mode') || 'inline');
+      const color = normalizeColor(el.getAttribute('data-dp-icon-color') || getCategoryColor(iconKey), iconKey);
+      const size = normalizeSize(el.getAttribute('data-dp-icon-size'), mode);
       el.classList.add('dp-icon-host', `dp-icon-host--${mode}`);
-      el.innerHTML = renderIconSvg(iconKey, { mode, color, size });
+      const svg = createSvgElement(iconKey, { mode, color, size });
+      if(svg) el.replaceChildren(svg);
     });
   }
 
@@ -270,6 +303,7 @@
     ICON_MIN_ZOOM,
     chipHtml,
     createMarkerElement,
+    createSvgElement,
     escapeHtml,
     getCategoryColor,
     getMapImageName,

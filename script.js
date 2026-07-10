@@ -1216,15 +1216,7 @@ function addWaterSourcesLayers(map) {
       layout: { visibility: 'none' },  // ← ADDED: Default hidden
       paint: {
         'circle-radius': 5,
-        'circle-color': icons ? icons.getPoiCircleColorExpression('water') : [
-          'case',
-          ['==', ['get', 'amenity'], 'drinking_water'], '#4E90A8',
-          ['==', ['get', 'amenity'], 'fountain'], '#2E7FA8',
-          ['==', ['get', 'natural'], 'spring'], '#228B22',
-          ['==', ['get', 'man_made'], 'water_tap'], '#0077BE',
-          ['==', ['get', 'amenity'], 'water_point'], '#5DB8D0',
-          '#5A5548',
-        ],
+        'circle-color': icons ? icons.getPoiCircleColorExpression('water') : '#5A5548',
         'circle-opacity': 0.75,
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'
@@ -1625,12 +1617,7 @@ function addHutsBarsLayers(map) {
     map,
     'mountain-huts',
     'mountain-huts',
-    window.DoloPawsIcons ? window.DoloPawsIcons.getPoiCircleColorExpression('huts') : [
-      'case',
-      ['==', ['get', 'tourism'], 'alpine_hut'], '#8A5A16',
-      ['==', ['get', 'tourism'], 'wilderness_hut'], '#B0741C',
-      '#5A5548',
-    ],
+    window.DoloPawsIcons ? window.DoloPawsIcons.getPoiCircleColorExpression('huts') : '#5A5548',
     '#8A5A16',
     'huts'
   );
@@ -1640,14 +1627,7 @@ function addHutsBarsLayers(map) {
     map,
     'bars-cafes',
     'bars-cafes',
-    window.DoloPawsIcons ? window.DoloPawsIcons.getPoiCircleColorExpression('food') : [
-      'case',
-      ['==', ['get', 'amenity'], 'bar'], '#9C3A25',
-      ['==', ['get', 'amenity'], 'pub'], '#7a2818',
-      ['==', ['get', 'amenity'], 'cafe'], '#D6A038',
-      ['==', ['get', 'amenity'], 'restaurant'], '#C4652F',
-      '#5A5548',
-    ],
+    window.DoloPawsIcons ? window.DoloPawsIcons.getPoiCircleColorExpression('food') : '#5A5548',
     '#9C3A25',
     'food'
   );
