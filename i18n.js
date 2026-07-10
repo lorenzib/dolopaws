@@ -500,14 +500,48 @@
   function injectToggle(){
     const links = document.querySelector('.topnav .links');
     if (!links) return;
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;display:inline-block;';
+
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = lang === 'it' ? '🌐 Lingua' : '🌐 Language';
-    btn.title = lang === 'it' ? 'Switch to English' : 'Passa all\'italiano';
-    btn.setAttribute('aria-label', lang === 'it' ? 'Switch to English' : 'Passa all\'italiano');
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
     btn.style.cssText = 'border:1.5px solid var(--paper-line);background:none;color:var(--ink);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;font-family:\'Inter\',sans-serif;';
-    btn.addEventListener('click', () => setLang(lang === 'it' ? 'en' : 'it'));
-    links.appendChild(btn);
+    wrap.appendChild(btn);
+
+    const menu = document.createElement('div');
+    menu.style.cssText = 'position:absolute;top:calc(100% + 6px);right:0;z-index:60;background:#fff;border:1px solid var(--paper-line);border-radius:12px;padding:6px;display:none;flex-direction:column;gap:2px;box-shadow:0 6px 18px rgba(0,0,0,.14);min-width:130px;';
+    const OPTIONS = [
+      ['en', lang === 'it' ? 'Inglese' : 'English'],
+      ['it', lang === 'it' ? 'Italiano' : 'Italian'],
+    ];
+    OPTIONS.forEach(([code, label]) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.textContent = (code === lang ? '✓ ' : '') + label;
+      item.style.cssText = 'border:none;background:' + (code === lang ? 'var(--sage-dim)' : 'none') +
+        ';color:var(--ink);font-size:12.5px;font-weight:' + (code === lang ? '700' : '500') +
+        ';padding:8px 12px;border-radius:8px;cursor:pointer;text-align:left;font-family:\'Inter\',sans-serif;';
+      item.addEventListener('click', () => {
+        menu.style.display = 'none';
+        if (code !== lang) setLang(code);
+      });
+      menu.appendChild(item);
+    });
+    wrap.appendChild(menu);
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = menu.style.display === 'flex';
+      menu.style.display = open ? 'none' : 'flex';
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+    document.addEventListener('click', () => { menu.style.display = 'none'; btn.setAttribute('aria-expanded', 'false'); });
+
+    links.appendChild(wrap);
   }
 
   function init(){
