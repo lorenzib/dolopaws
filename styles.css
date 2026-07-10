@@ -533,3 +533,32 @@ img,svg{max-width:100%;height:auto;}
 .cond-list{padding:6px 12px 10px;display:flex;flex-direction:column;gap:2px;}
 .cond-list label{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;font-weight:400;color:var(--ink);padding:7px 2px;cursor:pointer;line-height:1.4;}
 .cond-list input[type=checkbox]{width:auto;margin:2px 0 0;flex:none;accent-color:var(--accent);}
+
+/* ---- Safety guide: accordions + icons ---- */
+.guide-acc{border:1.5px solid var(--paper-line);border-radius:16px;background:#fff;margin-bottom:18px;overflow:hidden;}
+.guide-acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 20px;font-family:'Source Serif 4', serif;font-size:19px;font-weight:700;color:var(--ink);}
+.guide-acc>summary::-webkit-details-marker{display:none;}
+.guide-acc>summary::after{content:'▾';margin-left:auto;color:var(--ink-soft);font-size:14px;transition:transform .15s;}
+.guide-acc[open]>summary::after{transform:rotate(180deg);}
+.guide-acc[open]>summary{border-bottom:1.5px solid var(--paper-line);}
+.guide-acc>summary:hover{background:var(--bg);}
+.guide-acc-body{padding:6px 20px 14px;}
+.guide-acc-body .guide-section{border:none;box-shadow:none;padding:14px 0;margin:0;border-bottom:1px dashed var(--paper-line);border-radius:0;background:none;}
+.guide-acc-body .guide-section:last-child{border-bottom:none;}
+.gs-h{display:flex;align-items:center;gap:10px;}
+.gs-h .gs-i{flex:none;}
+.gs-h3{display:flex;align-items:center;gap:8px;font-size:15px;margin:18px 0 8px;}
+.gs-h3 .gs-i{flex:none;}
+.sign-strip{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 14px;}
+.sign-chip{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--paper-line);border-radius:999px;padding:6px 13px 6px 9px;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);}
+.sign-chip .gs-i{flex:none;}
+.layer-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:4px 0 16px;}
+.layer-card{display:flex;align-items:flex-start;gap:10px;border:1.5px solid var(--paper-line);border-radius:12px;padding:12px 14px;background:var(--bg);}
+.layer-card .gs-i{flex:none;margin-top:1px;}
+.layer-card b{display:block;font-size:13.5px;color:var(--ink);}
+.layer-card span{display:block;font-size:12.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;}
+@media (max-width:560px){
+  .layer-cards{grid-template-columns:1fr;}
+  .guide-acc>summary{font-size:17px;padding:14px 16px;}
+  .guide-acc-body{padding:4px 16px 12px;}
+}
