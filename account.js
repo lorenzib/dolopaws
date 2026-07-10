@@ -23,6 +23,57 @@
   const saveDogBtn = document.getElementById('saveDogBtn');
   const dogStatus = document.getElementById('dogStatus');
 
+  // ---------- Dog photo upload ----------
+  const DOG_PHOTO_KEY = 'dolopaws-dog-photo';
+  const dogPhotoInput = document.getElementById('dogPhotoInput');
+  const dogPhotoImg = document.getElementById('dogPhotoImg');
+  const dogPhotoFallback = document.getElementById('dogPhotoFallback');
+  const dogPhotoRemoveBtn = document.getElementById('dogPhotoRemoveBtn');
+
+  function showDogPhoto(dataUrl){
+    if(!dogPhotoImg) return;
+    dogPhotoImg.src = dataUrl;
+    dogPhotoImg.hidden = false;
+    if(dogPhotoFallback) dogPhotoFallback.style.display = 'none';
+    if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = false;
+  }
+  function clearDogPhoto(){
+    if(!dogPhotoImg) return;
+    dogPhotoImg.src = '';
+    dogPhotoImg.hidden = true;
+    if(dogPhotoFallback) dogPhotoFallback.style.display = '';
+    if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = true;
+    if(dogPhotoInput) dogPhotoInput.value = '';
+  }
+
+  // Load saved photo on page open
+  try {
+    const saved = localStorage.getItem(DOG_PHOTO_KEY);
+    if(saved) showDogPhoto(saved);
+  } catch(e){}
+
+  if(dogPhotoInput){
+    dogPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const dataUrl = evt.target.result;
+        try { localStorage.setItem(DOG_PHOTO_KEY, dataUrl); } catch(storageErr){
+          console.warn('Could not save dog photo to localStorage:', storageErr);
+        }
+        showDogPhoto(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  if(dogPhotoRemoveBtn){
+    dogPhotoRemoveBtn.addEventListener('click', () => {
+      try { localStorage.removeItem(DOG_PHOTO_KEY); } catch(e){}
+      clearDogPhoto();
+    });
+  }
+
   const showDeleteBtn = document.getElementById('showDeleteBtn');
   const deleteConfirmBox = document.getElementById('deleteConfirmBox');
   const deletePasswordField = document.getElementById('deletePasswordField');

@@ -12,7 +12,13 @@ const FITNESS_DEFAULTS = {
 function scoreTrail(t, overrides){
   let score = 100;
   const terrain = parseInt(overrides.terrain, 10);
-  const maxDistance = parseFloat(overrides.distance);
+  let maxDistance = parseFloat(overrides.distance);
+
+  // Energy level: Low caps effective distance at 5 km; High lifts it to 99 km.
+  const energy = overrides.energy;
+  if(energy === 'low')  maxDistance = Math.min(maxDistance, 5);
+  else if(energy === 'high') maxDistance = 99;
+
   const hazardMult = overrides.hazardMult || 1;       // 1.5 for fragile dogs (joints/back/senior)
   const exposureExtra = overrides.exposureExtra || 0; // extra exposure penalty for fragile dogs
 
@@ -1018,12 +1024,14 @@ if(adjustToggle){
   adjustToggle.addEventListener('click', () => {
     adjustPanel.hidden = false;
     adjustToggle.hidden = true;
+    adjustToggle.setAttribute('aria-expanded', 'true');
   });
 }
 if(adjustCloseBtn){
   adjustCloseBtn.addEventListener('click', () => {
     adjustPanel.hidden = true;
     adjustToggle.hidden = false;
+    adjustToggle.setAttribute('aria-expanded', 'false');
     adjustOverride = null;
     renderReturningHomepage(currentProfileForAdjust);
   });
@@ -1090,9 +1098,27 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     currentProfileForAdjust = profile;
     currentFavorites = await window.DoloPawsAuth.getFavorites();
     renderReturningHomepage(profile);
+
+    // Show the dog photo bubble (with uploaded photo or fallback paw)
+    const dogBubble = document.getElementById('dogPhotoBubble');
+    const dogBubbleImg = document.getElementById('dogBubbleImg');
+    if(dogBubble){
+      try {
+        const photo = localStorage.getItem('dolopaws-dog-photo');
+        if(photo && dogBubbleImg){
+          dogBubbleImg.src = photo;
+          dogBubbleImg.hidden = false;
+          const fallback = dogBubble.querySelector('.dog-bubble-fallback');
+          if(fallback) fallback.style.display = 'none';
+        }
+      } catch(e){}
+      dogBubble.hidden = false;
+    }
   } else {
     newHome.hidden = false;
     returningHome.hidden = true;
+    const dogBubble = document.getElementById('dogPhotoBubble');
+    if(dogBubble) dogBubble.hidden = true;
     initGuestMap();
   }
 });
