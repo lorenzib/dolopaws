@@ -522,9 +522,14 @@ function buildItinerary(t){
   const isLoop = Array.isArray(t.path) && t.path.length > 1
     && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
 
-  // 1. Parking / access — the named startPoint label plus a real nav link.
+  // 1. Parking / access — the named startPoint label plus a directions
+  // link into whatever navigation app this device prefers: Apple Maps on
+  // iOS/macOS, Google Maps elsewhere. Neutral label, destination pre-filled.
   const sp = t.startPoint || { lat: t.lat, lng: t.lng, label: '' };
-  const mapsUrl = `https://www.google.com/maps?q=${sp.lat},${sp.lng}`;
+  const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  const mapsUrl = isApple
+    ? `https://maps.apple.com/?daddr=${sp.lat},${sp.lng}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${sp.lat},${sp.lng}`;
   const parkLabel = sp.label ? itinEsc(trLabel(sp.label)) : window.t('trail.itinParkFallback');
   itinAdd('park', -2, `${parkLabel} · <a href="${mapsUrl}" target="_blank" rel="noopener">${window.t('trail.openMaps')}</a>`);
 
