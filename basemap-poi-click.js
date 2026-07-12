@@ -124,11 +124,11 @@ function makeBasemapPoisClickable(map){
     let baseHtml = `<b>${escHtml(name)}</b><br>${poiLabel(p)}`;
     if (p.ele) baseHtml += `<br>⛰️ ${escHtml(p.ele)} m`;
 
-    // Tier 3 footer: never dead-end — link out for anything we can't enrich.
-    const footer = `<div style="margin-top:6px;font-size:11px;color:#8b8578;">`
-          + `from OpenStreetMap · <a href="https://www.openstreetmap.org/search`
-          + `?query=${encodeURIComponent(name)}#map=18/${lat.toFixed(5)}/${lng.toFixed(5)}"`
-          + ` target="_blank" rel="noopener">more info ↗</a></div>`;
+    // No per-POI source link: an osm.org object page is a mappers' database
+    // view, not visitor information — and the map corner already carries the
+    // OpenStreetMap attribution. Real details (website, phone, hours) render
+    // above when the data has them.
+    const footer = '';
 
     const popup = new maplibregl.Popup({ offset: 10, closeOnClick: true, maxWidth: '260px' })
       .setLngLat(e.lngLat).addTo(map);
