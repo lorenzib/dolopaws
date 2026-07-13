@@ -31,15 +31,10 @@
 <div class="guide-hero">
   <div class="eyebrow" data-i18n="guide.eyebrow">Dog safety guide</div>
   <div style="display:flex;align-items:center;gap:14px;margin-top:14px;"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;"><path d="M12 2.8l7 2.6v5c0 4.5-2.9 7.6-7 9.6-4.1-2-7-5.1-7-9.6v-5L12 2.8z" fill="#fff" stroke="var(--ink)" stroke-width="1.5"/><ellipse cx="12" cy="14" rx="3" ry="2.6" fill="var(--ink)"/><ellipse cx="8.6" cy="10.4" rx="1.1" ry="1.5" fill="var(--accent-light)"/><ellipse cx="12" cy="9.2" rx="1.1" ry="1.5" fill="var(--accent-light)"/><ellipse cx="15.4" cy="10.4" rx="1.1" ry="1.5" fill="var(--accent-light)"/></svg><h1 style="font-size:clamp(28px,5vw,38px);margin:0;" data-i18n="guide.h1">Hiking with your dog at altitude</h1></div>
-  <p class="sub" id="guideSubline" style="margin-top:14px;" data-i18n="guide.checking">Checking your login status…</p>
+  <p class="sub" id="guideSubline" style="margin-top:14px;" data-i18n="guide.subline">The things that cause the most trouble on alpine trails are not the elevation. They are paws, heat, pace, and knowing your dog's build.</p>
 </div>
 
-<div id="loggedOutState" hidden style="text-align:center;padding:40px 20px;">
-  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;" data-i18n="guide.loggedOutMsg">This guide is available to logged-in accounts only.</p>
-  <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;" data-i18n="guide.goHome">Go to homepage to log in</a>
-</div>
-
-<div id="loggedInState" hidden>
+<div id="loggedInState">
   <div class="guide-article">
   <div data-lang-block="en">
   <details class="guide-acc" open><summary><svg class="gs-i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="15" rx="4" ry="3.4" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="var(--accent-light)"/><ellipse cx="6.5" cy="10.5" rx="1.5" ry="2" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="var(--accent-light)"/><ellipse cx="10.2" cy="8.2" rx="1.5" ry="2" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="var(--accent-light)"/><ellipse cx="13.8" cy="8.2" rx="1.5" ry="2" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="var(--accent-light)"/><ellipse cx="17.5" cy="10.5" rx="1.5" ry="2" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="var(--accent-light)"/></svg><span>Protecting paw pads on rocky terrain</span></summary><div class="guide-acc-body"><section class="guide-section">
@@ -193,30 +188,7 @@
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="auth-ui.js" defer></script>
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const loggedOutState = document.getElementById('loggedOutState');
-    const loggedInState = document.getElementById('loggedInState');
-    const guideSubline = document.getElementById('guideSubline');
-
-    function waitForAuth(cb){
-      if(window.DoloPawsAuth){ cb(); return; }
-      window.addEventListener('dolopaws-auth-ready', cb, { once: true });
-    }
-    waitForAuth(() => {
-      window.DoloPawsAuth.onChange((user) => {
-        if(!user){
-          guideSubline.textContent = window.t('guide.notLogged');
-          loggedOutState.hidden = false;
-          loggedInState.hidden = true;
-          return;
-        }
-        guideSubline.textContent = window.t('guide.subline');
-        loggedOutState.hidden = true;
-        loggedInState.hidden = false;
-      });
-    });
-  });
-</script>
+<!-- Guide is public: it's our strongest page for search and trust.
+     Personal features (match %, saving) still prompt login where they live. -->
 </body>
 </html>
