@@ -175,16 +175,53 @@ function buildProfile(samples, elevations, totalKm) {
   return profile;
 }
 
-function computeGainAndGrade(samples, elevations) {
-  let gain = 0;
-  let maxGrade = 0;
-  for (let i = 1; i < elevations.length; i += 1) {
-    const dElev = elevations[i] - elevations[i - 1];
-    const dKm = samples[i].km - samples[i - 1].km;
-    if (dElev > 2) gain += dElev; // ignore sub-noise wiggles
-    if (dKm > 0.05) maxGrade = Math.max(maxGrade, Math.abs(dElev) / (dKm * 1000));
+function median3(values) {
+  // Kills single-sample elevation-API spikes without flattening real slopes.
+  if (values.length < 3) return values.slice();
+  const out = values.slice();
+  for (let i = 1; i < values.length - 1; i += 1) {
+    out[i] = [values[i - 1], values[i], values[i + 1]].sort((a, b) => a - b)[1];
   }
-  return { gain: Math.round(gain), maxGrade };
+  return out;
+}
+
+function computeGainAndGrade(samples, elevations) {
+  // SUSTAINED grade, not point-max. The old point-max (any ~50 m segment
+  // ≥18%) rated two-thirds of the catalog Caution — one short ramp tarred
+  // whole family loops. A safety rating should describe what the trail
+  // sustains, so:
+  //   1. median-3 smoothing (elevation-API spikes: real trails don't drop
+  //      97 m and climb back in 300 m),
+  //   2. grade measured over 0.25–0.8 km windows only,
+  //   3. windows must exceed a 30 m noise floor AND be credible — no
+  //      segment can rise/fall more than the whole trail does,
+  //   4. backstop: the trail-wide average grade, so long uniform ramps
+  //      (steep on average, never extreme in one window) still rate honestly.
+  let gain = 0;
+  const smoothed = median3(elevations);
+  for (let i = 1; i < smoothed.length; i += 1) {
+    const dElev = smoothed[i] - smoothed[i - 1];
+    if (dElev > 2) gain += dElev; // ignore sub-noise wiggles
+  }
+  gain = Math.round(gain);
+
+  const net = Math.abs(smoothed[smoothed.length - 1] - smoothed[0]);
+  const maxCredible = gain + net + 25;
+  let maxGrade = 0;
+  for (let i = 0; i < smoothed.length; i += 1) {
+    for (let j = i + 1; j < smoothed.length; j += 1) {
+      const dKm = samples[j].km - samples[i].km;
+      if (dKm < 0.25) continue;
+      if (dKm > 0.8) break;
+      const dz = Math.abs(smoothed[j] - smoothed[i]);
+      if (dz < 30 || dz > maxCredible) continue;
+      maxGrade = Math.max(maxGrade, dz / (dKm * 1000));
+    }
+  }
+  const totalKm = samples[samples.length - 1].km;
+  if (totalKm > 0) maxGrade = Math.max(maxGrade, gain / (totalKm * 1000));
+
+  return { gain, maxGrade };
 }
 
 function rateSafety(maxGrade) {
