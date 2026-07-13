@@ -41,6 +41,10 @@ function goToProfileCreation(){
   const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
   if(user){
     window.location.href = 'account.html';
+  } else if(window.DoloPawsWizard){
+    // Guests build the dog profile FIRST (no account needed); the
+    // signup ask comes only after they've seen their dog's matches.
+    window.DoloPawsWizard.open();
   } else if(window.DoloPawsAuthUI){
     window.DoloPawsAuthUI.openSignup();
   }
@@ -1001,6 +1005,15 @@ document.querySelectorAll('.adj-pill').forEach(p => {
 // ============================================================
 // AUTH STATE — switch between guest and returning homepage
 // ============================================================
+// Wizard saves while logged in should refresh the homepage immediately.
+window.addEventListener('dolopaws-dog-profile-saved', (e) => {
+  if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser && e.detail && e.detail.profile){
+    currentProfileForAdjust = e.detail.profile;
+    adjustOverride = null;
+    renderReturningHomepage(e.detail.profile);
+  }
+});
+
 window.addEventListener('dolopaws-auth-changed', async (e) => {
   const user = e.detail.user;
   const newHome = document.getElementById('newCustomerHomepage');
@@ -1020,6 +1033,22 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
     returningHome.hidden = false;
     adjustOverride = null;
     initTrailMap();
+
+    // Guest-wizard handoff: if they built a dog profile before signing
+    // up, persist it now — but never overwrite a profile that already
+    // exists on the account (e.g. logging into an older account).
+    try {
+      const pendingRaw = localStorage.getItem('dolopaws-pending-dog-profile');
+      if(pendingRaw){
+        const pending = JSON.parse(pendingRaw);
+        const existing = await window.DoloPawsAuth.getDogProfile();
+        if(pending && pending.name && (!existing || !existing.name)){
+          await window.DoloPawsAuth.setDogProfile(pending);
+        }
+        localStorage.removeItem('dolopaws-pending-dog-profile');
+        localStorage.removeItem('dolopaws-dog-draft'); // guest draft now redundant
+      }
+    } catch(err){ /* never block login on handoff */ }
 
     const profile = await window.DoloPawsAuth.getDogProfile();
     currentProfileForAdjust = profile;

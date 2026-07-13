@@ -65,8 +65,8 @@
   <!-- HERO -->
   <div class="hero-split">
     <div class="hero-left">
-      <h1 data-i18n="hero.h1">The Dolomites trail guide for dogs and their humans</h1>
-      <p class="sub" data-i18n="hero.sub">DoloPaws ranks every Dolomites route by paw safety, shade, water access, and terrain risk — matched to your specific dog's build and tolerance.</p>
+      <h1 data-i18n="hero.h1">The trail guide that asks about your dog before your fitness level</h1>
+      <p class="sub" data-i18n="hero.sub">Every route is ranked for paw safety, shade, water access, and terrain risk, matched to your dog's build and tolerance.</p>
       <button id="createProfileBtn" class="btn-primary" data-i18n="hero.cta">Create your dog's profile →</button>
 
       <div class="trust-row">
@@ -193,6 +193,22 @@
   <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--accent);">— DoloPaws</div>
 </div>
 
+<!-- DOG PROFILE WIZARD (opened by the hero CTA; works for guests) -->
+<div id="dogWizard" class="dw-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="dwTitle">
+  <div class="dw-modal">
+    <button id="dwCloseBtn" class="dw-close" aria-label="Close">&times;</button>
+    <h2 id="dwTitle" class="dw-title">Add a dog</h2>
+    <p id="dwSubtitle" class="dw-subtitle"></p>
+    <div id="dwStepper" class="dw-stepper" role="list"></div>
+    <div id="dwBody" class="dw-body"></div>
+    <div id="dwFooter" class="dw-footer">
+      <button id="dwBackBtn" type="button" class="dw-btn-ghost">&larr; Back</button>
+      <button id="dwNextBtn" type="button" class="dw-btn-primary">Next &rarr;</button>
+    </div>
+  </div>
+</div>
+<div id="dwToast" class="dw-toast" hidden role="status" aria-live="polite"></div>
+
 <footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; A personalised trail guide for dogs and their humans.</footer>
 
 <script src="i18n.js"></script>
@@ -209,5 +225,6 @@
 <script src="basemap-poi-click.js" defer></script>
 <script src="dog-routes-layer.js" defer></script>
 <script src="script.js" defer></script>
+<script src="dog-wizard.js" defer></script>
 </body>
 </html>

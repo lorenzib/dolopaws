@@ -30,14 +30,50 @@
   var closeBtn  = document.getElementById('dwCloseBtn');
   var toastEl   = document.getElementById('dwToast');
 
+  // Pages without the wizard markup: register a no-op API and bail
+  // instead of crashing on the missing elements.
+  if (!overlay || !nextBtn || !backBtn || !closeBtn) {
+    window.DoloPawsWizard = { open: function () {} };
+    return;
+  }
+
   // ---- Helpers ----
+  // Data model matches the account page and scoring.js exactly:
+  // ageBand / weightBand / structured conditions drive the match score.
   function makeEmptyData() {
     return {
-      name: '', ageGroup: '', dogSex: '',
-      breed: '', breedOther: '', fitness: '', heatSensitivity: '',
-      spayed: '', conditions: '', allergies: '', medications: '',
+      name: '', ageBand: '',
+      breed: '', breedOther: '', weightBand: '', fitness: '',
+      conditions: [], healthNotes: '',
     };
   }
+
+  var AGE_BANDS = [
+    ['u1', 'Under 1 year (puppy)'], ['1-2', '1–2 years'],
+    ['3-4', '3–4 years'], ['5-6', '5–6 years'],
+    ['7-8', '7–8 years'], ['9-10', '9–10 years'],
+    ['11-12', '11–12 years'], ['13plus', '13 years or older'],
+  ];
+  var WEIGHT_BANDS = [
+    ['u5', 'Under 5 kg'], ['5-10', '5–10 kg'], ['10-15', '10–15 kg'],
+    ['15-20', '15–20 kg'], ['20-30', '20–30 kg'], ['30-40', '30–40 kg'],
+    ['40-55', '40–55 kg'], ['55plus', 'Over 55 kg'],
+  ];
+  var CONDITION_OPTIONS = [
+    ['joints', 'Joint or mobility issues (hip or elbow dysplasia, arthritis, luxating patella)'],
+    ['back', 'Back or disc problems (e.g. IVDD)'],
+    ['heat', 'Heat sensitivity or breathing difficulty (incl. flat-nosed breeds)'],
+    ['cardiac', 'Heart condition'],
+    ['recovering', 'Recovering from injury or surgery'],
+    ['vision', 'Impaired vision or hearing'],
+    ['overweight', 'Overweight'],
+  ];
+  var CONDITION_LABELS = {
+    joints: 'Joint or mobility issues', back: 'Back or disc problems',
+    heat: 'Heat sensitivity / breathing', cardiac: 'Heart condition',
+    recovering: 'Recovering from injury or surgery', vision: 'Impaired vision or hearing',
+    overweight: 'Overweight',
+  };
 
   function esc(str) {
     return String(str || '')
@@ -147,8 +183,10 @@
     footerEl.hidden = false;
     backBtn.style.visibility = stepIndex === 0 ? 'hidden' : 'visible';
     var isLast = stepIndex === STEPS.length - 1;
+    var isGuest = !(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
     if (isLast) {
-      nextBtn.textContent = isEditing ? 'Save changes' : 'Save dog';
+      nextBtn.textContent = isEditing ? 'Save changes'
+        : (isGuest ? 'See ' + (data.name.trim() || 'my dog') + '\u2019s matches \u2192' : 'Save dog');
     } else {
       nextBtn.textContent = 'Next \u2192';
     }
@@ -161,6 +199,8 @@
       renderDraftPrompt();
     } else if (phase === 'close-confirm') {
       renderCloseConfirm();
+    } else if (phase === 'payoff') {
+      renderPayoff();
     } else {
       renderFormStep();
     }
@@ -193,6 +233,7 @@
     var draft = loadDraft();
     if (draft) {
       data      = Object.assign(makeEmptyData(), draft.data);
+      if (!Array.isArray(data.conditions)) data.conditions = [];
       stepIndex = Math.min(draft.step || 0, STEPS.length - 1);
     }
     setFormTitle();
@@ -254,6 +295,11 @@
   }
 
   function renderBasicsStep() {
+    var ageOpts = '<option value="">Select an age\u2026</option>' +
+      AGE_BANDS.map(function (b) {
+        return '<option value="' + b[0] + '"' + (data.ageBand === b[0] ? ' selected' : '') + '>' + b[1] + '</option>';
+      }).join('');
+
     bodyEl.innerHTML =
       '<div class="dw-field-group">' +
         '<label class="dw-label" for="dwName">' +
@@ -267,27 +313,15 @@
         '</span>' +
       '</div>' +
       '<div class="dw-field-group">' +
-        '<span class="dw-label" id="dwAgeLabel">' +
-          'Age group <span class="dw-required" aria-label="required">*</span>' +
-        '</span>' +
-        '<div class="dw-option-group" role="group" aria-labelledby="dwAgeLabel">' +
-          optBtn('ageGroup', 'puppy',  'Puppy \u2014 under 1 year') +
-          optBtn('ageGroup', 'adult',  'Adult') +
-          optBtn('ageGroup', 'senior', 'Senior') +
-        '</div>' +
+        '<label class="dw-label" for="dwAgeBand">' +
+          'Age <span class="dw-required" aria-label="required">*</span>' +
+        '</label>' +
+        '<select class="dw-select" id="dwAgeBand" aria-required="true" aria-describedby="dwAgeErr">' +
+          ageOpts +
+        '</select>' +
         '<span class="dw-field-error" id="dwAgeErr" role="alert" hidden>' +
-          'Please select an age group.' +
+          'Please select an age range.' +
         '</span>' +
-      '</div>' +
-      '<div class="dw-field-group">' +
-        '<span class="dw-label" id="dwSexLabel">' +
-          'Sex <span class="dw-optional">(optional)</span>' +
-        '</span>' +
-        '<div class="dw-option-group" role="group" aria-labelledby="dwSexLabel">' +
-          optBtn('dogSex', 'male',    'Male') +
-          optBtn('dogSex', 'female',  'Female') +
-          optBtn('dogSex', 'unknown', 'Unknown') +
-        '</div>' +
       '</div>';
 
     var nameInput = document.getElementById('dwName');
@@ -296,7 +330,12 @@
       isDirty   = true;
       document.getElementById('dwNameErr').hidden = true;
     });
-    wireOptionGroup(bodyEl);
+    var ageSelect = document.getElementById('dwAgeBand');
+    ageSelect.addEventListener('change', function () {
+      data.ageBand = ageSelect.value;
+      isDirty      = true;
+      document.getElementById('dwAgeErr').hidden = true;
+    });
     setTimeout(function () { nameInput.focus(); }, 50);
   }
 
@@ -325,8 +364,19 @@
         '</span>' +
       '</div>' +
       '<div class="dw-field-group">' +
+        '<label class="dw-label" for="dwWeightBand">' +
+          'Weight <span class="dw-optional">(optional \u2014 improves accuracy)</span>' +
+        '</label>' +
+        '<select class="dw-select" id="dwWeightBand">' +
+          '<option value="">Select a weight range\u2026</option>' +
+          WEIGHT_BANDS.map(function (b) {
+            return '<option value="' + b[0] + '"' + (data.weightBand === b[0] ? ' selected' : '') + '>' + b[1] + '</option>';
+          }).join('') +
+        '</select>' +
+      '</div>' +
+      '<div class="dw-field-group">' +
         '<span class="dw-label" id="dwFitnessLabel">' +
-          'Activity level <span class="dw-required" aria-label="required">*</span>' +
+          'Fitness level <span class="dw-required" aria-label="required">*</span>' +
         '</span>' +
         '<div class="dw-option-group" role="group" aria-labelledby="dwFitnessLabel">' +
           optBtn('fitness', 'low',      'Low \u2014 puppy, senior, or just starting out') +
@@ -334,20 +384,7 @@
           optBtn('fitness', 'high',     'High \u2014 mountain-ready') +
         '</div>' +
         '<span class="dw-field-error" id="dwFitnessErr" role="alert" hidden>' +
-          'Please select an activity level.' +
-        '</span>' +
-      '</div>' +
-      '<div class="dw-field-group">' +
-        '<span class="dw-label" id="dwHeatLabel">' +
-          'Heat sensitivity <span class="dw-required" aria-label="required">*</span>' +
-        '</span>' +
-        '<div class="dw-option-group" role="group" aria-labelledby="dwHeatLabel">' +
-          optBtn('heatSensitivity', 'high', 'Needs mostly shaded routes') +
-          optBtn('heatSensitivity', 'some', 'Some open meadow is fine') +
-          optBtn('heatSensitivity', 'any',  'Doesn\'t matter') +
-        '</div>' +
-        '<span class="dw-field-error" id="dwHeatErr" role="alert" hidden>' +
-          'Please select a heat sensitivity level.' +
+          'Please select a fitness level.' +
         '</span>' +
       '</div>';
 
@@ -364,63 +401,54 @@
       data.breedOther = breedOther.value;
       isDirty = true;
     });
+    var weightSelect = document.getElementById('dwWeightBand');
+    weightSelect.addEventListener('change', function () {
+      data.weightBand = weightSelect.value;
+      isDirty = true;
+    });
     wireOptionGroup(bodyEl);
     setTimeout(function () { breedSelect.focus(); }, 50);
   }
 
   function renderHealthStep() {
     bodyEl.innerHTML =
-      '<p class="dw-step-hint">All fields in this step are optional. Fill in what you know.</p>' +
+      '<p class="dw-step-hint">All fields in this step are optional — they help us flag trails that might not be a good fit. Only these structured facts move the score; free-text notes are kept for you.</p>' +
       '<div class="dw-field-group">' +
-        '<span class="dw-label" id="dwSpayedLabel">' +
-          'Spayed / Neutered <span class="dw-optional">(optional)</span>' +
+        '<span class="dw-label" id="dwCondLabel">' +
+          'Health conditions <span class="dw-optional">(optional)</span>' +
         '</span>' +
-        '<div class="dw-option-group" role="group" aria-labelledby="dwSpayedLabel">' +
-          optBtn('spayed', 'yes',     'Yes') +
-          optBtn('spayed', 'no',      'No') +
-          optBtn('spayed', 'unknown', 'Prefer not to say') +
+        '<div class="dw-cond-list" role="group" aria-labelledby="dwCondLabel">' +
+          CONDITION_OPTIONS.map(function (c) {
+            var checked = data.conditions.indexOf(c[0]) !== -1 ? ' checked' : '';
+            return '<label class="dw-cond-item"><input type="checkbox" name="dwCond" value="' + c[0] + '"' + checked + '> <span>' + c[1] + '</span></label>';
+          }).join('') +
         '</div>' +
       '</div>' +
       '<div class="dw-field-group">' +
-        '<label class="dw-label" for="dwConditions">' +
-          'Known conditions <span class="dw-optional">(optional)</span>' +
+        '<label class="dw-label" for="dwNotes">' +
+          'Anything else worth knowing? <span class="dw-optional">(optional)</span>' +
         '</label>' +
-        '<textarea class="dw-textarea" id="dwConditions" rows="2" maxlength="300"' +
-                  ' placeholder="e.g. hip dysplasia, epilepsy">' + esc(data.conditions) + '</textarea>' +
-      '</div>' +
-      '<div class="dw-field-group">' +
-        '<label class="dw-label" for="dwAllergies">' +
-          'Allergies <span class="dw-optional">(optional)</span>' +
-        '</label>' +
-        '<input type="text" class="dw-input" id="dwAllergies"' +
-               ' placeholder="e.g. grass pollen" value="' + esc(data.allergies) + '" maxlength="200">' +
-      '</div>' +
-      '<div class="dw-field-group">' +
-        '<label class="dw-label" for="dwMeds">' +
-          'Current medications <span class="dw-optional">(optional)</span>' +
-        '</label>' +
-        '<input type="text" class="dw-input" id="dwMeds"' +
-               ' placeholder="e.g. Apoquel" value="' + esc(data.medications) + '" maxlength="200">' +
+        '<textarea class="dw-textarea" id="dwNotes" rows="3" maxlength="400"' +
+                  ' placeholder="Allergies, medications, recent injuries, vet notes…">' + esc(data.healthNotes) + '</textarea>' +
       '</div>';
 
-    wireOptionGroup(bodyEl);
-    [
-      { id: 'dwConditions', key: 'conditions' },
-      { id: 'dwAllergies',  key: 'allergies'  },
-      { id: 'dwMeds',       key: 'medications'},
-    ].forEach(function (f) {
-      var el = document.getElementById(f.id);
-      el.addEventListener('input', function () { data[f.key] = el.value; isDirty = true; });
+    bodyEl.querySelectorAll('input[name="dwCond"]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        data.conditions = Array.from(bodyEl.querySelectorAll('input[name="dwCond"]:checked'))
+          .map(function (el) { return el.value; });
+        isDirty = true;
+      });
     });
+    var notesEl = document.getElementById('dwNotes');
+    notesEl.addEventListener('input', function () { data.healthNotes = notesEl.value; isDirty = true; });
   }
 
   function renderReviewStep() {
     var breedDisplay = data.breed === OTHER_VALUE ? data.breedOther : data.breed;
-    var ageMap     = { puppy: 'Puppy', adult: 'Adult', senior: 'Senior' };
-    var fitMap     = { low: 'Low', moderate: 'Moderate', high: 'High' };
-    var heatMap    = { high: 'Needs shade', some: 'Some open OK', any: "Doesn't matter" };
-    var sexMap     = { male: 'Male', female: 'Female', unknown: 'Unknown' };
-    var spayedMap  = { yes: 'Yes', no: 'No', unknown: 'Prefer not to say' };
+    var fitMap = { low: 'Low', moderate: 'Moderate', high: 'High' };
+    var ageLabel = (AGE_BANDS.filter(function (b) { return b[0] === data.ageBand; })[0] || [])[1] || '';
+    var weightLabel = (WEIGHT_BANDS.filter(function (b) { return b[0] === data.weightBand; })[0] || [])[1] || '';
+    var condLabels = data.conditions.map(function (c) { return CONDITION_LABELS[c] || c; }).join(', ');
 
     function row(label, value) {
       return value
@@ -429,14 +457,12 @@
         : '';
     }
 
-    var healthSection = (data.spayed || data.conditions || data.allergies || data.medications)
+    var healthSection = (data.conditions.length || data.healthNotes)
       ? '<div class="dw-review-section">' +
           '<div class="dw-review-title">Health</div>' +
           '<div class="dw-review-rows">' +
-            row('Spayed/Neutered', spayedMap[data.spayed] || '') +
-            row('Conditions', data.conditions) +
-            row('Allergies',  data.allergies) +
-            row('Medications', data.medications) +
+            row('Conditions', condLabels) +
+            row('Notes', data.healthNotes) +
           '</div>' +
         '</div>'
       : '';
@@ -447,17 +473,16 @@
         '<div class="dw-review-section">' +
           '<div class="dw-review-title">Basics</div>' +
           '<div class="dw-review-rows">' +
-            row('Name',      data.name) +
-            row('Age group', ageMap[data.ageGroup] || data.ageGroup) +
-            row('Sex',       sexMap[data.dogSex] || '') +
+            row('Name', data.name) +
+            row('Age',  ageLabel) +
           '</div>' +
         '</div>' +
         '<div class="dw-review-section">' +
           '<div class="dw-review-title">Breed &amp; Size</div>' +
           '<div class="dw-review-rows">' +
-            row('Breed',           breedDisplay) +
-            row('Activity level',  fitMap[data.fitness] || data.fitness) +
-            row('Heat sensitivity', heatMap[data.heatSensitivity] || data.heatSensitivity) +
+            row('Breed',         breedDisplay) +
+            row('Weight',        weightLabel) +
+            row('Fitness level', fitMap[data.fitness] || data.fitness) +
           '</div>' +
         '</div>' +
         healthSection +
@@ -474,9 +499,7 @@
 
   function wireOptionGroup(container) {
     var errMap = {
-      ageGroup:        'dwAgeErr',
-      fitness:         'dwFitnessErr',
-      heatSensitivity: 'dwHeatErr',
+      fitness: 'dwFitnessErr',
     };
     container.querySelectorAll('.dw-option').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -506,25 +529,20 @@
     var step = STEPS[stepIndex];
     if (step.id === 'basics') {
       var nameOk = data.name.trim().length >= 2;
-      var ageOk  = !!data.ageGroup;
+      var ageOk  = !!data.ageBand;
       if (!nameOk) document.getElementById('dwNameErr').hidden = false;
       if (!ageOk)  document.getElementById('dwAgeErr').hidden  = false;
       if (!nameOk) { document.getElementById('dwName').focus(); }
-      else if (!ageOk) {
-        var firstOpt = bodyEl.querySelector('[data-key="ageGroup"]');
-        if (firstOpt) firstOpt.focus();
-      }
+      else if (!ageOk) { document.getElementById('dwAgeBand').focus(); }
       return nameOk && ageOk;
     }
     if (step.id === 'breed') {
       var breedOk   = !!(data.breed && (data.breed !== OTHER_VALUE || data.breedOther.trim()));
       var fitnessOk = !!data.fitness;
-      var heatOk    = !!data.heatSensitivity;
       if (!breedOk)   document.getElementById('dwBreedErr').hidden   = false;
       if (!fitnessOk) document.getElementById('dwFitnessErr').hidden = false;
-      if (!heatOk)    document.getElementById('dwHeatErr').hidden    = false;
       if (!breedOk) { document.getElementById('dwBreed').focus(); }
-      return breedOk && fitnessOk && heatOk;
+      return breedOk && fitnessOk;
     }
     return true;
   }
@@ -551,7 +569,7 @@
 
   // ---- Close ----
   function requestClose() {
-    if (phase === 'close-confirm' || phase === 'draft-prompt') {
+    if (phase === 'close-confirm' || phase === 'draft-prompt' || phase === 'payoff') {
       doClose();
       return;
     }
@@ -579,24 +597,126 @@
   });
 
   // ---- Submit ----
-  function finishWizard() {
-    var profile = {
-      name:            data.name.trim(),
-      breed:           data.breed === OTHER_VALUE ? data.breedOther.trim() : data.breed,
-      heatSensitivity: data.heatSensitivity,
-      ageGroup:        data.ageGroup,
-      fitness:         data.fitness,
+  // Builds the SAME profile object account.js saves, so scoring.js,
+  // script.js and trail.js read it with zero translation.
+  function buildProfile() {
+    var conditions = data.conditions.slice();
+    return {
+      name:       data.name.trim(),
+      breed:      data.breed === OTHER_VALUE ? data.breedOther.trim() : data.breed,
+      fitness:    data.fitness,
+      dob:        null,
+      ageBand:    data.ageBand || null,
+      weightBand: data.weightBand || null,
+      conditions: conditions,
+      healthNotes: data.healthNotes.trim(),
+      // Legacy mirrors so any cached older script keeps working.
+      jointIssues: conditions.indexOf('joints') !== -1,
+      heatIssues:  conditions.indexOf('heat') !== -1,
     };
-    if (data.dogSex)     profile.sex        = data.dogSex;
-    if (data.spayed)     profile.spayed     = data.spayed;
-    if (data.conditions) profile.conditions = data.conditions;
-    if (data.allergies)  profile.allergies  = data.allergies;
-    if (data.medications)profile.medications= data.medications;
+  }
 
-    clearDraft();
-    window.dispatchEvent(new CustomEvent('dolopaws-dog-profile-saved', { detail: { profile: profile } }));
-    doClose();
-    showToast(profile.name + ' was saved successfully.');
+  function finishWizard() {
+    var profile = buildProfile();
+    var user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+
+    if (user) {
+      // Logged in: persist immediately, exactly like the account page.
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Saving…';
+      window.DoloPawsAuth.setDogProfile(profile).then(function (ok) {
+        nextBtn.disabled = false;
+        if (!ok) {
+          nextBtn.textContent = 'Save dog';
+          showToast('Something went wrong — please try again.');
+          return;
+        }
+        clearDraft();
+        window.dispatchEvent(new CustomEvent('dolopaws-dog-profile-saved', { detail: { profile: profile } }));
+        doClose();
+        showToast(profile.name + ' was saved successfully.');
+      });
+      return;
+    }
+
+    // Guest: show the payoff (their dog's real matches) BEFORE any
+    // account ask. The draft is kept so nothing is lost if they bail.
+    saveDraft();
+    phase = 'payoff';
+    render();
+    focusFirstIn(bodyEl);
+  }
+
+  // ---- Payoff view (guests only) ----
+  var PENDING_PROFILE_KEY = 'dolopaws-pending-dog-profile';
+
+  function renderPayoff() {
+    var profile = buildProfile();
+    stepperEl.hidden = true;
+    footerEl.hidden  = true;
+
+    var canScore = typeof trails !== 'undefined'
+      && typeof scoreTrail === 'function'
+      && typeof effectiveOverrides === 'function';
+
+    var countLine = '';
+    var topCards  = '';
+    if (canScore) {
+      var overrides = effectiveOverrides(profile, null);
+      var scored = trails
+        .map(function (t) { return { t: t, score: scoreTrail(t, overrides) }; })
+        .sort(function (a, b) { return b.score - a.score; });
+      // Same bar the homepage uses for "a match" (NEW_MATCH_THRESHOLD).
+      var good = scored.filter(function (s) { return s.score >= 70; });
+
+      titleEl.textContent = good.length + ' of ' + trails.length + ' trails match ' + profile.name;
+      subtitleEl.textContent = 'Scored on terrain, distance, exposure, heat and shade — for ' +
+        profile.name + '’s build, age and health.';
+
+      topCards = '<div class="dw-payoff-list">' +
+        scored.slice(0, 3).map(function (s) {
+          return '<div class="dw-payoff-row">' +
+            '<span class="dw-payoff-name">' + esc(s.t.name) + '</span>' +
+            '<span class="dw-payoff-meta">' + esc(s.t.area || '') + (s.t.distance ? ' · ' + s.t.distance + ' km' : '') + '</span>' +
+            '<span class="dw-payoff-score">' + s.score + '%</span>' +
+          '</div>';
+        }).join('') +
+        '</div>';
+    } else {
+      titleEl.textContent = profile.name + '’s profile is ready';
+      subtitleEl.textContent = '';
+    }
+
+    bodyEl.innerHTML =
+      '<div class="dw-payoff">' +
+        topCards +
+        '<button class="dw-btn-primary dw-payoff-cta" id="dwSaveProfileBtn">' +
+          'Create a free account to save ' + esc(profile.name) + '’s profile →' +
+        '</button>' +
+        '<p class="dw-payoff-hint">Their matches will follow you across devices — nothing to re-enter.</p>' +
+        '<button class="dw-keep-link" id="dwSkipSaveBtn">Not now — keep browsing</button>' +
+      '</div>';
+
+    document.getElementById('dwSaveProfileBtn').addEventListener('click', function () {
+      try {
+        localStorage.setItem(PENDING_PROFILE_KEY, JSON.stringify(profile));
+      } catch (e) {}
+      doClose();
+      if (window.DoloPawsAuthUI) {
+        window.DoloPawsAuthUI.openSignup();
+        // Reframe the auth modal: the user is saving, not "registering".
+        var authTitle = document.getElementById('authTitle');
+        var authHint  = document.getElementById('authHint');
+        if (authTitle) authTitle.textContent = 'Save ' + profile.name + '’s profile';
+        if (authHint)  authHint.textContent  = 'Create a free account so ' + profile.name +
+          '’s matches follow you across devices.';
+      }
+    });
+    document.getElementById('dwSkipSaveBtn').addEventListener('click', function () {
+      // Draft already saved — they can resume any time from the CTA.
+      doClose();
+      showToast(profile.name + '’s profile is kept as a draft on this device.');
+    });
   }
 
   // ---- Toast ----
@@ -629,17 +749,14 @@
     if (isEditing) {
       var known = (typeof DOG_BREEDS !== 'undefined') && DOG_BREEDS.includes(existingDog.breed);
       data = Object.assign(makeEmptyData(), {
-        name:            existingDog.name            || '',
-        breed:           known ? existingDog.breed : (existingDog.breed ? OTHER_VALUE : ''),
-        breedOther:      known ? '' : (existingDog.breed || ''),
-        heatSensitivity: existingDog.heatSensitivity || '',
-        ageGroup:        existingDog.ageGroup        || '',
-        fitness:         existingDog.fitness         || '',
-        dogSex:          existingDog.sex             || '',
-        spayed:          existingDog.spayed          || '',
-        conditions:      existingDog.conditions      || '',
-        allergies:       existingDog.allergies       || '',
-        medications:     existingDog.medications     || '',
+        name:        existingDog.name       || '',
+        breed:       known ? existingDog.breed : (existingDog.breed ? OTHER_VALUE : ''),
+        breedOther:  known ? '' : (existingDog.breed || ''),
+        ageBand:     existingDog.ageBand    || '',
+        weightBand:  existingDog.weightBand || '',
+        fitness:     existingDog.fitness    || '',
+        conditions:  Array.isArray(existingDog.conditions) ? existingDog.conditions.slice() : [],
+        healthNotes: existingDog.healthNotes || '',
       });
       stepIndex = 0;
       isDirty   = false;
