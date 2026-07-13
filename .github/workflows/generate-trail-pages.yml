@@ -32,7 +32,7 @@ jobs:
         run: |
           git config user.name "dolopaws-bot"
           git config user.email "actions@github.com"
-          git add trails/ sitemap.xml
+          git add trails/ sitemap.xml browse-trails.html
           git diff --cached --quiet || git commit -m "Regenerate static trail pages and sitemap"
           git pull --rebase origin main
           git push
