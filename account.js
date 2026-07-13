@@ -306,12 +306,17 @@
       // before sync existed (old device-only key) gets migrated up to the
       // account once, then the old key is removed.
       const pKey = 'dolopaws-dog-photo-' + user.uid;
-      if(profile && profile.photo){
+      const isImage = v => typeof v === 'string' && v.startsWith('data:image/');
+      if(profile && isImage(profile.photo)){
         showDogPhoto(profile.photo);
         try { localStorage.setItem(pKey, profile.photo); } catch(e){}
       } else {
         let local = null;
         try { local = localStorage.getItem(pKey) || localStorage.getItem(LEGACY_PHOTO_KEY); } catch(e){}
+        if(local && !isImage(local)){
+          try { localStorage.removeItem(pKey); localStorage.removeItem(LEGACY_PHOTO_KEY); } catch(e){}
+          local = null;
+        }
         if(local){
           showDogPhoto(local);
           window.DoloPawsAuth.setDogProfile({ photo: local }).then((ok) => {
