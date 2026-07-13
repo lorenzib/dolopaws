@@ -798,6 +798,23 @@ function renderTrail(t){
       const coords = document.getElementById('trailCoords');
       if (coords && coords.parentNode) coords.parentNode.appendChild(box);
     }
+  } else {
+    // No hand-researched notes yet — fill the card with honest facts
+    // derived from the route data itself, clearly labelled as such.
+    const gtk = document.getElementById('goodToKnowBox');
+    if (gtk){
+      const facts = [];
+      if (Array.isArray(t.elevationProfile) && t.elevationProfile.length){
+        facts.push(window.t('gtk.autoAltitude', {m: Math.max(...t.elevationProfile.map(p => p.elev))}));
+      }
+      if (t.terrainType) facts.push(window.t('gtk.autoTerrain', {surface: t.terrainType}));
+      const isLoopG = Array.isArray(t.path) && t.path.length > 1
+        && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
+      facts.push(isLoopG ? window.t('gtk.autoLoop', {d: t.distance}) : window.t('gtk.autoPointToPoint', {d: t.distance}));
+      gtk.innerHTML = facts.map(f =>
+        `<div style="border:1px solid var(--paper-line);border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13px;color:var(--ink);line-height:1.55;">${f}</div>`).join('')
+        + `<p style="font-size:11px;color:var(--ink-soft);margin:6px 0 0;">${window.t('gtk.autoNote')}</p>`;
+    }
   }
 
   // Build turn-by-turn directions for trails stitched from more than one
@@ -981,6 +998,21 @@ function renderTrail(t){
             .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>Km ${d.km}</b><br>${d.instruction}`))
             .addTo(map);
         });
+
+        // Curated rifugi and water stops — every step in the itinerary must
+        // be findable on the map, in the same icon language (white bubble,
+        // colorful glyph), placed at its true km along the route.
+        if(Array.isArray(t.path) && t.path.length > 1 && t.distance > 0){
+          const addWaypoint = (km, icon, label) => {
+            const [wLat, wLng] = pointAtFraction(t.path, Math.max(0, Math.min(1, km / t.distance)));
+            new maplibregl.Marker({ element: makeIconEl(icon), offset: [0, -6] })
+              .setLngLat([wLng, wLat])
+              .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${itinEsc(label)}</b><br>Km ${km}`))
+              .addTo(map);
+          };
+          (t.rifugi || []).forEach(r => { if(r.km > 0) addWaypoint(r.km, 'hut', trLabel(r.name)); });
+          (t.waterSources || []).forEach(w => { if(w.km > 0) addWaypoint(w.km, 'water', trLabel(w.label)); });
+        }
 
         // Recommended starting point — a loop can technically be walked
         // from anywhere on it, but a real, well-marked access/parking point

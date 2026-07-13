@@ -42,16 +42,27 @@ function initDetailPois(map, trail){
   const esc = (typeof trEsc === 'function') ? trEsc
     : s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+  // Every popup states IN WORDS what the place is — an icon plus an
+  // elevation is a riddle, not information.
+  function tt(key, fallback){
+    if(!window.t) return fallback;
+    const v = window.t(key);
+    return v === key ? fallback : v;
+  }
   function poiPopupHtml(props){
-    let placeType = '📍';
-    if (props.tourism === 'alpine_hut') placeType = '🏔️ ' + (window.t ? window.t('legend.hut') : 'Mountain hut');
-    else if (props.tourism === 'wilderness_hut') placeType = '🛖';
-    else if (props.amenity === 'shelter') placeType = '⛺';
+    let placeType = '📍 ' + tt('poi.place', 'Point of interest');
+    if (props.tourism === 'alpine_hut') placeType = '🏔️ ' + tt('legend.hut', 'Mountain hut');
+    else if (props.tourism === 'wilderness_hut') placeType = '🛖 ' + tt('poi.wildhut', 'Wilderness hut');
+    else if (props.amenity === 'shelter') placeType = '⛺ ' + tt('poi.shelter', 'Shelter');
     else if (props.amenity === 'bar') placeType = '🍺 Bar';
     else if (props.amenity === 'pub') placeType = '🍻 Pub';
     else if (props.amenity === 'cafe') placeType = '☕ Café';
-    else if (props.amenity === 'restaurant') placeType = '🍽️';
-    else if (props.amenity === 'fast_food') placeType = '🍔';
+    else if (props.amenity === 'restaurant') placeType = '🍽️ ' + tt('poi.restaurant', 'Restaurant');
+    else if (props.amenity === 'fast_food') placeType = '🍔 ' + tt('poi.fastfood', 'Snack bar');
+    else if (props.amenity === 'drinking_water' || props.amenity === 'water_point') placeType = '🚰 ' + tt('legend.water', 'Drinking water');
+    else if (props.natural === 'spring') placeType = '💧 ' + tt('poi.spring', 'Spring');
+    else if (props.amenity === 'fountain') placeType = '⛲ ' + tt('poi.fountain', 'Fountain');
+    else if (props.man_made === 'water_tap') placeType = '🚰 ' + tt('poi.tap', 'Water tap');
     let html = `<b>${placeType}</b>`;
     if (props.name) html += `<br><b>${esc(props.name)}</b>`;
     if (props.ele) html += `<br>⛰️ ${esc(props.ele)} m`;
