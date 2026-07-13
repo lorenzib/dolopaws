@@ -29,7 +29,7 @@
 </div>
 
 <div class="wrap" style="padding-top:28px;">
-  <a href="javascript:history.back()" style="font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;">← Back</a>
+  <a href="browse-trails.html" onclick="if(history.length>1 && document.referrer.indexOf(location.hostname)!==-1){history.back();return false;}" style="font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;">← Back</a>
 
   <div class="trail-hero-dark" style="margin-top:14px;">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">

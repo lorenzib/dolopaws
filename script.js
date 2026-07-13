@@ -53,6 +53,15 @@ function goToProfileCreation(){
 renderTeaser();
 const createProfileBtn = document.getElementById('createProfileBtn');
 if(createProfileBtn) createProfileBtn.addEventListener('click', goToProfileCreation);
+
+// Deep link from trail pages: index.html?profile=1 opens the wizard for
+// guests (trail pages don't carry the wizard markup themselves).
+if(new URLSearchParams(location.search).get('profile') === '1'){
+  window.addEventListener('load', () => {
+    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    if(!user && window.DoloPawsWizard) window.DoloPawsWizard.open();
+  });
+}
 const unlockBtn = document.getElementById('unlockBtn');
 // The teaser button previews the catalog (30 trails visible, details
 // locked behind login) instead of jumping straight to signup.

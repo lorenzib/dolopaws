@@ -102,24 +102,19 @@
       'caution':  [window.t('legend.caution'), '#FBEAE6', '#9C3A25'],
     };
 
-    // Guests browse the first two pages (30 trails) as a real preview;
-    // opening a trail page requires logging in. Logged-in users get the
-    // full list with normal links.
+    // The full catalog and every trail page are open to everyone.
+    // What stays personal (match %, saving, reporting) prompts login on
+    // the trail page itself — at the moment it's actually wanted.
     const PER_PAGE = 15;
-    const GUEST_LIMIT = 30;
     let page = 1;
-    let loggedIn = false;
 
     function renderPage(){
-      // The hero must tell the truth: guests see a PREVIEW, not the catalog.
       const h1 = document.getElementById('trailCountHeading');
       const sub = document.querySelector('.guide-hero .sub');
-      if(h1) h1.innerHTML = loggedIn ? window.t('browse.h1') : window.t('browse.h1Guest');
-      if(sub) sub.innerHTML = loggedIn
-        ? window.t('browse.sub')
-        : window.t('browse.subGuest', {shown: Math.min(GUEST_LIMIT, trails.length), total: trails.length});
+      if(h1) h1.innerHTML = window.t('browse.h1');
+      if(sub) sub.innerHTML = window.t('browse.sub');
 
-      const pool = loggedIn ? trails : trails.slice(0, GUEST_LIMIT);
+      const pool = trails;
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
       const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
@@ -134,10 +129,8 @@
           : `<span class="badge-pill badge-verified">${window.t('badge.verifiedS')}</span>`;
         const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
           .filter(Boolean).join(' · ');
-        const openAttr = loggedIn ? `href="trail.html?id=${t.id}"` : `href="#" data-locked="1"`;
-        const cta = loggedIn
-          ? `<div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>`
-          : `<div style="font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-top:8px;">${window.t('browse.lockedCta')}</div>`;
+        const openAttr = `href="trail.html?id=${t.id}"`;
+        const cta = `<div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>`;
         return `
         <a ${openAttr} class="simple-card" style="text-decoration:none;display:block;color:inherit;">
           <div class="photo">${thumb}</div>
@@ -152,19 +145,6 @@
           </div>
         </a>`;
       }).join('');
-
-      if(!loggedIn){
-        list.querySelectorAll('[data-locked]').forEach(a => {
-          a.addEventListener('click', (e) => {
-            e.preventDefault();
-            if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
-          });
-        });
-        const note = document.createElement('div');
-        note.style.cssText = 'grid-column:1/-1;text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:6px;';
-        note.textContent = window.t('browse.guestNote', {shown: Math.min(GUEST_LIMIT, trails.length), total: trails.length});
-        list.appendChild(note);
-      }
 
       if(totalPages > 1){
         const nav = document.createElement('div');
@@ -192,10 +172,6 @@
       }
     }
 
-    window.addEventListener('dolopaws-auth-changed', (e) => {
-      const next = !!(e.detail && e.detail.user);
-      if(next !== loggedIn){ loggedIn = next; page = 1; renderPage(); }
-    });
     renderPage();
   });
 </script>

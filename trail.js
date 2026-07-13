@@ -706,11 +706,22 @@ function renderTrail(t){
       `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('')
       + `<span class="f safe"><b>${safetyLabel(t.safetyLevel)}</b><span>${window.t('trail.fact.terrain')}</span></span>`;
 
-    // Personal match — needs a logged-in profile; guests just see the facts.
+    // Personal match — needs a logged-in profile. Guests see the facts
+    // plus an honest invitation: the score exists, it just isn't theirs yet.
+    function paintMatchTeaser(){
+      const el = document.getElementById('trailMatch');
+      if(!el) return;
+      el.innerHTML = `<a href="index.html?profile=1" style="color:#9FE1CB;text-decoration:underline;font-size:12.5px;font-weight:600;white-space:normal;">${window.t('trail.matchTeaser')}</a>`;
+      el.hidden = false;
+    }
     function paintMatch(){
-      if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser || typeof scoreTrail !== 'function') return;
+      if(typeof scoreTrail !== 'function') return;
+      if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser){
+        paintMatchTeaser();
+        return;
+      }
       window.DoloPawsAuth.getDogProfile().then(profile => {
-        if(!profile) return;
+        if(!profile){ paintMatchTeaser(); return; }
         const n = scoreTrail(t, effectiveOverrides(profile, null));
         const el = document.getElementById('trailMatch');
         if(!el) return;
@@ -721,6 +732,9 @@ function renderTrail(t){
     }
     if(window.DoloPawsAuth) paintMatch();
     else window.addEventListener('dolopaws-auth-ready', paintMatch, { once: true });
+    // Repaint when auth state resolves or changes, so a logged-in visitor
+    // never keeps the guest teaser (and vice versa after logout).
+    window.addEventListener('dolopaws-auth-changed', paintMatch);
   })();
 
   // Tag badges — derived only from data that already exists on the trail,
