@@ -351,6 +351,9 @@ function describeTerrain(surfaces, totalKm) {
     grouped[label] = (grouped[label] || 0) + km;
     taggedKm += km;
   }
+  // Surface tags with ~zero measured length would divide by zero ("NaN%") —
+  // treat them the same as having no usable surface data at all.
+  if (taggedKm <= 0.01) return { text: 'Surface not yet field-verified', rocky: false, coverage: 0 };
   const sorted = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
   const top = sorted.slice(0, 3).map(([label, km]) => `${label} (${Math.round((km / taggedKm) * 100)}%)`);
   const coverage = Math.min(1, taggedKm / Math.max(totalKm, 0.1));
