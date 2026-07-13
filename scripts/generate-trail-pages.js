@@ -349,6 +349,12 @@ function main() {
     `${BASE_URL}/browse-trails.html`,
     `${BASE_URL}/safety-guide.html`,
     `${BASE_URL}/about.html`,
+    `${BASE_URL}/guides/dogs-on-cable-cars.html`,
+    `${BASE_URL}/guides/livestock-guard-dogs.html`,
+    `${BASE_URL}/guides/dog-friendly-hikes-val-gardena.html`,
+    `${BASE_URL}/guides/dog-friendly-hikes-lago-di-braies.html`,
+    `${BASE_URL}/guides/water-for-dogs-on-trail.html`,
+    `${BASE_URL}/guides/dogs-at-rifugi.html`,
   ];
 
   let written = 0;
