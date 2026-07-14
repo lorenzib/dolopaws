@@ -19,6 +19,14 @@
   .simple-card{background:var(--card);border:1px solid var(--paper-line);border-radius:var(--radius-md);overflow:hidden;}
   .simple-card .photo{height:140px;background:repeating-linear-gradient(135deg,#EFE7D8,#EFE7D8 8px,#E4D9C4 8px,#E4D9C4 16px);}
   .simple-card .name{padding:12px 14px;font-family:'Source Serif 4',serif;font-weight:700;font-size:14.5px;color:var(--ink);}
+  /* Browse toolbar — search + filter chips (same pill language as the homepage) */
+  .browse-search{display:block;width:100%;max-width:420px;padding:12px 16px;border:1.5px solid var(--paper-line);border-radius:999px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--card);margin-bottom:14px;}
+  .browse-search:focus{outline:none;border-color:var(--accent);}
+  .browse-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px;}
+  .browse-filters .group-sep{width:1px;height:22px;background:var(--paper-line);margin:0 4px;flex:none;}
+  .browse-count{font-size:12.5px;color:var(--ink-soft);margin:10px 0 16px;}
+  .browse-empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;grid-column:1/-1;}
+  .browse-empty button{margin-top:14px;}
 </style>
 </head>
 <body>
@@ -66,6 +74,9 @@
 </div>
 
 <div class="wrap" style="padding-bottom:60px;">
+  <input type="search" id="trailSearch" class="browse-search" autocomplete="off">
+  <div class="browse-filters" id="browseFilters" role="group" aria-label="Trail filters"></div>
+  <p class="browse-count" id="browseCount" aria-live="polite"></p>
   <div class="simple-grid" id="simpleTrailsList"></div>
 
   <details style="margin-top:34px;font-size:13.5px;color:var(--ink-soft);">
@@ -285,13 +296,117 @@
     const PER_PAGE = 15;
     let page = 1;
 
+    // Region/valley tagging is opt-in per page — without this call every
+    // t.region is undefined and the region chips would match nothing.
+    if(window.DoloPawsRegions) window.DoloPawsRegions.assign(trails);
+
+    // ---- Search + filter state ----
+    let query = '';
+    let fRegion = 'all';   // all | dolomites | savoy
+    let fSafety = 'all';   // all | low-risk | moderate | caution
+    let fDist = 'all';     // all | under5 | 5to10 | over10
+
+    const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    function distBucket(km){
+      if(typeof km !== 'number') return null;
+      if(km <= 5) return 'under5';
+      if(km <= 10) return '5to10';
+      return 'over10';
+    }
+
+    function applyFilters(){
+      return trails.filter(t =>
+        (fRegion === 'all' || t.region === fRegion) &&
+        (fSafety === 'all' || t.safetyLevel === fSafety) &&
+        (fDist === 'all' || distBucket(t.distance) === fDist) &&
+        (!query || norm(t.name).includes(query) || norm(t.area).includes(query))
+      );
+    }
+
+    // Chip groups: single-select per group; clicking the active chip clears it.
+    const GROUPS = [
+      { key: 'fRegion', options: [
+        ['dolomites', () => window.t('region.dolomites')],
+        ['savoy', () => window.t('region.savoy')],
+      ]},
+      { key: 'fSafety', options: [
+        ['low-risk', () => window.t('legend.low')],
+        ['moderate', () => window.t('legend.moderate')],
+        ['caution', () => window.t('legend.caution')],
+      ]},
+      { key: 'fDist', options: [
+        ['under5', () => window.t('dist.under5')],
+        ['5to10', () => window.t('dist.5to10')],
+        ['over10', () => window.t('dist.over10')],
+      ]},
+    ];
+    const state = { get fRegion(){ return fRegion; }, set fRegion(v){ fRegion = v; },
+                    get fSafety(){ return fSafety; }, set fSafety(v){ fSafety = v; },
+                    get fDist(){ return fDist; }, set fDist(v){ fDist = v; } };
+
+    function renderFilters(){
+      const bar = document.getElementById('browseFilters');
+      if(!bar) return;
+      bar.innerHTML = '';
+      GROUPS.forEach((g, gi) => {
+        if(gi > 0){
+          const sep = document.createElement('span');
+          sep.className = 'group-sep';
+          sep.setAttribute('aria-hidden', 'true');
+          bar.appendChild(sep);
+        }
+        g.options.forEach(([value, label]) => {
+          const active = state[g.key] === value;
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'area-pill' + (active ? ' active' : '');
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+          b.textContent = label();
+          b.addEventListener('click', () => {
+            state[g.key] = active ? 'all' : value; // toggle off when re-clicked
+            page = 1;
+            renderFilters();
+            renderPage();
+          });
+          bar.appendChild(b);
+        });
+      });
+    }
+
+    const searchInput = document.getElementById('trailSearch');
+    if(searchInput){
+      searchInput.placeholder = window.t('browse.searchPh');
+      searchInput.addEventListener('input', () => {
+        query = norm(searchInput.value.trim());
+        page = 1;
+        renderPage();
+      });
+    }
+
     function renderPage(){
       const h1 = document.getElementById('trailCountHeading');
       const sub = document.querySelector('.guide-hero .sub');
       if(h1) h1.innerHTML = window.t('browse.h1');
       if(sub) sub.innerHTML = window.t('browse.sub');
 
-      const pool = trails;
+      const pool = applyFilters();
+
+      const countEl = document.getElementById('browseCount');
+      if(countEl) countEl.textContent = window.t('browse.showing', {shown: pool.length, total: trails.length});
+
+      if(pool.length === 0){
+        list.innerHTML = `<div class="browse-empty">${window.t('browse.noResults')}<br>
+          <button type="button" class="area-pill" id="clearFiltersBtn">${window.t('browse.clearFilters')}</button></div>`;
+        const clear = document.getElementById('clearFiltersBtn');
+        if(clear) clear.addEventListener('click', () => {
+          fRegion = fSafety = fDist = 'all'; query = ''; page = 1;
+          if(searchInput) searchInput.value = '';
+          renderFilters(); renderPage();
+        });
+        return;
+      }
+
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
       const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
@@ -349,6 +464,7 @@
       }
     }
 
+    renderFilters();
     renderPage();
   });
 </script>
