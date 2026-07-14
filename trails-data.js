@@ -6260,6 +6260,1298 @@ const trails = [
       "text": "Decathlon Outdoor (edited)",
       "url": "https://www.decathlon-outdoor.com/fr-fr/explore/france/balade-dans-les-marais-du-pre-lombard-et-rencontres-discretes-6111235376b92"
     }
+  },
+  // --- Savoy, verified 2026-07-14 (EmmeneTonChien + commune: leash compulsory,
+  //     easy/accessible consensus; Waymarked Trails rel. 16395076) ---
+  {
+    "id": "osm-16395076",
+    "name": "Boucle du Lac de la Thuile",
+    "area": "La Thuile",
+    "lat": 45.533274,
+    "lng": 6.0551773,
+    "osmRelation": 16395076,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=16395076",
+    "path": [
+      [
+        45.53327,
+        6.05518
+      ],
+      [
+        45.53306,
+        6.05555
+      ],
+      [
+        45.5323,
+        6.0562
+      ],
+      [
+        45.53171,
+        6.05653
+      ],
+      [
+        45.53069,
+        6.05759
+      ],
+      [
+        45.5297,
+        6.05972
+      ],
+      [
+        45.52927,
+        6.06043
+      ],
+      [
+        45.5284,
+        6.06135
+      ],
+      [
+        45.52805,
+        6.06055
+      ],
+      [
+        45.52789,
+        6.05977
+      ],
+      [
+        45.52809,
+        6.05909
+      ],
+      [
+        45.52805,
+        6.05818
+      ],
+      [
+        45.52894,
+        6.05705
+      ],
+      [
+        45.52904,
+        6.05661
+      ],
+      [
+        45.52898,
+        6.056
+      ],
+      [
+        45.52924,
+        6.05547
+      ],
+      [
+        45.52869,
+        6.05462
+      ],
+      [
+        45.52864,
+        6.05433
+      ],
+      [
+        45.52875,
+        6.05406
+      ],
+      [
+        45.52908,
+        6.05392
+      ],
+      [
+        45.52928,
+        6.05354
+      ],
+      [
+        45.52955,
+        6.05335
+      ],
+      [
+        45.52985,
+        6.0534
+      ],
+      [
+        45.53017,
+        6.05309
+      ],
+      [
+        45.53056,
+        6.05309
+      ],
+      [
+        45.53129,
+        6.05337
+      ],
+      [
+        45.53247,
+        6.05429
+      ],
+      [
+        45.53278,
+        6.05487
+      ],
+      [
+        45.53314,
+        6.05487
+      ],
+      [
+        45.53327,
+        6.05518
+      ]
+    ],
+    "distance": 2,
+    "elevation": 35,
+    "hours": "0.5–1",
+    "paid": false,
+    "terrainType": "Accessible lakeside path, paved and packed dirt",
+    "terrainRank": 0,
+    "surfaceHazards": [],
+    "shadeCoverage": 25,
+    "heatRisk": "moderate",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [
+      {
+        "km": 0,
+        "label": "Drinking water (OSM-verified location)"
+      }
+    ],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.533274,
+      "lng": 6.0551773,
+      "label": "Start here: parking du lac de la Thuile, by the village and mairie"
+    },
+    "desc": "The gentle lap of the only natural lake in the Bauges massif, ringed by meadows below the village of La Thuile at 870 m. The shoreline path is level and accessible, wheelchairs, joelettes and strollers included, with the Bauges summits mirrored in the water and benches along the way. A short, calm outing that works in every season.",
+    "tips": "The leash is compulsory around the lake, letting dogs run free is explicitly forbidden, and picking up after them is required. Swimming is neither supervised nor arranged, tolerated at your own risk and strictly banned when the lake freezes, so a paddling dog is at your judgement outside winter. A fountain sits at the start, and the village is right there for anything else. Fishing lines share the banks in season, so mind curious noses.",
+    "imageIcon": "images/boucle-du-lac-de-la-thuile.webp",
+    "imageCredit": {
+      "text": "Rando'Bauges, PNR du Massif des Bauges (edited)",
+      "url": "https://rando.parcdesbauges.com/trek/10361-Lac-de-la-Thuile-et-Rocher-de-Manettaz"
+    }
+  },
+  // --- Savoy, verified 2026-07-14: dog-friendly confirmed by site owner. Facts:
+  //     commune de Saint-Pierre-d'Albigny (Circuit du Belvedere, APA, 270 m),
+  //     Waymarked Trails rel. 19153189 (operator, signed direction). ---
+  {
+    "id": "osm-19153189",
+    "osmRelation": 19153189,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=19153189",
+    "name": "Le Belvédère (Saint-Pierre-d'Albigny)",
+    "area": "Saint-Pierre-d'Albigny",
+    "lat": 45.5719566,
+    "lng": 6.1589676,
+    "path": [
+      [
+        45.57196,
+        6.15897
+      ],
+      [
+        45.57266,
+        6.15736
+      ],
+      [
+        45.57266,
+        6.1572
+      ],
+      [
+        45.57277,
+        6.15725
+      ],
+      [
+        45.57287,
+        6.15702
+      ],
+      [
+        45.5734,
+        6.15649
+      ],
+      [
+        45.57363,
+        6.15607
+      ],
+      [
+        45.57457,
+        6.15559
+      ],
+      [
+        45.57493,
+        6.15574
+      ],
+      [
+        45.57534,
+        6.15567
+      ],
+      [
+        45.57586,
+        6.15544
+      ],
+      [
+        45.57614,
+        6.15542
+      ],
+      [
+        45.57635,
+        6.15553
+      ],
+      [
+        45.57659,
+        6.15579
+      ],
+      [
+        45.57669,
+        6.15603
+      ],
+      [
+        45.57695,
+        6.15769
+      ],
+      [
+        45.57663,
+        6.15829
+      ],
+      [
+        45.57685,
+        6.15859
+      ],
+      [
+        45.57693,
+        6.15887
+      ],
+      [
+        45.57679,
+        6.15994
+      ],
+      [
+        45.57669,
+        6.16016
+      ],
+      [
+        45.57702,
+        6.16031
+      ],
+      [
+        45.57701,
+        6.16041
+      ],
+      [
+        45.57741,
+        6.1609
+      ],
+      [
+        45.577,
+        6.16172
+      ],
+      [
+        45.57675,
+        6.16202
+      ],
+      [
+        45.57652,
+        6.16212
+      ],
+      [
+        45.57616,
+        6.16281
+      ],
+      [
+        45.57615,
+        6.16389
+      ],
+      [
+        45.5764,
+        6.1644
+      ],
+      [
+        45.57612,
+        6.1654
+      ],
+      [
+        45.57613,
+        6.16584
+      ],
+      [
+        45.57632,
+        6.16602
+      ],
+      [
+        45.57627,
+        6.16657
+      ],
+      [
+        45.57646,
+        6.16716
+      ],
+      [
+        45.5765,
+        6.16767
+      ],
+      [
+        45.57669,
+        6.16796
+      ],
+      [
+        45.57694,
+        6.16865
+      ],
+      [
+        45.57722,
+        6.16903
+      ],
+      [
+        45.57761,
+        6.16937
+      ],
+      [
+        45.57791,
+        6.16987
+      ],
+      [
+        45.57809,
+        6.17041
+      ],
+      [
+        45.57819,
+        6.17036
+      ],
+      [
+        45.57847,
+        6.17053
+      ],
+      [
+        45.57868,
+        6.17152
+      ],
+      [
+        45.5786,
+        6.17211
+      ],
+      [
+        45.57868,
+        6.17305
+      ],
+      [
+        45.57849,
+        6.1733
+      ],
+      [
+        45.57818,
+        6.17252
+      ],
+      [
+        45.5781,
+        6.17207
+      ],
+      [
+        45.57761,
+        6.17173
+      ],
+      [
+        45.57712,
+        6.17176
+      ],
+      [
+        45.57688,
+        6.17157
+      ],
+      [
+        45.57654,
+        6.17148
+      ],
+      [
+        45.57625,
+        6.17121
+      ],
+      [
+        45.57612,
+        6.17132
+      ],
+      [
+        45.57602,
+        6.17179
+      ],
+      [
+        45.57568,
+        6.17202
+      ],
+      [
+        45.57543,
+        6.17193
+      ],
+      [
+        45.57501,
+        6.17149
+      ],
+      [
+        45.57437,
+        6.17034
+      ],
+      [
+        45.57405,
+        6.16817
+      ],
+      [
+        45.57363,
+        6.16619
+      ],
+      [
+        45.57395,
+        6.16362
+      ],
+      [
+        45.57392,
+        6.16319
+      ],
+      [
+        45.57428,
+        6.16198
+      ],
+      [
+        45.57419,
+        6.16112
+      ],
+      [
+        45.57409,
+        6.16072
+      ],
+      [
+        45.57335,
+        6.15912
+      ],
+      [
+        45.57201,
+        6.15903
+      ]
+    ],
+    "distance": 4,
+    "elevation": 270,
+    "hours": "1.5–2",
+    "paid": false,
+    "terrainType": "Village lanes, grassy tracks and hillside paths",
+    "terrainRank": 1,
+    "surfaceHazards": [],
+    "safetyLevel": "moderate",
+    "exposure": false,
+    "waterSources": [
+      {
+        "km": 0.9,
+        "label": "Drinking water (OSM-verified location)"
+      }
+    ],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.5719566,
+      "lng": 6.1589676,
+      "label": "Start here: gymnasium parking, Saint-Pierre-d'Albigny, opposite the collège des Frontailles"
+    },
+    "desc": "One of seven circuits waymarked with a pink footprint by the Amicale Pédestre de l'Arclusaz around Saint-Pierre-d'Albigny, also signed as a trail-running loop. It climbs through the forest above the village to a belvedere sweeping from Mont Blanc and the Beaufortain round to the Grand Arc, Lauzière, Belledonne and Chartreuse, then returns via Mont Benoit, the col du Taccon and the Noiriat hamlet. Dog-friendly; not to be confused with the Belvédère de la Chambotte above the Lac du Bourget.",
+    "tips": "Dogs are welcome; keep the leash on near pastures and through the village, the standard in the Bauges regional park. Follow the pink footprints in the signed direction, the loop is meant to be walked one way. One fountain is mapped at km 0.9, and the climb is honest for its short length, so pace older dogs.",
+    "imageIcon": "images/le-belvedere-saint-pierre-d-albigny.webp",
+    "imageCredit": {
+      "text": "APA Saint-Pierre-d'Albigny, via Cœur de Savoie Tourisme (Apidae), edited",
+      "url": "https://tourisme.coeurdesavoie.fr/fiches/circuit-trail-du-belvedere-6574100/"
+    }
+  },
+  // --- Savoy, verified 2026-07-14 (Coeur de Savoie Tourisme fiche: dogs on leash,
+  //     4h30, 780 m ascent tag; Manettaz belvedere danger sign -> exposure/caution) ---
+  {
+    "id": "osm-15591346",
+    "name": "Sentier des Buis",
+    "area": "Montmélian",
+    "lat": 45.5046876,
+    "lng": 6.0514101,
+    "osmRelation": 15591346,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=15591346",
+    "path": [
+      [
+        45.50469,
+        6.05141
+      ],
+      [
+        45.50496,
+        6.05129
+      ],
+      [
+        45.50665,
+        6.05269
+      ],
+      [
+        45.50689,
+        6.05331
+      ],
+      [
+        45.50686,
+        6.05456
+      ],
+      [
+        45.507,
+        6.05547
+      ],
+      [
+        45.50717,
+        6.05551
+      ],
+      [
+        45.50723,
+        6.05562
+      ],
+      [
+        45.50731,
+        6.05633
+      ],
+      [
+        45.50753,
+        6.05717
+      ],
+      [
+        45.5087,
+        6.05951
+      ],
+      [
+        45.50888,
+        6.06128
+      ],
+      [
+        45.50932,
+        6.0622
+      ],
+      [
+        45.50956,
+        6.06331
+      ],
+      [
+        45.50963,
+        6.06438
+      ],
+      [
+        45.51009,
+        6.06614
+      ],
+      [
+        45.51043,
+        6.06609
+      ],
+      [
+        45.51079,
+        6.06617
+      ],
+      [
+        45.51127,
+        6.06637
+      ],
+      [
+        45.51173,
+        6.06676
+      ],
+      [
+        45.51223,
+        6.06672
+      ],
+      [
+        45.51262,
+        6.0679
+      ],
+      [
+        45.51324,
+        6.06876
+      ],
+      [
+        45.51334,
+        6.06875
+      ],
+      [
+        45.51334,
+        6.06834
+      ],
+      [
+        45.51345,
+        6.06826
+      ],
+      [
+        45.51405,
+        6.06885
+      ],
+      [
+        45.51454,
+        6.06959
+      ],
+      [
+        45.51497,
+        6.06994
+      ],
+      [
+        45.51525,
+        6.07004
+      ],
+      [
+        45.51573,
+        6.07062
+      ],
+      [
+        45.51643,
+        6.07089
+      ],
+      [
+        45.51696,
+        6.07128
+      ],
+      [
+        45.51727,
+        6.07192
+      ],
+      [
+        45.51808,
+        6.07282
+      ],
+      [
+        45.51832,
+        6.07321
+      ],
+      [
+        45.5192,
+        6.07402
+      ],
+      [
+        45.52002,
+        6.07455
+      ],
+      [
+        45.52047,
+        6.07494
+      ],
+      [
+        45.52114,
+        6.07606
+      ],
+      [
+        45.52164,
+        6.07639
+      ],
+      [
+        45.52198,
+        6.07678
+      ],
+      [
+        45.52258,
+        6.07691
+      ],
+      [
+        45.52295,
+        6.0767
+      ],
+      [
+        45.52219,
+        6.07564
+      ],
+      [
+        45.52209,
+        6.07509
+      ],
+      [
+        45.52236,
+        6.07514
+      ],
+      [
+        45.52254,
+        6.07542
+      ],
+      [
+        45.52327,
+        6.07515
+      ],
+      [
+        45.52384,
+        6.07541
+      ],
+      [
+        45.524,
+        6.07539
+      ],
+      [
+        45.52406,
+        6.07527
+      ],
+      [
+        45.52379,
+        6.07494
+      ],
+      [
+        45.52267,
+        6.07292
+      ],
+      [
+        45.5226,
+        6.07205
+      ],
+      [
+        45.52198,
+        6.07011
+      ],
+      [
+        45.52206,
+        6.07002
+      ],
+      [
+        45.52224,
+        6.07007
+      ],
+      [
+        45.52188,
+        6.06883
+      ],
+      [
+        45.52201,
+        6.06751
+      ],
+      [
+        45.52178,
+        6.06635
+      ],
+      [
+        45.52202,
+        6.06634
+      ],
+      [
+        45.52203,
+        6.06617
+      ],
+      [
+        45.52189,
+        6.06527
+      ],
+      [
+        45.52162,
+        6.0644
+      ],
+      [
+        45.52138,
+        6.06383
+      ],
+      [
+        45.52123,
+        6.06368
+      ],
+      [
+        45.52098,
+        6.06208
+      ],
+      [
+        45.52084,
+        6.06166
+      ],
+      [
+        45.52099,
+        6.06106
+      ],
+      [
+        45.52067,
+        6.0611
+      ],
+      [
+        45.52018,
+        6.06071
+      ],
+      [
+        45.52012,
+        6.06043
+      ],
+      [
+        45.52014,
+        6.05981
+      ],
+      [
+        45.52022,
+        6.05953
+      ],
+      [
+        45.52037,
+        6.05942
+      ],
+      [
+        45.52038,
+        6.05922
+      ],
+      [
+        45.5198,
+        6.05873
+      ],
+      [
+        45.5194,
+        6.05825
+      ],
+      [
+        45.51956,
+        6.05779
+      ],
+      [
+        45.51922,
+        6.0569
+      ],
+      [
+        45.51916,
+        6.05628
+      ],
+      [
+        45.519,
+        6.05613
+      ],
+      [
+        45.51902,
+        6.05597
+      ],
+      [
+        45.5189,
+        6.05572
+      ],
+      [
+        45.51828,
+        6.05522
+      ],
+      [
+        45.518,
+        6.0544
+      ],
+      [
+        45.51796,
+        6.05513
+      ],
+      [
+        45.51779,
+        6.05456
+      ],
+      [
+        45.51769,
+        6.05449
+      ],
+      [
+        45.51757,
+        6.05516
+      ],
+      [
+        45.51741,
+        6.0547
+      ],
+      [
+        45.51721,
+        6.0545
+      ],
+      [
+        45.51716,
+        6.05456
+      ],
+      [
+        45.5171,
+        6.05451
+      ],
+      [
+        45.51701,
+        6.05408
+      ],
+      [
+        45.51688,
+        6.05422
+      ],
+      [
+        45.51673,
+        6.05333
+      ],
+      [
+        45.51644,
+        6.05299
+      ],
+      [
+        45.51628,
+        6.05254
+      ],
+      [
+        45.51619,
+        6.05189
+      ],
+      [
+        45.51634,
+        6.052
+      ],
+      [
+        45.51617,
+        6.05123
+      ],
+      [
+        45.51594,
+        6.05105
+      ],
+      [
+        45.51592,
+        6.05125
+      ],
+      [
+        45.51548,
+        6.05091
+      ],
+      [
+        45.5156,
+        6.05144
+      ],
+      [
+        45.51457,
+        6.05032
+      ],
+      [
+        45.51446,
+        6.05032
+      ],
+      [
+        45.51417,
+        6.05057
+      ],
+      [
+        45.51381,
+        6.05048
+      ],
+      [
+        45.51421,
+        6.05169
+      ],
+      [
+        45.51375,
+        6.05155
+      ],
+      [
+        45.51283,
+        6.05109
+      ],
+      [
+        45.51253,
+        6.05068
+      ],
+      [
+        45.51233,
+        6.05081
+      ],
+      [
+        45.51246,
+        6.05102
+      ],
+      [
+        45.51251,
+        6.05137
+      ],
+      [
+        45.51273,
+        6.05174
+      ],
+      [
+        45.51244,
+        6.05158
+      ],
+      [
+        45.51223,
+        6.05136
+      ],
+      [
+        45.51201,
+        6.05145
+      ],
+      [
+        45.51217,
+        6.05157
+      ],
+      [
+        45.51231,
+        6.05188
+      ],
+      [
+        45.51249,
+        6.05239
+      ],
+      [
+        45.51253,
+        6.05278
+      ],
+      [
+        45.5131,
+        6.05372
+      ],
+      [
+        45.51308,
+        6.0538
+      ],
+      [
+        45.51298,
+        6.0538
+      ],
+      [
+        45.5127,
+        6.05359
+      ],
+      [
+        45.51212,
+        6.05345
+      ],
+      [
+        45.51158,
+        6.05296
+      ],
+      [
+        45.51125,
+        6.05292
+      ],
+      [
+        45.51082,
+        6.05232
+      ],
+      [
+        45.51053,
+        6.05213
+      ],
+      [
+        45.51021,
+        6.05128
+      ],
+      [
+        45.51016,
+        6.05068
+      ],
+      [
+        45.50997,
+        6.05031
+      ],
+      [
+        45.50949,
+        6.04971
+      ],
+      [
+        45.50956,
+        6.04925
+      ],
+      [
+        45.50949,
+        6.04913
+      ],
+      [
+        45.50931,
+        6.04936
+      ],
+      [
+        45.50916,
+        6.04987
+      ],
+      [
+        45.50935,
+        6.05017
+      ],
+      [
+        45.50945,
+        6.05098
+      ],
+      [
+        45.50943,
+        6.05279
+      ],
+      [
+        45.50959,
+        6.05335
+      ],
+      [
+        45.50955,
+        6.05351
+      ],
+      [
+        45.50966,
+        6.05409
+      ],
+      [
+        45.50979,
+        6.05439
+      ],
+      [
+        45.50976,
+        6.05486
+      ],
+      [
+        45.51008,
+        6.05573
+      ],
+      [
+        45.50977,
+        6.05549
+      ],
+      [
+        45.50939,
+        6.05503
+      ],
+      [
+        45.50919,
+        6.05458
+      ],
+      [
+        45.50916,
+        6.05501
+      ],
+      [
+        45.50934,
+        6.0558
+      ],
+      [
+        45.50933,
+        6.05604
+      ],
+      [
+        45.50906,
+        6.05562
+      ],
+      [
+        45.50908,
+        6.05584
+      ],
+      [
+        45.50837,
+        6.05477
+      ],
+      [
+        45.50799,
+        6.05373
+      ],
+      [
+        45.50788,
+        6.05472
+      ],
+      [
+        45.50791,
+        6.05502
+      ],
+      [
+        45.50784,
+        6.05503
+      ],
+      [
+        45.50767,
+        6.05392
+      ],
+      [
+        45.50759,
+        6.0538
+      ],
+      [
+        45.50751,
+        6.054
+      ],
+      [
+        45.50726,
+        6.05375
+      ],
+      [
+        45.50696,
+        6.05309
+      ],
+      [
+        45.50689,
+        6.05331
+      ],
+      [
+        45.50632,
+        6.05195
+      ],
+      [
+        45.50567,
+        6.05121
+      ],
+      [
+        45.50496,
+        6.05129
+      ],
+      [
+        45.50469,
+        6.05141
+      ]
+    ],
+    "distance": 9.7,
+    "elevation": 780,
+    "hours": "4–4.5",
+    "paid": false,
+    "terrainType": "Mountain paths through vineyard, boxwood and dry meadow, some rough tracks",
+    "terrainRank": 2,
+    "elevationProfile": [
+      {
+        "km": 0,
+        "elev": 299
+      },
+      {
+        "km": 0.9,
+        "elev": 373
+      },
+      {
+        "km": 1.5,
+        "elev": 329
+      },
+      {
+        "km": 2.2,
+        "elev": 436
+      },
+      {
+        "km": 3,
+        "elev": 587
+      },
+      {
+        "km": 3.8,
+        "elev": 768
+      },
+      {
+        "km": 4.4,
+        "elev": 997
+      },
+      {
+        "km": 5.2,
+        "elev": 1027
+      },
+      {
+        "km": 5.9,
+        "elev": 1028
+      },
+      {
+        "km": 6.7,
+        "elev": 932
+      },
+      {
+        "km": 7.4,
+        "elev": 764
+      },
+      {
+        "km": 8.1,
+        "elev": 613
+      },
+      {
+        "km": 8.9,
+        "elev": 433
+      },
+      {
+        "km": 9.6,
+        "elev": 342
+      },
+      {
+        "km": 9.7,
+        "elev": 299
+      }
+    ],
+    "surfaceHazards": [
+      "Unprotected drop at the Roc de Manettaz belvedere (signed danger)",
+      "Sustained mountain-path climbing on T2 ground"
+    ],
+    "shadeCoverage": 50,
+    "heatRisk": "moderate",
+    "safetyLevel": "caution",
+    "exposure": true,
+    "waterSources": [],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.5046876,
+      "lng": 6.0514101,
+      "label": "Start here: cemetery car park on chemin de Beauvoir, Montmélian, heading for the Calloudes hamlet"
+    },
+    "decisionPoints": [
+      {
+        "km": 2.9,
+        "lat": 45.52047,
+        "lng": 6.07494,
+        "instruction": "Roc de Manettaz belvedere and orientation table: sweeping view over the Combe de Savoie and Belledonne, with an unprotected edge, keep dogs leashed and close here"
+      }
+    ],
+    "imagePlaceholder": true,
+    "desc": "A proper half-day loop above Montmélian through everything that makes the Combe de Savoie's sunny side special: the Arbin vineyards, locust and laburnum copses, pine woods, the protected dry meadow of La Générale, and the boxwood thickets that name the trail. The ridge rewards with the Roc de Manettaz belvedere and its orientation table before the descent past the Col du Mont picnic spot. A Coeur de Savoie circuit, waymarked in yellow; dogs are accepted on a leash.",
+    "tips": "Keep the leash on, that's the official condition, and doubly wise in the protected meadow and near the belvedere's edge. No water is mapped anywhere on the loop, so carry a full supply for 4 hours plus; the south-facing vineyard slopes bake in summer, so start early. The 780 m of climbing on rough mountain paths is a genuine workout, check your dog's match score honestly. Best outside the hottest months; the dry-meadow flora peaks in late spring."
   }
 ];
 
