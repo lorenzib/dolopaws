@@ -671,6 +671,18 @@ function renderTrail(t){
       box.innerHTML = window.t('trail.verifiedBox');
     }
     descEl.parentNode.insertBefore(box, descEl);
+
+    // Trail hazards — surfaceHazards used to feed only the match scoring;
+    // surface them to the reader too, right under the provenance banner.
+    if (Array.isArray(t.surfaceHazards) && t.surfaceHazards.length && !document.getElementById('trailHazards')) {
+      const hz = document.createElement('div');
+      hz.id = 'trailHazards';
+      hz.style.cssText = 'margin:0 0 14px;padding:10px 14px;border-left:4px solid #9C3A25;background:#faeeea;border-radius:6px;font-size:13px;line-height:1.5;';
+      hz.innerHTML = '<strong>⚠️ ' + (window.t('trail.hazardsTitle') || 'Trail hazards') + '</strong><ul style="margin:6px 0 0 18px;padding:0;">'
+        + t.surfaceHazards.map(h => '<li>' + String(h).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) + '</li>').join('')
+        + '</ul>';
+      descEl.parentNode.insertBefore(hz, descEl);
+    }
   })();
 
   // Coordinates — shown in plain decimal-degree format, matching how most
