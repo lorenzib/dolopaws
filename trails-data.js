@@ -633,7 +633,11 @@ const trails = [
     },
     "desc": "A short, mostly shaded loop above the village of Les Échelles, on the north-west edge of the Chartreuse regional park. From the Rivièr'Alp leisure base the trail passes the Cotterg pond and climbs through the Menuet forest on the GR9 to the Col de la Voûte and the Chapelle de la Madeleine viewpoint over the Chartreuse summits, then drops back down through Combe Noire. A waymarked circuit maintained by the Syndicat mixte de l'Avant-Pays Savoyard, listed as dog-friendly by Chartreuse Tourisme.",
     "tips": "Dogs stay on the leash here, that's the official rule. Keep them close on the two short road stretches too: the D921 crossing and the D1006 through the village centre both carry traffic. Forest cover keeps most of the loop cool, a lovely hot-day choice, though paths get slippery after rain. Signposted from May to November. No fountains up on the hill, so carry enough for your dog; the riverside by the start is the one reliable drink-and-splash spot. No car? The T41 bus between Chambéry and Voiron stops at Les Échelles Place. One map note: in three short stretches near the top, our route line straightens where the source map data has small gaps. On the ground the waymarking is continuous, so just follow the signs.",
-    "imagePlaceholder": true
+    "imageIcon": "images/circuit-beatrice-de-savoie.webp",
+    "imageCredit": {
+      "text": "La Vie Nouvelle (edited)",
+      "url": "https://www.la-vie-nouvelle.fr/2024/06/le-circuit-beatrice-de-savoie-depuis-les-echelles/"
+    }
   },
   // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Office de
   //     Tourisme de Passy via Apidae, Waymarked Trails rel. 6250300) ---
