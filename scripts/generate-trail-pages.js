@@ -209,16 +209,19 @@ function nearbySection(t, slug, all) {
   for (const o of sameRegion) { if (picks.length >= 4) break; picks.push(o); }
   if (!picks.length) return '';
   const items = picks.map((o) =>
-    `<li><a href="${o.slug}.html">${escapeHtml(o.name)}</a> — ${o.distance} km · ${safetyLabel(o.safetyLevel)}</li>`
+    `<a class="sp-near" href="${o.slug}.html">
+        <span class="sp-near-name">${escapeHtml(o.name)}</span>
+        <span class="sp-near-meta"><span class="safety-badge ${safetyClass(o.safetyLevel)}">${safetyLabel(o.safetyLevel)}</span> ${o.distance} km</span>
+      </a>`
   ).join('\n      ');
   const hub = VALLEY_GUIDES[t.valley];
   const hubLine = hub
     ? `\n    <p>Planning a few days here? Read our area guide: <a href="${hub.href}">${escapeHtml(hub.label)}</a>.</p>`
     : '';
   return `<h2>Nearby trails</h2>
-    <ul>
+    <div class="sp-near-grid">
       ${items}
-    </ul>${hubLine}`;
+    </div>${hubLine}`;
 }
 
 // ---------------------------------------------------------------
@@ -373,6 +376,11 @@ function trailPage(t, slug, all) {
   .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
   .sp-elev{margin:14px 0;}
   .sp-elev svg{max-width:100%;width:640px;display:block;}
+  .sp-near-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:14px 0;}
+  .sp-near{display:block;border:1px solid var(--paper-line,#ddd);border-radius:12px;padding:13px 15px;text-decoration:none;color:inherit;background:var(--card,#fff);}
+  .sp-near:hover{border-color:#2E4034;}
+  .sp-near-name{display:block;font-weight:700;font-size:14.5px;margin-bottom:6px;}
+  .sp-near-meta{display:block;font-size:12.5px;color:var(--ink-soft,#666);}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify(jsonLd, null, 1)}
