@@ -2802,6 +2802,599 @@ const trails = [
     },
     "desc": "The historic route between the Glières plateau and the village of Glières-Val-de-Borne (Petit-Bornand), following the paths the maquisards and the villagers who supplied them used in the winter of 1944. A linear mountain trail of about 9 km with roughly 730 m of vertical, through alpage pastures at the top and forest lower down, part of the Chemins du Maquis network.",
     "tips": "This is a one-way route, not a loop: either arrange a pickup in the valley or double the day by walking back up. The 730 m of sustained descent is the real test for dogs, hard on seniors and joint-prone breeds, so check your dog's match score honestly before committing. Leash rules and summer herds apply on the plateau section, patous included; give flocks a wide berth. Surfaces are only sparsely mapped in the source data, so expect rough mountain path in places. The only mapped water point sits near the valley end, so carry enough for the whole descent. Start early for shade in the forest half."
+  },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Combloux
+  //     OT fiche (leash/herds/season), AllTrails, Waymarked Trails rel. 11517208) ---
+  {
+    "id": "osm-11517208",
+    "name": "La Croix des Salles",
+    "area": "Megève",
+    "lat": 45.8794896,
+    "lng": 6.6035377,
+    "osmRelation": 11517208,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=11517208",
+    "path": [
+      [
+        45.87949,
+        6.60354
+      ],
+      [
+        45.88015,
+        6.60459
+      ],
+      [
+        45.88077,
+        6.60582
+      ],
+      [
+        45.8811,
+        6.60694
+      ],
+      [
+        45.88119,
+        6.60829
+      ],
+      [
+        45.8817,
+        6.61066
+      ],
+      [
+        45.88197,
+        6.61148
+      ],
+      [
+        45.88199,
+        6.61267
+      ],
+      [
+        45.88218,
+        6.61324
+      ],
+      [
+        45.88208,
+        6.61356
+      ],
+      [
+        45.88208,
+        6.61396
+      ],
+      [
+        45.88248,
+        6.61529
+      ],
+      [
+        45.88309,
+        6.6165
+      ],
+      [
+        45.88331,
+        6.6179
+      ],
+      [
+        45.88348,
+        6.61822
+      ],
+      [
+        45.88372,
+        6.61838
+      ],
+      [
+        45.88461,
+        6.61834
+      ],
+      [
+        45.8853,
+        6.61861
+      ],
+      [
+        45.88565,
+        6.61855
+      ],
+      [
+        45.88595,
+        6.61961
+      ],
+      [
+        45.88642,
+        6.62005
+      ],
+      [
+        45.88657,
+        6.6203
+      ],
+      [
+        45.88673,
+        6.62029
+      ],
+      [
+        45.88712,
+        6.61997
+      ],
+      [
+        45.88723,
+        6.62003
+      ],
+      [
+        45.8876,
+        6.62102
+      ],
+      [
+        45.88824,
+        6.62184
+      ],
+      [
+        45.8876,
+        6.62102
+      ],
+      [
+        45.88723,
+        6.62003
+      ],
+      [
+        45.88712,
+        6.61997
+      ],
+      [
+        45.88673,
+        6.62029
+      ],
+      [
+        45.88657,
+        6.6203
+      ],
+      [
+        45.88642,
+        6.62005
+      ],
+      [
+        45.88595,
+        6.61961
+      ],
+      [
+        45.88565,
+        6.61855
+      ],
+      [
+        45.8853,
+        6.61861
+      ],
+      [
+        45.88461,
+        6.61834
+      ],
+      [
+        45.88382,
+        6.61841
+      ],
+      [
+        45.88348,
+        6.61822
+      ],
+      [
+        45.88331,
+        6.6179
+      ],
+      [
+        45.88309,
+        6.6165
+      ],
+      [
+        45.88248,
+        6.61529
+      ],
+      [
+        45.88214,
+        6.61421
+      ],
+      [
+        45.88208,
+        6.61356
+      ],
+      [
+        45.88218,
+        6.61324
+      ],
+      [
+        45.8821,
+        6.61294
+      ],
+      [
+        45.88142,
+        6.61213
+      ],
+      [
+        45.8811,
+        6.61123
+      ],
+      [
+        45.88043,
+        6.61028
+      ],
+      [
+        45.87983,
+        6.60919
+      ],
+      [
+        45.8796,
+        6.60856
+      ],
+      [
+        45.8797,
+        6.60814
+      ],
+      [
+        45.87965,
+        6.60734
+      ],
+      [
+        45.87933,
+        6.60629
+      ],
+      [
+        45.8792,
+        6.60609
+      ],
+      [
+        45.87871,
+        6.60593
+      ],
+      [
+        45.87829,
+        6.6056
+      ],
+      [
+        45.87816,
+        6.60538
+      ],
+      [
+        45.87819,
+        6.60501
+      ],
+      [
+        45.878,
+        6.60433
+      ],
+      [
+        45.87703,
+        6.60352
+      ],
+      [
+        45.87651,
+        6.60279
+      ],
+      [
+        45.876,
+        6.6024
+      ],
+      [
+        45.87577,
+        6.60203
+      ],
+      [
+        45.87566,
+        6.60201
+      ],
+      [
+        45.87545,
+        6.60215
+      ],
+      [
+        45.87488,
+        6.60189
+      ],
+      [
+        45.87396,
+        6.60191
+      ],
+      [
+        45.87388,
+        6.60183
+      ],
+      [
+        45.87389,
+        6.60145
+      ],
+      [
+        45.87355,
+        6.6013
+      ],
+      [
+        45.87308,
+        6.6016
+      ],
+      [
+        45.87292,
+        6.60136
+      ],
+      [
+        45.87265,
+        6.60034
+      ],
+      [
+        45.87221,
+        6.60004
+      ],
+      [
+        45.87183,
+        6.59958
+      ],
+      [
+        45.87141,
+        6.59949
+      ],
+      [
+        45.87104,
+        6.59931
+      ],
+      [
+        45.87024,
+        6.59932
+      ],
+      [
+        45.86958,
+        6.59877
+      ],
+      [
+        45.87043,
+        6.59788
+      ],
+      [
+        45.87078,
+        6.59767
+      ],
+      [
+        45.87159,
+        6.59685
+      ],
+      [
+        45.87255,
+        6.59627
+      ],
+      [
+        45.87279,
+        6.59582
+      ],
+      [
+        45.8732,
+        6.59463
+      ],
+      [
+        45.87396,
+        6.59386
+      ],
+      [
+        45.87481,
+        6.59324
+      ],
+      [
+        45.87555,
+        6.59295
+      ],
+      [
+        45.87619,
+        6.59285
+      ],
+      [
+        45.87637,
+        6.59252
+      ],
+      [
+        45.87661,
+        6.59343
+      ],
+      [
+        45.87657,
+        6.5937
+      ],
+      [
+        45.87683,
+        6.59508
+      ],
+      [
+        45.87663,
+        6.59402
+      ],
+      [
+        45.87616,
+        6.59414
+      ],
+      [
+        45.87577,
+        6.59409
+      ],
+      [
+        45.87527,
+        6.59435
+      ],
+      [
+        45.87461,
+        6.59485
+      ],
+      [
+        45.87445,
+        6.59517
+      ],
+      [
+        45.87441,
+        6.59545
+      ],
+      [
+        45.87464,
+        6.59588
+      ],
+      [
+        45.87486,
+        6.59611
+      ],
+      [
+        45.87509,
+        6.5962
+      ],
+      [
+        45.87518,
+        6.59635
+      ],
+      [
+        45.87526,
+        6.597
+      ],
+      [
+        45.8752,
+        6.59758
+      ],
+      [
+        45.87558,
+        6.59856
+      ],
+      [
+        45.87601,
+        6.59865
+      ],
+      [
+        45.87648,
+        6.59857
+      ],
+      [
+        45.87693,
+        6.59878
+      ],
+      [
+        45.87706,
+        6.59898
+      ],
+      [
+        45.87731,
+        6.59902
+      ],
+      [
+        45.87765,
+        6.59928
+      ],
+      [
+        45.87801,
+        6.59973
+      ],
+      [
+        45.87823,
+        6.59977
+      ],
+      [
+        45.87905,
+        6.60112
+      ],
+      [
+        45.87933,
+        6.60312
+      ],
+      [
+        45.87949,
+        6.60354
+      ]
+    ],
+    "distance": 7.6,
+    "elevation": 510,
+    "hours": "2.5–3.5",
+    "paid": false,
+    "terrainType": "Coarse pebblestone farm tracks and alpage paths throughout",
+    "terrainRank": 1,
+    "elevationProfile": [
+      {
+        "km": 0,
+        "elev": 1543
+      },
+      {
+        "km": 0.6,
+        "elev": 1526
+      },
+      {
+        "km": 1.2,
+        "elev": 1420
+      },
+      {
+        "km": 1.7,
+        "elev": 1321
+      },
+      {
+        "km": 2.3,
+        "elev": 1335
+      },
+      {
+        "km": 2.9,
+        "elev": 1420
+      },
+      {
+        "km": 3.5,
+        "elev": 1478
+      },
+      {
+        "km": 4.1,
+        "elev": 1493
+      },
+      {
+        "km": 4.6,
+        "elev": 1530
+      },
+      {
+        "km": 5.2,
+        "elev": 1586
+      },
+      {
+        "km": 5.8,
+        "elev": 1660
+      },
+      {
+        "km": 6.4,
+        "elev": 1695
+      },
+      {
+        "km": 6.9,
+        "elev": 1635
+      },
+      {
+        "km": 7.5,
+        "elev": 1599
+      },
+      {
+        "km": 7.6,
+        "elev": 1543
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 40,
+    "heatRisk": "moderate",
+    "safetyLevel": "moderate",
+    "exposure": false,
+    "waterSources": [
+      {
+        "km": 1.9,
+        "label": "Drinking water (OSM-verified location)"
+      },
+      {
+        "km": 3.7,
+        "label": "Drinking water (OSM-verified location)"
+      }
+    ],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.8794896,
+      "lng": 6.6035377,
+      "label": "Start here: Alpage de Beauregard lift station, just above the Cuchet car park (route de La Cry-Cuchet, Combloux)"
+    },
+    "desc": "A half-day loop over the Jaillet alpages between Megève and Combloux, topping out at the Croix des Salles and its 360 degree panorama of Mont Blanc, the Aravis and the Fiz. The route climbs through forest and some of Haute-Savoie's most flower-rich mountain pastures, and includes the short out-and-back spur to the cross itself, the viewpoint that gives the walk its name. Waymarked by the Communaute de communes Pays du Mont-Blanc with cream-coloured signs.",
+    "tips": "Dogs are accepted on a leash, and the tourist office warns that herds graze these alpages, so expect cattle and keep the leash on around them. The tracks are coarse pebble most of the way, tiring for soft paws over 7.6 km, so check pads after the descent. Two fountains are mapped, at km 1.9 and 3.7. Near the Jaillet gondola top you pass a panoramic playground, a summer food truck, and the Lac du Jaillet with its orientation-table pier, and the alpage restaurants around La Ravine and Beauregard make good rest stops. Marked open from early May to mid November outside snowy spells. The summit view is famous at sunset; bring a headlamp if you stay for it.",
+    "decisionPoints": [
+      {
+        "km": 6.2,
+        "lat": 45.87671,
+        "lng": 6.59439,
+        "instruction": "Short spur on the left to the Croix des Salles itself (1,695 m): the 360 degree Mont Blanc viewpoint the loop is named after, then back to the main track"
+      }
+    ],
+    "imageIcon": "images/la-croix-des-salles.webp",
+    "imageCredit": {
+      "text": "AI-generated illustration of the Croix des Salles, not a photograph",
+      "bare": true
+    }
   }
 ];
 
