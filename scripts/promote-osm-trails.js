@@ -433,6 +433,9 @@ async function main() {
     18055492, // Le Mont d'Arbois - Mont Joux (Megève) — verified 2026-07-14
     14864704, // Boucle du Taillefer (Duingt) — verified 2026-07-14
     20302682, // BANNED: Sentier découverte de Bellevaux (Bauges) — inside RNCFS des Bauges, dogs prohibited even on leash (removed 2026-07-14)
+    14095296, // Les Marais d'Albens (Entrelacs) — verified 2026-07-14
+    16322228, // Boucle du Marais des Chassettes (Challes-les-Eaux) — verified 2026-07-14
+    16363583, // Le Marais de Pré Lombard (La Motte-Servolex) — verified 2026-07-14, loop rebuilt
   ]);
 
   for (const [n, feature] of routes.features.entries()) {
