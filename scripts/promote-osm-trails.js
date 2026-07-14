@@ -417,8 +417,19 @@ async function main() {
   console.log(`[promote] ${routes.features.length} routes to promote.`);
   const entries = [];
 
+  // Relations already hand-verified and moved into trails-data.js.
+  // Skipped here so a pipeline rerun never re-imports a verified trail
+  // as a duplicate.
+  const PROMOTED_RELATIONS = new Set([
+    3982382, // Circuit Béatrice de Savoie — verified 2026-07-14
+  ]);
+
   for (const [n, feature] of routes.features.entries()) {
     const p = feature.properties;
+    if (PROMOTED_RELATIONS.has(Number(p.osm_relation))) {
+      console.log(`[promote] Skipping ${p.name} (${p.osm_relation}) — already verified in trails-data.js.`);
+      continue;
+    }
     const isLoop = p.loop === true || p.loop === 'true';
     let { pts, segments } = toPath(feature.geometry);
     let cumKm = recomputeCumKm(pts);

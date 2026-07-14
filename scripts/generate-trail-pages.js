@@ -151,7 +151,7 @@ function elevSvg(t) {
       <text x="${padX}" y="${H - 4}" font-size="12" fill="#666">${minE} m</text>
       <text x="${W - padX}" y="${H - 4}" font-size="12" fill="#666" text-anchor="end">${maxK} km</text>
     </svg>
-    <figcaption class="sp-src">Elevation profile — lowest ${minE} m, highest ${maxE} m.</figcaption>
+    <figcaption class="sp-src">Elevation profile: lowest ${minE} m, highest ${maxE} m.</figcaption>
   </figure>`;
 }
 
@@ -267,17 +267,17 @@ function trailPage(t, slug, all) {
 
   const waterHtml =
     Array.isArray(t.waterSources) && t.waterSources.length
-      ? `<h2>Water on trail</h2>
+      ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> Water on trail</h2>
     <ul>${t.waterSources
-          .map((w) => `<li>km ${escapeHtml(w.km)} — ${escapeHtml(w.label || 'Water source')}</li>`)
+          .map((w) => `<li>km ${escapeHtml(w.km)} · ${escapeHtml(w.label || 'Water source')}</li>`)
           .join('')}</ul>`
       : '';
 
   const rifugiHtml =
     Array.isArray(t.rifugi) && t.rifugi.length
-      ? `<h2>Rifugi &amp; refreshment</h2>
+      ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M4 11l8-7 8 7" fill="none" stroke="#8A5A16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 10v9h12v-9" fill="#D6A038" stroke="#8A5A16" stroke-width="1.6" stroke-linejoin="round"></path><path d="M10 19v-5h4v5" fill="#8A5A16"></path></svg> Rifugi &amp; refreshment</h2>
     <ul>${t.rifugi
-          .map((r) => `<li>km ${escapeHtml(r.km)} — ${escapeHtml(r.name || 'Rifugio')}</li>`)
+          .map((r) => `<li>km ${escapeHtml(r.km)} · ${escapeHtml(r.name || 'Rifugio')}</li>`)
           .join('')}</ul>`
       : '';
 
@@ -288,7 +288,7 @@ function trailPage(t, slug, all) {
 
   const startHtml =
     t.startPoint && t.startPoint.label
-      ? `<h2>Where to start</h2>
+      ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
     <p>${escapeHtml(t.startPoint.label)}</p>`
       : '';
 
@@ -299,9 +299,9 @@ function trailPage(t, slug, all) {
           .map((i) => {
             const srcLabel = i.source ? escapeHtml(i.source) : '';
             const src = i.url
-              ? ` <span class="sp-src">— <a href="${escapeHtml(i.url)}" rel="noopener">${srcLabel}</a></span>`
+              ? ` <span class="sp-src">· <a href="${escapeHtml(i.url)}" rel="noopener">${srcLabel}</a></span>`
               : srcLabel
-                ? ` <span class="sp-src">— ${srcLabel}</span>`
+                ? ` <span class="sp-src">· ${srcLabel}</span>`
                 : '';
             return `<p>${escapeHtml(i.en || '')}${src}</p>`;
           })
@@ -410,6 +410,8 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
     ${t.paid ? '<span class="tag">Paid access</span>' : ''}
   </div>
   ${t.imageIcon ? `<img class="sp-img" src="../${escapeHtml(t.imageIcon)}" alt="${escapeHtml(t.name)}">` : routeHtml}
+  ${t.imageIcon && t.imageCredit ? `<p class="sp-src" style="margin:-8px 0 14px;">Photo: ${t.imageCredit.url ? `<a href="${escapeHtml(t.imageCredit.url)}" rel="noopener nofollow">${escapeHtml(t.imageCredit.text)}</a>` : escapeHtml(t.imageCredit.text)}</p>` : ''}
+  ${!t.imageIcon && t.imagePlaceholder ? `<p class="sp-src" style="display:flex;align-items:center;gap:8px;margin:-6px 0 14px;"><img src="../logo.svg" alt="" width="22" height="22" style="flex:none;"> We're working on adding photos of this trail.</p>` : ''}
   <p>${escapeHtml(t.desc || '')}</p>
 
   <div class="sp-facts">
@@ -426,8 +428,32 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
     ${rifugiHtml}
     ${tipsHtml}
     ${insightsHtml}
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '\u2019s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=${encodeURIComponent(t.id)}">See ' + n + '\u2019s match for this trail \u2192</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog\u2019s profile</h2>'
+            + '<p>You\u2019re signed in, but there\u2019s no dog profile saved yet. Add your dog\u2019s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog\u2019s profile \u2192</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     ${nearbyHtml}
     ${osmCredit}
