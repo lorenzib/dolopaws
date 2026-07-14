@@ -698,7 +698,7 @@ function renderTrail(t){
       [`${t.distance} km`, window.t('trail.fact.distance')],
       [`${t.elevation} m`, window.t('trail.fact.ascent')],
       [`${t.hours} h`, window.t('trail.fact.duration')],
-    ];
+    ].filter(([val]) => !/^null|^undefined/.test(val)); // hide facts the data honestly lacks
     if(Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1){
       facts.splice(2, 0, [`${Math.max(...t.elevationProfile.map(p => p.elev))} m`, window.t('trail.fact.high')]);
     }
