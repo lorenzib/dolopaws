@@ -36,6 +36,11 @@
   .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
   .sp-elev{margin:14px 0;}
   .sp-elev svg{max-width:100%;width:640px;display:block;}
+  .sp-near-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:14px 0;}
+  .sp-near{display:block;border:1px solid var(--paper-line,#ddd);border-radius:12px;padding:13px 15px;text-decoration:none;color:inherit;background:var(--card,#fff);}
+  .sp-near:hover{border-color:#2E4034;}
+  .sp-near-name{display:block;font-weight:700;font-size:14.5px;margin-bottom:6px;}
+  .sp-near-meta{display:block;font-size:12.5px;color:var(--ink-soft,#666);}
 </style>
 <script type="application/ld+json">
 {
@@ -146,12 +151,24 @@
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
-    <ul>
-      <li><a href="lago-di-carezza-loop.html">Lago di Carezza Loop</a> — 1.3 km · Low-risk</li>
-      <li><a href="planetenweg-sentiero-dei-pianeti.html">Planetenweg - Sentiero dei pianeti</a> — 9.5 km · Low-risk</li>
-      <li><a href="ruine-castelfeder-rovine-castelfeder.html">Ruine Castelfeder - Rovine Castelfeder</a> — 2.3 km · Moderate</li>
-      <li><a href="rundweg-montiggler-seen.html">Rundweg Montiggler Seen</a> — 4.4 km · Moderate</li>
-    </ul>
+    <div class="sp-near-grid">
+      <a class="sp-near" href="lago-di-carezza-loop.html">
+        <span class="sp-near-name">Lago di Carezza Loop</span>
+        <span class="sp-near-meta"><span class="safety-badge safety-low">Low-risk</span> 1.3 km</span>
+      </a>
+      <a class="sp-near" href="planetenweg-sentiero-dei-pianeti.html">
+        <span class="sp-near-name">Planetenweg - Sentiero dei pianeti</span>
+        <span class="sp-near-meta"><span class="safety-badge safety-low">Low-risk</span> 9.5 km</span>
+      </a>
+      <a class="sp-near" href="ruine-castelfeder-rovine-castelfeder.html">
+        <span class="sp-near-name">Ruine Castelfeder - Rovine Castelfeder</span>
+        <span class="sp-near-meta"><span class="safety-badge safety-moderate">Moderate</span> 2.3 km</span>
+      </a>
+      <a class="sp-near" href="rundweg-montiggler-seen.html">
+        <span class="sp-near-name">Rundweg Montiggler Seen</span>
+        <span class="sp-near-meta"><span class="safety-badge safety-moderate">Moderate</span> 4.4 km</span>
+      </a>
+    </div>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>
