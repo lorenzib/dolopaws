@@ -337,9 +337,12 @@ function accessLabel(best, isLoop) {
 const SURFACE_LABELS = {
   gravel: 'gravel', fine_gravel: 'fine gravel', compacted: 'compacted gravel',
   asphalt: 'paved', paved: 'paved', concrete: 'paved', paving_stones: 'paved',
+  'concrete:plates': 'paved', sett: 'stone setts', cobblestone: 'cobblestone',
+  unhewn_cobblestone: 'cobblestone', pebblestone: 'pebblestone',
   ground: 'natural ground', dirt: 'dirt', earth: 'dirt', grass: 'grass',
   rock: 'rock', stone: 'rock', gravel_turf: 'gravel-turf', unpaved: 'unpaved',
-  sand: 'sand', wood: 'boardwalk', mud: 'mud'
+  sand: 'sand', wood: 'boardwalk', woodchips: 'woodchips', metal: 'metal walkway',
+  mud: 'mud'
 };
 
 function describeTerrain(surfaces, totalKm) {
@@ -347,7 +350,9 @@ function describeTerrain(surfaces, totalKm) {
   const grouped = {};
   let taggedKm = 0;
   for (const [key, km] of Object.entries(surfaces)) {
-    const label = SURFACE_LABELS[key] || key.replace(/_/g, ' ');
+    // Unknown values are mapper free-text ("una", typos, local slang) —
+    // bucket them honestly instead of parroting garbage into the UI.
+    const label = SURFACE_LABELS[key] || 'other surfaces';
     grouped[label] = (grouped[label] || 0) + km;
     taggedKm += km;
   }
