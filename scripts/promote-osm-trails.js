@@ -422,6 +422,11 @@ async function main() {
   // as a duplicate.
   const PROMOTED_RELATIONS = new Set([
     3982382, // Circuit Béatrice de Savoie — verified 2026-07-14
+    6250300, // Boucle du Lac Vert (Passy) — verified 2026-07-14
+    9933643, // Le Lac Vert (La Plagne) — verified 2026-07-14
+    10116283, // Itinéraire de découverte historique (Plateau des Glières) — verified 2026-07-14
+    10116380, // Itinéraire découverte de la nature (Plateau des Glières) — verified 2026-07-14
+    20347406, // Sentier des Patriotes (Plateau des Glières) — verified 2026-07-14
   ]);
 
   for (const [n, feature] of routes.features.entries()) {
