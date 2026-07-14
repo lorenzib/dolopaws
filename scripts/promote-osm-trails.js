@@ -427,6 +427,7 @@ async function main() {
     10116283, // Itinéraire de découverte historique (Plateau des Glières) — verified 2026-07-14
     10116380, // Itinéraire découverte de la nature (Plateau des Glières) — verified 2026-07-14
     20347406, // Sentier des Patriotes (Plateau des Glières) — verified 2026-07-14
+    11517208, // La Croix des Salles (Megève/Combloux) — verified 2026-07-14
   ]);
 
   for (const [n, feature] of routes.features.entries()) {
