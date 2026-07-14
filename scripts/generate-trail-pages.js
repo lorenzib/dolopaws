@@ -571,6 +571,19 @@ function main() {
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), sitemap(urls), 'utf8');
   updateBrowseIndex(indexEntries);
 
+  // Remove stale pages for trails that no longer exist in the datasets
+  // (renamed, or pulled entirely — e.g. routes where dogs turned out to be
+  // prohibited on the ground). Keeps GitHub Pages from serving orphans.
+  let removed = 0;
+  for (const f of fs.readdirSync(OUT_DIR)) {
+    if (!f.endsWith('.html') || f === 'index.html') continue; // index.html is the directory redirect, not a trail page
+    if (!seen.has(f.slice(0, -5))) {
+      try { fs.unlinkSync(path.join(OUT_DIR, f)); removed++; }
+      catch (e) { console.warn(`Could not remove stale page ${f}: ${e.message}`); }
+    }
+  }
+  if (removed) console.log(`Removed ${removed} stale trail page(s).`);
+
   console.log(`Wrote ${written} trail pages and sitemap.xml (${urls.length} URLs).`);
 }
 

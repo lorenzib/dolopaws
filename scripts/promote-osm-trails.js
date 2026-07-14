@@ -417,9 +417,10 @@ async function main() {
   console.log(`[promote] ${routes.features.length} routes to promote.`);
   const entries = [];
 
-  // Relations already hand-verified and moved into trails-data.js.
-  // Skipped here so a pipeline rerun never re-imports a verified trail
-  // as a duplicate.
+  // Relations excluded from import. Two reasons, marked per entry:
+  // - verified: hand-verified and moved into trails-data.js (skip = no duplicate)
+  // - BANNED: dogs are not allowed on the ground (protected areas etc.) —
+  //   these must never appear on a dog-trail site, imported or otherwise.
   const PROMOTED_RELATIONS = new Set([
     3982382, // Circuit Béatrice de Savoie — verified 2026-07-14
     6250300, // Boucle du Lac Vert (Passy) — verified 2026-07-14
@@ -431,6 +432,7 @@ async function main() {
     14987412, // Sentier du Four (Arbusigny) — enriched import in trails-data.js, still curated:false
     18055492, // Le Mont d'Arbois - Mont Joux (Megève) — verified 2026-07-14
     14864704, // Boucle du Taillefer (Duingt) — verified 2026-07-14
+    20302682, // BANNED: Sentier découverte de Bellevaux (Bauges) — inside RNCFS des Bauges, dogs prohibited even on leash (removed 2026-07-14)
   ]);
 
   for (const [n, feature] of routes.features.entries()) {
