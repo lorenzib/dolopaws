@@ -757,3 +757,12 @@ body.map-fs-open{overflow:hidden;}
 .dw-payoff-cta{width:100%;padding:13px 20px;}
 .dw-payoff-hint{font-size:12px;color:var(--ink-soft);margin:10px 0 0;line-height:1.5;}
 
+/* ---- Guest teaser: honesty label under the example score ---- */
+.teaser-card .match-note{display:block;font-size:9.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-top:1px;text-align:right;}
+
+/* ---- Skeleton loading states (shimmer bars, replaced by real content) ---- */
+.skeleton{display:inline-block;border-radius:6px;background:linear-gradient(90deg,var(--sage-dim) 25%,#EFEBDD 50%,var(--sage-dim) 75%);background-size:200% 100%;animation:dp-shimmer 1.2s linear infinite;vertical-align:middle;}
+.skeleton--light{background:linear-gradient(90deg,rgba(255,255,255,.18) 25%,rgba(255,255,255,.32) 50%,rgba(255,255,255,.18) 75%);background-size:200% 100%;}
+@keyframes dp-shimmer{to{background-position:-200% 0;}}
+@media (prefers-reduced-motion: reduce){ .skeleton{animation:none;} }
+
