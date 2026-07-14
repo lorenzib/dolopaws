@@ -177,23 +177,20 @@ function atAGlance(t) {
   const loop = isLoop(t);
   const gain = typeof t.elevation === 'number' ? t.elevation : null;
 
-  if (loop === true) bits.push(`This is a true loop — it closes back on its own start point, so there's no return leg to plan`);
-  else if (loop === false) bits.push(`This is a point-to-point route, so plan the return — retrace your steps or check local buses`);
+  if (loop === true) bits.push(`This is a true loop: it closes back on its own start point, so there's no return leg to plan`);
+  else if (loop === false) bits.push(`This is a point-to-point route, so plan the return: retrace your steps or check local buses`);
 
   if (gain !== null) {
     if (gain < 150) bits.push(`with only ${gain} m of climbing, it's one of the gentler options in the area for older dogs or hot days`);
-    else if (gain < 400) bits.push(`the ${gain} m of climbing is steady rather than steep — a fair ask for most fit dogs`);
+    else if (gain < 400) bits.push(`the ${gain} m of climbing is steady rather than steep, a fair ask for most fit dogs`);
     else if (gain < 700) bits.push(`${gain} m of gain over ${t.distance} km is a real climb: budget rests, and halve expectations for short-legged dogs`);
-    else bits.push(`${gain} m of climbing makes this a big physical day — for conditioned dogs only, with turn-back discipline`);
+    else bits.push(`${gain} m of climbing makes this a big physical day, for conditioned dogs only, with turn-back discipline`);
   }
 
+  // Water/hut counts are NOT repeated here: the dedicated sections below
+  // list them. Only the absence of water is called out (no section then).
   const w = Array.isArray(t.waterSources) ? t.waterSources.length : 0;
-  if (w >= 3) bits.push(`water is well covered, with ${w} mapped points along the way`);
-  else if (w > 0) bits.push(`there ${w === 1 ? 'is one mapped water point' : `are ${w} mapped water points`} on the route — carry enough to bridge the gaps`);
-  else bits.push(`no water points are mapped on this route, so carry everything your dog will drink`);
-
-  const huts = Array.isArray(t.rifugi) ? t.rifugi.filter((r) => r.name) : [];
-  if (huts.length) bits.push(`for a break, you'll pass ${escapeHtml(huts.slice(0, 2).map((r) => r.name).join(' and '))}${huts.length > 2 ? ' among others' : ''}`);
+  if (w === 0) bits.push(`no water points are mapped on this route, so carry everything your dog will drink`);
 
   if (!bits.length) return '';
   const text = bits.join('; ') + '.';
@@ -251,9 +248,9 @@ function trailPage(t, slug, all) {
   const highest = highestPoint(t);
   const facts = [
     ['Distance', `${t.distance} km`],
-    ['Elevation gain', `${t.elevation} m`],
+    ['Elevation gain', t.elevation != null ? `${t.elevation} m` : null],
     ['Highest point', highest !== null ? `${highest} m` : null],
-    ['Duration', `${t.hours} h`],
+    ['Duration', t.hours != null ? `${t.hours} h` : null],
     ['Terrain', terrain],
     ['Trail rating', safetyLabel(t.safetyLevel)],
     ['Area', `${t.area} · ${regionLabel}`],

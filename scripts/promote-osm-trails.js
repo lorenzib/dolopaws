@@ -364,7 +364,7 @@ function describeTerrain(surfaces, totalKm) {
   const coverage = Math.min(1, taggedKm / Math.max(totalKm, 0.1));
   const prefix = coverage >= 0.75 ? '' : coverage >= 0.4 ? 'Partially mapped: ' : 'Sparsely mapped: ';
   return {
-    text: `${prefix}${top.join(', ')} — from OSM surface data`,
+    text: `${prefix}${top.join(', ')}, from OSM surface data`,
     rocky: sorted.some(([label], idx) => idx < 2 && (label === 'rock' || label === 'mud')),
     coverage
   };
@@ -428,6 +428,9 @@ async function main() {
     10116380, // Itinéraire découverte de la nature (Plateau des Glières) — verified 2026-07-14
     20347406, // Sentier des Patriotes (Plateau des Glières) — verified 2026-07-14
     11517208, // La Croix des Salles (Megève/Combloux) — verified 2026-07-14
+    14987412, // Sentier du Four (Arbusigny) — enriched import in trails-data.js, still curated:false
+    18055492, // Le Mont d'Arbois - Mont Joux (Megève) — verified 2026-07-14
+    14864704, // Boucle du Taillefer (Duingt) — verified 2026-07-14
   ]);
 
   for (const [n, feature] of routes.features.entries()) {
