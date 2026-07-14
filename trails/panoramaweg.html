@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Panoramaweg",
+   "item": "https://www.dolopaws.com/trails/panoramaweg.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Panoramaweg" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="324.5,123.9 327.6,122.8 334.8,125.6 344.4,115.7 347.1,116.3 351.1,114.3 351.5,116.8 354.2,116.6 359.1,119.9 368.7,131.6 369.1,135.2 362.0,138.3 359.1,142.7 360.9,146.5 359.7,151.9 365.3,159.7 365.8,165.7 364.3,170.2 359.9,175.2 358.2,183.6 353.8,186.5 354.0,189.8 365.7,201.4 365.8,207.4 357.6,214.8 351.3,218.1 347.7,223.5 347.3,226.9 343.4,231.1 339.4,241.5 330.8,255.2 329.5,256.0 328.3,253.7 324.7,255.4 316.7,255.2 314.5,252.7 312.4,245.1 315.7,232.8 314.9,218.7 313.2,214.7 317.0,201.8 318.9,181.7 321.2,177.3 319.5,166.2 323.2,151.7 328.3,145.2 328.1,132.5 325.5,125.1 322.2,120.7 305.9,125.6 293.1,125.1 291.4,118.4 289.1,116.3 296.4,104.2 296.2,92.7 285.8,61.9 270.9,35.5 273.0,24.0 292.0,120.3 295.0,122.2 293.1,124.7 299.2,122.6 302.7,125.5 284.9,210.8 294.4,210.8 299.0,219.6 314.5,221.9" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="324.5" cy="123.9" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>An 4 km route near Bolzano / Bozen, imported from the OpenStreetMap hiking network (trail 7). Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">4 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">98 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">632 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">1–1.5 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Partially mapped: natural ground (41%), dirt (37%), paved (19%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Low-risk</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-12363235">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a point-to-point route, so plan the return — retrace your steps or check local buses; with only 98 m of climbing, it's one of the gentler options in the area for older dogs or hot days; water is well covered, with 3 mapped points along the way.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 589 to 632 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L48.3,110.8 L76.9,55.1 L105.5,23.3 L119.8,28.6 L162.7,18.0 L191.3,71.0 L205.6,100.2 L248.5,81.6 L291.4,79.0 L334.3,81.6 L391.5,73.7 L505.9,81.6 L591.7,110.8 L606.0,116.1 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L48.3,110.8 L76.9,55.1 L105.5,23.3 L119.8,28.6 L162.7,18.0 L191.3,71.0 L205.6,100.2 L248.5,81.6 L291.4,79.0 L334.3,81.6 L391.5,73.7 L505.9,81.6 L591.7,110.8 L606.0,116.1" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">632 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">589 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">4 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 589 m, highest 632 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Route start per OpenStreetMap — best parking/access not yet verified</p>
     <h2>Water on trail</h2>
@@ -99,6 +145,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="lago-di-carezza-loop.html">Lago di Carezza Loop</a> — 1.3 km · Low-risk</li>
+      <li><a href="planetenweg-sentiero-dei-pianeti.html">Planetenweg - Sentiero dei pianeti</a> — 9.5 km · Low-risk</li>
+      <li><a href="ruine-castelfeder-rovine-castelfeder.html">Ruine Castelfeder - Rovine Castelfeder</a> — 2.3 km · Moderate</li>
+      <li><a href="rundweg-montiggler-seen.html">Rundweg Montiggler Seen</a> — 4.4 km · Moderate</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

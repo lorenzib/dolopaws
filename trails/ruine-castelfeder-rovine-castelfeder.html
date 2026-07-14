@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Ruine Castelfeder - Rovine Castelfeder",
+   "item": "https://www.dolopaws.com/trails/ruine-castelfeder-rovine-castelfeder.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Ruine Castelfeder - Rovine Castelfeder" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="408.6,191.8 387.5,213.3 388.0,227.4 400.6,233.0 400.6,233.0 402.0,229.8 400.6,233.0 388.0,227.4 387.5,213.3 408.6,191.8 414.2,178.7 431.1,160.4 399.2,174.9 365.5,202.1 324.2,225.5 287.7,254.1 279.2,256.0 260.5,252.7 251.1,245.2 255.3,241.9 256.3,227.4 248.3,204.9 256.7,186.2 260.0,163.7 270.3,145.4 270.3,132.7 267.0,128.5 246.9,134.6 236.6,133.2 218.3,148.7 216.9,167.4 207.0,168.8 203.3,166.0 207.0,168.8 216.9,167.4 221.6,132.3 244.5,113.5 237.0,103.2 242.2,102.7 261.4,117.3 267.0,128.5 281.1,108.8 305.9,101.3 323.7,101.3 348.6,90.1 358.0,76.0 344.8,47.0 347.7,36.7 357.0,24.0 370.1,27.7 383.7,41.3 386.1,59.6 394.1,74.6 401.1,122.0 430.1,134.6 436.7,144.0 431.1,160.4 414.2,178.7 408.6,191.8" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="408.6" cy="191.8" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A 2.3 km loop near Cavalese, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record. Direction shown climbs more gradually (computed from elevation data).</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">2.3 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">158 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">401 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">1 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">paved (28%), grass (17%), unpaved (17%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Moderate</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-2179746">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a true loop — it closes back on its own start point, so there's no return leg to plan; the 158 m of climbing is steady rather than steep — a fair ask for most fit dogs; there are 2 mapped water points on the route — carry enough to bridge the gaps.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 339 to 401 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L58.9,113.6 L83.7,113.6 L133.5,132.0 L208.1,122.8 L233.0,73.2 L282.7,51.1 L307.6,19.8 L332.4,18.0 L382.2,67.6 L407.0,51.1 L431.9,43.7 L481.7,113.6 L531.4,93.4 L581.1,119.1 L606.0,132.0 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L58.9,113.6 L83.7,113.6 L133.5,132.0 L208.1,122.8 L233.0,73.2 L282.7,51.1 L307.6,19.8 L332.4,18.0 L382.2,67.6 L407.0,51.1 L431.9,43.7 L481.7,113.6 L531.4,93.4 L581.1,119.1 L606.0,132.0" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">401 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">339 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">2.3 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 339 m, highest 401 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Parking, 35 m from the route (OSM-verified access point)</p>
     <h2>Water on trail</h2>
@@ -99,6 +145,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="lago-di-carezza-loop.html">Lago di Carezza Loop</a> — 1.3 km · Low-risk</li>
+      <li><a href="planetenweg-sentiero-dei-pianeti.html">Planetenweg - Sentiero dei pianeti</a> — 9.5 km · Low-risk</li>
+      <li><a href="rundweg-montiggler-seen.html">Rundweg Montiggler Seen</a> — 4.4 km · Moderate</li>
+      <li><a href="seeweg.html">Seeweg</a> — 6.8 km · Caution</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

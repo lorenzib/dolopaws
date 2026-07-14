@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "FR"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Savoy, France",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "La Galoppaz par la Combe Servenne",
+   "item": "https://www.dolopaws.com/trails/la-galoppaz-par-la-combe-servenne.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of La Galoppaz par la Combe Servenne" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="270.3,63.1 271.9,59.7 274.9,57.5 278.2,51.4 279.6,50.5 282.2,52.7 282.0,59.6 285.8,62.5 290.6,69.7 298.0,69.2 300.2,68.2 305.1,68.4 305.1,64.8 308.4,61.9 309.1,60.4 308.7,55.9 309.2,53.3 308.0,46.4 312.0,39.6 311.8,37.6 313.2,35.2 311.5,30.6 316.9,26.3 322.8,24.0 325.2,24.6 326.4,26.3 326.9,30.0 331.0,31.0 332.5,34.3 336.8,37.5 340.8,37.4 340.2,39.1 340.7,40.6 342.3,41.2 345.1,39.2 344.8,40.4 346.3,43.2 349.2,46.1 352.1,41.3 353.7,42.6 354.8,39.8 355.7,39.2 356.2,40.2 359.7,37.9 360.2,42.3 362.6,46.6 368.3,42.2 369.0,42.8 370.4,42.2 372.3,44.6 373.3,44.2 376.2,46.7 378.0,44.9 380.6,43.7 381.1,41.1 385.3,36.7 387.9,31.9 391.4,34.1 392.2,35.5 392.1,39.3 395.8,49.8 394.7,55.1 396.8,60.7 396.7,64.1 394.1,71.1 393.8,77.1 398.9,91.7 401.5,94.7 403.9,96.3 404.1,98.2 395.8,105.8 393.4,112.8 390.5,117.5 383.8,123.7 379.6,124.1 378.1,125.9 373.0,135.8 371.9,145.5 368.5,147.9 368.4,149.7 364.9,155.1 354.3,159.5 345.0,167.9 340.4,170.5 333.3,179.3 332.5,183.7 331.3,186.0 331.6,187.8 342.4,193.1 341.1,193.6 340.7,197.3 336.3,204.4 328.8,210.2 314.7,214.6 309.6,215.4 305.1,68.4 306.2,68.9 306.6,70.5 300.6,73.1 300.1,74.1 306.9,82.4 310.7,90.9 310.1,96.5 308.0,101.1 308.9,109.5 306.0,111.4 305.3,113.3 302.0,116.0 292.1,131.9 285.9,134.7 283.3,137.9 282.2,141.6 279.0,145.6 276.8,152.1 276.5,161.4 270.7,163.1 265.7,166.4 258.0,175.6 246.3,183.7 236.3,192.5 235.9,194.4 240.3,196.8 243.0,203.2 246.2,205.5 247.7,208.4 252.0,212.2 252.5,214.5 254.6,217.2 266.5,227.2 267.0,229.8 269.2,231.8 270.3,231.0 279.4,238.3 283.2,239.2 285.1,239.3 284.4,238.5 285.8,238.5 292.9,242.1 293.8,243.0 295.4,248.7 298.7,246.2 297.5,250.0 298.0,250.7 301.6,254.5 307.5,256.0 313.6,254.0 320.8,250.5 325.7,246.0 332.1,242.5 332.4,242.0 324.2,242.5 323.9,241.9 325.2,240.7 324.5,239.9 325.4,238.9 328.4,237.4 330.0,235.3 330.1,230.7 333.5,224.4 338.7,218.4 338.5,216.9 342.5,208.8 332.7,207.7" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="270.3" cy="63.1" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>An 9.6 km route near Chambéry, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">9.6 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">1310 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1637 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">4.5–5.5 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Sparsely mapped: unpaved (100%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Caution</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-16365005">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a point-to-point route, so plan the return — retrace your steps or check local buses; 1310 m of climbing makes this a big physical day — for conditioned dogs only, with turn-back discipline; water is well covered, with 4 mapped points along the way.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1066 to 1637 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L81.7,129.8 L123.4,108.2 L171.0,52.7 L212.8,51.3 L254.5,46.4 L302.1,18.0 L403.4,130.4 L403.4,130.4 L433.2,117.8 L474.9,101.1 L516.6,80.7 L558.3,51.9 L606.0,18.4 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L81.7,129.8 L123.4,108.2 L171.0,52.7 L212.8,51.3 L254.5,46.4 L302.1,18.0 L403.4,130.4 L403.4,130.4 L433.2,117.8 L474.9,101.1 L516.6,80.7 L558.3,51.9 L606.0,18.4" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1637 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1066 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">9.6 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1066 m, highest 1637 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Route start per OpenStreetMap — best parking/access not yet verified</p>
     <h2>Water on trail</h2>
@@ -99,6 +145,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="circuit-beatrice-de-savoie.html">Circuit Béatrice de Savoie</a> — 6 km · Moderate</li>
+      <li><a href="les-marais-d-albens.html">Les Marais d’Albens</a> — 6.6 km · Low-risk</li>
+      <li><a href="sentier-des-buis.html">Sentier des Buis</a> — 9.7 km · Caution</li>
+      <li><a href="boucle-du-marais-des-chassettes.html">Boucle du Marais des Chassettes</a> — 3.3 km · Low-risk</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

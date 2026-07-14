@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Geotrail Bula / Pufels / Bulla",
+   "item": "https://www.dolopaws.com/trails/geotrail-bula-pufels-bulla.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-verified" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🐾 Verified by DoloPaws</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Geotrail Bula / Pufels / Bulla" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="247.2,24.0 245.1,24.6 251.8,37.5 253.0,44.4 248.3,46.1 246.6,44.2 242.5,43.9 235.4,46.6 228.6,52.0 219.6,53.3 207.9,51.8 189.8,52.2 199.2,53.7 204.6,57.3 211.0,65.1 211.0,69.7 214.0,71.4 215.5,74.2 214.7,78.7 211.2,81.8 210.6,84.2 202.6,87.5 201.4,89.5 203.4,92.0 204.9,97.9 196.2,102.3 195.5,104.1 196.7,106.8 196.0,112.2 199.2,117.5 217.7,132.3 227.1,133.9 233.0,137.0 237.7,135.4 248.5,137.9 249.8,140.4 252.5,141.9 252.3,143.4 254.3,144.8 255.5,148.5 259.2,151.2 259.3,154.5 262.1,160.5 259.3,164.1 260.6,166.0 259.9,167.9 262.7,169.7 271.1,167.6 275.2,168.8 287.2,166.6 290.2,167.9 293.6,172.5 306.1,172.6 312.0,175.4 323.1,174.6 331.7,176.2 348.4,180.3 354.9,185.1 363.9,185.3 376.0,182.1 387.1,185.0 415.4,195.2 411.4,202.6 402.2,209.5 412.3,206.0 414.9,206.5 412.2,212.4 414.7,214.7 414.7,216.0 407.0,223.7 399.5,227.5 394.9,235.8 395.2,243.3 399.2,251.2 400.1,256.0 407.2,251.7 407.9,247.6 414.9,243.6 427.7,239.2 447.2,227.7 449.6,222.6 450.2,217.3 447.0,206.6 446.5,199.4 439.9,192.2 429.2,186.0 419.6,183.0 412.0,185.4 375.7,174.3 367.2,173.2 358.6,173.6 350.2,167.9 343.0,167.2 339.7,164.1 331.7,159.9 319.8,158.8 317.7,152.2 310.4,151.7 309.3,147.4 305.4,141.1 296.3,146.8 294.7,149.3 271.1,157.4 268.3,160.8 268.0,164.5 266.0,163.2 265.3,165.3 261.6,162.2 262.1,160.5 259.3,154.5 259.2,151.2 255.5,148.5 254.3,144.8 252.3,143.4 252.5,141.9 249.8,140.4 248.5,137.9 237.7,135.4 233.0,137.0 227.1,133.9 217.7,132.3 199.2,117.5 196.0,112.2 196.7,106.8 195.5,104.1 196.2,102.3 204.9,97.9 203.4,92.0 201.4,89.5 202.6,87.5 210.6,84.2 211.2,81.8 214.7,78.7 215.5,74.2 214.0,71.4 211.0,69.7 211.0,65.1 204.6,57.3 199.2,53.7 189.8,52.2 207.9,51.8 219.6,53.3 228.6,52.0 235.4,46.6 242.5,43.9 246.6,44.2 248.3,46.1 253.0,44.4 251.8,37.5 245.1,24.6 247.2,24.0" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="247.2" cy="24.0" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A real, GPS-verified geological education trail between Passo Pinei and the village of Bulla — 8 information panels explain how the Dolomites formed, including a spot where you physically cross the 252-million-year-old Permian-Triassic boundary. Confirmed dog-friendly (leashed, off-leash in some areas) by multiple independent trail guides.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">8.8 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">340 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1530 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">2.5–3 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Forest road &amp; meadow path</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Moderate</div></div>
@@ -89,6 +123,17 @@
   <a class="sp-cta" href="../trail.html?id=geotrail-bulla">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1437 to 1530 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L177.0,18.0 L320.0,128.3 L463.0,54.8 L606.0,132.0 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L177.0,18.0 L320.0,128.3 L463.0,54.8 L606.0,132.0" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1530 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1437 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">8.8 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1437 m, highest 1530 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Passo Pinei (Panider Sattel), near Hotel Panider Sattel</p>
     
@@ -99,6 +144,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="alpe-di-siusi-meadow-loop.html">Alpe di Siusi Meadow Loop</a> — 7.5 km · Low-risk</li>
+      <li><a href="giro-del-bulacia.html">Giro del Bulacia</a> — 6.64 km · Moderate</li>
+      <li><a href="sentiero-hans-e-paula-steger.html">Sentiero Hans e Paula Steger</a> — 8.74 km · Low-risk</li>
+      <li><a href="oswald-von-wolkenstein-weg.html">Oswald-von-Wolkenstein-Weg</a> — 4.5 km · Caution</li>
+    </ul>
     
   </div>
 </div>

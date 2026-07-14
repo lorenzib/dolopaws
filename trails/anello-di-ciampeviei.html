@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Anello di Ciampeviei",
+   "item": "https://www.dolopaws.com/trails/anello-di-ciampeviei.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Anello di Ciampeviei" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="433.6,229.2 434.2,224.6 431.6,219.9 433.3,219.1 447.0,224.4 458.5,225.5 465.4,229.0 480.4,229.0 491.1,233.0 509.9,236.8 511.2,235.7 506.1,233.7 499.3,227.3 495.3,217.7 493.3,204.2 495.3,199.0 505.9,194.1 515.4,181.5 519.4,179.5 516.3,176.2 522.0,170.8 521.1,168.7 523.3,163.6 518.0,164.0 518.1,162.0 516.1,161.8 509.2,162.5 508.5,159.8 510.5,153.4 498.6,156.5 495.0,155.4 497.9,154.0 495.5,152.3 496.6,147.6 492.4,144.1 493.0,142.5 473.1,141.2 472.5,140.1 478.0,137.9 473.4,136.6 475.8,135.3 475.1,133.9 470.1,130.4 474.0,127.3 473.6,124.9 467.9,123.1 468.3,122.0 465.2,122.2 466.7,118.0 462.6,119.1 464.3,115.1 463.2,114.4 459.9,115.1 457.5,112.7 448.8,112.9 442.2,109.2 432.5,111.8 426.5,108.9 425.6,107.1 423.6,107.2 422.1,103.8 419.8,104.7 419.2,102.7 417.0,102.7 417.0,100.7 412.5,101.2 410.6,99.0 409.9,91.4 408.8,91.2 409.9,88.1 407.2,88.3 403.1,93.5 402.6,90.1 401.3,90.6 396.0,97.2 391.3,98.5 389.8,97.4 394.4,89.7 384.5,87.9 381.6,81.1 378.7,78.9 378.1,75.7 372.5,71.3 358.1,68.9 347.1,70.4 340.4,69.1 333.2,64.5 322.8,62.5 303.3,45.9 296.4,42.6 295.4,37.1 292.2,38.1 288.0,41.7 276.3,41.3 262.0,35.3 251.3,33.5 238.5,24.0 234.8,24.2 233.2,29.7 226.6,30.8 208.0,41.3 191.6,47.4 179.0,58.5 166.4,66.5 133.9,79.5 124.6,81.0 116.7,91.0 116.9,92.3 129.7,102.9 135.9,104.7 135.4,106.7 143.9,106.3 161.7,98.3 169.9,99.2 183.6,97.7 187.9,98.8 195.8,94.6 200.5,94.6 215.1,101.0 219.0,103.9 228.6,119.1 240.1,132.1 248.4,139.4 258.2,143.9 261.9,149.9 263.9,150.3 265.0,148.5 268.6,150.5 269.9,161.4 272.5,166.2 272.3,180.4 282.7,195.6 282.9,200.9 285.4,199.8 291.3,206.5 298.7,220.0 298.9,222.6 302.0,225.3 303.7,233.0 308.4,238.5 305.7,252.9 303.1,256.0 311.7,251.1 317.2,246.0 317.7,235.6 313.0,223.9 317.4,215.5 313.7,210.7 320.8,198.5 321.2,193.8 319.2,190.1 319.2,184.8 323.0,175.9 320.3,170.2 319.0,161.4 321.7,157.4 322.3,143.0 321.6,139.5 319.0,136.8 321.4,136.1 320.3,134.4 322.6,133.0 327.6,132.2 334.5,134.4 345.6,134.6 348.9,138.8 355.0,139.9 360.1,139.5 367.4,136.8 372.8,139.9 382.3,150.5 393.8,156.9 406.8,160.5 435.1,161.3 436.9,162.7 440.9,173.7 443.3,174.8 449.9,171.1 462.8,169.7 496.4,173.1 500.6,174.4 513.9,183.4" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="433.6" cy="229.2" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>An 7.1 km route near Auronzo di Cadore, imported from the OpenStreetMap hiking network (trail 69). Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">7.1 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">916 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1542 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">3–4 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Sparsely mapped: natural ground (57%), gravel (43%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Caution</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-7548201">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a point-to-point route, so plan the return — retrace your steps or check local buses; 916 m of climbing makes this a big physical day — for conditioned dogs only, with turn-back discipline; no water points are mapped on this route, so carry everything your dog will drink.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 922 to 1542 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L82.3,129.8 L122.6,100.0 L162.9,73.5 L211.2,35.7 L251.5,21.5 L299.9,18.0 L340.1,29.8 L380.4,24.8 L428.8,50.2 L469.0,78.1 L509.3,84.9 L557.7,93.8 L597.9,106.6 L606.0,114.3 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L82.3,129.8 L122.6,100.0 L162.9,73.5 L211.2,35.7 L251.5,21.5 L299.9,18.0 L340.1,29.8 L380.4,24.8 L428.8,50.2 L469.0,78.1 L509.3,84.9 L557.7,93.8 L597.9,106.6 L606.0,114.3" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1542 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">922 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">7.1 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 922 m, highest 1542 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Parking, 227 m from the route (OSM-verified access point)</p>
     
@@ -98,6 +144,15 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="tre-cime-di-lavaredo-loop.html">Tre Cime di Lavaredo Loop</a> — 11.8 km · Low-risk</li>
+      <li><a href="cadini-di-misurina-viewpoint.html">Cadini di Misurina Viewpoint</a> — 4 km · Caution</li>
+      <li><a href="prato-piazza-platzwiese.html">Prato Piazza (Plätzwiese)</a> — 7 km · Low-risk</li>
+      <li><a href="lago-di-braies-loop.html">Lago di Braies Loop</a> — 4 km · Low-risk</li>
+    </ul>
+    <p>Planning a few days here? Read our area guide: <a href="../guides/dog-friendly-hikes-lago-di-braies.html">Lago di Braies &amp; Tre Cime with a dog</a>.</p>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

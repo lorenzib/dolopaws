@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Schwalbenwandrunde",
+   "item": "https://www.dolopaws.com/trails/schwalbenwandrunde.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Schwalbenwandrunde" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="25.5,205.8 24.0,207.9 25.0,212.1 28.3,211.4 26.8,211.8 35.1,214.4 72.9,219.9 95.5,220.4 117.2,223.0 172.8,222.7 186.3,223.9 194.4,222.5 203.9,224.0 272.7,220.7 282.3,219.1 292.0,221.5 306.7,222.9 340.2,220.7 360.5,216.7 381.1,210.4 394.3,205.0 399.5,204.5 402.1,202.5 414.7,202.0 438.3,197.7 479.0,183.4 490.2,183.9 495.2,177.6 505.2,171.4 512.5,172.4 523.6,170.4 534.5,172.1 547.1,170.9 560.6,172.9 574.7,171.9 602.9,174.4 604.4,173.9 602.1,172.6 605.4,172.3 607.7,169.0 615.5,165.3 616.0,164.3 562.7,154.4 520.6,142.7 514.1,137.9 507.5,137.6 500.0,142.6 474.5,141.6 436.6,143.6 387.5,148.5 365.0,151.5 350.0,158.5 344.7,158.8 297.9,153.7 274.7,155.0 254.1,159.8 242.7,161.2 239.2,165.6 236.5,166.1 236.2,168.8 236.5,166.1 239.2,165.6 242.7,161.2 230.6,161.5 220.8,159.0 198.0,158.5 184.8,156.2 177.1,153.0 174.7,149.5 173.5,147.5 172.5,135.4 175.3,119.3 181.0,101.6 164.0,111.0 151.6,119.8 149.6,122.2 148.8,129.0 147.1,129.1 143.8,124.5 143.5,121.8 146.9,117.0 148.6,108.6 160.7,98.9 167.0,81.0 172.3,72.9 173.7,60.3 172.8,54.0 170.3,52.3 157.7,68.2 151.6,70.6 147.3,75.2 140.0,78.4 123.4,91.0 108.8,99.3 106.0,99.6 100.7,104.4 93.0,115.2 91.7,122.8 89.9,126.0 82.9,135.8 75.9,140.1 71.5,147.9 68.5,148.2 66.6,144.6 58.5,149.9 53.4,162.0 46.2,169.6 33.3,189.7 32.0,197.8 32.3,207.1 25.5,205.8 32.3,207.1 172.3,227.7 128.2,225.0 123.9,223.2" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="25.5" cy="205.8" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>An 8.6 km route near Bressanone / Brixen, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">8.6 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">533 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1106 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">3–3.5 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Sparsely mapped: paved (80%), unpaved (20%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Moderate</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-12165590">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a point-to-point route, so plan the return — retrace your steps or check local buses; 533 m of gain over 8.6 km is a real climb: budget rests, and halve expectations for short-legged dogs; water is well covered, with 3 mapped points along the way; for a break, you'll pass Hochrainer and Stampfl among others.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 767 to 1106 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L80.6,113.8 L127.1,116.5 L167.0,90.6 L206.9,68.8 L260.1,26.1 L300.0,21.7 L340.0,18.0 L386.5,49.9 L426.4,70.8 L473.0,99.4 L512.9,119.9 L592.7,113.8 L606.0,118.9 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L80.6,113.8 L127.1,116.5 L167.0,90.6 L206.9,68.8 L260.1,26.1 L300.0,21.7 L340.0,18.0 L386.5,49.9 L426.4,70.8 L473.0,99.4 L512.9,119.9 L592.7,113.8 L606.0,118.9" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1106 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">767 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">8.6 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 767 m, highest 1106 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Route start per OpenStreetMap — best parking/access not yet verified</p>
     <h2>Water on trail</h2>
@@ -100,6 +146,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="santa-maddalena-viewpoint.html">Santa Maddalena Viewpoint</a> — 4 km · Low-risk</li>
+      <li><a href="valley-view-trail-partial.html">Valley View Trail (partial)</a> — 8 km · Low-risk</li>
+      <li><a href="waltner-rundweg-12-sentiero-circolare-di-valtina-12.html">Waltner Rundweg - 12 - Sentiero circolare di Valtina - 12</a> — 22.5 km · Low-risk</li>
+      <li><a href="waltner-rundweg-18.html">Waltner Rundweg 18</a> — 4.8 km · Moderate</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "FR"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Savoy, France",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Chemin des Diligences",
+   "item": "https://www.dolopaws.com/trails/chemin-des-diligences.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Chemin des Diligences" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="369.4,29.6 372.1,30.5 372.6,32.7 373.4,33.5 377.3,35.3 378.3,35.2 378.5,35.9 377.9,37.6 378.8,38.2 378.4,39.2 374.8,43.6 374.6,44.6 372.3,46.8 370.0,51.1 368.4,56.5 365.3,60.0 363.4,62.9 361.8,67.6 361.1,71.9 354.5,84.7 353.0,86.7 350.4,89.0 349.5,90.4 348.2,96.7 346.1,100.0 344.3,105.1 342.0,107.6 336.1,112.3 333.2,115.5 328.1,119.7 327.7,122.0 327.0,123.2 324.4,124.4 319.5,128.8 317.4,131.9 312.4,133.7 301.1,142.5 300.2,144.1 300.7,146.7 299.8,149.5 297.4,153.1 297.2,155.1 295.0,159.4 292.4,160.9 286.9,163.0 284.1,163.4 282.0,165.8 281.2,166.1 281.0,167.2 270.2,179.2 267.9,183.4 267.2,186.7 265.6,187.8 262.9,190.5 261.9,194.1 262.7,198.1 262.7,200.0 261.3,202.1 261.6,204.4 263.3,206.7 267.4,210.3 268.1,212.2 268.0,215.3 273.1,222.1 277.4,224.6 279.5,226.5 280.0,229.7 280.7,230.8 280.8,232.4 279.8,233.8 279.5,235.4 279.7,237.8 280.7,241.1 280.6,243.4 279.6,244.5 277.8,248.7 275.4,251.3 275.3,253.1 274.6,254.9 274.7,256.0 274.7,256.0 274.6,254.9 275.3,253.1 275.4,251.3 277.8,248.7 279.6,244.5 280.6,243.4 280.7,241.1 279.7,237.8 279.5,235.4 279.8,233.8 280.8,232.4 280.8,231.4 279.8,229.1 279.8,227.0 277.4,224.6 273.1,222.1 268.0,215.3 268.1,212.2 267.4,210.3 262.5,205.6 261.2,202.9 261.3,202.1 262.7,200.0 262.6,196.5 262.2,195.4 262.0,193.3 263.1,191.1 262.9,190.5 265.6,187.8 267.3,186.6 267.9,183.4 270.2,179.2 268.6,178.3 270.2,176.9 270.1,175.0 271.9,170.7 272.2,167.5 274.4,164.4 274.5,161.5 274.2,160.3 276.5,156.6 278.7,155.3 280.4,153.4 280.4,152.0 284.7,149.1 285.3,148.2 289.4,144.8 289.9,141.9 290.4,141.0 293.5,138.1 297.9,135.1 300.6,129.3 303.2,127.5 307.2,122.3 307.1,119.7 308.6,118.8 309.5,117.3 310.6,116.5 314.5,114.7 316.8,112.4 317.8,109.2 317.9,103.6 318.6,101.2 324.2,98.6 331.6,93.7 334.4,91.0 337.0,89.4 341.7,85.0 343.2,84.1 346.5,83.4 349.2,78.2 350.8,76.7 350.9,75.1 352.4,73.1 353.7,69.8 353.2,68.1 353.5,65.5 352.8,64.3 352.4,62.4 354.2,60.0 354.5,59.0 354.0,57.2 353.1,56.2 353.1,53.8 354.9,51.1 355.7,48.1 357.0,45.8 360.8,44.6 361.1,43.4 362.8,41.8 364.7,38.8 365.2,34.3 364.3,33.2 363.8,31.7 363.9,29.1 363.0,24.0 365.3,24.9 368.0,27.6 369.4,29.6" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="369.4" cy="29.6" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A 11.5 km loop near Chamonix-Mont-Blanc, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record. Direction shown climbs more gradually (computed from elevation data).</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">11.5 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">438 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1416 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">3.5–4.5 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Partially mapped: natural ground (93%), paved (7%), unpaved (0%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Low-risk</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-5479112">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a true loop — it closes back on its own start point, so there's no return leg to plan; 438 m of gain over 11.5 km is a real climb: budget rests, and halve expectations for short-legged dogs; water is well covered, with 14 mapped points along the way; for a break, you'll pass Moon Tines.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1156 to 1416 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L83.7,102.6 L123.5,82.0 L178.2,73.7 L208.1,67.1 L252.9,44.3 L297.6,18.0 L342.4,22.4 L387.1,45.6 L426.9,68.0 L471.7,68.0 L516.5,78.9 L556.3,80.3 L601.0,123.7 L606.0,132.0 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L83.7,102.6 L123.5,82.0 L178.2,73.7 L208.1,67.1 L252.9,44.3 L297.6,18.0 L342.4,22.4 L387.1,45.6 L426.9,68.0 L471.7,68.0 L516.5,78.9 L556.3,80.3 L601.0,123.7 L606.0,132.0" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1416 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1156 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">11.5 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1156 m, highest 1416 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Parking, 5 m from the route (OSM-verified access point)</p>
     <h2>Water on trail</h2>
@@ -100,6 +146,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="boucle-du-lac-vert.html">Boucle du Lac Vert</a> — 3.6 km · Low-risk</li>
+      <li><a href="sentier-pedestre-des-graniteurs.html">Sentier pédestre des Graniteurs</a> — 0.8 km · Moderate</li>
+      <li><a href="circuit-beatrice-de-savoie.html">Circuit Béatrice de Savoie</a> — 6 km · Moderate</li>
+      <li><a href="le-lac-vert.html">Le Lac Vert</a> — 4.5 km · Moderate</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

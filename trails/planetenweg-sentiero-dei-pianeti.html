@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Planetenweg - Sentiero dei pianeti",
+   "item": "https://www.dolopaws.com/trails/planetenweg-sentiero-dei-pianeti.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Planetenweg - Sentiero dei pianeti" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="124.6,176.7 124.3,171.7 128.9,166.9 134.1,164.5 136.8,159.7 137.0,156.6 146.8,161.0 160.0,160.9 170.5,158.8 193.9,168.6 209.0,168.3 215.8,164.5 223.9,163.8 231.6,167.7 240.9,169.3 245.2,173.9 253.8,171.9 277.7,180.3 284.7,179.1 292.3,173.9 303.6,172.5 331.2,177.7 327.6,166.0 314.8,163.4 315.4,160.9 327.0,160.4 342.8,156.6 348.3,156.9 356.2,159.8 371.8,159.0 375.2,155.9 389.5,154.0 407.8,157.4 416.4,154.2 422.3,145.2 424.3,144.9 428.1,147.3 432.9,157.1 441.0,183.7 484.3,180.1 496.8,183.7 498.2,187.3 512.6,182.7 516.6,183.2 519.8,185.8 532.7,219.9 567.4,210.3 577.0,210.8 591.4,217.9 616.0,213.9 611.9,209.5 611.2,205.7 610.2,192.3 607.2,178.0 608.3,167.0 600.0,158.5 591.8,146.8 590.6,142.8 591.8,134.9 591.1,132.0 576.3,129.4 564.3,129.6 560.9,132.7 559.5,137.3 557.4,139.4 553.7,139.6 546.8,137.2 544.4,138.5 540.6,131.3 540.4,124.3 543.5,113.5 550.6,110.7 549.5,108.7 531.8,102.8 515.9,105.9 497.3,104.7 480.5,95.1 472.6,85.5 465.4,88.0 461.8,97.1 460.2,106.3 440.3,92.2 436.7,86.2 436.0,80.3 420.7,80.8 411.5,78.4 404.4,72.6 399.6,66.2 396.0,65.4 388.4,67.3 386.7,70.2 386.9,85.3 385.7,90.1 381.2,99.7 374.9,105.6 340.5,102.8 323.5,94.6 318.5,97.0 314.8,101.6 287.6,115.5 282.8,115.2 271.7,106.3 264.8,106.9 240.6,123.6 228.4,131.0 222.2,132.7 215.5,131.3 205.5,125.8 190.9,126.9 173.6,123.8 142.8,129.4 137.5,129.3 126.4,126.2 129.5,117.6 126.7,112.8 99.1,110.4 102.3,104.5 112.8,92.3 113.0,88.9 117.8,87.5 115.2,83.8 104.4,77.7 107.8,71.7 107.0,68.5 98.9,60.1 91.7,66.6 80.7,72.2 63.2,91.1 53.4,94.7 47.7,103.3 32.8,111.7 26.6,112.4 24.0,115.5 36.5,122.1 43.1,127.4 55.9,128.1 60.6,130.1 73.5,131.3 81.5,147.8 80.7,152.6 83.9,155.5 92.2,157.8 95.8,162.8 97.7,162.2 100.1,158.6 109.7,158.3 108.3,164.0 110.4,169.8 116.9,173.2 121.0,173.4 125.2,177.5 125.2,179.9 121.7,179.8 121.0,181.0 124.8,187.1 122.9,192.1 125.2,195.2 126.9,195.9 123.4,194.0 122.9,192.1 124.8,187.1 121.0,182.5 121.7,179.8 124.3,177.7 115.9,84.3 115.9,84.3" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="124.6" cy="176.7" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>An 9.5 km route near Nova Levante / Carezza, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">9.5 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">430 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1406 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">3–3.5 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Partially mapped: dirt (36%), natural ground (30%), paved (27%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Low-risk</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-123162">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a point-to-point route, so plan the return — retrace your steps or check local buses; 430 m of gain over 9.5 km is a real climb: budget rests, and halve expectations for short-legged dogs; no water points are mapped on this route, so carry everything your dog will drink.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1282 to 1406 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,111.8 L76.1,58.5 L124.3,77.8 L172.5,87.9 L208.6,56.6 L250.8,18.0 L298.9,82.4 L341.1,111.8 L389.2,132.0 L425.4,107.2 L467.5,90.6 L509.7,93.4 L557.8,111.8 L606.0,87.0 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,111.8 L76.1,58.5 L124.3,77.8 L172.5,87.9 L208.6,56.6 L250.8,18.0 L298.9,82.4 L341.1,111.8 L389.2,132.0 L425.4,107.2 L467.5,90.6 L509.7,93.4 L557.8,111.8 L606.0,87.0" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1406 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1282 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">9.5 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1282 m, highest 1406 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Route start per OpenStreetMap — best parking/access not yet verified</p>
     
@@ -98,6 +144,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="lago-di-carezza-loop.html">Lago di Carezza Loop</a> — 1.3 km · Low-risk</li>
+      <li><a href="ruine-castelfeder-rovine-castelfeder.html">Ruine Castelfeder - Rovine Castelfeder</a> — 2.3 km · Moderate</li>
+      <li><a href="rundweg-montiggler-seen.html">Rundweg Montiggler Seen</a> — 4.4 km · Moderate</li>
+      <li><a href="seeweg.html">Seeweg</a> — 6.8 km · Caution</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

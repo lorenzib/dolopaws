@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Seerundweg",
+   "item": "https://www.dolopaws.com/trails/seerundweg.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Seerundweg" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="99.0,256.0 170.1,231.0 195.5,225.1 223.1,201.5 251.1,183.8 282.1,172.0 319.3,166.9 357.6,145.5 383.3,140.4 403.2,142.9 464.0,123.4 541.0,124.9 531.7,116.4 487.9,107.2 452.6,89.9 408.0,75.2 389.2,57.9 379.3,30.6 374.5,27.3 357.6,24.0 338.8,25.8 321.1,32.8 307.1,44.6 271.0,103.9 233.8,144.8 216.5,157.7 179.0,176.5 165.0,189.0 148.8,197.8 129.6,218.1 122.6,228.4 117.8,242.7 99.0,256.0" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="99.0" cy="256.0" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A 2.5 km loop near Bressanone / Brixen, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">2.5 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">156 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1590 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">1 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">paved (58%), pebblestone (42%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Low-risk</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-11832013">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a true loop — it closes back on its own start point, so there's no return leg to plan; the 156 m of climbing is steady rather than steep — a fair ask for most fit dogs; there are 2 mapped water points on the route — carry enough to bridge the gaps.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1538 to 1590 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,101.3 L79.8,103.5 L125.5,132.0 L148.4,132.0 L194.2,132.0 L239.9,121.0 L285.7,79.4 L331.4,101.3 L354.3,125.4 L377.2,110.1 L400.1,112.3 L423.0,81.6 L491.6,18.0 L537.4,81.6 L560.2,107.9 L583.1,107.9 L606.0,101.3 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,101.3 L79.8,103.5 L125.5,132.0 L148.4,132.0 L194.2,132.0 L239.9,121.0 L285.7,79.4 L331.4,101.3 L354.3,125.4 L377.2,110.1 L400.1,112.3 L423.0,81.6 L491.6,18.0 L537.4,81.6 L560.2,107.9 L583.1,107.9 L606.0,101.3" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1590 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1538 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">2.5 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1538 m, highest 1590 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Bus stop Durnholz - Valdurna, 24 m from the route (OSM-verified access point)</p>
     <h2>Water on trail</h2>
@@ -99,6 +145,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="santa-maddalena-viewpoint.html">Santa Maddalena Viewpoint</a> — 4 km · Low-risk</li>
+      <li><a href="valley-view-trail-partial.html">Valley View Trail (partial)</a> — 8 km · Low-risk</li>
+      <li><a href="waltner-rundweg-12-sentiero-circolare-di-valtina-12.html">Waltner Rundweg - 12 - Sentiero circolare di Valtina - 12</a> — 22.5 km · Low-risk</li>
+      <li><a href="waltner-rundweg-18.html">Waltner Rundweg 18</a> — 4.8 km · Moderate</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

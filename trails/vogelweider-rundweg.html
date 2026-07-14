@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Vogelweider Rundweg",
+   "item": "https://www.dolopaws.com/trails/vogelweider-rundweg.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Vogelweider Rundweg" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="391.3,25.3 393.3,25.8 393.8,27.5 382.3,55.2 376.4,54.9 369.3,59.5 353.1,72.9 342.2,76.5 340.8,78.1 341.1,81.2 340.2,83.6 333.4,85.4 320.4,91.7 319.4,89.9 315.7,91.4 310.9,90.6 310.0,91.0 310.3,92.7 305.6,95.1 293.4,98.3 281.4,104.7 278.6,107.8 278.7,109.5 276.0,111.2 275.2,113.7 270.2,121.7 264.1,125.7 259.6,130.3 257.6,133.9 257.2,137.9 254.0,146.3 245.2,156.4 243.0,162.6 240.7,166.7 237.1,170.5 234.4,176.5 227.1,179.6 222.0,183.2 217.1,189.0 210.1,202.8 210.3,208.8 211.9,212.6 210.7,218.5 220.9,233.2 236.7,246.3 249.3,247.5 270.3,256.0 269.9,255.2 275.3,251.7 276.7,249.9 269.7,242.6 270.2,241.7 269.5,240.5 265.9,238.7 261.5,234.4 261.2,232.2 267.5,230.9 287.3,230.2 276.2,225.5 272.8,221.3 272.8,221.3 281.5,223.4 296.7,219.8 303.2,221.6 308.4,220.4 313.3,222.7 318.1,223.0 325.9,221.1 342.3,221.0 366.2,212.0 373.5,208.1 373.2,207.3 381.6,202.0 385.6,193.0 385.5,190.5 389.3,187.8 397.2,185.7 400.9,188.5 403.8,189.0 408.0,183.3 417.1,179.1 424.7,177.1 429.9,178.5 429.6,177.0 426.4,175.1 425.8,172.2 421.6,165.4 408.8,162.3 400.9,163.3 395.8,161.9 396.4,159.9 400.4,154.6 400.7,146.2 403.0,149.7 404.4,150.0 406.3,147.9 405.9,144.0 409.7,144.2 405.2,137.0 405.3,132.5 404.0,126.7 406.7,126.0 413.6,126.7 416.9,116.4 416.5,110.1 414.4,105.9 408.7,103.3 404.0,99.2 402.2,94.5 402.6,90.6 405.6,84.8 406.0,82.1 412.3,78.4 404.2,76.7 402.5,74.5 402.3,72.1 403.2,70.1 409.5,66.3 411.3,63.8 409.4,61.6 404.9,59.4 402.2,55.9 401.8,53.3 402.2,46.9 403.4,43.2 403.1,40.7 405.3,38.1 402.2,37.9 403.3,35.6 402.0,33.0 393.7,24.0 391.3,25.3" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="391.3" cy="25.3" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A 7.2 km loop near Castelrotto / Kastelruth, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">7.2 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">514 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1091 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">2.5–3 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Sparsely mapped: natural ground (47%), paved (40%), sett (7%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Caution</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-9492594">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a true loop — it closes back on its own start point, so there's no return leg to plan; 514 m of gain over 7.2 km is a real climb: budget rests, and halve expectations for short-legged dogs; water is well covered, with 6 mapped points along the way; for a break, you'll pass Cafè Am Platzl.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 755 to 1091 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,88.2 L81.7,92.3 L129.3,105.5 L169.1,105.5 L208.8,93.3 L264.4,132.0 L296.2,113.7 L343.8,74.7 L383.6,42.8 L431.2,18.7 L470.9,18.0 L518.6,39.0 L558.3,62.4 L606.0,86.9 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,88.2 L81.7,92.3 L129.3,105.5 L169.1,105.5 L208.8,93.3 L264.4,132.0 L296.2,113.7 L343.8,74.7 L383.6,42.8 L431.2,18.7 L470.9,18.0 L518.6,39.0 L558.3,62.4 L606.0,86.9" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1091 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">755 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">7.2 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 755 m, highest 1091 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Bus stop Albions, 10 m from the route (OSM-verified access point)</p>
     <h2>Water on trail</h2>
@@ -100,6 +146,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="alpe-di-siusi-meadow-loop.html">Alpe di Siusi Meadow Loop</a> — 7.5 km · Low-risk</li>
+      <li><a href="geotrail-bula-pufels-bulla.html">Geotrail Bula / Pufels / Bulla</a> — 8.8 km · Moderate</li>
+      <li><a href="giro-del-bulacia.html">Giro del Bulacia</a> — 6.64 km · Moderate</li>
+      <li><a href="sentiero-hans-e-paula-steger.html">Sentiero Hans e Paula Steger</a> — 8.74 km · Low-risk</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Anello di Valzalina",
+   "item": "https://www.dolopaws.com/trails/anello-di-valzalina.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Anello di Valzalina" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="379.3,24.0 345.6,29.3 316.9,44.7 315.9,48.4 319.1,55.9 320.1,66.7 318.0,73.6 305.8,85.6 300.5,103.6 297.6,106.3 257.2,96.5 254.6,104.4 254.6,116.1 262.8,121.9 270.2,123.0 270.0,125.1 264.7,127.0 251.1,143.5 254.6,158.3 235.2,177.4 228.6,191.8 212.4,202.9 181.0,220.7 154.2,225.2 144.1,218.6 127.4,215.4 135.1,203.2 139.6,201.6 139.9,198.1 118.4,197.3 99.8,200.5 90.5,214.1 90.0,222.0 100.9,242.2 113.9,252.5 140.4,256.0 210.8,241.4 231.7,234.2 244.5,227.6 253.5,231.6 260.7,231.6 281.1,215.9 292.3,201.3 314.6,196.3 315.9,193.9 314.3,193.1 319.1,190.2 315.4,187.0 319.6,174.8 324.9,173.2 348.5,175.0 363.9,164.7 364.7,159.1 378.3,147.2 382.8,145.3 390.2,146.1 392.6,141.6 405.1,137.9 419.9,128.1 441.2,121.7 464.5,127.0 473.6,120.1 475.7,115.3 481.8,112.1 492.7,110.8 513.6,98.3 530.9,93.3 549.5,92.0 550.0,88.8 544.7,82.7 532.0,80.0 523.2,80.8 497.7,89.3 484.4,89.6 481.8,92.2 450.5,90.9 446.8,93.8 441.2,93.8 420.2,89.6 408.0,92.0 389.4,89.6 381.5,84.8 367.4,82.7 340.6,69.9 337.4,69.4 325.4,76.8 318.0,73.6" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="379.3" cy="24.0" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A 4.2 km loop near Auronzo di Cadore, imported from the OpenStreetMap hiking network (trail 13). Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record. Direction shown climbs more gradually (computed from elevation data).</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">4.2 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">837 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1634 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">2.5–3 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Sparsely mapped: natural ground (100%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Caution</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-7547983">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a point-to-point route, so plan the return — retrace your steps or check local buses; 837 m of climbing makes this a big physical day — for conditioned dogs only, with turn-back discipline; no water points are mapped on this route, so carry everything your dog will drink.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1035 to 1634 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L74.9,110.9 L129.3,82.1 L170.2,52.8 L211.0,37.2 L251.9,18.0 L292.8,30.8 L347.2,45.8 L388.1,56.1 L429.0,76.0 L469.8,93.6 L524.3,112.4 L565.1,107.8 L606.0,112.2 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L74.9,110.9 L129.3,82.1 L170.2,52.8 L211.0,37.2 L251.9,18.0 L292.8,30.8 L347.2,45.8 L388.1,56.1 L429.0,76.0 L469.8,93.6 L524.3,112.4 L565.1,107.8 L606.0,112.2" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1634 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1035 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">4.2 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1035 m, highest 1634 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Route start per OpenStreetMap — best parking/access not yet verified</p>
     
@@ -98,6 +144,15 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="tre-cime-di-lavaredo-loop.html">Tre Cime di Lavaredo Loop</a> — 11.8 km · Low-risk</li>
+      <li><a href="cadini-di-misurina-viewpoint.html">Cadini di Misurina Viewpoint</a> — 4 km · Caution</li>
+      <li><a href="prato-piazza-platzwiese.html">Prato Piazza (Plätzwiese)</a> — 7 km · Low-risk</li>
+      <li><a href="lago-di-braies-loop.html">Lago di Braies Loop</a> — 4 km · Low-risk</li>
+    </ul>
+    <p>Planning a few days here? Read our area guide: <a href="../guides/dog-friendly-hikes-lago-di-braies.html">Lago di Braies &amp; Tre Cime with a dog</a>.</p>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>

@@ -33,6 +33,9 @@
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 {
@@ -51,6 +54,32 @@
   "@type": "PostalAddress",
   "addressCountry": "IT"
  }
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "All trails",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Dolomites, Italy",
+   "item": "https://www.dolopaws.com/browse-trails.html"
+  },
+  {
+   "@type": "ListItem",
+   "position": 3,
+   "name": "Giro dei Masi",
+   "item": "https://www.dolopaws.com/trails/giro-dei-masi.html"
+  }
+ ]
 }
 </script>
 </head>
@@ -74,12 +103,17 @@
     <span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>
     
   </div>
-  
+  <svg class="sp-route" viewBox="0 0 640 280" role="img" aria-label="Route shape of Giro dei Masi" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="280" rx="12" fill="#E7ECE3"/>
+    <polyline points="296.7,117.6 311.2,102.7 309.3,94.3 289.1,81.5 257.4,70.2 263.3,58.2 261.8,34.1 266.5,24.0 252.8,25.3 238.7,29.7 223.2,37.2 213.1,45.6 203.1,51.3 189.2,63.1 182.9,72.7 168.0,81.9 163.8,91.0 162.5,106.3 159.4,113.7 158.3,132.1 161.7,142.6 170.7,150.8 170.5,153.5 153.1,152.1 125.2,154.8 110.7,161.5 136.3,176.2 147.4,176.8 151.2,179.6 157.3,185.2 157.5,194.5 161.3,202.0 170.9,202.3 182.3,206.0 195.1,206.9 212.3,214.0 218.8,218.4 234.5,211.9 245.9,224.5 254.9,228.3 262.7,229.8 269.2,227.9 279.1,228.1 300.7,239.2 312.7,240.7 300.3,229.8 310.8,227.9 319.8,234.4 330.3,228.9 336.0,219.9 336.2,217.2 338.3,217.2 342.7,220.7 338.7,236.5 343.9,252.4 355.5,256.0 356.7,254.5 355.5,248.2 375.6,227.4 386.1,225.1 394.5,228.1 401.9,222.0 416.4,218.2 428.8,210.6 433.0,205.8 432.5,201.4 434.6,199.1 446.6,194.3 454.2,184.2 463.4,175.6 497.4,164.2 518.6,149.1 524.1,137.6 525.1,95.2 529.3,87.8 520.3,84.3 498.9,81.5 495.9,94.1 478.5,100.6 466.8,110.7 457.5,110.9 457.1,113.4 458.8,109.2 452.9,108.6 456.7,100.8 455.4,100.0 444.7,108.8 422.9,112.0 419.7,114.3 414.5,125.8 412.6,145.8 406.7,152.5 403.8,162.2 405.5,168.4 399.2,161.9 397.9,162.4 381.1,149.6 372.9,149.1 357.0,139.9 344.6,135.9 338.9,136.3 331.5,129.6 322.9,126.5 314.8,130.9 308.7,141.2 300.7,143.0 293.3,147.5 294.6,151.9 300.9,158.8 305.9,161.3 299.4,118.5 296.7,117.6" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="296.7" cy="117.6" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>
   <p>A 6.3 km loop near Madonna di Campiglio, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record. Direction shown climbs more gradually (computed from elevation data).</p>
 
   <div class="sp-facts">
       <div class="sp-fact"><div class="sp-fact-k">Distance</div><div class="sp-fact-v">6.3 km</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Elevation gain</div><div class="sp-fact-v">228 m</div></div>
+      <div class="sp-fact"><div class="sp-fact-k">Highest point</div><div class="sp-fact-v">1084 m</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Duration</div><div class="sp-fact-v">2–2.5 h</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Terrain</div><div class="sp-fact-v">Sparsely mapped: paved (100%), natural ground (0%) — from OSM surface data</div></div>
       <div class="sp-fact"><div class="sp-fact-k">Trail rating</div><div class="sp-fact-v">Low-risk</div></div>
@@ -89,6 +123,18 @@
   <a class="sp-cta" href="../trail.html?id=osm-12079333">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    <h2>At a glance (from the map data)</h2>
+    <p>This is a true loop — it closes back on its own start point, so there's no return leg to plan; the 228 m of climbing is steady rather than steep — a fair ask for most fit dogs; water is well covered, with 8 mapped points along the way; for a break, you'll pass Dolci Note and Nikka's among others.</p>
+    <figure class="sp-elev">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Elevation profile: 1014 to 1084 m" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.0,132.0 L88.5,128.7 L124.8,57.1 L161.1,94.5 L206.5,114.1 L251.9,112.5 L297.3,99.4 L342.7,52.2 L379.0,19.6 L433.5,31.0 L469.8,18.0 L515.2,24.5 L551.5,83.1 L606.0,86.4 L606.0,132 L34,132 Z" fill="#2E4034" opacity="0.12"/>
+      <path d="M34.0,132.0 L88.5,128.7 L124.8,57.1 L161.1,94.5 L206.5,114.1 L251.9,112.5 L297.3,99.4 L342.7,52.2 L379.0,19.6 L433.5,31.0 L469.8,18.0 L515.2,24.5 L551.5,83.1 L606.0,86.4" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="34" y="13" font-size="12" fill="#666">1084 m</text>
+      <text x="34" y="146" font-size="12" fill="#666">1014 m</text>
+      <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">6.3 km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest 1014 m, highest 1084 m.</figcaption>
+  </figure>
     <h2>Where to start</h2>
     <p>Start here — Bus stop Andalo, 10 m from the route (OSM-verified access point)</p>
     <h2>Water on trail</h2>
@@ -100,6 +146,14 @@
     
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    <h2>Nearby trails</h2>
+    <ul>
+      <li><a href="giro-del-fausior.html">Giro del Fausior</a> — 7.4 km · Caution</li>
+      <li><a href="alpe-di-siusi-meadow-loop.html">Alpe di Siusi Meadow Loop</a> — 7.5 km · Low-risk</li>
+      <li><a href="seceda-ridge-trail.html">Seceda Ridge Trail</a> — 8 km · Moderate</li>
+      <li><a href="santa-maddalena-viewpoint.html">Santa Maddalena Viewpoint</a> — 4 km · Low-risk</li>
+    </ul>
     <p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>
   </div>
 </div>
