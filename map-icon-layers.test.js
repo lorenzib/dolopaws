@@ -37,6 +37,7 @@ function loadBrowserScript(filename, overrides = {}){
     fetch: jest.fn(),
     registerPoiFeatures: jest.fn(),
     t: (key) => key,
+    location: { search: '' },
     window: null,
     globalThis: null,
     ...overrides,
