@@ -62,6 +62,7 @@ function initDetailPois(map, trail){
     else if (props.amenity === 'drinking_water' || props.amenity === 'water_point') placeType = '🚰 ' + tt('legend.water', 'Drinking water');
     else if (props.natural === 'spring') placeType = '💧 ' + tt('poi.spring', 'Spring');
     else if (props.amenity === 'fountain') placeType = '⛲ ' + tt('poi.fountain', 'Fountain');
+    else if (props.amenity === 'toilets') placeType = '🚻 ' + tt('poi.toilets', 'Public toilets');
     else if (props.man_made === 'water_tap') placeType = '🚰 ' + tt('poi.tap', 'Water tap');
     let html = `<b>${placeType}</b>`;
     if (props.name) html += `<br><b>${esc(props.name)}</b>`;

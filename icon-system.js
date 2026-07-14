@@ -11,6 +11,7 @@
     dog: '#2E4034',
     start: '#2E4034',
     switch: '#D6A038',
+    toilets: '#5B7A99',
     unknown: '#5A5548',
   };
 
@@ -31,6 +32,7 @@
     'food-fast': { icon: 'food', color: '#C4652F' },
     'food-icecream': { icon: 'food', color: '#D6A038' },
     'food-biergarten': { icon: 'food', color: '#9C3A25' },
+    toilets: { icon: 'toilets', color: '#5B7A99' },
     unknown: { icon: 'unknown', color: '#5A5548' },
   };
 
@@ -91,6 +93,15 @@
       <path d="M7 7h4"></path>
       <path d="M13 7h4"></path>
     `,
+    toilets: `
+      <circle cx="8.5" cy="6.2" r="1.7"></circle>
+      <path d="M8.5 8.5v5.5"></path>
+      <path d="M6.6 10h3.8"></path>
+      <path d="M8.5 14v4"></path>
+      <circle cx="15.5" cy="6.2" r="1.7"></circle>
+      <path d="M15.5 8.5l-1.8 5h3.6z"></path>
+      <path d="M15.5 14v4"></path>
+    `,
     unknown: `
       <circle cx="12" cy="12" r="7"></circle>
       <path d="M9.8 10a2.5 2.5 0 1 1 4 2c-.9.6-1.8 1.1-1.8 2.3"></path>
@@ -107,6 +118,7 @@
     routes: '<path d="M6.5 18c2-5 5.5-8.5 11-11" fill="none" stroke="#2C5C34" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 3.4"/><circle cx="6.5" cy="18" r="1.8" fill="#2C5C34"/><path d="M17.5 4.2l2.6 1-1 2.5-2.6-1z" fill="#E24B4A"/>',
     dog: '<ellipse cx="12" cy="15" rx="3.7" ry="3.1" fill="#1D9E75"/><ellipse cx="7.4" cy="10.6" rx="1.4" ry="1.9" fill="#5DCAA5"/><ellipse cx="10.7" cy="8.7" rx="1.4" ry="1.9" fill="#5DCAA5"/><ellipse cx="13.9" cy="8.7" rx="1.4" ry="1.9" fill="#5DCAA5"/><ellipse cx="17" cy="10.6" rx="1.4" ry="1.9" fill="#5DCAA5"/>',
     start: '<path d="M8 20V4.5" stroke="#2E4034" stroke-width="1.9" stroke-linecap="round"/><path d="M8 5.5h9l-2.2 3.2L17 12H8z" fill="#E24B4A"/>',
+    toilets: '<circle cx="8.5" cy="5.8" r="1.8" fill="#5B7A99"/><path d="M8.5 8.2v5.6M6.4 9.8h4.2M8.5 13.8v4.4" stroke="#5B7A99" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="15.5" cy="5.8" r="1.8" fill="#5B7A99"/><path d="M15.5 8.2l-2 5.4h4z" fill="#5B7A99"/><path d="M15.5 13.8v4.4" stroke="#5B7A99" stroke-width="1.8" stroke-linecap="round"/>',
     switch: '<path d="M12 19.5v-7M12 12.5L7 7M12 12.5L17 7" fill="none" stroke="#7F77DD" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="7" r="1.6" fill="#7F77DD"/><circle cx="17" cy="7" r="1.6" fill="#AFA9EC"/>',
   };
 
@@ -266,6 +278,7 @@
         ['==', ['get', 'natural'], 'spring'], getMapImageName('water-spring'),
         ['==', ['get', 'man_made'], 'water_tap'], getMapImageName('water-tap'),
         ['==', ['get', 'amenity'], 'water_point'], getMapImageName('water-point'),
+        ['==', ['get', 'amenity'], 'toilets'], getMapImageName('toilets'),
         getMapImageName('unknown'),
       ];
     }
