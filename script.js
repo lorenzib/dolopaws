@@ -30,7 +30,7 @@ function renderTeaser(){
         : (pathThumbnailSvg(t.path) || '')}</div>
       <div class="row">
         <div class="name">${t.name}</div>
-        <div class="match">${scoreTrail(t, generic)}%</div>
+        <div class="match">${scoreTrail(t, generic)}%<span class="match-note">${window.t('teaser.example')}</span></div>
       </div>
       <div class="meta">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km</div>
     </div>
@@ -985,11 +985,13 @@ document.querySelectorAll('.adj-pill-row').forEach(row => {
       p.style.color = 'var(--ink)';
       p.style.borderColor = 'var(--paper-line)';
       p.classList.remove('active');
+      p.setAttribute('aria-pressed', 'false');
     });
     pill.style.background = 'var(--ink)';
     pill.style.color = '#fff';
     pill.style.borderColor = 'var(--ink)';
     pill.classList.add('active');
+    pill.setAttribute('aria-pressed', 'true');
 
     const group = row.dataset.group;
     if(!adjustOverride){
@@ -1009,6 +1011,7 @@ document.querySelectorAll('.adj-pill').forEach(p => {
   p.style.color = 'var(--ink)';
   p.style.cursor = 'pointer';
   p.style.fontFamily = "'Inter',sans-serif";
+  p.style.background = 'none'; // pills are now real <button>s — kill the UA default
 });
 
 // ============================================================

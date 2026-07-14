@@ -668,8 +668,16 @@
         .sort(function (a, b) { return b.score - a.score; });
       // Same bar the homepage uses for "a match" (NEW_MATCH_THRESHOLD).
       var good = scored.filter(function (s) { return s.score >= 70; });
+      var strong = scored.filter(function (s) { return s.score >= 85; });
 
-      titleEl.textContent = good.length + ' of ' + trails.length + ' trails match ' + profile.name;
+      // For a fit dog nearly everything clears 70% — "163 of 167" reads
+      // as no filter at all. When matches are abundant, lead with the
+      // strong ones instead; the number stays honest either way.
+      if (good.length > trails.length * 0.6 && strong.length > 0) {
+        titleEl.textContent = strong.length + ' trails are a strong match for ' + profile.name;
+      } else {
+        titleEl.textContent = good.length + ' of ' + trails.length + ' trails match ' + profile.name;
+      }
       subtitleEl.textContent = 'Scored on terrain, distance, exposure, heat and shade — for ' +
         profile.name + '’s build, age and health.';
 
