@@ -5238,6 +5238,1028 @@ const trails = [
       "text": "Lac Annecy Tourisme fiche (Apidae), edited",
       "url": "https://www.lac-annecy.com/itineraire-de-randonnee-pedestre/la-boucle-du-taillefer-duingt/"
     }
+  },
+  // --- Savoy, verified 2026-07-14 (Aix Riviera OT fiche: tres facile, 22 m D+,
+  //     animaux acceptes Oui, cemetery parking; Waymarked Trails rel. 14095296) ---
+  {
+    "id": "osm-14095296",
+    "name": "Les Marais d'Albens",
+    "area": "Albens / Entrelacs",
+    "lat": 45.7891,
+    "lng": 5.94902,
+    "osmRelation": 14095296,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=14095296",
+    "path": [
+      [
+        45.7891,
+        5.94902
+      ],
+      [
+        45.78959,
+        5.94908
+      ],
+      [
+        45.78965,
+        5.94917
+      ],
+      [
+        45.78974,
+        5.95196
+      ],
+      [
+        45.79075,
+        5.95196
+      ],
+      [
+        45.79069,
+        5.9524
+      ],
+      [
+        45.79037,
+        5.95245
+      ],
+      [
+        45.79069,
+        5.9524
+      ],
+      [
+        45.79075,
+        5.95196
+      ],
+      [
+        45.79099,
+        5.95169
+      ],
+      [
+        45.79227,
+        5.95144
+      ],
+      [
+        45.79234,
+        5.9515
+      ],
+      [
+        45.79188,
+        5.95368
+      ],
+      [
+        45.79192,
+        5.95381
+      ],
+      [
+        45.79216,
+        5.95383
+      ],
+      [
+        45.79224,
+        5.95404
+      ],
+      [
+        45.79132,
+        5.95568
+      ],
+      [
+        45.79144,
+        5.95638
+      ],
+      [
+        45.79574,
+        5.95801
+      ],
+      [
+        45.7976,
+        5.9575
+      ],
+      [
+        45.7983,
+        5.95751
+      ],
+      [
+        45.7997,
+        5.95854
+      ],
+      [
+        45.80132,
+        5.95889
+      ],
+      [
+        45.80226,
+        5.95872
+      ],
+      [
+        45.80323,
+        5.95885
+      ],
+      [
+        45.80427,
+        5.95979
+      ],
+      [
+        45.80577,
+        5.96224
+      ],
+      [
+        45.80612,
+        5.96248
+      ],
+      [
+        45.80661,
+        5.96265
+      ],
+      [
+        45.80683,
+        5.96256
+      ],
+      [
+        45.80706,
+        5.96229
+      ],
+      [
+        45.80773,
+        5.96242
+      ],
+      [
+        45.8081,
+        5.96191
+      ],
+      [
+        45.80764,
+        5.9613
+      ],
+      [
+        45.80741,
+        5.96067
+      ],
+      [
+        45.80729,
+        5.9585
+      ],
+      [
+        45.80738,
+        5.95749
+      ],
+      [
+        45.80732,
+        5.95712
+      ],
+      [
+        45.80712,
+        5.95689
+      ],
+      [
+        45.80651,
+        5.95669
+      ],
+      [
+        45.80637,
+        5.95657
+      ],
+      [
+        45.80625,
+        5.95535
+      ],
+      [
+        45.80592,
+        5.95452
+      ],
+      [
+        45.80495,
+        5.95469
+      ],
+      [
+        45.8043,
+        5.95527
+      ],
+      [
+        45.80385,
+        5.95538
+      ],
+      [
+        45.803,
+        5.95497
+      ],
+      [
+        45.80252,
+        5.95445
+      ],
+      [
+        45.80235,
+        5.95475
+      ],
+      [
+        45.8021,
+        5.95451
+      ],
+      [
+        45.80124,
+        5.95412
+      ],
+      [
+        45.80023,
+        5.95389
+      ],
+      [
+        45.79999,
+        5.95403
+      ],
+      [
+        45.79966,
+        5.95445
+      ],
+      [
+        45.79927,
+        5.95475
+      ],
+      [
+        45.79774,
+        5.95708
+      ],
+      [
+        45.79759,
+        5.95695
+      ],
+      [
+        45.79527,
+        5.95649
+      ],
+      [
+        45.79511,
+        5.95493
+      ],
+      [
+        45.79511,
+        5.95322
+      ],
+      [
+        45.79438,
+        5.95333
+      ],
+      [
+        45.79424,
+        5.95313
+      ],
+      [
+        45.79189,
+        5.95363
+      ],
+      [
+        45.79233,
+        5.9516
+      ],
+      [
+        45.79231,
+        5.95144
+      ],
+      [
+        45.79099,
+        5.95169
+      ],
+      [
+        45.79075,
+        5.95196
+      ],
+      [
+        45.78983,
+        5.95199
+      ],
+      [
+        45.78971,
+        5.95186
+      ],
+      [
+        45.78965,
+        5.94917
+      ],
+      [
+        45.78959,
+        5.94908
+      ],
+      [
+        45.7891,
+        5.94902
+      ]
+    ],
+    "distance": 6.6,
+    "elevation": 22,
+    "hours": "2–2.5",
+    "paid": false,
+    "terrainType": "Level country lanes, grass and compacted gravel; fine for all-terrain strollers",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0.1,
+        "elev": 353
+      },
+      {
+        "km": 0.5,
+        "elev": 348
+      },
+      {
+        "km": 0.9,
+        "elev": 347
+      },
+      {
+        "km": 2.0,
+        "elev": 359
+      },
+      {
+        "km": 2.9,
+        "elev": 356
+      },
+      {
+        "km": 3.2,
+        "elev": 365
+      },
+      {
+        "km": 3.6,
+        "elev": 365
+      },
+      {
+        "km": 4.0,
+        "elev": 360
+      },
+      {
+        "km": 4.0,
+        "elev": 360
+      },
+      {
+        "km": 4.4,
+        "elev": 358
+      },
+      {
+        "km": 5.0,
+        "elev": 353
+      },
+      {
+        "km": 5.6,
+        "elev": 347
+      },
+      {
+        "km": 6.3,
+        "elev": 350
+      },
+      {
+        "km": 6.61,
+        "elev": 353
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 30,
+    "heatRisk": "moderate",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.7891,
+      "lng": 5.94902,
+      "label": "Start here: Albens cemetery parking, Entrelacs (do not park at the D1201 trail entrance, it is prohibited)"
+    },
+    "desc": "A completely flat wander through the old drained marshes of the Albens plain, fifteen minutes from Aix-les-Bains. The waymarked loop follows the river Deysse on quiet country lanes, skirts a poplar grove, passes the Crosagny mill and its ponds with their pontoons and rich birdlife, and crosses the village of Braille on the way round. Picnic tables and a fitness course dot the route; the tourist office rates it very easy and lists dogs as accepted.",
+    "tips": "Dogs are accepted, and French rules on wetlands still apply: no free-roaming in marshes or along watercourses, so keep the leash on around the ponds and birdlife. There is barely a metre of climb but also barely a patch of deep shade, so avoid the hottest hours and carry water, as no fountains are mapped. Open all year in decent weather. Our mapped loop runs 6.6 km including the village link, a little over the 5.5 km the fiche quotes.",
+    "imageIcon": "images/les-marais-d-albens.webp",
+    "imageCredit": {
+      "text": "lac-du-bourget.com (edited)",
+      "url": "https://www.lac-du-bourget.com/les-marais-albens-promenade-a-entrelacs/"
+    }
+  },
+  // --- Savoy, verified 2026-07-14: dogs on leash per Grand Chambery Apidae fiche
+  //     (JS-only page, read in-browser by site owner). Facts: Challes fiche, CEN Savoie. ---
+  {
+    "id": "osm-16322228",
+    "osmRelation": 16322228,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=16322228",
+    "name": "Boucle du Marais des Chassettes",
+    "area": "Challes-les-Eaux",
+    "lat": 45.5548545,
+    "lng": 5.9786169,
+    "path": [
+      [
+        45.55485,
+        5.97862
+      ],
+      [
+        45.55484,
+        5.97887
+      ],
+      [
+        45.55514,
+        5.97896
+      ],
+      [
+        45.55526,
+        5.9793
+      ],
+      [
+        45.55556,
+        5.97964
+      ],
+      [
+        45.55608,
+        5.97823
+      ],
+      [
+        45.55597,
+        5.97816
+      ],
+      [
+        45.55598,
+        5.97746
+      ],
+      [
+        45.55585,
+        5.97727
+      ],
+      [
+        45.55624,
+        5.97673
+      ],
+      [
+        45.55701,
+        5.97327
+      ],
+      [
+        45.55814,
+        5.96925
+      ],
+      [
+        45.55805,
+        5.96879
+      ],
+      [
+        45.55783,
+        5.96863
+      ],
+      [
+        45.55758,
+        5.96867
+      ],
+      [
+        45.55747,
+        5.96835
+      ],
+      [
+        45.55734,
+        5.96832
+      ],
+      [
+        45.55614,
+        5.9687
+      ],
+      [
+        45.5553,
+        5.96878
+      ],
+      [
+        45.55455,
+        5.96909
+      ],
+      [
+        45.55393,
+        5.96951
+      ],
+      [
+        45.55382,
+        5.9699
+      ],
+      [
+        45.55356,
+        5.97011
+      ],
+      [
+        45.5528,
+        5.97146
+      ],
+      [
+        45.55263,
+        5.97199
+      ],
+      [
+        45.55179,
+        5.9733
+      ],
+      [
+        45.55058,
+        5.97388
+      ],
+      [
+        45.55035,
+        5.97388
+      ],
+      [
+        45.54934,
+        5.97528
+      ],
+      [
+        45.54914,
+        5.97567
+      ],
+      [
+        45.54898,
+        5.97642
+      ],
+      [
+        45.54911,
+        5.97633
+      ],
+      [
+        45.54974,
+        5.97622
+      ],
+      [
+        45.5503,
+        5.97588
+      ],
+      [
+        45.55127,
+        5.97549
+      ],
+      [
+        45.55268,
+        5.97582
+      ],
+      [
+        45.55275,
+        5.97603
+      ],
+      [
+        45.55314,
+        5.97635
+      ],
+      [
+        45.55356,
+        5.97577
+      ],
+      [
+        45.55406,
+        5.97555
+      ],
+      [
+        45.55447,
+        5.97546
+      ],
+      [
+        45.55458,
+        5.97557
+      ],
+      [
+        45.5546,
+        5.97608
+      ],
+      [
+        45.55515,
+        5.97625
+      ],
+      [
+        45.55518,
+        5.9765
+      ],
+      [
+        45.55498,
+        5.97665
+      ],
+      [
+        45.55479,
+        5.97719
+      ],
+      [
+        45.55481,
+        5.97788
+      ],
+      [
+        45.5549,
+        5.97801
+      ],
+      [
+        45.55476,
+        5.97841
+      ],
+      [
+        45.55485,
+        5.97862
+      ]
+    ],
+    "distance": 3.3,
+    "elevation": 20,
+    "hours": "1",
+    "paid": false,
+    "terrainType": "Paved and gravel paths with short boardwalk stretches",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0,
+        "elev": 294
+      },
+      {
+        "km": 0.1,
+        "elev": 291
+      },
+      {
+        "km": 0.3,
+        "elev": 292
+      },
+      {
+        "km": 1.1,
+        "elev": 290
+      },
+      {
+        "km": 1.2,
+        "elev": 300
+      },
+      {
+        "km": 1.5,
+        "elev": 297
+      },
+      {
+        "km": 1.8,
+        "elev": 294
+      },
+      {
+        "km": 2.3,
+        "elev": 313
+      },
+      {
+        "km": 2.4,
+        "elev": 306
+      },
+      {
+        "km": 2.8,
+        "elev": 296
+      },
+      {
+        "km": 3,
+        "elev": 292
+      },
+      {
+        "km": 3.2,
+        "elev": 293
+      },
+      {
+        "km": 3.3,
+        "elev": 293
+      }
+    ],
+    "surfaceHazards": [],
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [],
+    "rifugi": [
+      {
+        "km": 0.7,
+        "name": "Bier Fest"
+      }
+    ],
+    "startPoint": {
+      "lat": 45.5548545,
+      "lng": 5.9786169,
+      "label": "Start here: parking avenue de Chambéry, Challes-les-Eaux; bus 2 and 3 stop Plan d'Eau opposite"
+    },
+    "desc": "An easy hour around the Chassettes, a 22 hectare pocket of former peat bog squeezed between Challes-les-Eaux and La Ravoire at the foot of the Bauges. Woods and marsh alternate along the way, with information panels on a birdlife that ranges from black kites and honey buzzards to black woodpeckers, and the Challes leisure lake sits right by the start. Dogs are welcome on a leash per the Grand Chambéry tourism fiche.",
+    "tips": "Keep the leash on, that's the condition for dogs here, and sensible anyway around ground-nesting birds. A treat for local dogs: two fenced dog parks sit by the leisure lake at the start, one for training and one for free running. Flat, short and close to town, a good pick for seniors, puppies or a quick evening lap. No fountains are mapped, so bring water on warm days.",
+    "imageIcon": "images/boucle-du-marais-des-chassettes.webp",
+    "imageCredit": {
+      "text": "Anthony Levrot, CC BY-SA, via Wikimedia Commons (edited)",
+      "url": "https://fr.wikipedia.org/wiki/Fichier:Marais_des_Chassettes_-_Challes-les-Eaux,_2016.jpg"
+    }
+  },
+  // --- Savoy, verified 2026-07-14: dogs on leash per Grand Chambery listing (read
+  //     in-browser by site owner). Facts: Commune de La Motte-Servolex fiche; loop
+  //     geometry rebuilt from full WMT relation (import had a broken 1.9 km gap). ---
+  {
+    "id": "osm-16363583",
+    "osmRelation": 16363583,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=16363583",
+    "name": "Le Marais de Pré Lombard",
+    "area": "La Motte-Servolex",
+    "lat": 45.60459,
+    "lng": 5.87048,
+    "path": [
+      [
+        45.60459,
+        5.87048
+      ],
+      [
+        45.60657,
+        5.86967
+      ],
+      [
+        45.60785,
+        5.86865
+      ],
+      [
+        45.60911,
+        5.86835
+      ],
+      [
+        45.6133,
+        5.86916
+      ],
+      [
+        45.61389,
+        5.87016
+      ],
+      [
+        45.61398,
+        5.87014
+      ],
+      [
+        45.61399,
+        5.86976
+      ],
+      [
+        45.61438,
+        5.87015
+      ],
+      [
+        45.61453,
+        5.87136
+      ],
+      [
+        45.61487,
+        5.87083
+      ],
+      [
+        45.61567,
+        5.87035
+      ],
+      [
+        45.61618,
+        5.87034
+      ],
+      [
+        45.61641,
+        5.87076
+      ],
+      [
+        45.61671,
+        5.87081
+      ],
+      [
+        45.61672,
+        5.86998
+      ],
+      [
+        45.61707,
+        5.86957
+      ],
+      [
+        45.61734,
+        5.86883
+      ],
+      [
+        45.61741,
+        5.86764
+      ],
+      [
+        45.61735,
+        5.86706
+      ],
+      [
+        45.61786,
+        5.8654
+      ],
+      [
+        45.61767,
+        5.86419
+      ],
+      [
+        45.61903,
+        5.864
+      ],
+      [
+        45.61923,
+        5.86418
+      ],
+      [
+        45.61947,
+        5.8661
+      ],
+      [
+        45.61961,
+        5.86654
+      ],
+      [
+        45.61978,
+        5.86678
+      ],
+      [
+        45.62033,
+        5.86709
+      ],
+      [
+        45.62085,
+        5.8677
+      ],
+      [
+        45.62176,
+        5.86795
+      ],
+      [
+        45.62278,
+        5.86784
+      ],
+      [
+        45.62314,
+        5.86752
+      ],
+      [
+        45.62327,
+        5.86758
+      ],
+      [
+        45.62318,
+        5.86802
+      ],
+      [
+        45.62326,
+        5.86899
+      ],
+      [
+        45.62295,
+        5.86966
+      ],
+      [
+        45.62307,
+        5.87046
+      ],
+      [
+        45.62291,
+        5.87123
+      ],
+      [
+        45.62265,
+        5.87152
+      ],
+      [
+        45.62348,
+        5.87172
+      ],
+      [
+        45.62358,
+        5.87195
+      ],
+      [
+        45.62196,
+        5.87309
+      ],
+      [
+        45.62201,
+        5.87383
+      ],
+      [
+        45.62095,
+        5.87551
+      ],
+      [
+        45.62003,
+        5.8779
+      ],
+      [
+        45.61957,
+        5.87795
+      ],
+      [
+        45.6193,
+        5.8782
+      ],
+      [
+        45.61795,
+        5.87951
+      ],
+      [
+        45.61718,
+        5.88063
+      ],
+      [
+        45.61323,
+        5.88165
+      ],
+      [
+        45.61303,
+        5.88243
+      ],
+      [
+        45.61267,
+        5.88292
+      ],
+      [
+        45.6104,
+        5.88343
+      ],
+      [
+        45.61014,
+        5.88335
+      ],
+      [
+        45.60946,
+        5.88252
+      ],
+      [
+        45.60903,
+        5.88237
+      ],
+      [
+        45.60873,
+        5.88252
+      ],
+      [
+        45.60827,
+        5.88324
+      ],
+      [
+        45.60728,
+        5.88353
+      ],
+      [
+        45.60577,
+        5.8844
+      ],
+      [
+        45.60585,
+        5.88351
+      ],
+      [
+        45.6057,
+        5.88282
+      ],
+      [
+        45.60513,
+        5.88198
+      ],
+      [
+        45.6041,
+        5.88133
+      ],
+      [
+        45.6038,
+        5.881
+      ],
+      [
+        45.60363,
+        5.8806
+      ],
+      [
+        45.60319,
+        5.87821
+      ],
+      [
+        45.60306,
+        5.87641
+      ],
+      [
+        45.60364,
+        5.87611
+      ],
+      [
+        45.60481,
+        5.87462
+      ],
+      [
+        45.60581,
+        5.87417
+      ],
+      [
+        45.60562,
+        5.87401
+      ],
+      [
+        45.60524,
+        5.87286
+      ],
+      [
+        45.60504,
+        5.87185
+      ],
+      [
+        45.60463,
+        5.87146
+      ]
+    ],
+    "distance": 7.2,
+    "elevation": null,
+    "hours": "1.5–2",
+    "paid": false,
+    "terrainType": "Mostly paved lanes with gravel and dirt farm tracks",
+    "terrainRank": 0,
+    "surfaceHazards": [
+      "One fairly steep path section descending to the La Combe stream"
+    ],
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.60459,
+      "lng": 5.87048,
+      "label": "Start here: chemin de Pré-Marquis, La Motte-Servolex; park opposite the Post Office (place Rémi Catin), or bus C / 1 to La Motte Centre"
+    },
+    "desc": "A level circuit through the countryside west of La Motte-Servolex, waymarked by the commune and rich in biodiversity interpretation panels. The route climbs gently over the Servolex plateau past the château, crosses the Grands Champs farmland to the hamlets of Beauvoir and Montarlet, then drops to the marshes and follows a wide track along the Leysse, whose panels explain the fish life of this Lac du Bourget tributary. Dogs are welcome on a leash, out of respect for the wildlife and the working farmland.",
+    "tips": "The leash is required along the whole loop, and it matters most by the Leysse and the streams, where wildlife rules apply, and through the farmed sections. Almost shadeless, so skip hot afternoons and carry water, as no fountains are mapped. The final stretch runs close to the motorway, so expect traffic noise and keep nervous dogs close. Our line was rebuilt from the full waymarked relation and shows the true closed loop at 7.2 km; the commune's fiche quotes 9 km for its fuller variant.",
+    "imageIcon": "images/le-marais-de-pre-lombard.webp",
+    "imageCredit": {
+      "text": "Decathlon Outdoor (edited)",
+      "url": "https://www.decathlon-outdoor.com/fr-fr/explore/france/balade-dans-les-marais-du-pre-lombard-et-rencontres-discretes-6111235376b92"
+    }
   }
 ];
 
