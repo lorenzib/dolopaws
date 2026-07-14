@@ -410,7 +410,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
     ${t.paid ? '<span class="tag">Paid access</span>' : ''}
   </div>
   ${t.imageIcon ? `<img class="sp-img" src="../${escapeHtml(t.imageIcon)}" alt="${escapeHtml(t.name)}">` : routeHtml}
-  ${t.imageIcon && t.imageCredit ? `<p class="sp-src" style="margin:-8px 0 14px;">Photo: ${t.imageCredit.url ? `<a href="${escapeHtml(t.imageCredit.url)}" rel="noopener nofollow">${escapeHtml(t.imageCredit.text)}</a>` : escapeHtml(t.imageCredit.text)}</p>` : ''}
+  ${t.imageIcon && t.imageCredit ? `<p class="sp-src" style="margin:-8px 0 14px;">${t.imageCredit.bare ? '' : 'Photo: '}${t.imageCredit.url ? `<a href="${escapeHtml(t.imageCredit.url)}" rel="noopener nofollow">${escapeHtml(t.imageCredit.text)}</a>` : escapeHtml(t.imageCredit.text)}</p>` : ''}
   ${!t.imageIcon && t.imagePlaceholder ? `<p class="sp-src" style="display:flex;align-items:center;gap:8px;margin:-6px 0 14px;"><img src="../logo.svg" alt="" width="22" height="22" style="flex:none;"> We're working on adding photos of this trail.</p>` : ''}
   <p>${escapeHtml(t.desc || '')}</p>
 
