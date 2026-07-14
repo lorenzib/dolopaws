@@ -17,6 +17,14 @@
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute;" aria-hidden="true">
+  <defs>
+    <g id="bp-paw"><ellipse cx="12" cy="15.6" rx="3.9" ry="3.1" fill="#3F8F77"/><ellipse cx="6.7" cy="10.6" rx="1.4" ry="1.9" fill="#3F8F77"/><ellipse cx="10.2" cy="8.5" rx="1.4" ry="1.9" fill="#3F8F77"/><ellipse cx="13.8" cy="8.5" rx="1.4" ry="1.9" fill="#3F8F77"/><ellipse cx="17.3" cy="10.6" rx="1.4" ry="1.9" fill="#3F8F77"/></g>
+    <g id="bp-sun"><circle cx="12" cy="13" r="3.7" fill="#C99038"/><g stroke="#C99038" stroke-width="1.8" stroke-linecap="round"><path d="M12 5.2v2M4.6 13h2M17.4 13h2M6.6 7.6l1.4 1.4M17.4 7.6L16 9"/></g></g>
+    <g id="bp-park"><rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="#fff" stroke="#4C87C6" stroke-width="1.6"/><path d="M10 16.2 V7.8 h3.1 a2.6 2.6 0 0 1 0 5.2 h-3.1" fill="none" stroke="#4C87C6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </defs>
+</svg>
+
 <div class="topnav">
   <a class="brand" href="index.html"><img src="logo.svg?v=3" alt="DoloPaws logo">DoloPaws</a>
   <div class="links">
@@ -35,11 +43,27 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
       <h1 id="trailName" style="font-size:clamp(22px,3.4vw,30px);color:#fff;margin:0;" aria-busy="true"><span class="skeleton skeleton--light" style="width:min(260px,60vw);height:26px;" aria-label="Loading trail"></span></h1>
       <div style="display:flex;align-items:center;gap:12px;flex:none;">
+        <span id="verifiedSeal" class="verified-seal" hidden></span>
         <span id="trailMatch" class="th-match" hidden></span>
         <button id="detailSaveBtn" class="fav-btn" style="font-size:12.5px;padding:8px 20px;">Save</button>
       </div>
     </div>
     <div id="trailFacts" class="th-facts"></div>
+  </div>
+
+  <div id="qaStrip" class="qa-strip" hidden>
+    <div class="qa-card" id="qaDog">
+      <svg class="qa-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#bp-paw"/></svg>
+      <span><b id="qaDogTitle"></b><span id="qaDogSub" class="qa-sub"></span></span>
+    </div>
+    <div class="qa-card" id="qaToday" hidden>
+      <svg class="qa-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#bp-sun"/></svg>
+      <span><b id="qaTodayTitle"></b><span id="qaTodaySub" class="qa-sub"></span></span>
+    </div>
+    <div class="qa-card" id="qaAccess" hidden>
+      <svg class="qa-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#bp-park"/></svg>
+      <span><b id="qaAccessTitle"></b><span id="qaAccessSub" class="qa-sub"></span></span>
+    </div>
   </div>
 
   <div id="trailChips" class="trail-chips">
@@ -54,42 +78,62 @@
   <div id="weatherWidget" style="display:none;" hidden></div>
 </div>
 
-<div class="wrap" style="padding-top:20px;">
-  <div class="trail-grid">
-  <div class="tg-left">
-  <div id="trailMapBox" class="trail-map-box">
+<div class="wrap" style="padding-top:16px;">
+  <div id="trailMapBox" class="trail-map-box trail-map-box--wide">
     <div id="trailDetailMap" style="width:100%;height:100%;background:var(--sage-dim);"></div>
     <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⤢</button>
-  </div>
-  <details class="map-key"><summary data-i18n="trail.mapKey">Map key</summary>
-  <div id="mapLegend" style="margin-top:10px;">
-    <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
-    <div id="legendChips" class="legend-chips"></div>
-  </div>
-
-  </details>
-
-    <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
-  </div>
+    <details class="map-key map-key--dock"><summary data-i18n="trail.mapKey">Map key</summary>
+      <div id="mapLegend">
+        <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
+        <div id="legendChips" class="legend-chips legend-chips--aligned"></div>
+      </div>
+    </details>
   </div>
 
-  <div class="tg-right">
-    <div class="itin-card">
-      <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
-      <div id="trailItinerary" class="itin-list"></div>
+  <div class="trail-grid" style="margin-top:14px;">
+    <div class="tg-left">
+      <div class="itin-card" id="elevCard">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <h2 style="font-size:17px;margin:0;" data-i18n="trail.elevTitle">Elevation profile</h2>
+          <span id="elevReadout" style="font-size:11.5px;color:var(--ink);font-weight:700;" data-i18n="trail.elevHint">hover the graph →</span>
+        </div>
+        <div id="elevationProfileWrap" hidden></div>
+        <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
+      </div>
     </div>
-
-  <div id="elevationProfileWrap" style="margin-top:12px;" hidden>
-    <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-soft);font-weight:600;margin-bottom:6px;">
-      <span data-i18n="trail.elevTitle">Elevation profile</span>
-      <span id="elevReadout" style="color:var(--ink);font-weight:700;" data-i18n="trail.elevHint">hover the graph →</span>
+    <div class="tg-right">
+      <div class="itin-card">
+        <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
+        <div id="trailItinerary" class="itin-list"></div>
+      </div>
     </div>
-
-  </div>
   </div>
 
   <div id="directionsWrap" style="display:none;" hidden>
     <ol id="trailDirections"></ol>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:20px;">
+  <div class="about-grid about-grid--bp">
+    <div class="guide-section" style="margin:0;">
+      <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.aboutTitle">About this trail</h2>
+      <p id="trailDesc" style="color:var(--ink-soft);font-size:14px;line-height:1.6;"></p>
+      <p id="trailCoords" style="color:var(--ink-soft);font-size:11.5px;margin-top:10px;font-family:monospace;"></p>
+      <p class="trail-sources" style="margin-top:12px;"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p>
+    </div>
+    <div>
+      <div class="guide-section dogtips-card" style="margin:0 0 14px;">
+        <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.dogTipsTitle">Our tips for dogs</h2>
+        <p id="trailTips" style="color:var(--ink);font-size:13.5px;line-height:1.6;margin:0;"></p>
+        <p id="dogTipsNote" class="dogtips-note" hidden data-i18n="trail.dogTipsNote">Field-tested by DoloPaws, with a dog.</p>
+      </div>
+      <div class="guide-section" style="margin:0;">
+        <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.insightsTitle">Good to know</h2>
+        <div id="goodToKnowBox"></div>
+        <div id="trailDetailContent" style="display:none;"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -104,21 +148,22 @@
   </div>
 </div>
 
-<div class="wrap" style="padding-top:24px;padding-bottom:20px;">
-  <div class="about-grid">
-    <div class="guide-section" style="margin:0;">
-      <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.aboutTitle">About this trail</h2>
-      <p id="trailDesc" style="color:var(--ink-soft);font-size:14px;line-height:1.6;"></p>
-      <p id="trailTips" style="color:var(--ink-soft);font-size:13px;line-height:1.6;margin-top:10px;font-style:italic;"></p>
-      <p id="trailCoords" style="color:var(--ink-soft);font-size:11.5px;margin-top:10px;font-family:monospace;"></p>
-    </div>
-    <div class="guide-section" style="margin:0;">
-      <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.insightsTitle">Good to know</h2>
-      <div id="goodToKnowBox"></div>
-      <div id="trailDetailContent" style="display:none;"></div>
-    </div>
+<div class="wrap" id="nearbyTrails" style="padding-top:24px;" hidden>
+  <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.nearbyTitle">Nearby trails</h2>
+  <div id="nearbyGrid" class="near-grid"></div>
+  <p style="font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;" data-i18n="trail.beforeYouGo">Before you go: <a href="safety-guide.html">the dog safety guide</a> · <a href="guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+</div>
+
+<div class="wrap" style="padding-top:20px;padding-bottom:8px;">
+  <div id="decisionBar" class="decision-bar" hidden>
+    <b id="decisionText"></b>
+    <span class="decision-actions">
+      <button id="decisionSave" type="button" class="db-btn db-btn--clay" hidden>Save trail</button>
+      <a id="decisionDirections" class="db-btn" target="_blank" rel="noopener" hidden>Directions</a>
+      <button id="decisionNearby" type="button" class="db-btn" hidden>Gentler nearby ↓</button>
+      <a id="decisionProfile" class="db-btn db-btn--clay" href="account.html" hidden>Create a free profile</a>
+    </span>
   </div>
-  <p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p>
 </div>
 
 <footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; A personalised trail guide for dogs and their humans.</footer>
@@ -139,5 +184,6 @@
 <script src="detail-pois.js" defer></script>
 <script src="trail-reports.js" defer></script>
 <script src="trail.js" defer></script>
+<script src="trail-blueprint.js" defer></script>
 </body>
 </html>
