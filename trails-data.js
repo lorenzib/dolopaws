@@ -97,7 +97,7 @@ const trails = [
     tips:"Only for very fit, trail-hardened dogs — long, rocky, with real elevation."
   },
   {
-    id:'lago-braies', name:'Lago di Braies Loop', area:'Prags Valley', lat:46.695, lng:12.085, imageIcon:'lago-di-braies.webp',
+    id:'lago-braies', name:'Lago di Braies Loop', area:'Prags Valley', lat:46.695, lng:12.085, imageIcon:'images/lago-di-braies.webp',
     path:[[46.69932,12.08516],[46.69902,12.08528],[46.69896,12.08547],[46.69869,12.08551],[46.69857,12.08566],[46.69851,12.08593],[46.69854,12.08633],[46.69876,12.08675],[46.69896,12.08683],[46.69934,12.08685],[46.69952,12.08697],[46.70024,12.08808],[46.70015,12.08821],[46.69958,12.08772],[46.69904,12.08769],[46.69883,12.08756],[46.69853,12.08751],[46.69796,12.08785],[46.69778,12.08831],[46.69744,12.08847],[46.69713,12.08832],[46.69683,12.08781],[46.69658,12.08766],[46.69642,12.08771],[46.69584,12.08813],[46.69543,12.08801],[46.69428,12.08854],[46.69394,12.08856],[46.69384,12.08844],[46.69431,12.08835],[46.69368,12.08783],[46.69359,12.08755],[46.6931,12.08695],[46.69224,12.08674],[46.69204,12.08679],[46.69168,12.08703],[46.69148,12.08706],[46.69108,12.08692],[46.69086,12.08649],[46.69066,12.08636],[46.69007,12.08617],[46.68961,12.08618],[46.68927,12.08604],[46.68917,12.08564],[46.68909,12.08389],[46.68915,12.08358],[46.68912,12.08218],[46.68918,12.0816],[46.68946,12.0813],[46.69001,12.08122],[46.69079,12.08095],[46.69109,12.08051],[46.6914,12.08046],[46.69158,12.08098],[46.69231,12.08174],[46.69314,12.08216],[46.69327,12.08237],[46.69355,12.08258],[46.69392,12.08302],[46.69449,12.0834],[46.69484,12.08349],[46.69532,12.0833],[46.69549,12.08333],[46.69629,12.0832],[46.69674,12.08327],[46.69697,12.08321],[46.69749,12.08355],[46.69824,12.08418],[46.69855,12.08422],[46.69871,12.08412],[46.69878,12.08415],[46.69932,12.08516]],
     distance:4, elevation:40, hours:'1', paid:false,
     terrainType:'Paved / packed gravel, flat', terrainRank:0,
@@ -110,7 +110,7 @@ const trails = [
     tips:"Extremely popular — expect crowds and paid parking; arrive at opening time."
   },
   {
-    id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega", lat:46.4091, lng:11.5752, imageIcon:'lago-di-carezza.webp',
+    id:'lago-carezza', name:'Lago di Carezza Loop', area:"Val d'Ega", lat:46.4091, lng:11.5752, imageIcon:'images/lago-di-carezza.webp',
     path:[[46.41032,11.57585],[46.41024,11.57584],[46.41022,11.57554],[46.40998,11.57483],[46.40973,11.57432],[46.40957,11.57404],[46.40934,11.57381],[46.40923,11.57361],[46.40913,11.57327],[46.40913,11.5728],[46.40878,11.57287],[46.40852,11.57299],[46.40829,11.57316],[46.4081,11.57345],[46.40802,11.574],[46.40804,11.57424],[46.4082,11.57459],[46.40815,11.57514],[46.40832,11.57547],[46.40844,11.5762],[46.40855,11.57631],[46.40883,11.57628],[46.40903,11.57639],[46.40892,11.57677],[46.40895,11.57703],[46.40917,11.57719],[46.40934,11.57739],[46.40941,11.57738],[46.40968,11.57714],[46.40992,11.57686],[46.41018,11.57675],[46.41023,11.57663],[46.41032,11.57585]],
     distance:1.3, elevation:20, hours:'0.5', paid:false,
     terrainType:'Paved, flat', terrainRank:0,
@@ -250,6 +250,391 @@ const trails = [
     desc:"Route around the Sasso Lungo massif built from three verified OSM/Waymarked Trails sources (relations 9435720, 1640019, and a local bridging segment of Alta Via 9 delle Dolomiti, relation 11094256), deliberately avoiding trail 525 and the Forcella del Sassolungo climb — confirmed to stay 1.48km+ clear of the Forcella at every point, so there's no cable-assisted exposed section on this route. Confirmed dog-friendly for the official long variant of this hike via AllTrails (\"Dogs are welcome and may be off-leash in some areas\") — this route covers similar lower-elevation territory.",
     tips:"NOT a perfectly closed loop — a 225m gap remains between the start and end of the GPS track (down from 3.17km before adding the Alta Via 9 bridging segment), plus one internal ~920m jump partway through where two source segments meet. This is a long day out (18km) — better suited to fit dogs. The bridging segment hasn't been individually checked for hazards, so keep extra attention there until it's verified on the ground."
   },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Chartreuse
+  //     Tourisme via Apidae, Waymarked Trails rel. 3982382, Visorando) ---
+  {
+    "id": "osm-3982382",
+    "name": "Circuit Béatrice de Savoie",
+    "area": "Chambéry",
+    "lat": 45.43627,
+    "lng": 5.75366,
+    "osmRelation": 3982382,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=3982382",
+    "path": [
+      [
+        45.43627,
+        5.75366
+      ],
+      [
+        45.43622,
+        5.75374
+      ],
+      [
+        45.43623,
+        5.7548
+      ],
+      [
+        45.43672,
+        5.75576
+      ],
+      [
+        45.43729,
+        5.75619
+      ],
+      [
+        45.43767,
+        5.7558
+      ],
+      [
+        45.43819,
+        5.75575
+      ],
+      [
+        45.4381,
+        5.75544
+      ],
+      [
+        45.43872,
+        5.75496
+      ],
+      [
+        45.43881,
+        5.75573
+      ],
+      [
+        45.43924,
+        5.75608
+      ],
+      [
+        45.43954,
+        5.75592
+      ],
+      [
+        45.43985,
+        5.75599
+      ],
+      [
+        45.43997,
+        5.7561
+      ],
+      [
+        45.44046,
+        5.75717
+      ],
+      [
+        45.44093,
+        5.75742
+      ],
+      [
+        45.44108,
+        5.75737
+      ],
+      [
+        45.4415,
+        5.75683
+      ],
+      [
+        45.4419,
+        5.75675
+      ],
+      [
+        45.4422,
+        5.75651
+      ],
+      [
+        45.44261,
+        5.75733
+      ],
+      [
+        45.44273,
+        5.75815
+      ],
+      [
+        45.44297,
+        5.75839
+      ],
+      [
+        45.44346,
+        5.75845
+      ],
+      [
+        45.44379,
+        5.75915
+      ],
+      [
+        45.44399,
+        5.7591
+      ],
+      [
+        45.44418,
+        5.75918
+      ],
+      [
+        45.44463,
+        5.75907
+      ],
+      [
+        45.4452,
+        5.75942
+      ],
+      [
+        45.44546,
+        5.76004
+      ],
+      [
+        45.44569,
+        5.76032
+      ],
+      [
+        45.44636,
+        5.76075
+      ],
+      [
+        45.44654,
+        5.76079
+      ],
+      [
+        45.44688,
+        5.76067
+      ],
+      [
+        45.4472,
+        5.75976
+      ],
+      [
+        45.44727,
+        5.75973
+      ],
+      [
+        45.44773,
+        5.76103
+      ],
+      [
+        45.44786,
+        5.76095
+      ],
+      [
+        45.44805,
+        5.7611
+      ],
+      [
+        45.44841,
+        5.76095
+      ],
+      [
+        45.44864,
+        5.76118
+      ],
+      [
+        45.44845,
+        5.76162
+      ],
+      [
+        45.44805,
+        5.7611
+      ],
+      [
+        45.44815,
+        5.76081
+      ],
+      [
+        45.44844,
+        5.76061
+      ],
+      [
+        45.44847,
+        5.76034
+      ],
+      [
+        45.44875,
+        5.76023
+      ],
+      [
+        45.44886,
+        5.76031
+      ],
+      [
+        45.44901,
+        5.76026
+      ],
+      [
+        45.44956,
+        5.75985
+      ],
+      [
+        45.44936,
+        5.75962
+      ],
+      [
+        45.44914,
+        5.75912
+      ],
+      [
+        45.44909,
+        5.75885
+      ],
+      [
+        45.44915,
+        5.75856
+      ],
+      [
+        45.4494,
+        5.75838
+      ],
+      [
+        45.45005,
+        5.75859
+      ],
+      [
+        45.45013,
+        5.7585
+      ],
+      [
+        45.44914,
+        5.75698
+      ],
+      [
+        45.44863,
+        5.7567
+      ],
+      [
+        45.4484,
+        5.75672
+      ],
+      [
+        45.44801,
+        5.75604
+      ],
+      [
+        45.44732,
+        5.75544
+      ],
+      [
+        45.44621,
+        5.75485
+      ],
+      [
+        45.44444,
+        5.75348
+      ],
+      [
+        45.4434,
+        5.75331
+      ],
+      [
+        45.4434,
+        5.75318
+      ],
+      [
+        45.44229,
+        5.75299
+      ],
+      [
+        45.44221,
+        5.7529
+      ],
+      [
+        45.44087,
+        5.75272
+      ],
+      [
+        45.439,
+        5.75324
+      ],
+      [
+        45.43814,
+        5.75362
+      ],
+      [
+        45.43734,
+        5.75318
+      ],
+      [
+        45.43726,
+        5.75346
+      ],
+      [
+        45.43684,
+        5.75346
+      ]
+    ],
+    "distance": 4.5,
+    "elevation": 145,
+    "hours": "1.5–2",
+    "paid": false,
+    "terrainType": "Packed forest gravel & quiet village lanes",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0,
+        "elev": 392
+      },
+      {
+        "km": 0.23,
+        "elev": 406
+      },
+      {
+        "km": 0.63,
+        "elev": 433
+      },
+      {
+        "km": 1.03,
+        "elev": 464
+      },
+      {
+        "km": 1.53,
+        "elev": 491
+      },
+      {
+        "km": 1.93,
+        "elev": 529
+      },
+      {
+        "km": 2.04,
+        "elev": 529
+      },
+      {
+        "km": 2.64,
+        "elev": 427
+      },
+      {
+        "km": 3.04,
+        "elev": 408
+      },
+      {
+        "km": 3.54,
+        "elev": 391
+      },
+      {
+        "km": 3.84,
+        "elev": 389
+      },
+      {
+        "km": 4.21,
+        "elev": 392
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 70,
+    "heatRisk": "low",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [
+      {
+        "km": 0,
+        "label": "Guiers Vif riverside at the trailhead"
+      }
+    ],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.436571,
+      "lng": 5.753686,
+      "label": "Start here: Rivièr'Alp leisure base parking, Place de la Corderie, Les Échelles"
+    },
+    "desc": "A short, mostly shaded loop above the village of Les Échelles, on the north-west edge of the Chartreuse regional park. From the Rivièr'Alp leisure base the trail passes the Cotterg pond and climbs through the Menuet forest on the GR9 to the Col de la Voûte and the Chapelle de la Madeleine viewpoint over the Chartreuse summits, then drops back down through Combe Noire. A waymarked circuit maintained by the Syndicat mixte de l'Avant-Pays Savoyard, listed as dog-friendly by Chartreuse Tourisme.",
+    "tips": "Dogs stay on the leash here, that's the official rule. Keep them close on the two short road stretches too: the D921 crossing and the D1006 through the village centre both carry traffic. Forest cover keeps most of the loop cool, a lovely hot-day choice, though paths get slippery after rain. Signposted from May to November. No fountains up on the hill, so carry enough for your dog; the riverside by the start is the one reliable drink-and-splash spot. No car? The T41 bus between Chambéry and Voiron stops at Les Échelles Place. One map note: in three short stretches near the top, our route line straightens where the source map data has small gaps. On the ground the waymarking is continuous, so just follow the signs.",
+    "imagePlaceholder": true
+  }
 ];
 
 // Gondola / cable-car access lines — real, verified station coordinates,

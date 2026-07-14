@@ -33,7 +33,22 @@ const changeListeners = [];
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   changeListeners.forEach(fn => fn(user));
+  syncProfileSummary(user);
 });
+
+// Tiny cached flag so the static trail pages (trails/*.html carry no
+// Firebase by design) can adapt their "Is this trail right for your dog?"
+// section. Stores at most the dog's first name; cleared on logout.
+async function syncProfileSummary(user) {
+  try {
+    if (!user) { localStorage.removeItem('dolopaws-profile-summary'); return; }
+    const dog = await getDogProfile();
+    localStorage.setItem('dolopaws-profile-summary', JSON.stringify({
+      hasProfile: !!dog,
+      name: dog && dog.name ? String(dog.name).slice(0, 40) : null,
+    }));
+  } catch (e) { /* cache only — never break auth over it */ }
+}
 
 async function getFavorites() {
   if (!currentUser) return {};
