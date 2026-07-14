@@ -436,6 +436,11 @@ async function main() {
     14095296, // Les Marais d'Albens (Entrelacs) — verified 2026-07-14
     16322228, // Boucle du Marais des Chassettes (Challes-les-Eaux) — verified 2026-07-14
     16363583, // Le Marais de Pré Lombard (La Motte-Servolex) — verified 2026-07-14, loop rebuilt
+    16395076, // Boucle du Lac de la Thuile — verified 2026-07-14
+    19153189, // Le Belvédère (Saint-Pierre-d'Albigny) — verified 2026-07-14
+    15591346, // Sentier des Buis (Montmélian) — verified 2026-07-14
+    16365005, // La Galoppaz par la Combe Servenne — enriched import, curated:false, loop rebuilt
+    16395059, // REMOVED: Colombier par la Fullie et la Cochette — fiches strongly advise against dogs even leashed (patous, exposed ridge); removed 2026-07-14
   ]);
 
   for (const [n, feature] of routes.features.entries()) {
