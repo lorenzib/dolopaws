@@ -113,6 +113,8 @@
     <polyline points="475.1,36.8 462.4,24.0 459.9,24.7 464.0,42.3 454.9,46.1 450.3,45.2 448.6,40.1 440.2,31.7 437.6,33.9 436.6,38.0 430.6,42.0 421.9,38.7 417.3,34.1 414.0,36.0 409.4,34.3 398.3,37.5 392.6,44.2 389.0,52.9 385.1,56.2 374.0,60.6 372.1,70.9 367.5,81.3 363.7,84.6 364.9,88.5 358.1,93.3 355.7,97.9 357.4,102.2 355.7,106.3 356.5,112.3 352.9,112.3 351.4,115.0 344.9,115.0 343.9,118.8 338.7,121.5 334.1,117.1 318.4,111.1 318.9,114.5 313.9,118.8 307.4,115.2 304.0,116.7 293.6,132.1 279.7,135.4 250.1,149.9 248.6,155.2 245.8,157.8 249.6,161.9 252.0,170.3 266.2,171.0 275.1,177.5 275.4,188.9 271.7,198.7 266.7,205.7 194.5,240.6 180.5,243.7 164.9,252.4 175.5,250.7 183.7,252.6 187.3,256.0 234.4,242.8 240.7,235.1 258.8,234.8 275.8,231.9 256.1,246.6 255.1,249.5 257.3,250.7 279.0,246.4 332.2,226.6 345.6,220.1 362.5,206.7 379.3,204.7 387.7,186.2 394.0,179.7 399.3,165.5 407.2,157.1 438.3,135.7 450.1,132.1 457.5,112.3 454.4,101.5 455.4,90.7 467.9,77.9 472.0,71.4 471.0,62.0 463.3,48.5 464.0,38.0 459.9,24.7 462.4,24.0 475.1,36.8" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="475.1" cy="36.8" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
   </svg>
+  
+  
   <p>A 4.1 km loop near Valloire, imported from the OpenStreetMap hiking network (trail 23). Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
@@ -130,15 +132,39 @@
     <h2>At a glance (from the map data)</h2>
     <p>This is a true loop — it closes back on its own start point, so there's no return leg to plan; no water points are mapped on this route, so carry everything your dog will drink.</p>
     
-    <h2>Where to start</h2>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
     <p>Start here — Lift station Vinouve, 20 m from the route (OSM-verified access point)</p>
     
     
     <h2>Good to know</h2>
     <p>Imported route — elevation, distance, fountains and rifugi are computed from verified map data, but this trail has not yet been walked and reviewed by DoloPaws. Check conditions locally.</p>
     
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '’s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=osm-14376573">See ' + n + '’s match for this trail →</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog’s profile</h2>'
+            + '<p>You’re signed in, but there’s no dog profile saved yet. Add your dog’s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog’s profile →</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
     <div class="sp-near-grid">

@@ -109,6 +109,8 @@
     
   </div>
   
+  
+  
   <p>A dramatic ridge hike to a Dolomite panorama, with one short section equipped with a fixed rope near the top.</p>
 
   <div class="sp-facts">
@@ -133,17 +135,41 @@
       <text x="34" y="146" font-size="12" fill="#666">2000 m</text>
       <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">10 km</text>
     </svg>
-    <figcaption class="sp-src">Elevation profile — lowest 2000 m, highest 2600 m.</figcaption>
+    <figcaption class="sp-src">Elevation profile: lowest 2000 m, highest 2600 m.</figcaption>
   </figure>
     
     
-    <h2>Rifugi &amp; refreshment</h2>
-    <ul><li>km 0 — Rifugio Prato Piazza</li></ul>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M4 11l8-7 8 7" fill="none" stroke="#8A5A16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 10v9h12v-9" fill="#D6A038" stroke="#8A5A16" stroke-width="1.6" stroke-linejoin="round"></path><path d="M10 19v-5h4v5" fill="#8A5A16"></path></svg> Rifugi &amp; refreshment</h2>
+    <ul><li>km 0 · Rifugio Prato Piazza</li></ul>
     <h2>Good to know</h2>
     <p>Stop at the secondary summit if your dog isn't confident on exposed rock — the view is still superb from there.</p>
     
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '’s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=durrenstein">See ' + n + '’s match for this trail →</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog’s profile</h2>'
+            + '<p>You’re signed in, but there’s no dog profile saved yet. Add your dog’s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog’s profile →</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
     <div class="sp-near-grid">

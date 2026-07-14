@@ -113,6 +113,8 @@
     <polyline points="24.0,63.9 30.8,63.5 38.7,72.7 40.2,77.1 37.6,85.6 27.1,94.4 24.0,106.5 33.6,108.0 53.4,106.2 86.5,99.7 94.6,102.7 105.6,101.4 128.4,102.7 148.3,110.4 152.5,117.2 151.2,122.2 131.2,129.5 114.6,138.2 104.2,144.8 103.8,149.4 108.6,151.4 137.8,152.5 153.4,166.7 216.5,191.3 242.8,216.5 265.6,224.6 276.6,236.3 275.9,243.5 281.6,242.2 295.0,232.5 330.7,218.3 354.4,218.1 377.7,210.6 416.7,202.7 459.0,196.6 496.5,194.8 528.5,187.8 535.5,179.2 558.1,171.6 584.6,170.0 612.9,153.6 616.0,149.4 614.9,144.4 609.4,140.2 576.3,137.1 557.0,126.4 530.5,116.1 497.2,92.0 467.8,83.2 437.3,69.2 385.3,53.4 363.9,50.5 334.5,42.4 302.2,43.3 293.7,36.5 295.4,42.9 271.8,37.6 250.3,43.3 232.3,43.7 219.8,50.1 198.1,50.1 185.6,53.8 157.1,55.8 151.8,53.6 145.9,45.5 109.5,42.4 91.8,44.8 66.3,53.4 51.6,55.6 49.7,63.0 24.0,63.9" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="24.0" cy="63.9" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
   </svg>
+  
+  
   <p>A real, GPS-verified loop from Compatsch using trails 7, 6, and 30 — confirmed by multiple independent hiking guides as wide gravel and paved paths, suitable even for all-terrain strollers. Europe's largest high-alpine meadow, gently rolling and wide open.</p>
 
   <div class="sp-facts">
@@ -137,18 +139,42 @@
       <text x="34" y="146" font-size="12" fill="#666">1800 m</text>
       <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">7.5 km</text>
     </svg>
-    <figcaption class="sp-src">Elevation profile — lowest 1800 m, highest 1950 m.</figcaption>
+    <figcaption class="sp-src">Elevation profile: lowest 1800 m, highest 1950 m.</figcaption>
   </figure>
-    <h2>Where to start</h2>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
     <p>Start here — Compatsch, main gondola station and trailhead</p>
-    <h2>Water on trail</h2>
-    <ul><li>km 0 — Compatsch trailhead fountain</li></ul>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> Water on trail</h2>
+    <ul><li>km 0 · Compatsch trailhead fountain</li></ul>
     
     <h2>Good to know</h2>
     <p>Multiple entry points; go early to find free parking, or take the cable car up from Ortisei/Siusi. This loop skips the longer Saltria detour some guides include via trail 9 — it's the shorter, easier variant of that bigger circuit.</p>
     
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '’s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=alpe-siusi">See ' + n + '’s match for this trail →</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog’s profile</h2>'
+            + '<p>You’re signed in, but there’s no dog profile saved yet. Add your dog’s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog’s profile →</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
     <div class="sp-near-grid">

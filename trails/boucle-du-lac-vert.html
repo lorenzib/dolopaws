@@ -113,6 +113,8 @@
     <polyline points="116.7,192.0 86.4,193.9 75.2,190.4 51.1,175.3 39.9,158.2 25.6,150.9 24.0,147.4 26.7,143.5 24.0,147.4 25.6,150.9 39.9,158.2 51.1,175.3 75.2,190.4 86.4,193.9 116.7,192.0 139.1,196.2 167.1,187.7 184.5,187.3 204.3,177.6 222.9,182.3 239.2,181.1 260.5,187.7 284.1,188.8 322.9,174.5 328.7,166.8 333.8,149.3 344.2,143.1 358.2,141.6 403.5,119.8 411.3,112.5 411.7,103.2 418.7,95.0 429.5,87.3 446.6,83.8 485.3,88.4 524.1,87.7 541.2,84.6 567.5,89.6 579.2,95.8 580.7,105.1 592.4,118.7 616.0,124.5 594.3,129.5 578.8,140.0 556.7,137.7 547.0,139.6 535.7,151.2 533.0,163.3 522.2,167.1 518.3,171.8 495.4,174.1 493.1,160.9 495.0,152.8 507.8,148.5 507.4,137.7 520.2,128.8 525.7,117.1 519.1,114.4 497.4,117.1 497.4,117.1 484.6,113.6 468.7,104.3 452.0,100.1 437.7,110.9 434.2,122.6 438.8,131.9 457.0,142.3 495.0,152.8 495.4,174.1 440.8,159.8 410.5,141.2 369.8,154.0 344.2,143.1 331.8,152.0 328.7,166.8 322.9,174.5 292.3,187.3 260.5,187.7 239.2,181.1 222.9,182.3 204.3,177.6 184.5,187.3 167.1,187.7 139.1,196.2 116.7,192.0" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="116.7" cy="192.0" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
   </svg>
+  
+  
   <p>A 3.6 km loop near Saint-Gervais-les-Bains, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record. Direction shown climbs more gradually (computed from elevation data).</p>
 
   <div class="sp-facts">
@@ -138,18 +140,42 @@
       <text x="34" y="146" font-size="12" fill="#666">1278 m</text>
       <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">3.6 km</text>
     </svg>
-    <figcaption class="sp-src">Elevation profile — lowest 1278 m, highest 1353 m.</figcaption>
+    <figcaption class="sp-src">Elevation profile: lowest 1278 m, highest 1353 m.</figcaption>
   </figure>
-    <h2>Where to start</h2>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
     <p>Start here — Lift station Blaireau, 23 m from the route (OSM-verified access point)</p>
-    <h2>Water on trail</h2>
-    <ul><li>km 0 — Aire naturelle de camping de Passy Plaine-Joux</li><li>km 0.2 — Drinking water (OSM-verified location)</li><li>km 1.9 — Drinking water (OSM-verified location)</li></ul>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> Water on trail</h2>
+    <ul><li>km 0 · Aire naturelle de camping de Passy Plaine-Joux</li><li>km 0.2 · Drinking water (OSM-verified location)</li><li>km 1.9 · Drinking water (OSM-verified location)</li></ul>
     
     <h2>Good to know</h2>
     <p>Imported route — elevation, distance, fountains and rifugi are computed from verified map data, but this trail has not yet been walked and reviewed by DoloPaws. Check conditions locally.</p>
     
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '’s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=osm-6250300">See ' + n + '’s match for this trail →</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog’s profile</h2>'
+            + '<p>You’re signed in, but there’s no dog profile saved yet. Add your dog’s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog’s profile →</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
     <div class="sp-near-grid">

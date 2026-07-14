@@ -113,6 +113,8 @@
     <polyline points="147.1,220.7 133.1,235.8 116.3,248.2 123.6,247.9 140.7,254.6 152.2,256.0 190.6,255.4 215.5,249.6 244.3,233.0 257.0,228.3 274.9,226.9 312.7,207.0 321.7,194.6 310.5,171.9 298.4,160.7 272.9,174.5 187.5,233.6 171.8,247.9 169.0,255.2 330.9,200.0 352.2,184.8 374.9,179.2 380.8,180.9 386.7,178.9 414.7,178.9 422.0,175.3 437.4,144.5 440.8,146.4 448.3,146.2 451.1,141.7 475.8,128.8 494.6,128.5 510.8,131.3 515.9,127.4 517.8,124.3 513.6,118.4 512.5,108.9 523.7,90.7 514.7,87.0 496.8,90.4 494.8,87.3 504.1,79.5 505.8,72.8 521.7,62.4 512.2,58.5 508.3,42.8 487.0,24.0 464.3,33.2 435.4,30.7 417.2,39.1 372.4,52.6 382.5,69.4 313.8,108.3 338.8,133.8 325.3,140.6 310.8,144.8 298.4,160.7" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="147.1" cy="220.7" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
   </svg>
+  
+  
   <p>An 4.2 km route near Le Grand-Bornand, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
@@ -138,17 +140,41 @@
       <text x="34" y="146" font-size="12" fill="#666">1392 m</text>
       <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">4.2 km</text>
     </svg>
-    <figcaption class="sp-src">Elevation profile — lowest 1392 m, highest 1439 m.</figcaption>
+    <figcaption class="sp-src">Elevation profile: lowest 1392 m, highest 1439 m.</figcaption>
   </figure>
-    <h2>Where to start</h2>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
     <p>Route start per OpenStreetMap — best parking/access not yet verified</p>
     
     
     <h2>Good to know</h2>
     <p>Imported route — elevation, distance, fountains and rifugi are computed from verified map data, but this trail has not yet been walked and reviewed by DoloPaws. Check conditions locally.</p>
     
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '’s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=osm-10116380">See ' + n + '’s match for this trail →</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog’s profile</h2>'
+            + '<p>You’re signed in, but there’s no dog profile saved yet. Add your dog’s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog’s profile →</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
     <div class="sp-near-grid">

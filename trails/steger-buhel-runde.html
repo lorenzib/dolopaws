@@ -113,6 +113,8 @@
     <polyline points="208.8,108.4 208.3,121.7 225.8,153.1 224.5,161.7 229.2,177.9 240.4,196.2 259.3,212.6 266.6,221.8 281.2,244.8 283.6,255.0 292.2,256.0 283.6,255.7 301.6,254.4 304.2,250.8 305.2,238.0 312.0,228.0 324.0,220.2 343.9,213.4 357.8,203.7 368.2,199.3 371.1,191.2 378.7,187.0 385.2,177.1 398.0,171.9 409.5,161.7 413.9,149.4 406.9,142.1 408.2,130.3 422.8,121.5 423.3,115.2 431.7,103.7 425.7,97.2 422.3,86.7 407.7,72.3 353.6,53.0 343.9,45.7 330.6,39.9 318.8,24.8 316.2,24.0 305.0,27.7" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="208.8" cy="108.4" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
   </svg>
+  
+  
   <p>An 2.1 km route near Bressanone / Brixen, imported from the OpenStreetMap hiking network. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.</p>
 
   <div class="sp-facts">
@@ -138,18 +140,42 @@
       <text x="34" y="146" font-size="12" fill="#666">753 m</text>
       <text x="606" y="146" font-size="12" fill="#666" text-anchor="end">2.1 km</text>
     </svg>
-    <figcaption class="sp-src">Elevation profile — lowest 753 m, highest 820 m.</figcaption>
+    <figcaption class="sp-src">Elevation profile: lowest 753 m, highest 820 m.</figcaption>
   </figure>
-    <h2>Where to start</h2>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
     <p>Start here — Parking, 75 m from the route (OSM-verified access point)</p>
-    <h2>Water on trail</h2>
-    <ul><li>km 0 — Drinking water (OSM-verified location)</li><li>km 0.6 — Karlsbrunnen</li></ul>
+    <h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> Water on trail</h2>
+    <ul><li>km 0 · Drinking water (OSM-verified location)</li><li>km 0.6 · Karlsbrunnen</li></ul>
     
     <h2>Good to know</h2>
     <p>Imported route — elevation, distance, fountains and rifugi are computed from verified map data, but this trail has not yet been walked and reviewed by DoloPaws. Check conditions locally.</p>
     
+    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    </div>
+    <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('dolopaws-profile-summary');
+        if(!raw) return; // guest: keep the static pitch above
+        var p = JSON.parse(raw);
+        var box = document.getElementById('dogFit');
+        if(!box || !p) return;
+        var esc = function(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+        if(p.hasProfile){
+          var n = p.name ? esc(p.name) : 'your dog';
+          box.innerHTML = '<h2>Is this trail right for <em>' + n + '</em>?</h2>'
+            + '<p>' + n + '’s profile is saved, so this trail is already scored for them. Open the interactive map to see how it matches ' + n + ', weighing terrain, shade, water access, distance, exposure and heat risk against their build, age and health.</p>'
+            + '<p><a href="../trail.html?id=osm-11790553">See ' + n + '’s match for this trail →</a></p>';
+        } else {
+          box.innerHTML = '<h2>One step left: save your dog’s profile</h2>'
+            + '<p>You’re signed in, but there’s no dog profile saved yet. Add your dog’s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
+            + '<p><a href="../account.html">Finish your dog’s profile →</a></p>';
+        }
+      }catch(e){}
+    })();
+    </script>
     <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
     <h2>Nearby trails</h2>
     <div class="sp-near-grid">
