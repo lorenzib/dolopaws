@@ -535,7 +535,13 @@ async function main() {
     + '// Data: © OpenStreetMap contributors (ODbL); elevation: Open-Meteo (non-commercial).\n';
   const js = `${banner}(function () {\n`
     + `  const imported = ${JSON.stringify(entries)};\n`
-    + `  if (typeof trails !== 'undefined' && Array.isArray(trails)) { trails.push(...imported); }\n`
+    + `  if (typeof trails !== 'undefined' && Array.isArray(trails)) {\n`
+    + `    // Never append an imported twin of a trail that already exists (i.e. one\n`
+    + `    // that has been hand-verified into trails-data.js). Makes duplication\n`
+    + `    // impossible even if this file is stale relative to the curated data.\n`
+    + `    const existing = new Set(trails.map((t) => t.id));\n`
+    + `    trails.push(...imported.filter((t) => !existing.has(t.id)));\n`
+    + `  }\n`
     + `})();\n`;
   await fs.writeFile(OUTPUT_PATH, js);
   console.log(`[done] Wrote ${entries.length} promoted trails -> ${OUTPUT_PATH}`);
