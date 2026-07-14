@@ -97,10 +97,134 @@ function safetyLabel(level) {
 
 const REGION_LABEL = { dolomites: 'Dolomites, Italy', savoy: 'Savoy, France' };
 
+// Valley hub guides (add here as new area guides are published)
+const VALLEY_GUIDES = {
+  'Val Gardena': { href: '../guides/dog-friendly-hikes-val-gardena.html', label: 'Dog-friendly hikes in Val Gardena' },
+  'Alta Pusteria – Tre Cime': { href: '../guides/dog-friendly-hikes-lago-di-braies.html', label: 'Lago di Braies & Tre Cime with a dog' },
+};
+
+// ---------------------------------------------------------------
+// 2b. Per-trail visuals & computed copy (all derived from data —
+//     nothing invented; sections skip cleanly when data is absent)
+// ---------------------------------------------------------------
+
+// Inline SVG of the route line — same idea as the browse-page cards.
+function routeSvg(t) {
+  if (!Array.isArray(t.path) || t.path.length < 2) return '';
+  const lats = t.path.map((p) => p[0]);
+  const lngs = t.path.map((p) => p[1]);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+  const W = 640, H = 280, pad = 24;
+  const spanLat = (maxLat - minLat) || 1e-4;
+  const spanLng = (maxLng - minLng) || 1e-4;
+  const s = Math.min((W - pad * 2) / spanLng, (H - pad * 2) / spanLat);
+  const pts = t.path.map(([lat, lng]) =>
+    `${(pad + (lng - minLng) * s + (W - pad * 2 - spanLng * s) / 2).toFixed(1)},${(pad + (maxLat - lat) * s + (H - pad * 2 - spanLat * s) / 2).toFixed(1)}`
+  ).join(' ');
+  const [sx, sy] = pts.split(' ')[0].split(',');
+  return `<svg class="sp-route" viewBox="0 0 ${W} ${H}" role="img" aria-label="Route shape of ${escapeHtml(t.name)}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${W}" height="${H}" rx="12" fill="#E7ECE3"/>
+    <polyline points="${pts}" fill="none" stroke="#2E4034" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${sx}" cy="${sy}" r="6" fill="#2E4034" stroke="#fff" stroke-width="2"/>
+  </svg>`;
+}
+
+// Inline SVG of the elevation profile.
+function elevSvg(t) {
+  const ep = t.elevationProfile;
+  if (!Array.isArray(ep) || ep.length < 2) return '';
+  const kms = ep.map((p) => p.km), els = ep.map((p) => p.elev);
+  const minE = Math.min(...els), maxE = Math.max(...els);
+  const maxK = Math.max(...kms) || 1;
+  const spanE = (maxE - minE) || 1;
+  const W = 640, H = 150, padX = 34, padY = 18;
+  const X = (km) => padX + (km / maxK) * (W - padX * 2);
+  const Y = (e) => padY + (1 - (e - minE) / spanE) * (H - padY * 2);
+  const line = ep.map((p, i) => `${i ? 'L' : 'M'}${X(p.km).toFixed(1)},${Y(p.elev).toFixed(1)}`).join(' ');
+  const area = `${line} L${X(maxK).toFixed(1)},${H - padY} L${padX},${H - padY} Z`;
+  return `<figure class="sp-elev">
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Elevation profile: ${minE} to ${maxE} m" xmlns="http://www.w3.org/2000/svg">
+      <path d="${area}" fill="#2E4034" opacity="0.12"/>
+      <path d="${line}" fill="none" stroke="#2E4034" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="${padX}" y="${padY - 5}" font-size="12" fill="#666">${maxE} m</text>
+      <text x="${padX}" y="${H - 4}" font-size="12" fill="#666">${minE} m</text>
+      <text x="${W - padX}" y="${H - 4}" font-size="12" fill="#666" text-anchor="end">${maxK} km</text>
+    </svg>
+    <figcaption class="sp-src">Elevation profile — lowest ${minE} m, highest ${maxE} m.</figcaption>
+  </figure>`;
+}
+
+function highestPoint(t) {
+  const ep = t.elevationProfile;
+  if (!Array.isArray(ep) || !ep.length) return null;
+  return Math.max(...ep.map((p) => p.elev));
+}
+
+function isLoop(t) {
+  if (!Array.isArray(t.path) || t.path.length < 3) return null;
+  const a = t.path[0], b = t.path[t.path.length - 1];
+  const dLat = (a[0] - b[0]) * 111320;
+  const dLng = (a[1] - b[1]) * 111320 * Math.cos((a[0] * Math.PI) / 180);
+  return Math.sqrt(dLat * dLat + dLng * dLng) < 120;
+}
+
+// A short, factual "at a glance" paragraph for imported trails, so the 147
+// OSM pages read differently from one another. Every clause is computed
+// from the trail's own data; sentence choice is keyed to the data, not random.
+function atAGlance(t) {
+  const bits = [];
+  const loop = isLoop(t);
+  const gain = typeof t.elevation === 'number' ? t.elevation : null;
+
+  if (loop === true) bits.push(`This is a true loop — it closes back on its own start point, so there's no return leg to plan`);
+  else if (loop === false) bits.push(`This is a point-to-point route, so plan the return — retrace your steps or check local buses`);
+
+  if (gain !== null) {
+    if (gain < 150) bits.push(`with only ${gain} m of climbing, it's one of the gentler options in the area for older dogs or hot days`);
+    else if (gain < 400) bits.push(`the ${gain} m of climbing is steady rather than steep — a fair ask for most fit dogs`);
+    else if (gain < 700) bits.push(`${gain} m of gain over ${t.distance} km is a real climb: budget rests, and halve expectations for short-legged dogs`);
+    else bits.push(`${gain} m of climbing makes this a big physical day — for conditioned dogs only, with turn-back discipline`);
+  }
+
+  const w = Array.isArray(t.waterSources) ? t.waterSources.length : 0;
+  if (w >= 3) bits.push(`water is well covered, with ${w} mapped points along the way`);
+  else if (w > 0) bits.push(`there ${w === 1 ? 'is one mapped water point' : `are ${w} mapped water points`} on the route — carry enough to bridge the gaps`);
+  else bits.push(`no water points are mapped on this route, so carry everything your dog will drink`);
+
+  const huts = Array.isArray(t.rifugi) ? t.rifugi.filter((r) => r.name) : [];
+  if (huts.length) bits.push(`for a break, you'll pass ${escapeHtml(huts.slice(0, 2).map((r) => r.name).join(' and '))}${huts.length > 2 ? ' among others' : ''}`);
+
+  if (!bits.length) return '';
+  const text = bits.join('; ') + '.';
+  return `<h2>At a glance (from the map data)</h2>
+    <p>${text.charAt(0).toUpperCase() + text.slice(1)}</p>`;
+}
+
+// Up to 4 other trails in the same valley (fill from region if needed).
+function nearbySection(t, slug, all) {
+  const sameValley = all.filter((o) => o.slug !== slug && o.valley === t.valley);
+  const sameRegion = all.filter((o) => o.slug !== slug && o.region === t.region && o.valley !== t.valley);
+  const picks = sameValley.slice(0, 4);
+  for (const o of sameRegion) { if (picks.length >= 4) break; picks.push(o); }
+  if (!picks.length) return '';
+  const items = picks.map((o) =>
+    `<li><a href="${o.slug}.html">${escapeHtml(o.name)}</a> — ${o.distance} km · ${safetyLabel(o.safetyLevel)}</li>`
+  ).join('\n      ');
+  const hub = VALLEY_GUIDES[t.valley];
+  const hubLine = hub
+    ? `\n    <p>Planning a few days here? Read our area guide: <a href="${hub.href}">${escapeHtml(hub.label)}</a>.</p>`
+    : '';
+  return `<h2>Nearby trails</h2>
+    <ul>
+      ${items}
+    </ul>${hubLine}`;
+}
+
 // ---------------------------------------------------------------
 // 3. Page template
 // ---------------------------------------------------------------
-function trailPage(t, slug) {
+function trailPage(t, slug, all) {
   const title = `${t.name} — dog-friendly trail — DoloPaws`;
   const desc = truncate(
     t.desc || `${t.name}: a ${t.distance} km dog-friendly trail near ${t.area}.`,
@@ -121,9 +245,11 @@ function trailPage(t, slug) {
     ? 'Surface data not yet mapped'
     : t.terrainType;
 
+  const highest = highestPoint(t);
   const facts = [
     ['Distance', `${t.distance} km`],
     ['Elevation gain', `${t.elevation} m`],
+    ['Highest point', highest !== null ? `${highest} m` : null],
     ['Duration', `${t.hours} h`],
     ['Terrain', terrain],
     ['Trail rating', safetyLabel(t.safetyLevel)],
@@ -194,6 +320,21 @@ function trailPage(t, slug) {
     address: { '@type': 'PostalAddress', addressCountry: t.region === 'savoy' ? 'FR' : 'IT' },
   };
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'All trails', item: `${BASE_URL}/browse-trails.html` },
+      { '@type': 'ListItem', position: 2, name: regionLabel, item: `${BASE_URL}/browse-trails.html` },
+      { '@type': 'ListItem', position: 3, name: t.name, item: canonical },
+    ],
+  };
+
+  const glanceHtml = !verified ? atAGlance(t) : '';
+  const routeHtml = routeSvg(t);
+  const elevHtml = elevSvg(t);
+  const nearbyHtml = nearbySection(t, slug, all);
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -229,9 +370,15 @@ function trailPage(t, slug) {
   .sp-src{font-size:.85rem;color:var(--ink-soft,#666);}
   .sp-cta{display:inline-block;margin:26px 0;padding:12px 22px;background:#2E4034;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;}
   .sp-img{max-width:100%;width:480px;max-height:300px;object-fit:cover;border-radius:12px;margin:6px 0 14px;display:block;}
+  .sp-route{max-width:100%;width:640px;display:block;margin:6px 0 14px;}
+  .sp-elev{margin:14px 0;}
+  .sp-elev svg{max-width:100%;width:640px;display:block;}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify(jsonLd, null, 1)}
+</script>
+<script type="application/ld+json">
+${JSON.stringify(breadcrumbLd, null, 1)}
 </script>
 </head>
 <body>
@@ -254,7 +401,7 @@ ${JSON.stringify(jsonLd, null, 1)}
     ${badge}
     ${t.paid ? '<span class="tag">Paid access</span>' : ''}
   </div>
-  ${t.imageIcon ? `<img class="sp-img" src="../${escapeHtml(t.imageIcon)}" alt="${escapeHtml(t.name)}">` : ''}
+  ${t.imageIcon ? `<img class="sp-img" src="../${escapeHtml(t.imageIcon)}" alt="${escapeHtml(t.name)}">` : routeHtml}
   <p>${escapeHtml(t.desc || '')}</p>
 
   <div class="sp-facts">
@@ -264,6 +411,8 @@ ${JSON.stringify(jsonLd, null, 1)}
   <a class="sp-cta" href="../trail.html?id=${encodeURIComponent(t.id)}">Open the interactive map, elevation profile &amp; live weather →</a>
 
   <div class="sp-body">
+    ${glanceHtml}
+    ${elevHtml}
     ${startHtml}
     ${waterHtml}
     ${rifugiHtml}
@@ -271,6 +420,8 @@ ${JSON.stringify(jsonLd, null, 1)}
     ${insightsHtml}
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain — it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p class="sp-src">Before you go: <a href="../safety-guide.html">the dog safety guide</a> · <a href="../guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="../guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="../guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
+    ${nearbyHtml}
     ${osmCredit}
   </div>
 </div>
@@ -288,10 +439,15 @@ ${JSON.stringify(jsonLd, null, 1)}
 // 4. Sitemap
 // ---------------------------------------------------------------
 function sitemap(urls) {
-  const today = new Date().toISOString().slice(0, 10);
+  // Date pages by when the trail data actually changed, not by build time.
+  let latest = 0;
+  for (const f of ['trails-data.js', 'osm-trails-data.js', 'osm-trails-savoy-data.js']) {
+    try { latest = Math.max(latest, fs.statSync(path.join(ROOT, f)).mtimeMs); } catch {}
+  }
+  const lastmod = new Date(latest || Date.now()).toISOString().slice(0, 10);
   const items = urls
     .map(
-      (u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`
+      (u) => `  <url><loc>${u}</loc><lastmod>${lastmod}</lastmod></url>`
     )
     .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -357,15 +513,25 @@ function main() {
     `${BASE_URL}/guides/dogs-at-rifugi.html`,
   ];
 
-  let written = 0;
-  const indexEntries = [];
+  // Pass 1: assign slugs so every page can link to its neighbours.
+  const entries = [];
   for (const t of trails) {
     let slug = slugify(t.name) || slugify(t.id);
     if (seen.has(slug)) slug = `${slug}-${slugify(t.id)}`;
     if (seen.has(slug)) { console.warn(`Skipping duplicate slug: ${slug}`); continue; }
     seen.add(slug);
+    entries.push({ t, slug });
+  }
+  const all = entries.map(({ t, slug }) => ({
+    slug, name: t.name, valley: t.valley, region: t.region,
+    distance: t.distance, safetyLevel: t.safetyLevel,
+  }));
 
-    fs.writeFileSync(path.join(OUT_DIR, `${slug}.html`), trailPage(t, slug), 'utf8');
+  // Pass 2: write pages.
+  let written = 0;
+  const indexEntries = [];
+  for (const { t, slug } of entries) {
+    fs.writeFileSync(path.join(OUT_DIR, `${slug}.html`), trailPage(t, slug, all), 'utf8');
     urls.push(`${BASE_URL}/trails/${slug}.html`);
     indexEntries.push({ slug, name: t.name, region: t.region });
     written++;
