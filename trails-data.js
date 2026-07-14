@@ -1830,9 +1830,13 @@ const trails = [
       "lng": 6.3313277,
       "label": "Start here: col des Glières parking, 150 m past the Maison du Plateau"
     },
-    "imagePlaceholder": true,
     "desc": "A gentle history walk across the Plateau des Glières at 1,450 m, where 465 Resistance fighters gathered in the winter of 1944 to receive Allied parachute drops. Eleven panels along the loop tell how the maquisards lived, past the ruins of their chalets, before the finish at the National Resistance Monument. Between the stories it is a lovely open alpine plateau of meadows, a small conifer wood, and boardwalks over the peat bogs.",
-    "tips": "Dogs are welcome on the plateau but the leash is required, and it matters here: the alpages are worked from June to September, so expect herds and possibly patou guard dogs. Give any flock a wide berth, even if it means leaving the path briefly, and keep calm around the big white dogs. Otherwise stay on the trail and boardwalks, as the peat bogs are fragile and protected. Almost no shade, so plan around the midday sun, and carry water since no fountains are mapped; the Maison du Plateau at the start has refreshments and local produce. Best from spring to autumn: in winter the plateau becomes a nordic ski domain. Free guided visits of the historic sites can be booked."
+    "tips": "Dogs are welcome on the plateau but the leash is required, and it matters here: the alpages are worked from June to September, so expect herds and possibly patou guard dogs. Give any flock a wide berth, even if it means leaving the path briefly, and keep calm around the big white dogs. Otherwise stay on the trail and boardwalks, as the peat bogs are fragile and protected. Almost no shade, so plan around the midday sun, and carry water since no fountains are mapped; the Maison du Plateau at the start has refreshments and local produce. Best from spring to autumn: in winter the plateau becomes a nordic ski domain. Free guided visits of the historic sites can be booked.",
+    "imageIcon": "images/itineraire-de-decouverte-historique.webp",
+    "imageCredit": {
+      "text": "Guilhem Vellut, CC BY 2.0, via Wikimedia Commons (edited)",
+      "url": "https://commons.wikimedia.org/wiki/File:Plateau_des_Gli%C3%A8res_(51177345320).jpg"
+    }
   },
   // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Waymarked Trails rel. 10116380, Glieres plateau rules) ---
   {
