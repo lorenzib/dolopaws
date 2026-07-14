@@ -634,6 +634,2170 @@ const trails = [
     "desc": "A short, mostly shaded loop above the village of Les Échelles, on the north-west edge of the Chartreuse regional park. From the Rivièr'Alp leisure base the trail passes the Cotterg pond and climbs through the Menuet forest on the GR9 to the Col de la Voûte and the Chapelle de la Madeleine viewpoint over the Chartreuse summits, then drops back down through Combe Noire. A waymarked circuit maintained by the Syndicat mixte de l'Avant-Pays Savoyard, listed as dog-friendly by Chartreuse Tourisme.",
     "tips": "Dogs stay on the leash here, that's the official rule. Keep them close on the two short road stretches too: the D921 crossing and the D1006 through the village centre both carry traffic. Forest cover keeps most of the loop cool, a lovely hot-day choice, though paths get slippery after rain. Signposted from May to November. No fountains up on the hill, so carry enough for your dog; the riverside by the start is the one reliable drink-and-splash spot. No car? The T41 bus between Chambéry and Voiron stops at Les Échelles Place. One map note: in three short stretches near the top, our route line straightens where the source map data has small gaps. On the ground the waymarking is continuous, so just follow the signs.",
     "imagePlaceholder": true
+  },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Office de
+  //     Tourisme de Passy via Apidae, Waymarked Trails rel. 6250300) ---
+  {
+    "id": "osm-6250300",
+    "name": "Boucle du Lac Vert",
+    "area": "Passy",
+    "lat": 45.94953,
+    "lng": 6.74153,
+    "osmRelation": 6250300,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=6250300",
+    "path": [
+      [
+        45.94953,
+        6.74153
+      ],
+      [
+        45.94943,
+        6.74146
+      ],
+      [
+        45.94934,
+        6.7415
+      ],
+      [
+        45.94915,
+        6.74187
+      ],
+      [
+        45.94871,
+        6.74216
+      ],
+      [
+        45.94832,
+        6.74278
+      ],
+      [
+        45.94823,
+        6.74307
+      ],
+      [
+        45.94828,
+        6.74385
+      ],
+      [
+        45.94817,
+        6.74443
+      ],
+      [
+        45.94839,
+        6.74515
+      ],
+      [
+        45.9484,
+        6.7456
+      ],
+      [
+        45.94865,
+        6.74611
+      ],
+      [
+        45.94853,
+        6.74659
+      ],
+      [
+        45.94856,
+        6.74701
+      ],
+      [
+        45.94839,
+        6.74756
+      ],
+      [
+        45.94836,
+        6.74817
+      ],
+      [
+        45.94873,
+        6.74917
+      ],
+      [
+        45.94893,
+        6.74932
+      ],
+      [
+        45.94938,
+        6.74945
+      ],
+      [
+        45.94954,
+        6.74972
+      ],
+      [
+        45.94958,
+        6.75008
+      ],
+      [
+        45.95014,
+        6.75125
+      ],
+      [
+        45.95033,
+        6.75145
+      ],
+      [
+        45.95057,
+        6.75146
+      ],
+      [
+        45.95078,
+        6.75164
+      ],
+      [
+        45.95098,
+        6.75192
+      ],
+      [
+        45.95107,
+        6.75236
+      ],
+      [
+        45.95095,
+        6.75336
+      ],
+      [
+        45.95097,
+        6.75436
+      ],
+      [
+        45.95105,
+        6.7548
+      ],
+      [
+        45.95092,
+        6.75548
+      ],
+      [
+        45.95076,
+        6.75578
+      ],
+      [
+        45.95052,
+        6.75582
+      ],
+      [
+        45.95017,
+        6.75612
+      ],
+      [
+        45.95002,
+        6.75673
+      ],
+      [
+        45.94989,
+        6.75617
+      ],
+      [
+        45.94962,
+        6.75577
+      ],
+      [
+        45.94968,
+        6.7552
+      ],
+      [
+        45.94963,
+        6.75495
+      ],
+      [
+        45.94933,
+        6.75466
+      ],
+      [
+        45.94902,
+        6.75459
+      ],
+      [
+        45.94892,
+        6.75431
+      ],
+      [
+        45.9488,
+        6.75421
+      ],
+      [
+        45.94874,
+        6.75362
+      ],
+      [
+        45.94908,
+        6.75356
+      ],
+      [
+        45.94929,
+        6.75361
+      ],
+      [
+        45.9494,
+        6.75394
+      ],
+      [
+        45.94968,
+        6.75393
+      ],
+      [
+        45.94991,
+        6.75426
+      ],
+      [
+        45.95021,
+        6.7544
+      ],
+      [
+        45.95028,
+        6.75423
+      ],
+      [
+        45.95021,
+        6.75367
+      ],
+      [
+        45.95021,
+        6.75367
+      ],
+      [
+        45.9503,
+        6.75334
+      ],
+      [
+        45.95054,
+        6.75293
+      ],
+      [
+        45.95065,
+        6.7525
+      ],
+      [
+        45.95037,
+        6.75213
+      ],
+      [
+        45.95007,
+        6.75204
+      ],
+      [
+        45.94983,
+        6.75216
+      ],
+      [
+        45.94956,
+        6.75263
+      ],
+      [
+        45.94929,
+        6.75361
+      ],
+      [
+        45.94874,
+        6.75362
+      ],
+      [
+        45.94911,
+        6.75221
+      ],
+      [
+        45.94959,
+        6.75143
+      ],
+      [
+        45.94926,
+        6.75038
+      ],
+      [
+        45.94954,
+        6.74972
+      ],
+      [
+        45.94931,
+        6.7494
+      ],
+      [
+        45.94893,
+        6.74932
+      ],
+      [
+        45.94873,
+        6.74917
+      ],
+      [
+        45.9484,
+        6.74838
+      ],
+      [
+        45.94839,
+        6.74756
+      ],
+      [
+        45.94856,
+        6.74701
+      ],
+      [
+        45.94853,
+        6.74659
+      ],
+      [
+        45.94865,
+        6.74611
+      ],
+      [
+        45.9484,
+        6.7456
+      ],
+      [
+        45.94839,
+        6.74515
+      ],
+      [
+        45.94817,
+        6.74443
+      ],
+      [
+        45.94828,
+        6.74385
+      ],
+      [
+        45.94823,
+        6.74307
+      ],
+      [
+        45.94832,
+        6.74278
+      ],
+      [
+        45.94871,
+        6.74216
+      ],
+      [
+        45.94915,
+        6.74187
+      ],
+      [
+        45.94934,
+        6.7415
+      ],
+      [
+        45.94943,
+        6.74146
+      ],
+      [
+        45.94953,
+        6.74153
+      ]
+    ],
+    "distance": 3.6,
+    "elevation": 140,
+    "hours": "1–1.5",
+    "paid": false,
+    "terrainType": "Forest gravel and dirt paths, wooden boardwalks around the lake",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0.04,
+        "elev": 1353
+      },
+      {
+        "km": 0.34,
+        "elev": 1333
+      },
+      {
+        "km": 0.54,
+        "elev": 1343
+      },
+      {
+        "km": 0.84,
+        "elev": 1318
+      },
+      {
+        "km": 1.14,
+        "elev": 1335
+      },
+      {
+        "km": 1.44,
+        "elev": 1307
+      },
+      {
+        "km": 1.64,
+        "elev": 1278
+      },
+      {
+        "km": 1.94,
+        "elev": 1278
+      },
+      {
+        "km": 2.24,
+        "elev": 1311
+      },
+      {
+        "km": 2.54,
+        "elev": 1288
+      },
+      {
+        "km": 2.84,
+        "elev": 1327
+      },
+      {
+        "km": 3.04,
+        "elev": 1343
+      },
+      {
+        "km": 3.34,
+        "elev": 1332
+      },
+      {
+        "km": 3.35,
+        "elev": 1332
+      },
+      {
+        "km": 3.61,
+        "elev": 1353
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 70,
+    "heatRisk": "low",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [
+      {
+        "km": 1.64,
+        "label": "Drinking water (OSM-verified location)"
+      },
+      {
+        "km": 3.35,
+        "label": "Aire naturelle de camping de Passy Plaine-Joux"
+      },
+      {
+        "km": 3.55,
+        "label": "Drinking water (OSM-verified location)"
+      }
+    ],
+    "rifugi": [
+      {
+        "km": 0.3,
+        "name": "Restaurant du Lac Vert"
+      }
+    ],
+    "startPoint": {
+      "lat": 45.94953,
+      "lng": 6.74153,
+      "label": "Start here: loop edge nearest the Plaine-Joux parking (321 chemin des Parchets, Passy), about 250 m via the link path"
+    },
+    "desc": "An easy loop at 1,300 m around Passy's famous emerald lake, where Mont Blanc reflects in water so clear you can see the sunken trunks below the surface. Wooden boardwalks carry the path around the shore, then gravel tracks swing west through the conifers beneath the Fiz cliffs. A protected natural site and an official Passy circuit, listed by the tourist office as dog-friendly on leash.",
+    "tips": "Two rules to know: dogs stay on the leash, and they're not allowed in or on the lake. Swimming is forbidden for humans too, so despite the name there's no swim stop; three drinking-water points along the way (marked on the map) cover your dog instead. Skip the temptation to extend towards Lac de Pormenaz: the Passy nature reserve up there bans dogs entirely. The lake draws big crowds, so come early for a quiet lap, and mind the boardwalks when wet. The access road closes in winter. Restaurant du Lac Vert sits right by the water for a post-walk stop.",
+    "imageIcon": "images/boucle-du-lac-vert.webp",
+    "imageCredit": {
+      "text": "Mangatome, CC BY-SA 3.0, via Wikimedia Commons (edited)",
+      "url": "https://commons.wikimedia.org/wiki/File:Lac_vert_de_passy_(1).JPG"
+    }
+  },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Office de
+  //     Tourisme de la Grande Plagne fiche, Waymarked Trails rel. 9933643) ---
+  {
+    "id": "osm-9933643",
+    "name": "Le Lac Vert",
+    "area": "La Plagne",
+    "lat": 45.50741,
+    "lng": 6.67658,
+    "osmRelation": 9933643,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=9933643",
+    "path": [
+      [
+        45.50741,
+        6.67658
+      ],
+      [
+        45.50766,
+        6.67672
+      ],
+      [
+        45.50788,
+        6.67704
+      ],
+      [
+        45.50797,
+        6.67751
+      ],
+      [
+        45.50801,
+        6.67878
+      ],
+      [
+        45.50853,
+        6.67989
+      ],
+      [
+        45.50881,
+        6.68014
+      ],
+      [
+        45.50913,
+        6.68023
+      ],
+      [
+        45.50941,
+        6.68015
+      ],
+      [
+        45.50976,
+        6.67989
+      ],
+      [
+        45.50959,
+        6.67998
+      ],
+      [
+        45.51013,
+        6.67978
+      ],
+      [
+        45.51073,
+        6.6797
+      ],
+      [
+        45.51064,
+        6.67954
+      ],
+      [
+        45.51037,
+        6.67954
+      ],
+      [
+        45.5096,
+        6.67924
+      ],
+      [
+        45.50928,
+        6.67869
+      ],
+      [
+        45.509,
+        6.67845
+      ],
+      [
+        45.50891,
+        6.67823
+      ],
+      [
+        45.50873,
+        6.67686
+      ],
+      [
+        45.50828,
+        6.67527
+      ],
+      [
+        45.50832,
+        6.67522
+      ],
+      [
+        45.50857,
+        6.67536
+      ],
+      [
+        45.50866,
+        6.67527
+      ],
+      [
+        45.50852,
+        6.67438
+      ],
+      [
+        45.50863,
+        6.67395
+      ],
+      [
+        45.50885,
+        6.67377
+      ],
+      [
+        45.50879,
+        6.67353
+      ],
+      [
+        45.50894,
+        6.6733
+      ],
+      [
+        45.50928,
+        6.67312
+      ],
+      [
+        45.50962,
+        6.67322
+      ],
+      [
+        45.50974,
+        6.67315
+      ],
+      [
+        45.51006,
+        6.67317
+      ],
+      [
+        45.51049,
+        6.67329
+      ],
+      [
+        45.51203,
+        6.67294
+      ],
+      [
+        45.51219,
+        6.67257
+      ],
+      [
+        45.51218,
+        6.67219
+      ],
+      [
+        45.51261,
+        6.67232
+      ],
+      [
+        45.5129,
+        6.67203
+      ],
+      [
+        45.51314,
+        6.67195
+      ],
+      [
+        45.5129,
+        6.6719
+      ],
+      [
+        45.5126,
+        6.672
+      ],
+      [
+        45.51253,
+        6.67195
+      ],
+      [
+        45.51276,
+        6.67161
+      ],
+      [
+        45.51305,
+        6.67147
+      ],
+      [
+        45.5127,
+        6.67138
+      ],
+      [
+        45.51247,
+        6.67154
+      ],
+      [
+        45.51264,
+        6.67116
+      ],
+      [
+        45.51286,
+        6.6712
+      ],
+      [
+        45.513,
+        6.67112
+      ],
+      [
+        45.51282,
+        6.67104
+      ],
+      [
+        45.51273,
+        6.67076
+      ],
+      [
+        45.51236,
+        6.67088
+      ],
+      [
+        45.51258,
+        6.67029
+      ],
+      [
+        45.51281,
+        6.67027
+      ],
+      [
+        45.51252,
+        6.67014
+      ],
+      [
+        45.51239,
+        6.67015
+      ],
+      [
+        45.51231,
+        6.67026
+      ],
+      [
+        45.51229,
+        6.67001
+      ],
+      [
+        45.51259,
+        6.66986
+      ],
+      [
+        45.51262,
+        6.66971
+      ],
+      [
+        45.51243,
+        6.66974
+      ],
+      [
+        45.51281,
+        6.66945
+      ],
+      [
+        45.5128,
+        6.66933
+      ],
+      [
+        45.51226,
+        6.66942
+      ],
+      [
+        45.5121,
+        6.66914
+      ],
+      [
+        45.51157,
+        6.66865
+      ],
+      [
+        45.51158,
+        6.66858
+      ],
+      [
+        45.51174,
+        6.66857
+      ],
+      [
+        45.5116,
+        6.66843
+      ],
+      [
+        45.51172,
+        6.66822
+      ],
+      [
+        45.51217,
+        6.66799
+      ],
+      [
+        45.51217,
+        6.66769
+      ],
+      [
+        45.51235,
+        6.66733
+      ],
+      [
+        45.51177,
+        6.66752
+      ],
+      [
+        45.51096,
+        6.66824
+      ],
+      [
+        45.51015,
+        6.66925
+      ],
+      [
+        45.50995,
+        6.6694
+      ],
+      [
+        45.50974,
+        6.66918
+      ],
+      [
+        45.50959,
+        6.66926
+      ],
+      [
+        45.50906,
+        6.6691
+      ],
+      [
+        45.50882,
+        6.66894
+      ],
+      [
+        45.50846,
+        6.66798
+      ],
+      [
+        45.50809,
+        6.66825
+      ],
+      [
+        45.50788,
+        6.669
+      ],
+      [
+        45.50751,
+        6.66947
+      ],
+      [
+        45.50717,
+        6.66963
+      ],
+      [
+        45.50657,
+        6.66965
+      ],
+      [
+        45.50592,
+        6.67013
+      ],
+      [
+        45.50543,
+        6.67162
+      ],
+      [
+        45.50512,
+        6.67215
+      ],
+      [
+        45.50498,
+        6.6731
+      ],
+      [
+        45.50508,
+        6.67359
+      ],
+      [
+        45.50493,
+        6.67378
+      ],
+      [
+        45.50494,
+        6.67407
+      ],
+      [
+        45.5051,
+        6.67502
+      ],
+      [
+        45.50523,
+        6.67526
+      ],
+      [
+        45.50542,
+        6.676
+      ],
+      [
+        45.5066,
+        6.67537
+      ],
+      [
+        45.50677,
+        6.67531
+      ],
+      [
+        45.50695,
+        6.67601
+      ],
+      [
+        45.50725,
+        6.67642
+      ],
+      [
+        45.50725,
+        6.6766
+      ],
+      [
+        45.50733,
+        6.67665
+      ],
+      [
+        45.50741,
+        6.67658
+      ]
+    ],
+    "distance": 4.5,
+    "elevation": 209,
+    "hours": "1.5",
+    "paid": false,
+    "terrainType": "Resort paths and tracks, roughly half paved, half natural ground",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0.1,
+        "elev": 1938
+      },
+      {
+        "km": 0.4,
+        "elev": 1941
+      },
+      {
+        "km": 0.8,
+        "elev": 1916
+      },
+      {
+        "km": 1.1,
+        "elev": 1913
+      },
+      {
+        "km": 1.5,
+        "elev": 1949
+      },
+      {
+        "km": 1.8,
+        "elev": 1946
+      },
+      {
+        "km": 2.1,
+        "elev": 1977
+      },
+      {
+        "km": 2.5,
+        "elev": 2011
+      },
+      {
+        "km": 2.5,
+        "elev": 2020
+      },
+      {
+        "km": 2.9,
+        "elev": 2035
+      },
+      {
+        "km": 3.2,
+        "elev": 2060
+      },
+      {
+        "km": 3.5,
+        "elev": 2066
+      },
+      {
+        "km": 3.9,
+        "elev": 2010
+      },
+      {
+        "km": 4.2,
+        "elev": 1982
+      },
+      {
+        "km": 4.53,
+        "elev": 1938
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 30,
+    "heatRisk": "moderate",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [],
+    "rifugi": [
+      {
+        "km": 3.6,
+        "name": "Manaka Bar"
+      },
+      {
+        "km": 3.9,
+        "name": "Araucaria"
+      },
+      {
+        "km": 3.9,
+        "name": "Scotty's Bar"
+      },
+      {
+        "km": 4.0,
+        "name": "Le Brix, Bar à Bières & Cocktails"
+      },
+      {
+        "km": 4.2,
+        "name": "Luna Bar"
+      },
+      {
+        "km": 4.2,
+        "name": "Cafe de Montagne"
+      }
+    ],
+    "startPoint": {
+      "lat": 45.50741,
+      "lng": 6.67658,
+      "label": "Start here: war memorial (WW2 parachute drop) in Plagne Centre, by the shuttle stop and parking"
+    },
+    "imagePlaceholder": true,
+    "desc": "A family loop from Plagne Centre at 2,000 m in the Tarentaise: down through the larches, across a stream, and up to the little Lac Vert with its Mont Blanc view, orientation table and picnic meadows, before returning past Plagne Aime 2000 and the Jean-Luc Cretier slalom slope. An official La Plagne resort circuit, rated green and easy; the tourist office lists dogs as welcome.",
+    "tips": "No leash rule is published for this loop, but keep one handy: several stretches follow or cross the resort road, and the lake meadow fills with picnics and barbecues in season, so keep dogs out of the water (swimming is banned anyway). The path out of the village drops very steeply for about ten minutes; the road variant avoids it and suits all-terrain strollers. No fountains are mapped, so carry water; the stream crossing at the bottom is the natural drink stop. The tourist office quotes 3.4 km, while our mapped route measures 4.5 km with all its twists. Officially signposted daily from early July to late August, and the Telemetro lift can shortcut Aime 2000 back to the village."
+  },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Syndicat
+  //     Mixte des Glieres fiche, Waymarked Trails rel. 10116283, Haute-Savoie pastoral rules) ---
+  {
+    "id": "osm-10116283",
+    "name": "Itinéraire de découverte historique",
+    "area": "Plateau des Glières",
+    "lat": 45.9661854,
+    "lng": 6.3313277,
+    "osmRelation": 10116283,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=10116283",
+    "path": [
+      [
+        45.96619,
+        6.33133
+      ],
+      [
+        45.96528,
+        6.33255
+      ],
+      [
+        45.96513,
+        6.33282
+      ],
+      [
+        45.96505,
+        6.33346
+      ],
+      [
+        45.96513,
+        6.33386
+      ],
+      [
+        45.96459,
+        6.33336
+      ],
+      [
+        45.96415,
+        6.33276
+      ],
+      [
+        45.96416,
+        6.33302
+      ],
+      [
+        45.96388,
+        6.33381
+      ],
+      [
+        45.9639,
+        6.33464
+      ],
+      [
+        45.96416,
+        6.33474
+      ],
+      [
+        45.96467,
+        6.3353
+      ],
+      [
+        45.96678,
+        6.33835
+      ],
+      [
+        45.9673,
+        6.33933
+      ],
+      [
+        45.96782,
+        6.33967
+      ],
+      [
+        45.96799,
+        6.34022
+      ],
+      [
+        45.96823,
+        6.3407
+      ],
+      [
+        45.96914,
+        6.33981
+      ],
+      [
+        45.97053,
+        6.34226
+      ],
+      [
+        45.97113,
+        6.3419
+      ],
+      [
+        45.97063,
+        6.34061
+      ],
+      [
+        45.97068,
+        6.33991
+      ],
+      [
+        45.97011,
+        6.33775
+      ],
+      [
+        45.96954,
+        6.33607
+      ],
+      [
+        45.96905,
+        6.33527
+      ],
+      [
+        45.96676,
+        6.33228
+      ],
+      [
+        45.96619,
+        6.33133
+      ]
+    ],
+    "distance": 2.7,
+    "elevation": 50,
+    "hours": "1–1.5",
+    "paid": false,
+    "terrainType": "Plateau tracks, meadow paths and wooden boardwalks",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0,
+        "elev": 1457
+      },
+      {
+        "km": 0.2,
+        "elev": 1428
+      },
+      {
+        "km": 0.2,
+        "elev": 1426
+      },
+      {
+        "km": 0.4,
+        "elev": 1433
+      },
+      {
+        "km": 0.5,
+        "elev": 1439
+      },
+      {
+        "km": 0.6,
+        "elev": 1433
+      },
+      {
+        "km": 1,
+        "elev": 1409
+      },
+      {
+        "km": 1.1,
+        "elev": 1403
+      },
+      {
+        "km": 1.2,
+        "elev": 1404
+      },
+      {
+        "km": 1.6,
+        "elev": 1402
+      },
+      {
+        "km": 1.8,
+        "elev": 1399
+      },
+      {
+        "km": 2,
+        "elev": 1418
+      },
+      {
+        "km": 2.2,
+        "elev": 1426
+      },
+      {
+        "km": 2.7,
+        "elev": 1457
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 15,
+    "heatRisk": "moderate",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.9661854,
+      "lng": 6.3313277,
+      "label": "Start here: col des Glières parking, 150 m past the Maison du Plateau"
+    },
+    "imagePlaceholder": true,
+    "desc": "A gentle history walk across the Plateau des Glières at 1,450 m, where 465 Resistance fighters gathered in the winter of 1944 to receive Allied parachute drops. Eleven panels along the loop tell how the maquisards lived, past the ruins of their chalets, before the finish at the National Resistance Monument. Between the stories it is a lovely open alpine plateau of meadows, a small conifer wood, and boardwalks over the peat bogs.",
+    "tips": "Dogs are welcome on the plateau but the leash is required, and it matters here: the alpages are worked from June to September, so expect herds and possibly patou guard dogs. Give any flock a wide berth, even if it means leaving the path briefly, and keep calm around the big white dogs. Otherwise stay on the trail and boardwalks, as the peat bogs are fragile and protected. Almost no shade, so plan around the midday sun, and carry water since no fountains are mapped; the Maison du Plateau at the start has refreshments and local produce. Best from spring to autumn: in winter the plateau becomes a nordic ski domain. Free guided visits of the historic sites can be booked."
+  },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: Waymarked Trails rel. 10116380, Glieres plateau rules) ---
+  {
+    "id": "osm-10116380",
+    "name": "Itinéraire découverte de la nature",
+    "area": "Plateau des Glières",
+    "lat": 45.9651261,
+    "lng": 6.3338562,
+    "osmRelation": 10116380,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=10116380",
+    "path": [
+      [
+        45.96513,
+        6.33386
+      ],
+      [
+        45.96459,
+        6.33336
+      ],
+      [
+        45.96415,
+        6.33276
+      ],
+      [
+        45.96416,
+        6.33302
+      ],
+      [
+        45.96392,
+        6.33363
+      ],
+      [
+        45.96387,
+        6.33404
+      ],
+      [
+        45.96389,
+        6.33541
+      ],
+      [
+        45.9641,
+        6.3363
+      ],
+      [
+        45.96469,
+        6.33733
+      ],
+      [
+        45.96486,
+        6.33778
+      ],
+      [
+        45.96491,
+        6.33842
+      ],
+      [
+        45.96562,
+        6.33977
+      ],
+      [
+        45.96606,
+        6.34009
+      ],
+      [
+        45.96687,
+        6.33969
+      ],
+      [
+        45.96727,
+        6.33926
+      ],
+      [
+        45.96678,
+        6.33835
+      ],
+      [
+        45.96467,
+        6.3353
+      ],
+      [
+        45.96416,
+        6.33474
+      ],
+      [
+        45.9639,
+        6.33464
+      ],
+      [
+        45.96587,
+        6.34042
+      ],
+      [
+        45.96641,
+        6.34118
+      ],
+      [
+        45.96661,
+        6.34199
+      ],
+      [
+        45.96655,
+        6.3422
+      ],
+      [
+        45.96662,
+        6.34241
+      ],
+      [
+        45.96662,
+        6.34341
+      ],
+      [
+        45.96675,
+        6.34367
+      ],
+      [
+        45.96785,
+        6.34422
+      ],
+      [
+        45.96778,
+        6.34434
+      ],
+      [
+        45.96779,
+        6.34461
+      ],
+      [
+        45.96795,
+        6.34471
+      ],
+      [
+        45.96841,
+        6.34559
+      ],
+      [
+        45.96842,
+        6.34626
+      ],
+      [
+        45.96832,
+        6.34684
+      ],
+      [
+        45.96846,
+        6.34702
+      ],
+      [
+        45.96857,
+        6.34709
+      ],
+      [
+        45.96878,
+        6.34694
+      ],
+      [
+        45.96912,
+        6.3469
+      ],
+      [
+        45.96977,
+        6.3473
+      ],
+      [
+        45.9699,
+        6.34698
+      ],
+      [
+        45.96978,
+        6.34634
+      ],
+      [
+        45.96989,
+        6.34627
+      ],
+      [
+        45.97017,
+        6.3466
+      ],
+      [
+        45.97041,
+        6.34666
+      ],
+      [
+        45.97078,
+        6.34723
+      ],
+      [
+        45.97092,
+        6.34689
+      ],
+      [
+        45.97148,
+        6.34675
+      ],
+      [
+        45.97215,
+        6.34599
+      ],
+      [
+        45.97182,
+        6.34518
+      ],
+      [
+        45.97191,
+        6.34415
+      ],
+      [
+        45.97161,
+        6.3435
+      ],
+      [
+        45.97113,
+        6.3419
+      ],
+      [
+        45.97053,
+        6.34226
+      ],
+      [
+        45.96914,
+        6.33981
+      ],
+      [
+        45.96823,
+        6.3407
+      ],
+      [
+        45.96799,
+        6.34022
+      ],
+      [
+        45.96784,
+        6.3397
+      ],
+      [
+        45.96727,
+        6.33926
+      ]
+    ],
+    "distance": 4.2,
+    "elevation": 95,
+    "hours": "1–1.5",
+    "paid": false,
+    "terrainType": "Meadow and forest paths on natural ground, short boardwalk and gravel sections",
+    "terrainRank": 0,
+    "elevationProfile": [
+      {
+        "km": 0,
+        "elev": 1426
+      },
+      {
+        "km": 0.2,
+        "elev": 1439
+      },
+      {
+        "km": 0.5,
+        "elev": 1428
+      },
+      {
+        "km": 0.8,
+        "elev": 1408
+      },
+      {
+        "km": 1.4,
+        "elev": 1432
+      },
+      {
+        "km": 2.1,
+        "elev": 1413
+      },
+      {
+        "km": 2.2,
+        "elev": 1418
+      },
+      {
+        "km": 2.4,
+        "elev": 1404
+      },
+      {
+        "km": 2.6,
+        "elev": 1401
+      },
+      {
+        "km": 2.7,
+        "elev": 1394
+      },
+      {
+        "km": 2.9,
+        "elev": 1393
+      },
+      {
+        "km": 3.1,
+        "elev": 1394
+      },
+      {
+        "km": 3.4,
+        "elev": 1392
+      },
+      {
+        "km": 3.9,
+        "elev": 1406
+      },
+      {
+        "km": 4.2,
+        "elev": 1413
+      }
+    ],
+    "surfaceHazards": [],
+    "shadeCoverage": 35,
+    "heatRisk": "moderate",
+    "safetyLevel": "low-risk",
+    "exposure": false,
+    "waterSources": [],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.9651261,
+      "lng": 6.3338562,
+      "label": "Start here: on the plateau path, about 200 m from the col des Glières parking and the Maison du Plateau"
+    },
+    "imageIcon": "images/itineraire-decouverte-de-la-nature.webp",
+    "imageCredit": {
+      "text": "Guilhem Vellut, CC BY 2.0, via Wikimedia Commons (edited)",
+      "url": "https://commons.wikimedia.org/wiki/File:Plateau_des_Gli%C3%A8res_(51176314526).jpg"
+    },
+    "desc": "The nature-themed twin of the plateau's history walk: an easy wander across the Plateau des Glières at 1,400 m, through flower meadows, conifer stands and past the protected peat bogs, with interpretive panels on the mountain flora and fauna along the way. Gentle gradients and soft ground underfoot make it one of the plateau's most relaxed outings.",
+    "tips": "Dogs are welcome on the plateau with the leash required, and the alpages are worked from June to September, so expect herds and possibly patou guard dogs; give any flock a wide berth and stay calm around the big white dogs. Keep to the path and boardwalks, since the peat bogs are fragile and protected. Shade comes and goes between the woods and open meadow, and no fountains are mapped, so carry water; the Maison du Plateau near the start has refreshments. One short stretch of the mapped route has a small gap in the source data, so the line briefly straightens; the waymarking on the ground is continuous. In winter the plateau becomes a nordic ski domain."
+  },
+  // --- Savoy, verified 2026-07-14 (promoted from OSM import; sources: trails-viewer D+733, Chemins du Maquis, Waymarked Trails rel. 20347406) ---
+  {
+    "id": "osm-20347406",
+    "name": "Sentier des Patriotes",
+    "area": "Plateau des Glières",
+    "lat": 45.9661854,
+    "lng": 6.3313277,
+    "osmRelation": 20347406,
+    "waymarkedtrails": "https://hiking.waymarkedtrails.org/#route?id=20347406",
+    "path": [
+      [
+        45.96619,
+        6.33133
+      ],
+      [
+        45.96627,
+        6.332
+      ],
+      [
+        45.96647,
+        6.33224
+      ],
+      [
+        45.96648,
+        6.33237
+      ],
+      [
+        45.96619,
+        6.33248
+      ],
+      [
+        45.96553,
+        6.33243
+      ],
+      [
+        45.96524,
+        6.33259
+      ],
+      [
+        45.96513,
+        6.33282
+      ],
+      [
+        45.96505,
+        6.33346
+      ],
+      [
+        45.96513,
+        6.33386
+      ],
+      [
+        45.96459,
+        6.33336
+      ],
+      [
+        45.96415,
+        6.33276
+      ],
+      [
+        45.96416,
+        6.33302
+      ],
+      [
+        45.96388,
+        6.33381
+      ],
+      [
+        45.9639,
+        6.33464
+      ],
+      [
+        45.96416,
+        6.33474
+      ],
+      [
+        45.96467,
+        6.3353
+      ],
+      [
+        45.96678,
+        6.33835
+      ],
+      [
+        45.9673,
+        6.33933
+      ],
+      [
+        45.96782,
+        6.33967
+      ],
+      [
+        45.96799,
+        6.34022
+      ],
+      [
+        45.96823,
+        6.3407
+      ],
+      [
+        45.96914,
+        6.33981
+      ],
+      [
+        45.97053,
+        6.34226
+      ],
+      [
+        45.97113,
+        6.3419
+      ],
+      [
+        45.97161,
+        6.3435
+      ],
+      [
+        45.97191,
+        6.34415
+      ],
+      [
+        45.97182,
+        6.34518
+      ],
+      [
+        45.97214,
+        6.34595
+      ],
+      [
+        45.97235,
+        6.34695
+      ],
+      [
+        45.9728,
+        6.34779
+      ],
+      [
+        45.97329,
+        6.34846
+      ],
+      [
+        45.97358,
+        6.34936
+      ],
+      [
+        45.97394,
+        6.35003
+      ],
+      [
+        45.97404,
+        6.34998
+      ],
+      [
+        45.97417,
+        6.35005
+      ],
+      [
+        45.97441,
+        6.35074
+      ],
+      [
+        45.97453,
+        6.3508
+      ],
+      [
+        45.97574,
+        6.34931
+      ],
+      [
+        45.97585,
+        6.34927
+      ],
+      [
+        45.97597,
+        6.34936
+      ],
+      [
+        45.97682,
+        6.3514
+      ],
+      [
+        45.97742,
+        6.35203
+      ],
+      [
+        45.9786,
+        6.35372
+      ],
+      [
+        45.97939,
+        6.35513
+      ],
+      [
+        45.97982,
+        6.35524
+      ],
+      [
+        45.98035,
+        6.3559
+      ],
+      [
+        45.98355,
+        6.36244
+      ],
+      [
+        45.98399,
+        6.36382
+      ],
+      [
+        45.9844,
+        6.36453
+      ],
+      [
+        45.9851,
+        6.36495
+      ],
+      [
+        45.98561,
+        6.36496
+      ],
+      [
+        45.98625,
+        6.36566
+      ],
+      [
+        45.98656,
+        6.36615
+      ],
+      [
+        45.98659,
+        6.36665
+      ],
+      [
+        45.98739,
+        6.36805
+      ],
+      [
+        45.98755,
+        6.36877
+      ],
+      [
+        45.98783,
+        6.36946
+      ],
+      [
+        45.9883,
+        6.37122
+      ],
+      [
+        45.98833,
+        6.37177
+      ],
+      [
+        45.98823,
+        6.37205
+      ],
+      [
+        45.98799,
+        6.37237
+      ],
+      [
+        45.98803,
+        6.37253
+      ],
+      [
+        45.98839,
+        6.37335
+      ],
+      [
+        45.98913,
+        6.37467
+      ],
+      [
+        45.98899,
+        6.37516
+      ],
+      [
+        45.98868,
+        6.37532
+      ],
+      [
+        45.98896,
+        6.37545
+      ],
+      [
+        45.98909,
+        6.3757
+      ],
+      [
+        45.98947,
+        6.37603
+      ],
+      [
+        45.98965,
+        6.37677
+      ],
+      [
+        45.98979,
+        6.37703
+      ],
+      [
+        45.98981,
+        6.37737
+      ],
+      [
+        45.99022,
+        6.37768
+      ],
+      [
+        45.99049,
+        6.37807
+      ],
+      [
+        45.99063,
+        6.37863
+      ],
+      [
+        45.99113,
+        6.37886
+      ],
+      [
+        45.99106,
+        6.37901
+      ],
+      [
+        45.99135,
+        6.37921
+      ],
+      [
+        45.99099,
+        6.37949
+      ],
+      [
+        45.99138,
+        6.37989
+      ],
+      [
+        45.99144,
+        6.38056
+      ],
+      [
+        45.99159,
+        6.38093
+      ],
+      [
+        45.99162,
+        6.38136
+      ],
+      [
+        45.99132,
+        6.38128
+      ],
+      [
+        45.99108,
+        6.38096
+      ],
+      [
+        45.99077,
+        6.38105
+      ],
+      [
+        45.99071,
+        6.38112
+      ],
+      [
+        45.99077,
+        6.38141
+      ],
+      [
+        45.99062,
+        6.38179
+      ],
+      [
+        45.99029,
+        6.38202
+      ],
+      [
+        45.99015,
+        6.38234
+      ],
+      [
+        45.99068,
+        6.38239
+      ],
+      [
+        45.99053,
+        6.38267
+      ],
+      [
+        45.99068,
+        6.38283
+      ],
+      [
+        45.99087,
+        6.38389
+      ],
+      [
+        45.9905,
+        6.38339
+      ],
+      [
+        45.99067,
+        6.38414
+      ],
+      [
+        45.99038,
+        6.384
+      ],
+      [
+        45.99022,
+        6.38377
+      ],
+      [
+        45.99017,
+        6.38381
+      ],
+      [
+        45.99027,
+        6.38446
+      ],
+      [
+        45.99085,
+        6.38533
+      ],
+      [
+        45.99076,
+        6.38539
+      ],
+      [
+        45.99088,
+        6.38568
+      ],
+      [
+        45.99101,
+        6.38576
+      ],
+      [
+        45.99091,
+        6.38583
+      ],
+      [
+        45.99092,
+        6.38594
+      ],
+      [
+        45.99114,
+        6.38621
+      ],
+      [
+        45.99157,
+        6.38643
+      ],
+      [
+        45.99189,
+        6.38621
+      ],
+      [
+        45.99201,
+        6.38591
+      ],
+      [
+        45.99222,
+        6.38587
+      ],
+      [
+        45.99234,
+        6.38603
+      ],
+      [
+        45.99259,
+        6.38606
+      ],
+      [
+        45.99327,
+        6.38594
+      ],
+      [
+        45.99427,
+        6.38588
+      ],
+      [
+        45.9948,
+        6.38571
+      ],
+      [
+        45.99537,
+        6.3858
+      ],
+      [
+        45.99567,
+        6.386
+      ],
+      [
+        45.9961,
+        6.3861
+      ],
+      [
+        45.99618,
+        6.38624
+      ],
+      [
+        45.99628,
+        6.38716
+      ],
+      [
+        45.99648,
+        6.38753
+      ],
+      [
+        45.99645,
+        6.38785
+      ],
+      [
+        45.99659,
+        6.38866
+      ],
+      [
+        45.99687,
+        6.38807
+      ],
+      [
+        45.99704,
+        6.38802
+      ],
+      [
+        45.99764,
+        6.38872
+      ],
+      [
+        45.99813,
+        6.38898
+      ],
+      [
+        45.99831,
+        6.38923
+      ],
+      [
+        45.99862,
+        6.3893
+      ],
+      [
+        45.99873,
+        6.38971
+      ],
+      [
+        45.99898,
+        6.38992
+      ],
+      [
+        45.999,
+        6.39024
+      ],
+      [
+        45.9991,
+        6.39042
+      ],
+      [
+        45.99982,
+        6.39087
+      ],
+      [
+        45.99991,
+        6.39113
+      ],
+      [
+        46.00009,
+        6.3913
+      ],
+      [
+        46.0006,
+        6.39167
+      ],
+      [
+        46.00075,
+        6.3917
+      ],
+      [
+        46.00093,
+        6.39193
+      ],
+      [
+        46.00151,
+        6.39237
+      ],
+      [
+        46.0027,
+        6.39317
+      ],
+      [
+        46.00259,
+        6.394
+      ],
+      [
+        46.00272,
+        6.39416
+      ],
+      [
+        46.00336,
+        6.39433
+      ],
+      [
+        46.00411,
+        6.39434
+      ],
+      [
+        46.00454,
+        6.39426
+      ]
+    ],
+    "distance": 8.9,
+    "elevation": 730,
+    "hours": "2.5–3",
+    "paid": false,
+    "terrainType": "Mountain path and forest tracks, sparsely mapped surfaces; expect rough ground",
+    "terrainRank": 1,
+    "surfaceHazards": [
+      "Sustained 700 m descent (or climb) between the plateau and the valley"
+    ],
+    "safetyLevel": "moderate",
+    "exposure": false,
+    "waterSources": [
+      {
+        "km": 8.8,
+        "label": "Drinking water (OSM-verified location)"
+      }
+    ],
+    "rifugi": [],
+    "startPoint": {
+      "lat": 45.9661854,
+      "lng": 6.3313277,
+      "label": "Start here: col des Glières parking, by the Maison du Plateau (route descends to Glières-Val-de-Borne)"
+    },
+    "imageIcon": "images/sentier-des-patriotes.webp",
+    "imageCredit": {
+      "text": "Guilhem Vellut, CC BY 2.0, via Wikimedia Commons (edited)",
+      "url": "https://commons.wikimedia.org/wiki/File:Plateau_des_Gli%C3%A8res_(51177102199).jpg"
+    },
+    "desc": "The historic route between the Glières plateau and the village of Glières-Val-de-Borne (Petit-Bornand), following the paths the maquisards and the villagers who supplied them used in the winter of 1944. A linear mountain trail of about 9 km with roughly 730 m of vertical, through alpage pastures at the top and forest lower down, part of the Chemins du Maquis network.",
+    "tips": "This is a one-way route, not a loop: either arrange a pickup in the valley or double the day by walking back up. The 730 m of sustained descent is the real test for dogs, hard on seniors and joint-prone breeds, so check your dog's match score honestly before committing. Leash rules and summer herds apply on the plateau section, patous included; give flocks a wide berth. Surfaces are only sparsely mapped in the source data, so expect rough mountain path in places. The only mapped water point sits near the valley end, so carry enough for the whole descent. Start early for shade in the forest half."
   }
 ];
 
