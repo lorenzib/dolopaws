@@ -169,24 +169,19 @@
         heat: '<circle cx="12" cy="12" r="4" fill="#D6A038"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" fill="none" stroke="#D6A038" stroke-width="1.8" stroke-linecap="round"/>',
         park: '<rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="#fff" stroke="#4C87C6" stroke-width="1.6"/><path d="M10 16.2V7.8h3.1a2.6 2.6 0 0 1 0 5.2H10" fill="none" stroke="#4C87C6" stroke-width="1.9" stroke-linecap="round"/>',
         route: '<path d="M6 18c2-5 5.5-9 12-12" fill="none" stroke="#2C5C34" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="18" r="1.7" fill="#2C5C34"/><path d="M17.5 4.2l2.6 1-1 2.5-2.6-1z" fill="#E24B4A"/>',
-        crowd: '<circle cx="8" cy="8" r="3" fill="none" stroke="#9C3A25" stroke-width="1.8"/><circle cx="17" cy="9" r="2.5" fill="none" stroke="#9C3A25" stroke-width="1.8"/><path d="M3 19c.4-4 2.2-6 5-6s4.6 2 5 6M14 19c.2-3 1.5-4.5 3.7-4.5 1.9 0 3.1 1.5 3.3 4.5" fill="none" stroke="#9C3A25" stroke-width="1.8" stroke-linecap="round"/>',
+        crowd: '<ellipse cx="5" cy="8" rx="2.5" ry="4.5" fill="#8B6F47" transform="rotate(-20 5 8)"/><ellipse cx="19" cy="8" rx="2.5" ry="4.5" fill="#8B6F47" transform="rotate(20 19 8)"/><circle cx="12" cy="14" r="7" fill="#8B6F47"/><ellipse cx="12" cy="16" rx="4" ry="3" fill="#A08060"/><circle cx="9.5" cy="12" r="1.2" fill="#3D2817"/><circle cx="9.8" cy="11.5" r="0.4" fill="#fff"/><circle cx="14.5" cy="12" r="1.2" fill="#3D2817"/><circle cx="14.8" cy="11.5" r="0.4" fill="#fff"/><circle cx="12" cy="16" r="1" fill="#3D2817"/><path d="M12 17 Q11 18 10 17.5" fill="none" stroke="#3D2817" stroke-width="0.8" stroke-linecap="round"/><path d="M12 17 Q13 18 14 17.5" fill="none" stroke="#3D2817" stroke-width="0.8" stroke-linecap="round"/>',
         mountain: '<path d="m4 18 6-10 3 5 2-3 5 8Z" fill="none" stroke="#BA7517" stroke-width="1.8" stroke-linejoin="round"/>',
         loop: '<path d="M18 8a7 7 0 1 0 1 7M18 4v4h-4" fill="none" stroke="#3E7A91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'
       };
       return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[kind]}</svg>`;
     };
     const signalEl = $('matchSignals');
-    const signalData = [];
-    // Terrain
-    signalData.push(['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')]);
-    // Shade (only show if we have data)
-    if (typeof t.shadeCoverage === 'number' && t.shadeCoverage > 0) {
-      signalData.push(['shade', 'Good shade', `${Number(t.shadeCoverage)}% of the route`]);
-    }
-    // Water
-    signalData.push(['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed']);
-    // Heat risk
-    signalData.push(['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast']);
+    const signalData = [
+      ['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')],
+      ['shade', 'Good shade', `${Number(t.shadeCoverage) || 0}% of the route`],
+      ['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed'],
+      ['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast'],
+    ];
     if (signalEl) signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
       `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
 
@@ -228,22 +223,21 @@
 
     const aboutFacts = $('aboutFacts');
     if (aboutFacts) {
-      const facts = [];
-      // Terrain/surface
-      facts.push(['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')]);
-      // Water
-      facts.push(['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route']);
-      // Route type
-      const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
-      const routeLabel = isLoop ? 'Loop route' : 'Open-ended route';
-      const routeDesc = isLoop ? `${t.distance} km — back to the same parking area` : `${t.distance} km — verify your return transport`;
-      facts.push(['loop', routeLabel, routeDesc]);
-      // Altitude (only if we have elevation profile data)
-      const maxAltitude = Math.max(...(t.elevationProfile || []).map(p => p.elev || 0));
-      if (maxAltitude > 0) {
-        facts.push(['mountain', `${maxAltitude} m altitude`, 'Mountain weather can change quickly']);
-      }
+      const facts = [
+        ['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')],
+        ['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route'],
+        ['loop', 'Loop route', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? `${t.distance} km — back to the same parking area` : 'Check your return transport'],
+        ['mountain', `${Math.max(...(t.elevationProfile || [{ elev: 0 }]).map(p => p.elev))} m altitude`, 'Mountain weather can change quickly'],
+      ];
       aboutFacts.innerHTML = facts.map(([icon, title, sub]) => `<div class="about-fact">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
+      
+      // Add loop callout if it's a loop
+      const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
+      if (isLoop && $('loopCallout')) {
+        $('loopCallout').innerHTML = `<div class="loop-callout" style="display: flex; gap: 10px; align-items: center; padding: 10px 12px; background: var(--sage-dim); border-radius: 8px; margin-bottom: 16px; border-left: 3px solid var(--success);">
+          ${svg('loop')}<div style="font-size: 12px; color: var(--ink);"><b style="display: block; margin-bottom: 2px;">Loop route</b><span style="color: var(--ink-soft);">${t.distance} km back to parking</span></div>
+        </div>`;
+      }
     }
 
     const avatar = $('matchDogAvatar');
@@ -268,6 +262,14 @@
     else window.addEventListener('dolopaws-auth-ready', paintPersonalMatch, { once: true });
     window.addEventListener('dolopaws-auth-changed', paintPersonalMatch);
 
+    // Generate experience description
+    const descEl = $('matchDescription');
+    if (descEl && t.desc) {
+      const sentences = String(t.desc).match(/[^.!?]+[.!?]+/g) || [];
+      const shortDesc = sentences.slice(0, 2).join(' ').trim();
+      if (shortDesc) descEl.textContent = shortDesc;
+    }
+    
     document.querySelectorAll('.trail-section-nav a').forEach(a => {
       a.addEventListener('click', () => {
         document.querySelectorAll('.trail-section-nav a').forEach(other => other.classList.remove('active'));

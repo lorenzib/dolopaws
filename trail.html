@@ -89,7 +89,7 @@
         <span class="section-kicker">YOUR DOG'S TRAIL MATCH</span>
         <h2 id="personalMatchTitle">A great match for your dog</h2>
         <p id="matchSummary">We’ll weigh this trail against your dog’s profile.</p>
-        <span id="dogsChip" class="trail-chip trail-chip--sage match-weekly" hidden></span>
+        <span id="dogsChip" class="trail-chip trail-chip--sage match-weekly" hidden style="display: none;"></span>
       </div>
       <div id="personalScore" class="personal-score" hidden></div>
       <div class="personal-actions">
@@ -99,10 +99,14 @@
       </div>
     </div>
   </section>
+  <div style="margin-top: 10px; margin-bottom: 12px;">
+    <span class="section-kicker" style="display: block; margin: 0 0 8px; font: 700 10px 'Inter', sans-serif; letter-spacing: 0.13em; color: var(--success); text-transform: uppercase;">Why this works</span>
+    <h2 id="matchWhyTitle" style="font-size: 21px; margin: 0; color: var(--ink);">How your dog will experience this trail</h2>
+  </div>
+  <p id="matchDescription" style="max-width: 650px; margin: 13px 0 20px; color: var(--ink-soft); font-size: 14px; line-height: 1.6;"></p>
   <section class="match-why" aria-labelledby="matchWhyTitle">
-    <span class="section-kicker">WHY THIS WORKS</span>
-    <div><h2 id="matchWhyTitle">Why this trail suits your dog</h2></div>
     <div id="matchSignals" class="match-signals"></div>
+    <div id="loopCallout" style="margin-bottom: 16px;"></div>
     <div id="matchAdvice" class="match-advice" hidden></div>
   </section>
   <section class="trail-about-section" aria-labelledby="aboutTrailTitle">
