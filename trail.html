@@ -74,18 +74,13 @@
     </div>
   </div>
 
-  <div id="trailChips" class="trail-chips">
-    <span id="weatherChip" class="trail-chip" hidden></span>
-    <span id="dogsChip" class="trail-chip trail-chip--sage" hidden></span>
-  </div>
+  <div id="trailChips" class="trail-chips"><span id="weatherChip" class="trail-chip" hidden></span></div>
 
   <div id="trailBadges" style="display:none;"></div>
   <div id="trailMeta" style="display:none;"></div>
   <div id="trailTags" style="display:none;"></div>
   <div id="quickFacts" style="display:none;"></div>
   <div id="weatherWidget" style="display:none;" hidden></div>
-
-  <div id="trailEssentials" class="trail-arrival"></div>
 
   <section id="personalMatch" class="personal-match" aria-labelledby="personalMatchTitle">
     <div class="personal-match__top">
@@ -94,11 +89,13 @@
         <span class="section-kicker">YOUR DOG'S TRAIL MATCH</span>
         <h2 id="personalMatchTitle">A great match for your dog</h2>
         <p id="matchSummary">We’ll weigh this trail against your dog’s profile.</p>
+        <span id="dogsChip" class="trail-chip trail-chip--sage match-weekly" hidden></span>
       </div>
       <div id="personalScore" class="personal-score" hidden></div>
       <div class="personal-actions">
-        <a id="startNavigationBtn" class="start-navigation-btn" href="#trailMapBox">🐾 Start hike</a>
-        <button id="detailSaveBtn" class="save-trail-btn" type="button">⌑ Save trail</button>
+        <a id="startNavigationBtn" class="start-navigation-btn" href="#trailMapBox"><svg class="start-hike-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.2c-2.4 0-4.2-1.5-4.2-3.6 0-1.4 1.1-2.5 2.5-2.5.7 0 1.2.3 1.7.7.5-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 2.1-1.8 3.6-4.2 3.6Z"></path><circle cx="6.7" cy="10.4" r="1.7"></circle><circle cx="10.2" cy="8" r="1.7"></circle><circle cx="13.8" cy="8" r="1.7"></circle><circle cx="17.3" cy="10.4" r="1.7"></circle></svg>Start hike</a>
+        <a id="getDirectionsBtn" class="directions-btn" href="#">⌁ Get me there</a>
+        <button id="detailSaveBtn" class="save-trail-btn" type="button">⌑ Save for later</button>
       </div>
     </div>
   </section>

@@ -644,7 +644,17 @@ function renderTrail(t){
     (t.paid ? `<span class="tag">${window.t('card.paid')}</span>` : '');
   document.getElementById('routeSwatch').style.background = safetyColor(t.safetyLevel);
   document.getElementById('routeSwatchLabel').textContent = window.t('trail.route', {label: safetyLabel(t.safetyLevel)});
-  document.getElementById('trailDesc').textContent = trField(t, 'desc');
+  const rawDescription = trField(t, 'desc');
+  const descriptionSentences = String(rawDescription).match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [rawDescription];
+  let conciseDescription = '';
+  for (const sentence of descriptionSentences) {
+    const candidate = `${conciseDescription}${conciseDescription ? ' ' : ''}${sentence.trim()}`;
+    if (candidate.length > 330) break;
+    conciseDescription = candidate;
+    if (conciseDescription.length > 190) break;
+  }
+  if (!conciseDescription) conciseDescription = String(rawDescription).slice(0, 327).trimEnd() + (String(rawDescription).length > 327 ? '…' : '');
+  document.getElementById('trailDesc').textContent = conciseDescription;
   document.getElementById('trailTips').textContent = t.tips ? window.t('trail.tip', {tip: trField(t, 'tips')}) : '';
 
   // Community v0: "N dogs hiked this trail this week" — anonymous counts
@@ -656,7 +666,7 @@ function renderTrail(t){
       if (!n || n < 1) return;
       const chip = document.getElementById('dogsChip');
       if (!chip) return;
-      chip.textContent = n === 1 ? window.t('trail.dogsWeek1') : window.t('trail.dogsWeek', {n});
+      chip.textContent = `🐾 ${n === 1 ? window.t('trail.dogsWeek1') : window.t('trail.dogsWeek', {n})}`;
       chip.hidden = false;
     });
   }
@@ -1044,7 +1054,9 @@ function renderTrail(t){
               .addTo(map);
           };
           (t.rifugi || []).forEach(r => { if(r.km > 0) addWaypoint(r.km, 'hut', trLabel(r.name)); });
-          (t.waterSources || []).forEach(w => { if(w.km > 0) addWaypoint(w.km, 'water', trLabel(w.label)); });
+          (t.waterSources || []).forEach(w => {
+            if(typeof w.km === 'number' && w.km >= 0) addWaypoint(w.km, 'water', trLabel(w.label));
+          });
         }
 
         // Recommended starting point — a loop can technically be walked
@@ -1076,7 +1088,7 @@ function renderTrail(t){
   // Save button — reflects and updates real account state, same pattern as the trail cards.
   const saveBtn = document.getElementById('detailSaveBtn');
   function paintSaveBtn(isFav){
-    saveBtn.textContent = isFav ? window.t('card.saved') : window.t('card.save');
+    saveBtn.textContent = isFav ? 'Saved for later' : 'Save for later';
     saveBtn.classList.toggle('saved', isFav);
   }
   window.addEventListener('dolopaws-auth-changed', async (e) => {

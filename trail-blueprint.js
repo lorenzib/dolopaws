@@ -187,11 +187,19 @@
 
     const advice = $('matchAdvice');
     if (advice && t.tips) {
-      advice.innerHTML = `${svg('crowd')}<span><b>Best advice</b>${esc(t.tips.replace(/^Tip:\s*/i, ''))}</span>`;
+      const sentences = String(t.tips).replace(/^Tip:\s*/i, '').match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+      const cleaned = sentences.map(sentence => sentence.trim());
+      const dogNotes = Array.from(new Set([
+        /dog|leash|livestock|patou|swim/i,
+        /water|fountain|drink/i,
+        /heat|hot|shade|rain|road|traffic|crowd|slippery/i,
+      ].map(pattern => cleaned.find(sentence => pattern.test(sentence))).filter(Boolean)));
+      const notes = dogNotes.length ? dogNotes : sentences.slice(0, 2).map(sentence => sentence.trim());
+      const concise = note => note.length > 155 ? `${note.slice(0, 152).trimEnd()}…` : note;
+      advice.innerHTML = `${svg('crowd')}<span><b>Best advice for your dog</b><ul>${notes.map(note => `<li>${esc(concise(note))}</li>`).join('')}</ul></span>`;
       advice.hidden = false;
     }
 
-    const essentialEl = $('trailEssentials');
     const sp = t.startPoint || {};
     const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
     const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
@@ -206,8 +214,12 @@
         mapStart.click();
       });
     }
-    if (essentialEl) essentialEl.innerHTML =
-      `<div class="trail-arrival-card">${svg('park')}<span><b>Get me there</b><small>${esc(sp.label || 'Trailhead')}</small></span><a href="${directionsUrl}" target="_blank" rel="noopener">Get directions →</a></div>`;
+    const directionsBtn = $('getDirectionsBtn');
+    if (directionsBtn && typeof lat === 'number') {
+      directionsBtn.href = directionsUrl;
+      directionsBtn.target = '_blank';
+      directionsBtn.rel = 'noopener';
+    }
 
     const aboutFacts = $('aboutFacts');
     if (aboutFacts) {
