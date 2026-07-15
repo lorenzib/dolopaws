@@ -182,8 +182,16 @@
       ['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed'],
       ['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast'],
     ];
-    if (signalEl) signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
-      `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
+    if (signalEl) {
+      signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
+        `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
+      
+      // Add assessment note and sources at bottom
+      const assessmentDiv = document.createElement('div');
+      assessmentDiv.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--paper-line); font-size: 11px; color: var(--ink-soft);';
+      assessmentDiv.innerHTML = `<strong style="color: var(--ink);">🐾 Our assessment:</strong> This trail evaluation is based on verified terrain data, water availability, elevation, and shade coverage. Personalized match computed from your dog's profile.<br/><details style="margin-top: 8px; cursor: pointer;"><summary style="color: var(--accent); font-weight: 700;">Trail data and sources</summary><p style="margin: 8px 0 0; color: var(--ink-soft);">Sources: OpenStreetMap · Waymarked Trails · Open-Meteo · DoloPaws field verification</p></details>`;
+      signalEl.parentElement.appendChild(assessmentDiv);
+    }
 
     const advice = $('matchAdvice');
     if (advice && t.tips) {
@@ -234,10 +242,14 @@
       // Add loop callout if it's a loop
       const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
       if (isLoop && $('loopCallout')) {
-        const loopSvg = svg('loop').replace('width="25"', 'width="18"').replace('height="25"', 'height="18"');
-        $('loopCallout').innerHTML = `<div class="loop-callout" style="display: flex; gap: 10px; align-items: center; padding: 10px 12px; background: var(--sage-dim); border-radius: 8px; margin-bottom: 16px; border-left: 3px solid var(--success);">
-          ${loopSvg}<div style="font-size: 12px; color: var(--ink);"><b style="display: block; margin-bottom: 2px;">Loop route</b><span style="color: var(--ink-soft);">${t.distance} km back to parking</span></div>
+        if ($('loopCallout')) {
+        $('loopCallout').innerHTML = `<div class="loop-callout" style="display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: var(--sage-dim); border-radius: 8px; margin-bottom: 16px; border-left: 3px solid var(--success); font-size: 11px;">
+          <svg style="width: 14px; height: 14px; flex: none; color: var(--success);" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a7 7 0 1 0 1 7M18 4v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div style="color: var(--ink);"><b style="display: block; line-height: 1.2;">Loop</b><span style="color: var(--ink-soft); font-size: 10px;">${t.distance} km</span></div>
         </div>`;
+      }
       }
     }
 
