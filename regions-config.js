@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  // [locality, lat, lng, valley, region]
+  // [locality, lat, lng, valley, region, province]
   const LOCALITIES = [
     // ---- Dolomites ----
     ['Cortina d\'Ampezzo', 46.5405, 12.1357, 'Cortina – Ampezzo', 'dolomites'],
@@ -44,37 +44,37 @@
     ['Madonna di Campiglio', 46.2295, 10.8269, 'Brenta', 'dolomites'],
 
     // ---- Savoy ----
-    ['Chamonix-Mont-Blanc', 45.9237, 6.8694, 'Chamonix – Mont Blanc', 'savoy'],
-    ['Les Houches', 45.8906, 6.7986, 'Chamonix – Mont Blanc', 'savoy'],
-    ['Saint-Gervais-les-Bains', 45.8926, 6.7130, 'Chamonix – Mont Blanc', 'savoy'],
-    ['Passy', 45.9236, 6.6980, 'Chamonix – Mont Blanc', 'savoy'],
-    ['Megève', 45.8567, 6.6176, 'Aravis – Annecy', 'savoy'],
-    ['Annecy', 45.8992, 6.1294, 'Aravis – Annecy', 'savoy'],
-    ['Arbusigny', 46.0860, 6.2080, 'Aravis – Annecy', 'savoy'],
-    ['Talloires / Lac d\'Annecy', 45.8410, 6.2140, 'Aravis – Annecy', 'savoy'],
-    ['Duingt', 45.8274, 6.2020, 'Aravis – Annecy', 'savoy'],
-    ['La Clusaz', 45.9045, 6.4237, 'Aravis – Annecy', 'savoy'],
-    ['Le Grand-Bornand', 45.9410, 6.4280, 'Aravis – Annecy', 'savoy'],
-    ['Plateau des Glières', 45.9615, 6.3345, 'Aravis – Annecy', 'savoy'],
-    ['Morzine', 46.1791, 6.7090, 'Chablais – Portes du Soleil', 'savoy'],
-    ['Avoriaz', 46.1912, 6.7742, 'Chablais – Portes du Soleil', 'savoy'],
-    ['Samoëns', 46.0826, 6.7266, 'Chablais – Portes du Soleil', 'savoy'],
-    ['Thonon-les-Bains', 46.3705, 6.4784, 'Chablais – Portes du Soleil', 'savoy'],
-    ['Évian-les-Bains', 46.4009, 6.5877, 'Chablais – Portes du Soleil', 'savoy'],
-    ['Chambéry', 45.5646, 5.9178, 'Chambéry – Bauges', 'savoy'],
-    ['Aix-les-Bains', 45.6886, 5.9151, 'Chambéry – Bauges', 'savoy'],
-    ['Albertville', 45.6754, 6.3925, 'Beaufortain', 'savoy'],
-    ['Beaufort / Beaufortain', 45.7192, 6.5735, 'Beaufortain', 'savoy'],
-    ['Bourg-Saint-Maurice', 45.6180, 6.7690, 'Tarentaise – Vanoise', 'savoy'],
-    ['Val d\'Isère', 45.4489, 6.9797, 'Tarentaise – Vanoise', 'savoy'],
-    ['Tignes', 45.4685, 6.9060, 'Tarentaise – Vanoise', 'savoy'],
-    ['Courchevel', 45.4154, 6.6340, 'Tarentaise – Vanoise', 'savoy'],
-    ['La Plagne', 45.5073, 6.6765, 'Tarentaise – Vanoise', 'savoy'],
-    ['Méribel', 45.3966, 6.5654, 'Tarentaise – Vanoise', 'savoy'],
-    ['Pralognan-la-Vanoise', 45.3810, 6.7220, 'Tarentaise – Vanoise', 'savoy'],
-    ['Modane / Maurienne', 45.2016, 6.6580, 'Maurienne', 'savoy'],
-    ['Valloire', 45.1650, 6.4300, 'Maurienne', 'savoy'],
-    ['Saint-Jean-de-Maurienne', 45.2760, 6.3460, 'Maurienne', 'savoy']
+    ['Chamonix-Mont-Blanc', 45.9237, 6.8694, 'Chamonix – Mont Blanc', 'savoy', 'haute-savoie'],
+    ['Les Houches', 45.8906, 6.7986, 'Chamonix – Mont Blanc', 'savoy', 'haute-savoie'],
+    ['Saint-Gervais-les-Bains', 45.8926, 6.7130, 'Chamonix – Mont Blanc', 'savoy', 'haute-savoie'],
+    ['Passy', 45.9236, 6.6980, 'Chamonix – Mont Blanc', 'savoy', 'haute-savoie'],
+    ['Megève', 45.8567, 6.6176, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Annecy', 45.8992, 6.1294, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Arbusigny', 46.0860, 6.2080, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Talloires / Lac d\'Annecy', 45.8410, 6.2140, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Duingt', 45.8274, 6.2020, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['La Clusaz', 45.9045, 6.4237, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Le Grand-Bornand', 45.9410, 6.4280, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Plateau des Glières', 45.9615, 6.3345, 'Aravis – Annecy', 'savoy', 'haute-savoie'],
+    ['Morzine', 46.1791, 6.7090, 'Chablais – Portes du Soleil', 'savoy', 'haute-savoie'],
+    ['Avoriaz', 46.1912, 6.7742, 'Chablais – Portes du Soleil', 'savoy', 'haute-savoie'],
+    ['Samoëns', 46.0826, 6.7266, 'Chablais – Portes du Soleil', 'savoy', 'haute-savoie'],
+    ['Thonon-les-Bains', 46.3705, 6.4784, 'Chablais – Portes du Soleil', 'savoy', 'haute-savoie'],
+    ['Évian-les-Bains', 46.4009, 6.5877, 'Chablais – Portes du Soleil', 'savoy', 'haute-savoie'],
+    ['Chambéry', 45.5646, 5.9178, 'Chambéry – Bauges', 'savoy', 'savoie'],
+    ['Aix-les-Bains', 45.6886, 5.9151, 'Chambéry – Bauges', 'savoy', 'savoie'],
+    ['Albertville', 45.6754, 6.3925, 'Beaufortain', 'savoy', 'savoie'],
+    ['Beaufort / Beaufortain', 45.7192, 6.5735, 'Beaufortain', 'savoy', 'savoie'],
+    ['Bourg-Saint-Maurice', 45.6180, 6.7690, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['Val d\'Isère', 45.4489, 6.9797, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['Tignes', 45.4685, 6.9060, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['Courchevel', 45.4154, 6.6340, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['La Plagne', 45.5073, 6.6765, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['Méribel', 45.3966, 6.5654, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['Pralognan-la-Vanoise', 45.3810, 6.7220, 'Tarentaise – Vanoise', 'savoy', 'savoie'],
+    ['Modane / Maurienne', 45.2016, 6.6580, 'Maurienne', 'savoy', 'savoie'],
+    ['Valloire', 45.1650, 6.4300, 'Maurienne', 'savoy', 'savoie'],
+    ['Saint-Jean-de-Maurienne', 45.2760, 6.3460, 'Maurienne', 'savoy', 'savoie']
   ];
 
   const REGIONS = {
@@ -82,15 +82,27 @@
     savoy: { label: 'Savoy' }
   };
 
+  const VALLEY_PROVINCE = new Map();
+  for (const [, , , valley, region, province] of LOCALITIES) {
+    if (region === 'savoy' && province && !VALLEY_PROVINCE.has(valley)) {
+      VALLEY_PROVINCE.set(valley, province);
+    }
+  }
+
+  function provinceFromTrail(trail) {
+    if (!trail || !trail.region || !trail.valley || trail.region !== 'savoy') return null;
+    return VALLEY_PROVINCE.get(trail.valley) || null;
+  }
+
   function nearest(lat, lng) {
     let best = null;
     let bestD = Infinity;
-    for (const [name, la, ln, valley, region] of LOCALITIES) {
+    for (const [name, la, ln, valley, region, province] of LOCALITIES) {
       // Squared equirectangular distance — plenty for nearest-of-56 lookups.
       const dLat = lat - la;
       const dLng = (lng - ln) * Math.cos((lat * Math.PI) / 180);
       const d = dLat * dLat + dLng * dLng;
-      if (d < bestD) { bestD = d; best = { name, valley, region }; }
+      if (d < bestD) { bestD = d; best = { name, valley, region, province: province || null }; }
     }
     return best;
   }
@@ -98,6 +110,11 @@
   function assign(list) {
     if (!Array.isArray(list)) return;
     for (const t of list) {
+      if (!t.province) {
+        const inferredProvince = provinceFromTrail(t);
+        if (inferredProvince) t.province = inferredProvince;
+      }
+      if (t.region && t.valley && t.province) continue;
       if (t.region && t.valley) continue;
       if (typeof t.lat !== 'number' || typeof t.lng !== 'number') {
         t.region = t.region || 'dolomites'; // safe default for coordinate-less entries
@@ -107,18 +124,29 @@
       const n = nearest(t.lat, t.lng);
       t.region = t.region || n.region;
       t.valley = t.valley || n.valley;
+      if (!t.province && n.province) t.province = n.province;
       if (!t.area) t.area = n.name;
     }
   }
 
-  function valleysFor(list, region) {
+  function valleysFor(list, region, province) {
     const counts = new Map();
     for (const t of list) {
       if (t.region !== region) continue;
+      if (province && province !== 'all' && t.province !== province) continue;
       counts.set(t.valley, (counts.get(t.valley) || 0) + 1);
     }
     return [...counts.entries()].sort((a, b) => b[1] - a[1]);
   }
 
-  window.DoloPawsRegions = { REGIONS, assign, valleysFor };
+  function provincesFor(list, region) {
+    const counts = new Map();
+    for (const t of list) {
+      if (t.region !== region || !t.province) continue;
+      counts.set(t.province, (counts.get(t.province) || 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }
+
+  window.DoloPawsRegions = { REGIONS, assign, valleysFor, provincesFor };
 })();
