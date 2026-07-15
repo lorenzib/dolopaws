@@ -35,6 +35,9 @@ function trEsc(s){
 function initTrailReports(map, trail){
   const listEl = document.getElementById('trailFlagsList');
   const addBtn = document.getElementById('addReportBtn');
+  const reviewListEl = document.getElementById('trailReviewsList');
+  const addReviewBtn = document.getElementById('addReviewBtn');
+  const ratingEl = document.getElementById('communityRating');
   if (!listEl || !addBtn) return;
 
   let flagMarkers = [];
@@ -43,6 +46,48 @@ function initTrailReports(map, trail){
     // Firestore Timestamp -> Date (guard both shapes and nulls)
     if (f.createdAt && typeof f.createdAt.toDate === 'function') return f.createdAt.toDate();
     return null;
+  }
+
+  function reviewDate(review){
+    if (review.createdAt && typeof review.createdAt.toDate === 'function') return review.createdAt.toDate();
+    return null;
+  }
+
+  function renderReviews(reviews){
+    const visible = reviews.filter(review => Number(review.rating) >= 1 && Number(review.rating) <= 5)
+      .sort((a, b) => {
+        const aDate = reviewDate(a), bDate = reviewDate(b);
+        return (bDate ? bDate.getTime() : 0) - (aDate ? aDate.getTime() : 0);
+      });
+
+    if (ratingEl){
+      if (!visible.length){
+        ratingEl.hidden = true;
+      } else {
+        const average = visible.reduce((total, review) => total + Number(review.rating), 0) / visible.length;
+        ratingEl.hidden = false;
+        ratingEl.innerHTML = `<span class="community-rating__stars" aria-label="${average.toFixed(1)} out of 5 stars">★</span><strong>${average.toFixed(1)}</strong><span>${visible.length} ${visible.length === 1 ? 'review' : 'reviews'}</span>`;
+      }
+    }
+
+    if (!reviewListEl) return;
+    if (!visible.length){
+      reviewListEl.innerHTML = '';
+      return;
+    }
+
+    reviewListEl.innerHTML = visible.slice(0, 3).map(review => {
+      const date = reviewDate(review);
+      const dateLabel = date ? date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently';
+      const dogName = review.dogContext && review.dogContext.name;
+      const reviewer = dogName ? `${trEsc(dogName)}’s human` : 'A DoloPaws member';
+      const stars = '★'.repeat(Number(review.rating)) + '☆'.repeat(5 - Number(review.rating));
+      return `<article class="community-review">
+        <div class="community-review__rating" aria-label="${review.rating} out of 5 stars">${stars}</div>
+        ${review.text ? `<p>${trEsc(review.text)}</p>` : ''}
+        <footer>${reviewer} <span>·</span> ${dateLabel}</footer>
+      </article>`;
+    }).join('');
   }
 
   function isStale(f){
@@ -138,8 +183,77 @@ function initTrailReports(map, trail){
 
   async function load(){
     if (!window.DoloPawsCommunity || !window.DoloPawsCommunity.getActiveFlags) return;
-    const flags = await window.DoloPawsCommunity.getActiveFlags(trail.id);
+    const [flags, reviews] = await Promise.all([
+      window.DoloPawsCommunity.getActiveFlags(trail.id),
+      window.DoloPawsCommunity.getReviews ? window.DoloPawsCommunity.getReviews(trail.id) : Promise.resolve([]),
+    ]);
     if (Array.isArray(flags)) render(flags);
+    renderReviews(Array.isArray(reviews) ? reviews : []);
+  }
+
+  // ---- "Leave a review" modal --------------------------------------------
+  function openReviewModal(){
+    if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
+      if (window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+      <div class="modal" style="max-width:420px;">
+        <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
+        <h2 style="font-size:19px;">Rate this trail</h2>
+        <p class="hint">Your review helps other dogs and their humans choose the right walk.</p>
+        <div data-stars class="review-star-picker" aria-label="Choose a rating">
+          ${[1, 2, 3, 4, 5].map(value => `<button type="button" data-rating="${value}" aria-label="${value} star${value === 1 ? '' : 's'}">☆</button>`).join('')}
+        </div>
+        <textarea data-text maxlength="1000" rows="4" placeholder="What should other dog owners know? (optional)" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
+        <div data-err style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
+        <button type="button" data-submit class="auth-submit" style="margin-top:12px;">Post review</button>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    let selectedRating = 0;
+    const starButtons = Array.from(overlay.querySelectorAll('[data-rating]'));
+    starButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        selectedRating = Number(button.dataset.rating);
+        starButtons.forEach(star => {
+          const active = Number(star.dataset.rating) <= selectedRating;
+          star.textContent = active ? '★' : '☆';
+          star.classList.toggle('is-selected', active);
+        });
+      });
+    });
+
+    function close(){ overlay.remove(); }
+    overlay.querySelector('[data-close]').addEventListener('click', close);
+    overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+    overlay.querySelector('[data-submit]').addEventListener('click', async () => {
+      const error = overlay.querySelector('[data-err]');
+      if (!selectedRating){
+        error.textContent = 'Please choose a star rating.';
+        error.hidden = false;
+        return;
+      }
+      const submit = overlay.querySelector('[data-submit]');
+      submit.disabled = true;
+      submit.textContent = 'Posting…';
+      const result = await window.DoloPawsCommunity.setReview(
+        trail.id,
+        selectedRating,
+        overlay.querySelector('[data-text]').value.trim(),
+        null,
+      );
+      if (result.ok){ close(); load(); }
+      else {
+        error.textContent = result.message || 'Could not post your review — please try again.';
+        error.hidden = false;
+        submit.disabled = false;
+        submit.textContent = 'Post review';
+      }
+    });
   }
 
   // ---- "Report something" modal --------------------------------------------
@@ -190,7 +304,7 @@ function initTrailReports(map, trail){
     const kmInput = overlay.querySelector('[data-km]');
     const kmVal = overlay.querySelector('[data-kmval]');
     hasKm.addEventListener('change', () => { kmRow.hidden = !hasKm.checked; });
-    kmInput.addEventListener('input', () => { kmVal.textContent = kmInput.value; });
+    kmInput.addEventListener('input', () => { if (kmVal) kmVal.textContent = kmInput.value; });
 
     function close(){ overlay.remove(); }
     overlay.querySelector('[data-close]').addEventListener('click', close);
@@ -216,6 +330,7 @@ function initTrailReports(map, trail){
   }
 
   addBtn.addEventListener('click', openReportModal);
+  if (addReviewBtn) addReviewBtn.addEventListener('click', openReviewModal);
 
   // Re-render on login/logout so Remove links appear/disappear.
   window.addEventListener('dolopaws-auth-changed', load);

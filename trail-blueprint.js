@@ -41,7 +41,9 @@
 
   /* ---- Answer strip ---------------------------------------------- */
   const strip = $('qaStrip');
-  if (strip) strip.hidden = false;
+  // The personalised match below now carries the decision context, so these
+  // older answer cards stay out of the visual flow.
+  if (strip) strip.hidden = true;
 
   // Card 1 — Right for your dog? Three honest states.
   function paintDogCard() {
@@ -151,42 +153,93 @@
     const goodShade = Number(t.shadeCoverage) >= 40;
     const hasWater = Array.isArray(t.waterSources) && t.waterSources.length > 0;
     const lowRisk = t.safetyLevel === 'low-risk';
-    const duration = t.hours ? `${t.hours} h` : 'Not listed';
-    const signals = [
-      { icon:'↗', title:'Effort', value:`${t.distance} km · ${duration}`, good:Number(t.distance) <= 8 },
-      { icon:'⌁', title:'Paw terrain', value:t.terrainType || 'Mixed trail', good:easyTerrain },
-      { icon:'◒', title:'Shade', value:`${Number(t.shadeCoverage) || 0}% of the route`, good:goodShade },
-      { icon:'♒', title:'Water', value:hasWater ? `${t.waterSources.length} source${t.waterSources.length === 1 ? '' : 's'} on route` : 'Carry all water', good:hasWater },
-    ];
-    const decisionEl = $('decisionSignals');
-    if (decisionEl) decisionEl.innerHTML = signals.map(s => `
-      <div class="decision-signal ${s.good ? 'good' : 'watch'}">
-        <span class="signal-icon" aria-hidden="true">${s.icon}</span><b>${s.title}</b><span>${esc(s.value)}</span>
-      </div>`).join('');
-
     const verdict = lowRisk && easyTerrain
       ? 'A gentle, low-risk choice for most dogs, with the usual checks for heat and crowds.'
       : t.safetyLevel === 'caution'
         ? 'A more demanding trail: check the hazards and your dog’s confidence before committing.'
         : 'A manageable trail for prepared dogs; review the terrain and conditions before setting off.';
     const heroVerdict = $('heroVerdict');
-    const overviewSummary = $('trailOverviewSummary');
     if (heroVerdict) heroVerdict.textContent = verdict;
-    if (overviewSummary) overviewSummary.textContent = lowRisk ? 'The essentials look positive — check today’s conditions below.' : 'Review the amber signals before deciding.';
 
-    const safetyItems = [
-      ['Paw risk', easyTerrain ? 'Low' : (Number(t.terrainRank) >= 2 ? 'High' : 'Moderate')],
-      ['Heat risk', t.heatRisk ? t.heatRisk[0].toUpperCase() + t.heatRisk.slice(1) : 'Unknown'],
-      ['Water', hasWater ? 'Available' : 'None listed'],
-      ['Exposure', t.exposure ? 'Exposed sections' : 'Low'],
+    const svg = (kind) => {
+      const paths = {
+        paw: '<circle cx="8" cy="8.2" r="1.6" fill="#5DCAA5"/><circle cx="12" cy="6.6" r="1.6" fill="#5DCAA5"/><circle cx="16" cy="8.2" r="1.6" fill="#5DCAA5"/><path d="M8.4 16.5c0-2.4 1.5-4.2 3.6-4.2s3.6 1.8 3.6 4.2c0 1.4-1.1 2.5-2.5 2.5-.7 0-1.1-.3-1.7-.7-.5.4-1 .7-1.7.7-1.3 0-2.3-1.1-2.3-2.5Z" fill="#1D9E75"/>',
+        shade: '<path d="M12 5v14M7 19h10M6 12c0-3 2.7-6 6-6s6 3 6 6Z" fill="none" stroke="#4A7856" stroke-width="1.8"/><path d="m7 12-3 3M17 12l3 3" fill="none" stroke="#4A7856" stroke-width="1.8"/>',
+        water: '<path d="M12 4c2.8 3.4 4.5 6 4.5 8.4a4.5 4.5 0 1 1-9 0C7.5 10 9.2 7.4 12 4Z" fill="#378ADD"/>',
+        heat: '<circle cx="12" cy="12" r="4" fill="#D6A038"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" fill="none" stroke="#D6A038" stroke-width="1.8" stroke-linecap="round"/>',
+        park: '<rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="#fff" stroke="#4C87C6" stroke-width="1.6"/><path d="M10 16.2V7.8h3.1a2.6 2.6 0 0 1 0 5.2H10" fill="none" stroke="#4C87C6" stroke-width="1.9" stroke-linecap="round"/>',
+        route: '<path d="M6 18c2-5 5.5-9 12-12" fill="none" stroke="#2C5C34" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="18" r="1.7" fill="#2C5C34"/><path d="M17.5 4.2l2.6 1-1 2.5-2.6-1z" fill="#E24B4A"/>',
+        crowd: '<circle cx="8" cy="8" r="3" fill="none" stroke="#9C3A25" stroke-width="1.8"/><circle cx="17" cy="9" r="2.5" fill="none" stroke="#9C3A25" stroke-width="1.8"/><path d="M3 19c.4-4 2.2-6 5-6s4.6 2 5 6M14 19c.2-3 1.5-4.5 3.7-4.5 1.9 0 3.1 1.5 3.3 4.5" fill="none" stroke="#9C3A25" stroke-width="1.8" stroke-linecap="round"/>',
+        mountain: '<path d="m4 18 6-10 3 5 2-3 5 8Z" fill="none" stroke="#BA7517" stroke-width="1.8" stroke-linejoin="round"/>',
+        loop: '<path d="M18 8a7 7 0 1 0 1 7M18 4v4h-4" fill="none" stroke="#3E7A91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'
+      };
+      return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[kind]}</svg>`;
+    };
+    const signalEl = $('matchSignals');
+    const signalData = [
+      ['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')],
+      ['shade', 'Good shade', `${Number(t.shadeCoverage) || 0}% of the route`],
+      ['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed'],
+      ['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast'],
     ];
-    const safetyEl = $('dogSafetySignals');
-    if (safetyEl) safetyEl.innerHTML = safetyItems.map(([label,value]) =>
-      `<div class="dog-safety-signal"><b>${esc(label)}</b><span>${esc(value)}</span></div>`).join('');
-    const safetyVerdict = $('dogSafetyVerdict');
-    if (safetyVerdict) safetyVerdict.textContent = safetyLabel(t.safetyLevel);
-    const why = $('dogSafetyWhy');
-    if (why) why.textContent = t.tips || (lowRisk ? 'Straightforward underpaw, with no major trail hazards listed.' : 'Match the terrain and distance to your dog’s experience.');
+    if (signalEl) signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
+      `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
+
+    const advice = $('matchAdvice');
+    if (advice && t.tips) {
+      advice.innerHTML = `${svg('crowd')}<span><b>Best advice</b>${esc(t.tips.replace(/^Tip:\s*/i, ''))}</span>`;
+      advice.hidden = false;
+    }
+
+    const essentialEl = $('trailEssentials');
+    const sp = t.startPoint || {};
+    const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
+    const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
+    const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+    const directionsUrl = isApple ? `https://maps.apple.com/?daddr=${lat},${lng}` : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    const startBtn = $('startNavigationBtn');
+    if (startBtn && typeof lat === 'number') { startBtn.href = directionsUrl; startBtn.target = '_blank'; startBtn.rel = 'noopener'; }
+    const bestTime = t.tips && /arrive|crowd|popular/i.test(t.tips) ? 'Arrive early' : 'Check conditions';
+    const essentials = [
+      ['park', 'Getting there', sp.label || 'Trailhead', true],
+      ['route', 'Route type', `${t.distance} km${Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? ' loop' : ''}`],
+      ['crowd', 'Best time', bestTime],
+    ];
+    if (essentialEl) essentialEl.innerHTML = essentials.map(([icon, title, sub, hasDirections]) =>
+      `<div class="trail-essential">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span>${hasDirections ? `<a href="${directionsUrl}" target="_blank" rel="noopener">Get directions →</a>` : ''}</div>`).join('');
+
+    const aboutFacts = $('aboutFacts');
+    if (aboutFacts) {
+      const facts = [
+        ['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')],
+        ['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route'],
+        ['loop', 'Simple route logistics', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? 'You return to the same parking area' : 'Check your return transport'],
+        ['mountain', `${Math.max(...(t.elevationProfile || [{ elev: 0 }]).map(p => p.elev))} m altitude`, 'Mountain weather can change quickly'],
+      ];
+      aboutFacts.innerHTML = facts.map(([icon, title, sub]) => `<div class="about-fact">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
+    }
+
+    const avatar = $('matchDogAvatar');
+    const matchTitle = $('personalMatchTitle');
+    const matchSummary = $('matchSummary');
+    const personalScore = $('personalScore');
+    const fallbackPaw = svg('paw');
+    if (avatar) avatar.innerHTML = fallbackPaw;
+    function paintPersonalMatch() {
+      if (typeof scoreTrail !== 'function' || !window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) return;
+      window.DoloPawsAuth.getDogProfile().then(profile => {
+        if (!profile) return;
+        const name = profile.name || 'your dog';
+        const score = scoreTrail(t, typeof effectiveOverrides === 'function' ? effectiveOverrides(profile, null) : profile);
+        if (matchTitle) matchTitle.textContent = `A great match for ${name}`;
+        if (matchSummary) matchSummary.textContent = `This ${t.distance} km trail suits ${name}'s profile, age and walking experience.`;
+        if (personalScore) { personalScore.innerHTML = `<b>${t.curated === false ? '≈' : ''}${score}%</b><span>Excellent match</span>`; personalScore.hidden = false; }
+        if (avatar && profile.photo) avatar.innerHTML = `<img src="${esc(profile.photo)}" alt="${esc(name)}">`;
+      }).catch(() => {});
+    }
+    if (window.DoloPawsAuth) paintPersonalMatch();
+    else window.addEventListener('dolopaws-auth-ready', paintPersonalMatch, { once: true });
+    window.addEventListener('dolopaws-auth-changed', paintPersonalMatch);
 
     document.querySelectorAll('.trail-section-nav a').forEach(a => {
       a.addEventListener('click', () => {

@@ -626,6 +626,14 @@ function init(){
 function renderTrail(t){
   buildItinerary(t);
   renderLegendChips(t);
+  // Do not reserve an empty elevation panel for routes without profile data.
+  const elevationCard = document.getElementById('elevCard');
+  const hasElevationProfile = Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1;
+  if(elevationCard){
+    elevationCard.hidden = !hasElevationProfile;
+    const experienceGrid = elevationCard.closest('.trail-experience-grid');
+    if(experienceGrid) experienceGrid.classList.toggle('trail-experience-grid--itinerary-only', !hasElevationProfile);
+  }
   document.title = `${t.name} — DoloPaws`;
   document.getElementById('pageTitle').textContent = `${t.name} — DoloPaws`;
   document.getElementById('trailName').textContent = t.name;
@@ -897,7 +905,7 @@ function renderTrail(t){
       if(!mapBox) return;
       mapBox.classList.toggle('map-fs', on);
       document.body.classList.toggle('map-fs-open', on);
-      if(expandBtn) expandBtn.textContent = on ? '✕' : '⤢';
+      if(expandBtn) expandBtn.innerHTML = on ? '✕ <span>Close map</span>' : '⛶ <span>Expand map</span>';
       setTimeout(() => map.resize(), 60);
     }
     window.DoloPawsMapFS = { enter: () => setMapFS(true), exit: () => setMapFS(false) };

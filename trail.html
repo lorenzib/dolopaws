@@ -47,7 +47,6 @@
       <div style="display:flex;align-items:center;gap:12px;flex:none;">
         <span id="verifiedSeal" class="verified-seal" hidden></span>
         <span id="trailMatch" class="th-match" hidden></span>
-        <button id="detailSaveBtn" class="fav-btn" style="font-size:12.5px;padding:8px 20px;">Save</button>
       </div>
       </div>
       <p id="heroVerdict" class="trail-hero-verdict">A clear answer for you and your dog, before you set off.</p>
@@ -61,14 +60,6 @@
     <a href="#trailPlan">Trail plan</a>
     <a href="#trailReportsWrap">Reports</a>
   </nav>
-
-  <section id="trailOverview" class="trail-overview-panel" aria-labelledby="trailOverviewTitle">
-    <div class="trail-overview-heading">
-      <div><span class="section-kicker">AT A GLANCE</span><h2 id="trailOverviewTitle">Can we do this?</h2></div>
-      <p id="trailOverviewSummary">The essentials for deciding quickly.</p>
-    </div>
-    <div id="decisionSignals" class="decision-signals" aria-live="polite"></div>
-  </section>
 
   <div id="qaStrip" class="qa-strip" hidden>
     <div class="qa-card" id="qaDog">
@@ -96,20 +87,49 @@
   <div id="quickFacts" style="display:none;"></div>
   <div id="weatherWidget" style="display:none;" hidden></div>
 
-  <section class="dog-safety-panel" aria-labelledby="dogSafetyTitle">
-    <div class="dog-safety-head">
-      <div><span class="section-kicker">DOG SAFETY</span><h2 id="dogSafetyTitle">What matters for your dog</h2></div>
-      <span id="dogSafetyVerdict" class="safety-verdict">Checking trail…</span>
+  <section id="personalMatch" class="personal-match" aria-labelledby="personalMatchTitle">
+    <div class="personal-match__top">
+      <div id="matchDogAvatar" class="match-dog-avatar" aria-hidden="true"></div>
+      <div class="personal-match__copy">
+        <span class="section-kicker">YOUR DOG'S TRAIL MATCH</span>
+        <h2 id="personalMatchTitle">A great match for your dog</h2>
+        <p id="matchSummary">We’ll weigh this trail against your dog’s profile.</p>
+      </div>
+      <div id="personalScore" class="personal-score" hidden></div>
+      <div class="personal-actions">
+        <a id="startNavigationBtn" class="start-navigation-btn" href="#trailMapBox">⌁ Start navigation</a>
+        <button id="detailSaveBtn" class="save-trail-btn" type="button">⌑ Save trail</button>
+      </div>
     </div>
-    <div id="dogSafetySignals" class="dog-safety-signals"></div>
-    <p id="dogSafetyWhy" class="dog-safety-why"></p>
+  </section>
+  <section class="match-why" aria-labelledby="matchWhyTitle">
+    <div><span class="section-kicker">WHY THIS WORKS</span><h2 id="matchWhyTitle">Why this trail suits your dog</h2></div>
+    <div id="matchSignals" class="match-signals"></div>
+    <div id="matchAdvice" class="match-advice" hidden></div>
+  </section>
+  <section class="trail-about-section" aria-labelledby="aboutTrailTitle">
+    <div class="trail-section-heading">
+      <span class="section-kicker">ABOUT THIS TRAIL</span><h2 id="aboutTrailTitle" data-i18n="trail.aboutTitle">About this trail</h2>
+    </div>
+    <div class="trail-about-card">
+      <div class="trail-about-card__head">
+        <p class="trail-about-card__label">The walk, in a nutshell</p>
+      <span class="about-verified">✓ Verified by DoloPaws</span>
+      </div>
+      <p id="trailDesc" class="trail-about-card__intro"></p>
+      <div id="aboutFacts" class="about-facts"></div>
+      <details class="trail-data-details"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
+      <div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
+      <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
+    </div>
   </section>
 </div>
 
 <div class="wrap" style="padding-top:16px;">
+  <div id="trailEssentials" class="trail-essentials"></div>
   <div id="trailMapBox" class="trail-map-box trail-map-box--wide">
     <div id="trailDetailMap" style="width:100%;height:100%;background:var(--sage-dim);"></div>
-    <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⤢</button>
+    <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⛶ <span>Expand map</span></button>
     <details class="map-key map-key--dock" open><summary data-i18n="trail.mapKey">Map key</summary>
       <div id="mapLegend">
         <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
@@ -125,6 +145,12 @@
   </div>
   <div class="trail-grid trail-experience-grid" style="margin-top:14px;">
     <div class="tg-left">
+      <div class="itin-card">
+        <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
+        <div id="trailItinerary" class="itin-list"></div>
+      </div>
+    </div>
+    <div class="tg-right">
       <div class="itin-card" id="elevCard">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
           <h2 style="font-size:17px;margin:0;" data-i18n="trail.elevTitle">Elevation profile</h2>
@@ -134,12 +160,6 @@
         <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
       </div>
     </div>
-    <div class="tg-right">
-      <div class="itin-card">
-        <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
-        <div id="trailItinerary" class="itin-list"></div>
-      </div>
-    </div>
   </div>
 
   <div id="directionsWrap" style="display:none;" hidden>
@@ -147,39 +167,21 @@
   </div>
 </div>
 
-<div class="wrap" style="padding-top:20px;">
-  <div class="about-grid about-grid--bp">
-    <div class="guide-section" style="margin:0;">
-      <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.aboutTitle">About this trail</h2>
-      <p id="trailDesc" style="color:var(--ink-soft);font-size:14px;line-height:1.6;"></p>
-      <p id="trailCoords" style="color:var(--ink-soft);font-size:11.5px;margin-top:10px;font-family:monospace;"></p>
-      <p class="trail-sources" style="margin-top:12px;"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p>
-    </div>
-    <div>
-      <div class="guide-section dogtips-card" style="margin:0 0 14px;">
-        <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.dogTipsTitle">Our tips for dogs</h2>
-        <p id="trailTips" style="color:var(--ink);font-size:13.5px;line-height:1.6;margin:0;"></p>
-        <p id="dogTipsNote" class="dogtips-note" hidden data-i18n="trail.dogTipsNote">Field-tested by DoloPaws, with a dog.</p>
-      </div>
-      <div class="guide-section" style="margin:0;">
-        <h2 style="font-size:17px;margin-bottom:10px;" data-i18n="trail.insightsTitle">Good to know</h2>
-        <div id="goodToKnowBox"></div>
-        <div id="trailDetailContent" style="display:none;"></div>
-      </div>
-    </div>
+<section class="wrap community-section" id="trailReportsWrap" style="padding-top:24px;">
+  <div class="trail-section-heading community-section__heading">
+    <div><span class="section-kicker">FROM THE COMMUNITY</span><h2>Dogs and their humans on this trail</h2></div>
+    <div id="communityRating" class="community-rating" hidden></div>
   </div>
-</div>
-
-<div class="wrap" id="trailReportsWrap" style="padding-top:24px;">
-  <div class="guide-section" style="margin:0;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
-      <h2 style="font-size:17px;margin:0;" data-i18n="reports.title">Trail reports from the community</h2>
-      <button id="addReportBtn" type="button" style="padding:8px 16px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;" data-i18n="reports.button">⚠️ Report something</button>
+  <div class="community-card">
+    <div class="community-card__top">
+      <p>Trail reports help everyone prepare. Reviews share the experience; reports flag anything that needs attention.</p>
+      <div class="community-actions"><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button><button id="addReportBtn" type="button" class="add-report-btn" data-i18n="reports.button">⚠️ Report something</button></div>
     </div>
-    <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;" data-i18n="reports.intro">Recent dog-safety observations from hikers. These appear alongside DoloPaws' verified rating — they never replace it.</p>
+    <div id="trailReviewsList" class="trail-reviews-list"></div>
+    <div class="community-reports-label">Safety reports</div>
     <div id="trailFlagsList"></div>
   </div>
-</div>
+</section>
 
 <div class="wrap" id="nearbyTrails" style="padding-top:24px;" hidden>
   <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.nearbyTitle">Nearby trails</h2>
