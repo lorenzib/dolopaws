@@ -176,12 +176,17 @@
       return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[kind]}</svg>`;
     };
     const signalEl = $('matchSignals');
-    const signalData = [
-      ['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')],
-      ['shade', 'Good shade', `${Number(t.shadeCoverage) || 0}% of the route`],
-      ['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed'],
-      ['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast'],
-    ];
+    const signalData = [];
+    // Terrain
+    signalData.push(['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')]);
+    // Shade (only show if we have data)
+    if (typeof t.shadeCoverage === 'number' && t.shadeCoverage > 0) {
+      signalData.push(['shade', 'Good shade', `${Number(t.shadeCoverage)}% of the route`]);
+    }
+    // Water
+    signalData.push(['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed']);
+    // Heat risk
+    signalData.push(['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast']);
     if (signalEl) signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
       `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
 
@@ -223,12 +228,21 @@
 
     const aboutFacts = $('aboutFacts');
     if (aboutFacts) {
-      const facts = [
-        ['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')],
-        ['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route'],
-        ['loop', 'Loop route', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? `${t.distance} km — back to the same parking area` : 'Check your return transport'],
-        ['mountain', `${Math.max(...(t.elevationProfile || [{ elev: 0 }]).map(p => p.elev))} m altitude`, 'Mountain weather can change quickly'],
-      ];
+      const facts = [];
+      // Terrain/surface
+      facts.push(['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')]);
+      // Water
+      facts.push(['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route']);
+      // Route type
+      const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
+      const routeLabel = isLoop ? 'Loop route' : 'Open-ended route';
+      const routeDesc = isLoop ? `${t.distance} km — back to the same parking area` : `${t.distance} km — verify your return transport`;
+      facts.push(['loop', routeLabel, routeDesc]);
+      // Altitude (only if we have elevation profile data)
+      const maxAltitude = Math.max(...(t.elevationProfile || []).map(p => p.elev || 0));
+      if (maxAltitude > 0) {
+        facts.push(['mountain', `${maxAltitude} m altitude`, 'Mountain weather can change quickly']);
+      }
       aboutFacts.innerHTML = facts.map(([icon, title, sub]) => `<div class="about-fact">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
     }
 

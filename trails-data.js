@@ -3382,10 +3382,10 @@ const trails = [
     "startPoint": {
       "lat": 45.8794896,
       "lng": 6.6035377,
-      "label": "Start here: Alpage de Beauregard lift station, just above the Cuchet car park (route de La Cry-Cuchet, Combloux)"
+      "label": "Start here: Cuchet car park (route de La Cry-Cuchet, Combloux)"
     },
     "desc": "A half-day loop over the Jaillet alpages between Megève and Combloux, topping out at the Croix des Salles and its 360 degree panorama of Mont Blanc, the Aravis and the Fiz. The route climbs through forest and some of Haute-Savoie's most flower-rich mountain pastures, and includes the short out-and-back spur to the cross itself, the viewpoint that gives the walk its name. Waymarked by the Communaute de communes Pays du Mont-Blanc with cream-coloured signs.",
-    "tips": "Dogs are accepted on a leash, and the tourist office warns that herds graze these alpages, so expect cattle and keep the leash on around them. The tracks are coarse pebble most of the way, tiring for soft paws over 7.6 km, so check pads after the descent. Two fountains are mapped, at km 1.9 and 3.7. Near the Jaillet gondola top you pass a panoramic playground, a summer food truck, and the Lac du Jaillet with its orientation-table pier, and the alpage restaurants around La Ravine and Beauregard make good rest stops. Marked open from early May to mid November outside snowy spells. The summit view is famous at sunset; bring a headlamp if you stay for it.",
+    "tips": "Dogs are accepted on a leash, and the tourist office warns that herds graze these alpages, so expect cattle and keep the leash on around them. The tracks are coarse pebble most of the way, tiring for soft paws over 7.6 km, so check pads after the descent. Water fountains at km 1.9 and 3.7. Alternative access: via Beauregard lift station (Jaillet gondola). Near the Jaillet gondola top you pass a panoramic playground, a summer food truck, and the Lac du Jaillet with its orientation-table pier, and the alpage restaurants around La Ravine and Beauregard make good rest stops. Marked open from early May to mid November outside snowy spells. The summit view is famous at sunset; bring a headlamp if you stay for it.",
     "decisionPoints": [
       {
         "km": 6.2,
