@@ -176,21 +176,30 @@
       return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[kind]}</svg>`;
     };
     const signalEl = $('matchSignals');
-    const signalData = [
-      ['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')],
-      ['shade', 'Good shade', `${Number(t.shadeCoverage) || 0}% of the route`],
-      ['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source listed'],
-      ['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast'],
-    ];
+    const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
+    const maxAltitude = Math.max(...(t.elevationProfile || []).map(p => p.elev || 0));
+    const signalData = [];
+    signalData.push(['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')]);
+    if (typeof t.shadeCoverage === 'number' && t.shadeCoverage > 0) {
+      signalData.push(['shade', 'Good shade', `${Number(t.shadeCoverage)}% of the route`]);
+    }
+    signalData.push(['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source mapped']);
+    signalData.push(['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast']);
+    if (isLoop) {
+      signalData.push(['loop', 'Loop route', `${t.distance} km back to parking`]);
+    }
+    if (maxAltitude > 0) {
+      signalData.push(['mountain', `${maxAltitude} m altitude`, 'Weather can change quickly']);
+    }
     if (signalEl) {
       signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
         `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
-      
-      // Add assessment note and sources at bottom
-      const assessmentDiv = document.createElement('div');
-      assessmentDiv.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--paper-line); font-size: 11px; color: var(--ink-soft);';
-      assessmentDiv.innerHTML = `<strong style="color: var(--ink);">🐾 Our assessment:</strong> This trail evaluation is based on verified terrain data, water availability, elevation, and shade coverage. Personalized match computed from your dog's profile.<br/><details style="margin-top: 8px; cursor: pointer;"><summary style="color: var(--accent); font-weight: 700;">Trail data and sources</summary><p style="margin: 8px 0 0; color: var(--ink-soft);">Sources: OpenStreetMap · Waymarked Trails · Open-Meteo · DoloPaws field verification</p></details>`;
-      signalEl.parentElement.appendChild(assessmentDiv);
+    }
+
+    // Assessment note ABOVE the box, below the heading
+    const assessmentNote = $('assessmentNote');
+    if (assessmentNote) {
+      assessmentNote.innerHTML = `<strong style="color: var(--ink);">Our assessment of this trail, based on the DoloPaws method:</strong> we weigh verified terrain, water availability, elevation and shade against your dog's profile to produce the personalised match above.`;
     }
 
     const advice = $('matchAdvice');
@@ -230,7 +239,7 @@
     }
 
     const aboutFacts = $('aboutFacts');
-    if (aboutFacts) {
+    if (false && aboutFacts) {
       const facts = [
         ['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')],
         ['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route'],
@@ -275,12 +284,10 @@
     else window.addEventListener('dolopaws-auth-ready', paintPersonalMatch, { once: true });
     window.addEventListener('dolopaws-auth-changed', paintPersonalMatch);
 
-    // Generate experience description
+    // Trail description inside the white box
     const descEl = $('matchDescription');
     if (descEl && t.desc) {
-      const sentences = String(t.desc).match(/[^.!?]+[.!?]+/g) || [];
-      const shortDesc = sentences.slice(0, 2).join(' ').trim();
-      if (shortDesc) descEl.textContent = shortDesc;
+      descEl.textContent = String(t.desc).trim();
     }
     
     document.querySelectorAll('.trail-section-nav a').forEach(a => {

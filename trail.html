@@ -99,27 +99,20 @@
       </div>
     </div>
   </section>
-  <div style="margin-top: 10px; margin-bottom: 12px;">
+  <div style="margin-top: 10px; margin-bottom: 10px;">
     <span class="section-kicker" style="display: block; margin: 0 0 8px; font: 700 10px 'Inter', sans-serif; letter-spacing: 0.13em; color: var(--success); text-transform: uppercase;">Why this works</span>
-    <h2 id="matchWhyTitle" style="font-size: 21px; margin: 0; color: var(--ink);">How your dog will experience this trail</h2>
+    <h2 id="matchWhyTitle" style="font-size: 21px; margin: 0 0 12px; color: var(--ink);">How your dog will experience this trail</h2>
+    <p id="assessmentNote" style="max-width: 100%; margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.6;"></p>
   </div>
-  <p id="matchDescription" style="max-width: 100%; margin: 13px 0 20px; color: var(--ink-soft); font-size: 14px; line-height: 1.8; letter-spacing: 0.3px;"></p>
   <section class="match-why" aria-labelledby="matchWhyTitle">
-    <div id="matchSignals" class="match-signals"></div>
-    <div id="loopCallout" style="margin-bottom: 16px;"></div>
+    <p id="matchDescription" class="trail-about-card__intro" style="max-width: 100%; margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; line-height: 1.7;"></p>
+    <div id="matchSignals" class="match-signals" style="padding-bottom:18px;border-bottom:1px solid var(--paper-line);"></div>
+    <div id="aboutFacts" class="about-facts" hidden></div>
     <div id="matchAdvice" class="match-advice" hidden></div>
-  </section>
-  <section class="trail-about-section" aria-labelledby="aboutTrailTitle">
-    <div class="trail-section-heading">
-      <div><span class="section-kicker">ABOUT THIS TRAIL</span><h2 id="aboutTrailTitle" data-i18n="trail.aboutTitle">About this trail</h2></div>
-    </div>
-    <div class="trail-about-card">
-      <p id="trailDesc" class="trail-about-card__intro"></p>
-      <div id="aboutFacts" class="about-facts"></div>
-      <details class="trail-data-details"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
-      <div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
-      <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
-    </div>
+    <details class="trail-data-details" style="margin-top:16px;"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
+    <p id="trailDesc" hidden></p>
+    <div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
+    <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
   </section>
 </div>
 
