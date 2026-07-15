@@ -327,6 +327,42 @@ async function deleteMyReview(trailId) {
   } catch (e) { return false; }
 }
 
+async function addTrailPhoto(trailId, image, caption) {
+  if (!currentUser) return { ok: false, message: "Log in to add a trail photo." };
+  const imageData = String(image || '');
+  if (!imageData.startsWith('data:image/') || imageData.length > 700000) {
+    return { ok: false, message: "This photo is too large — please try another image." };
+  }
+  try {
+    const dog = await getDogProfile();
+    await addDoc(collection(db, "trailPhotos"), {
+      trailId: String(trailId).slice(0, 80),
+      uid: currentUser.uid,
+      image: imageData,
+      caption: String(caption || '').slice(0, 240),
+      dogContext: dog ? { name: dog.name || null } : null,
+      status: "visible",
+      createdAt: serverTimestamp(),
+    });
+    return { ok: true };
+  } catch (e) {
+    console.error("addTrailPhoto failed:", e);
+    return { ok: false, message: "Could not add this photo — please try again." };
+  }
+}
+
+async function getTrailPhotos(trailId) {
+  try {
+    const q = query(collection(db, "trailPhotos"),
+      where("trailId", "==", String(trailId).slice(0, 80)),
+      where("status", "==", "visible"));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    return [];
+  }
+}
+
 async function reportContent(targetType, targetId, reason) {
   if (!currentUser) return false;
   try {
@@ -345,6 +381,7 @@ window.DoloPawsCommunity = {
   recordHikeStart, getWeeklyHikeCount,
   addFlag, getActiveFlags, deleteFlag,
   setReview, getReviews, deleteMyReview,
+  addTrailPhoto, getTrailPhotos,
   reportContent,
 };
 
