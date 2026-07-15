@@ -87,18 +87,12 @@ const TRAILS_PER_PAGE = 15;
 let currentPage = 1;
 let lastFilterKey = '';            // legacy, kept for safety
 let activeRegion = 'dolomites';
-let activeProvince = 'all';
 let activeValley = 'all';
 let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
-
-function provinceLabel(key){
-  return t(`province.${key}`);
-}
 
 function filterTrailsForReturningView(list){
   let displayList = showingSavedOnly ? list.filter(x => currentFavorites[x.id]) : list;
   displayList = displayList.filter(x => x.region === activeRegion);
-  if(activeProvince !== 'all') displayList = displayList.filter(x => x.province === activeProvince);
   if(activeValley !== 'all') displayList = displayList.filter(x => x.valley === activeValley);
   if(activeProvenance === 'verified') displayList = displayList.filter(x => x.curated !== false);
   if(activeProvenance === 'imported') displayList = displayList.filter(x => x.curated === false);
@@ -721,11 +715,8 @@ function renderAreaFilters(profile){
   const regionCounts = { dolomites: 0, savoy: 0 };
   trails.forEach(t => { if(regionCounts[t.region] !== undefined) regionCounts[t.region]++; });
 
-  const provinces = window.DoloPawsRegions
-    ? window.DoloPawsRegions.provincesFor(trails, activeRegion)
-    : [];
   const valleys = window.DoloPawsRegions
-    ? window.DoloPawsRegions.valleysFor(trails, activeRegion, activeProvince)
+    ? window.DoloPawsRegions.valleysFor(trails, activeRegion)
     : [];
   if(activeValley !== 'all' && !valleys.some(([v]) => v === activeValley)) activeValley = 'all';
 
@@ -736,13 +727,6 @@ function renderAreaFilters(profile){
           ${r === 'dolomites' ? t('region.dolomites') : t('region.savoy')} <span class="count">${regionCounts[r]}</span>
         </button>`).join('')}
     </div>
-    ${provinces.length > 0 ? `
-      <div class="province-pills">
-        <div class="area-pill ${activeProvince === 'all' ? 'active' : ''}" data-province="all">${t('areas.allProvinces')}</div>
-        ${provinces.map(([p]) => `
-          <div class="area-pill ${p === activeProvince ? 'active' : ''}" data-province="${p}">${provinceLabel(p)}</div>`).join('')}
-      </div>
-    ` : ''}
     <div class="prov-row">
       <div class="valley-pills">
         <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">${t('areas.allValleys')}</div>
@@ -759,14 +743,6 @@ function renderAreaFilters(profile){
   row.querySelectorAll('.region-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       activeRegion = tab.dataset.region;
-      activeProvince = 'all';
-      activeValley = 'all';
-      renderReturningHomepage(profile);
-    });
-  });
-  row.querySelectorAll('[data-province]').forEach(pill => {
-    pill.addEventListener('click', () => {
-      activeProvince = pill.dataset.province;
       activeValley = 'all';
       renderReturningHomepage(profile);
     });
@@ -831,7 +807,7 @@ async function renderReturningHomepage(profile){
   updateMapMarkers(displayList);
 
   // Reset to page 1 whenever the filters change; clamp if the list shrank.
-  const filterKey = `${activeRegion}|${activeProvince}|${activeValley}|${activeProvenance}|${showingSavedOnly}`;
+  const filterKey = `${activeRegion}|${activeValley}|${activeProvenance}|${showingSavedOnly}`;
   if (filterKey !== lastFilterKey){ currentPage = 1; lastFilterKey = filterKey; }
   const collapsed = !showFullList && !showingSavedOnly && displayList.length > TOP_MATCHES + 2;
   const totalPages = collapsed ? 1 : Math.max(1, Math.ceil(displayList.length / TRAILS_PER_PAGE));
