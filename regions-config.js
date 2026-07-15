@@ -12,36 +12,36 @@
   // [locality, lat, lng, valley, region, province]
   const LOCALITIES = [
     // ---- Dolomites ----
-    ['Cortina d\'Ampezzo', 46.5405, 12.1357, 'Cortina – Ampezzo', 'dolomites'],
-    ['Ortisei / Val Gardena', 46.5747, 11.6717, 'Val Gardena', 'dolomites'],
-    ['Selva di Val Gardena', 46.5551, 11.7605, 'Val Gardena', 'dolomites'],
-    ['Canazei / Val di Fassa', 46.4770, 11.7714, 'Val di Fassa', 'dolomites'],
-    ['Corvara / Alta Badia', 46.5504, 11.8746, 'Val Badia', 'dolomites'],
-    ['San Cassiano / Alta Badia', 46.5687, 11.9312, 'Val Badia', 'dolomites'],
-    ['Dobbiaco / Toblach', 46.7357, 12.2210, 'Alta Pusteria – Tre Cime', 'dolomites'],
-    ['San Candido / Innichen', 46.7327, 12.2800, 'Alta Pusteria – Tre Cime', 'dolomites'],
-    ['Sesto / Sexten', 46.7025, 12.3500, 'Alta Pusteria – Tre Cime', 'dolomites'],
-    ['Braies / Prags', 46.7207, 12.1350, 'Alta Pusteria – Tre Cime', 'dolomites'],
-    ['Auronzo di Cadore', 46.5527, 12.4419, 'Alta Pusteria – Tre Cime', 'dolomites'],
-    ['Alpe di Siusi / Seiser Alm', 46.5402, 11.6181, 'Alpe di Siusi – Sciliar', 'dolomites'],
-    ['Castelrotto / Kastelruth', 46.5670, 11.5599, 'Alpe di Siusi – Sciliar', 'dolomites'],
-    ['Val di Funes / Villnöss', 46.6440, 11.6810, 'Val di Funes – Odle', 'dolomites'],
-    ['Bressanone / Brixen', 46.7151, 11.6570, 'Val di Funes – Odle', 'dolomites'],
-    ['Nova Levante / Carezza', 46.4300, 11.5380, 'Val di Fiemme – Latemar', 'dolomites'],
-    ['Predazzo / Val di Fiemme', 46.3110, 11.6010, 'Val di Fiemme – Latemar', 'dolomites'],
-    ['Cavalese', 46.2910, 11.4600, 'Val di Fiemme – Latemar', 'dolomites'],
-    ['San Martino di Castrozza', 46.2612, 11.8022, 'Primiero – Pale', 'dolomites'],
-    ['Fiera di Primiero', 46.1770, 11.8290, 'Primiero – Pale', 'dolomites'],
-    ['Falcade / Val Biois', 46.3576, 11.8712, 'Belluno – Agordino', 'dolomites'],
-    ['Arabba', 46.4977, 11.8747, 'Val Badia', 'dolomites'],
-    ['Alleghe', 46.4066, 12.0209, 'Belluno – Agordino', 'dolomites'],
-    ['Agordo', 46.2820, 12.0330, 'Belluno – Agordino', 'dolomites'],
-    ['Belluno', 46.1420, 12.2167, 'Belluno – Agordino', 'dolomites'],
-    ['Pieve di Cadore', 46.4276, 12.3730, 'Belluno – Agordino', 'dolomites'],
-    ['Bolzano / Bozen', 46.4983, 11.3548, 'Val di Fiemme – Latemar', 'dolomites'],
-    ['Brunico / Bruneck', 46.7966, 11.9376, 'Alta Pusteria – Tre Cime', 'dolomites'],
-    ['Vipiteno / Sterzing', 46.8977, 11.4331, 'Val di Funes – Odle', 'dolomites'],
-    ['Madonna di Campiglio', 46.2295, 10.8269, 'Brenta', 'dolomites'],
+    ['Cortina d\'Ampezzo', 46.5405, 12.1357, 'Cortina – Ampezzo', 'dolomites', 'belluno'],
+    ['Ortisei / Val Gardena', 46.5747, 11.6717, 'Val Gardena', 'dolomites', 'alto-adige'],
+    ['Selva di Val Gardena', 46.5551, 11.7605, 'Val Gardena', 'dolomites', 'alto-adige'],
+    ['Canazei / Val di Fassa', 46.4770, 11.7714, 'Val di Fassa', 'dolomites', 'trentino'],
+    ['Corvara / Alta Badia', 46.5504, 11.8746, 'Val Badia', 'dolomites', 'alto-adige'],
+    ['San Cassiano / Alta Badia', 46.5687, 11.9312, 'Val Badia', 'dolomites', 'alto-adige'],
+    ['Dobbiaco / Toblach', 46.7357, 12.2210, 'Alta Pusteria – Tre Cime', 'dolomites', 'alto-adige'],
+    ['San Candido / Innichen', 46.7327, 12.2800, 'Alta Pusteria – Tre Cime', 'dolomites', 'alto-adige'],
+    ['Sesto / Sexten', 46.7025, 12.3500, 'Alta Pusteria – Tre Cime', 'dolomites', 'alto-adige'],
+    ['Braies / Prags', 46.7207, 12.1350, 'Alta Pusteria – Tre Cime', 'dolomites', 'alto-adige'],
+    ['Auronzo di Cadore', 46.5527, 12.4419, 'Alta Pusteria – Tre Cime', 'dolomites', 'belluno'],
+    ['Alpe di Siusi / Seiser Alm', 46.5402, 11.6181, 'Alpe di Siusi – Sciliar', 'dolomites', 'alto-adige'],
+    ['Castelrotto / Kastelruth', 46.5670, 11.5599, 'Alpe di Siusi – Sciliar', 'dolomites', 'alto-adige'],
+    ['Val di Funes / Villnöss', 46.6440, 11.6810, 'Val di Funes – Odle', 'dolomites', 'alto-adige'],
+    ['Bressanone / Brixen', 46.7151, 11.6570, 'Val di Funes – Odle', 'dolomites', 'alto-adige'],
+    ['Nova Levante / Carezza', 46.4300, 11.5380, 'Val di Fiemme – Latemar', 'dolomites', 'alto-adige'],
+    ['Predazzo / Val di Fiemme', 46.3110, 11.6010, 'Val di Fiemme – Latemar', 'dolomites', 'trentino'],
+    ['Cavalese', 46.2910, 11.4600, 'Val di Fiemme – Latemar', 'dolomites', 'trentino'],
+    ['San Martino di Castrozza', 46.2612, 11.8022, 'Primiero – Pale', 'dolomites', 'trentino'],
+    ['Fiera di Primiero', 46.1770, 11.8290, 'Primiero – Pale', 'dolomites', 'trentino'],
+    ['Falcade / Val Biois', 46.3576, 11.8712, 'Belluno – Agordino', 'dolomites', 'belluno'],
+    ['Arabba', 46.4977, 11.8747, 'Val Badia', 'dolomites', 'belluno'],
+    ['Alleghe', 46.4066, 12.0209, 'Belluno – Agordino', 'dolomites', 'belluno'],
+    ['Agordo', 46.2820, 12.0330, 'Belluno – Agordino', 'dolomites', 'belluno'],
+    ['Belluno', 46.1420, 12.2167, 'Belluno – Agordino', 'dolomites', 'belluno'],
+    ['Pieve di Cadore', 46.4276, 12.3730, 'Belluno – Agordino', 'dolomites', 'belluno'],
+    ['Bolzano / Bozen', 46.4983, 11.3548, 'Val di Fiemme – Latemar', 'dolomites', 'alto-adige'],
+    ['Brunico / Bruneck', 46.7966, 11.9376, 'Alta Pusteria – Tre Cime', 'dolomites', 'alto-adige'],
+    ['Vipiteno / Sterzing', 46.8977, 11.4331, 'Val di Funes – Odle', 'dolomites', 'alto-adige'],
+    ['Madonna di Campiglio', 46.2295, 10.8269, 'Brenta', 'dolomites', 'trentino'],
 
     // ---- Savoy ----
     ['Chamonix-Mont-Blanc', 45.9237, 6.8694, 'Chamonix – Mont Blanc', 'savoy', 'haute-savoie'],
@@ -83,14 +83,14 @@
   };
 
   const VALLEY_PROVINCE = new Map();
-  for (const [, , , valley, region, province] of LOCALITIES) {
-    if (region === 'savoy' && province && !VALLEY_PROVINCE.has(valley)) {
+  for (const [, , , valley, , province] of LOCALITIES) {
+    if (province && !VALLEY_PROVINCE.has(valley)) {
       VALLEY_PROVINCE.set(valley, province);
     }
   }
 
   function provinceFromTrail(trail) {
-    if (!trail || !trail.region || !trail.valley || trail.region !== 'savoy') return null;
+    if (!trail || !trail.valley) return null;
     return VALLEY_PROVINCE.get(trail.valley) || null;
   }
 
