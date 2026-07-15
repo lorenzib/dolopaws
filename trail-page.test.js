@@ -74,6 +74,18 @@ describe('trail page map legend', () => {
     expect(document.getElementById('legendChips')).not.toBeNull();
   });
 
+  test('contains a dedicated Nearby trails section and no bottom decision banner', () => {
+    const html = fs.readFileSync(path.join(__dirname, 'trail.html'), 'utf8');
+    document.body.innerHTML = html;
+
+    const nearbyWrap = document.getElementById('nearbyTrails');
+    expect(nearbyWrap).not.toBeNull();
+    expect(nearbyWrap.querySelector('h2').textContent).toMatch(/Nearby trails/i);
+
+    expect(document.getElementById('decisionBar')).toBeNull();
+    expect(html).not.toContain('Gentler nearby');
+  });
+
   test('renderLegendChips populates trail legend entries', () => {
     const legendChips = { innerHTML: '' };
     const context = loadTrailScript({
@@ -112,5 +124,39 @@ describe('trail page map legend', () => {
     expect(legendChips.innerHTML).toContain('Mountain hut');
     expect(legendChips.innerHTML).toContain('Food stop');
     expect(legendChips.innerHTML).toContain('Water source');
+  });
+
+  test('addTerrainToggle creates a terrain button anchored with the terrain-specific class', () => {
+    const createdButtons = [];
+    const mapContainer = {
+      style: {},
+      appendChild: (el) => createdButtons.push(el),
+    };
+    const context = loadTrailScript({
+      document: {
+        readyState: 'loading',
+        getElementById: (id) => (id === 'trailDetailMap' ? mapContainer : null),
+        querySelector: () => null,
+        querySelectorAll: () => [],
+        createElement: () => ({
+          style: {},
+          className: '',
+          textContent: '',
+          innerHTML: '',
+          hidden: false,
+          appendChild: () => {},
+          addEventListener: () => {},
+          setAttribute: () => {},
+        }),
+        addEventListener: () => {},
+      },
+    });
+
+    context.addTerrainToggle({}, 'trailDetailMap', 1.5, 45);
+
+    expect(createdButtons).toHaveLength(1);
+    expect(createdButtons[0].textContent).toBe('trail.view3d');
+    expect(createdButtons[0].className).toContain('map-btn--terrain');
+    expect(createdButtons[0].style.left).toBeUndefined();
   });
 });

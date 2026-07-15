@@ -508,6 +508,7 @@ img,svg{max-width:100%;height:auto;}
 
 /* Map controls — white buttons matching MapLibre's own control style */
 .map-btn{position:absolute;bottom:10px;z-index:6;height:34px;padding:0 16px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:'Inter',sans-serif;}
+.map-btn--terrain{left:auto;right:10px;bottom:52px;}
 .map-panel{position:absolute;bottom:48px;left:10px;z-index:6;background:#fff;border:1px solid var(--paper-line);border-radius:12px;padding:10px;display:none;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:170px;}
 .map-chip{padding:7px 12px;border-radius:999px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--paper-line);background:none;color:var(--ink);font-family:'Inter',sans-serif;text-align:left;}
 .map-chip.on{border-color:var(--ink);background:var(--ink);color:#fff;}
@@ -796,9 +797,3 @@ body.map-fs-open{overflow:hidden;}
 .near-card:hover{border-color:var(--ink);}
 .near-card b{font-size:13.5px;display:block;margin-bottom:5px;font-family:'Source Serif 4',serif;}
 .near-card span{font-size:11.5px;color:var(--ink-soft);}
-
-.decision-bar{background:var(--ink);color:#fff;border-radius:16px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-.decision-bar b{font-size:13.5px;}
-.decision-actions{display:flex;gap:9px;flex-wrap:wrap;}
-.db-btn{border:none;border-radius:999px;padding:8px 16px;font-weight:700;font-size:12px;font-family:'Inter',sans-serif;background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block;}
-.db-btn--clay{background:var(--accent, #C46A3B);color:#fff;}
