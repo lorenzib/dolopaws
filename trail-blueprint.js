@@ -5,7 +5,6 @@
  *   - Verified/Imported seal in the hero
  *   - Answer strip: "Right for your dog?" · "Today?" · "Getting there"
  *   - Nearby trails (same valley, via regions-config)
- *   - Decision bar at the end of the page
  *
  * Everything is derived from data that already exists (trail fields,
  * the live weather chip trail.js populates, the same scoreTrail() the
@@ -74,7 +73,6 @@
         title.textContent = tt('qa.dogScored', { n: approx + n, name },
           `Right for ${name}? ${approx}${n}%`);
         sub.textContent = factLine;
-        paintDecision(approx + n + '%', name);
       }).catch(guest);
     }
     if (window.DoloPawsAuth) paint();
@@ -137,48 +135,6 @@
       </a>`).join('');
     wrapEl.hidden = false;
   })();
-
-  /* ---- Decision bar ----------------------------------------------- */
-  function paintDecision(scoreText, dogName) {
-    const bar = $('decisionBar'), text = $('decisionText');
-    if (!bar || !text) return;
-    const save = $('decisionSave'), dirs = $('decisionDirections'),
-          near = $('decisionNearby'), prof = $('decisionProfile');
-
-    const sp = t.startPoint || {};
-    const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
-    const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
-    if (dirs && typeof lat === 'number') {
-      dirs.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-      dirs.textContent = tt('trail.openMaps', null, 'Directions');
-      dirs.hidden = false;
-    }
-    if (near && !$('nearbyTrails').hidden) {
-      near.textContent = tt('qa.decisionNearby', null, 'More trails nearby ↑');
-      near.hidden = false;
-      near.onclick = () => $('nearbyTrails').scrollIntoView({ behavior: 'smooth' });
-    }
-    if (scoreText && dogName) {
-      text.textContent = tt('qa.decisionScored', { score: scoreText, name: dogName },
-        `${scoreText} for ${dogName} — enjoy the trail`);
-      if (save) {
-        save.textContent = tt('card.save', null, 'Save trail');
-        save.hidden = false;
-        save.onclick = () => { const b = $('detailSaveBtn'); if (b) b.click(); };
-      }
-      if (prof) prof.hidden = true;
-    } else {
-      text.textContent = tt('qa.decisionGuest', null, 'Would this suit your dog? Find out in 2 minutes.');
-      if (prof) {
-        prof.textContent = tt('qa.decisionGuestCta', null, 'Create a free profile');
-        prof.hidden = false;
-      }
-      if (save) save.hidden = true;
-    }
-    bar.hidden = false;
-  }
-  // Guest baseline immediately; the dog card upgrades it once auth resolves.
-  paintDecision(null, null);
 
   /* ---- Dog tips note (verified trails only) ----------------------- */
   (function tipsNote() {

@@ -180,8 +180,7 @@ function addTerrainToggle(map, containerId, exaggeration, pitch3D){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.textContent = window.t('trail.view3d');
-  btn.className = 'map-btn';
-  btn.style.left = '10px';
+  btn.className = 'map-btn map-btn--terrain';
   container.appendChild(btn);
 
   let is3D = false; // clean, flat, label-first map by default
