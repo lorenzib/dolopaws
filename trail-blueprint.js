@@ -262,6 +262,50 @@
       }
     }
 
+    // Contextual safety guides — shown ONLY when the trail data warrants it
+    (function relevantGuides() {
+      const box = $('trailGuideLinks');
+      if (!box) return;
+      const text = `${t.tips || ''} ${t.desc || ''} ${(t.startPoint && t.startPoint.label) || ''} ${(t.surfaceHazards || []).join(' ')}`.toLowerCase();
+      const maxAlt = Math.max(...(t.elevationProfile || []).map(p => Number(p.elev) || 0));
+      const shade = typeof t.shadeCoverage === 'number' ? t.shadeCoverage : null;
+      const hasWaterSrc = Array.isArray(t.waterSources) && t.waterSources.length > 0;
+      const guides = [];
+
+      // Livestock — alpage/pasture/herd/cattle/patou/guardian
+      if (/livestock|patou|guardian|cattle|herd|pasture|alpage|graz/.test(text)) {
+        guides.push(['🐄', 'Meeting livestock and guardian dogs', 'guides/livestock-guard-dogs.html']);
+      }
+      // Cable car — gondola/lift/cable/cableway nearby or in text
+      if (/gondola|cable car|cableway|lift station|chairlift|funicular/.test(text)) {
+        guides.push(['🚠', 'Dogs on cable cars', 'guides/dogs-on-cable-cars.html']);
+      }
+      // Heat / exposure — exposed route OR high heat risk OR little shade
+      if (t.exposure === true || t.heatRisk === 'high' || (shade !== null && shade < 25)) {
+        guides.push(['☀️', 'Heat and exposure with your dog', 'safety-guide.html#heat']);
+      }
+      // Altitude — high trailhead/summit
+      if (maxAlt >= 1800) {
+        guides.push(['⛰️', 'Hiking at altitude', 'safety-guide.html#altitude']);
+      }
+      // Water — none mapped, or long route
+      if (!hasWaterSrc || Number(t.distance) >= 8) {
+        guides.push(['💧', 'Water for dogs on trail', 'guides/water-for-dogs-on-trail.html']);
+      }
+      // Rifugi — route passes huts
+      if (Array.isArray(t.rifugi) && t.rifugi.length) {
+        guides.push(['🏡', 'Dogs at rifugi', 'guides/dogs-at-rifugi.html']);
+      }
+
+      if (!guides.length) return;
+      box.innerHTML = `<div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--paper-line);">
+        <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Read before you go</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">${guides.slice(0,4).map(([icon,label,href]) =>
+          `<a href="${href}" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--sage-dim);border:1px solid var(--paper-line);border-radius:999px;font-size:12px;font-weight:600;color:var(--ink);text-decoration:none;">${icon} ${esc(label)}</a>`).join('')}</div>
+      </div>`;
+      box.hidden = false;
+    })();
+
     const avatar = $('matchDogAvatar');
     const matchTitle = $('personalMatchTitle');
     const matchSummary = $('matchSummary');
