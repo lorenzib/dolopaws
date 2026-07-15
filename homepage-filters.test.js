@@ -4,18 +4,12 @@ const vm = require('vm');
 
 function tForTests(key, params = {}){
   if(key === 'areas.allValleys') return 'All valleys';
-  if(key === 'areas.allProvinces') return 'All provinces';
-  if(key === 'province.savoie') return 'Savoie';
-  if(key === 'province.haute-savoie') return 'Haute-Savoie';
-  if(key === 'province.alto-adige') return 'South Tyrol';
-  if(key === 'province.trentino') return 'Trentino';
-  if(key === 'province.belluno') return 'Belluno';
   if(key === 'region.savoy') return 'Savoy';
   if(key === 'region.theDolomites') return 'the Dolomites';
   if(key === 'region.dolomites') return 'Dolomites';
   if(key === 'home.bubble') return 'Where are we heading today?';
-  if(key === 'home.pickArea') return `Pick a province or valley below — trails are ranked for ${params.name || 'your dog'}.`;
-  if(key === 'home.pickAreaNoName') return 'Pick a province or valley below — trails are ranked for your dog.';
+  if(key === 'home.pickArea') return `Pick a valley below — trails are ranked for ${params.name || 'your dog'}.`;
+  if(key === 'home.pickAreaNoName') return 'Pick a valley below — trails are ranked for your dog.';
   if(key === 'home.nTrails') return `${params.n} ${params.n === 1 ? 'trail' : 'trails'}`;
   if(key === 'home.nSaved') return `${params.n} saved trails`;
   if(key === 'home.nSaved1') return '1 saved trail';
@@ -105,110 +99,75 @@ function loadHomepageContext(testTrails){
   return context;
 }
 
-describe('returning homepage province + valley filters', () => {
+describe('returning homepage region + valley filters', () => {
   const sampleTrails = [
-    { id: 'mau', name: 'Maurienne Trail', region: 'savoy', valley: 'Maurienne', province: 'savoie', area: 'Modane', lat: 45.2, lng: 6.6, curated: true, distance: 6, elevation: 300, hours: 3, terrainType: 'Mixed', safetyLevel: 'low-risk' },
-    { id: 'tar', name: 'Tarentaise Trail', region: 'savoy', valley: 'Tarentaise – Vanoise', province: 'savoie', area: 'Tignes', lat: 45.46, lng: 6.9, curated: true, distance: 9, elevation: 500, hours: 4, terrainType: 'Mixed', safetyLevel: 'moderate' },
-    { id: 'bea', name: 'Beaufortain Trail', region: 'savoy', valley: 'Beaufortain', province: 'savoie', area: 'Beaufort', lat: 45.72, lng: 6.57, curated: true, distance: 8, elevation: 420, hours: 3.5, terrainType: 'Mixed', safetyLevel: 'moderate' },
-    { id: 'cha', name: 'Chamonix Trail', region: 'savoy', valley: 'Chamonix – Mont Blanc', province: 'haute-savoie', area: 'Chamonix', lat: 45.92, lng: 6.86, curated: true, distance: 7, elevation: 450, hours: 3.2, terrainType: 'Mixed', safetyLevel: 'moderate' },
-    { id: 'ara', name: 'Aravis Trail', region: 'savoy', valley: 'Aravis – Annecy', province: 'haute-savoie', area: 'Annecy', lat: 45.89, lng: 6.12, curated: false, distance: 5, elevation: 220, hours: 2.3, terrainType: 'Mixed', safetyLevel: 'low-risk' },
-    { id: 'vag', name: 'Val Gardena Trail', region: 'dolomites', valley: 'Val Gardena', province: 'alto-adige', area: 'Ortisei', lat: 46.57, lng: 11.67, curated: true, distance: 6, elevation: 320, hours: 3, terrainType: 'Mixed', safetyLevel: 'low-risk' },
-    { id: 'pri', name: 'Primiero Trail', region: 'dolomites', valley: 'Primiero – Pale', province: 'trentino', area: 'San Martino', lat: 46.26, lng: 11.80, curated: true, distance: 7, elevation: 400, hours: 3.5, terrainType: 'Rocky', safetyLevel: 'moderate' },
-    { id: 'bel', name: 'Cortina Trail', region: 'dolomites', valley: 'Cortina – Ampezzo', province: 'belluno', area: 'Cortina', lat: 46.54, lng: 12.13, curated: true, distance: 5, elevation: 280, hours: 2.5, terrainType: 'Mixed', safetyLevel: 'low-risk' },
+    { id: 'mau', name: 'Maurienne Trail', region: 'savoy', valley: 'Maurienne', area: 'Modane', lat: 45.2, lng: 6.6, curated: true, distance: 6, elevation: 300, hours: 3, terrainType: 'Mixed', safetyLevel: 'low-risk' },
+    { id: 'tar', name: 'Tarentaise Trail', region: 'savoy', valley: 'Tarentaise – Vanoise', area: 'Tignes', lat: 45.46, lng: 6.9, curated: true, distance: 9, elevation: 500, hours: 4, terrainType: 'Mixed', safetyLevel: 'moderate' },
+    { id: 'cha', name: 'Chamonix Trail', region: 'savoy', valley: 'Chamonix – Mont Blanc', area: 'Chamonix', lat: 45.92, lng: 6.86, curated: false, distance: 7, elevation: 450, hours: 3.2, terrainType: 'Mixed', safetyLevel: 'moderate' },
+    { id: 'vag', name: 'Val Gardena Trail', region: 'dolomites', valley: 'Val Gardena', area: 'Ortisei', lat: 46.57, lng: 11.67, curated: true, distance: 6, elevation: 320, hours: 3, terrainType: 'Mixed', safetyLevel: 'low-risk' },
+    { id: 'pri', name: 'Primiero Trail', region: 'dolomites', valley: 'Primiero – Pale', area: 'San Martino', lat: 46.26, lng: 11.80, curated: true, distance: 7, elevation: 400, hours: 3.5, terrainType: 'Rocky', safetyLevel: 'moderate' },
   ];
 
-  test('renders province chips for Savoy with all/savoie/haute-savoie', () => {
+  test('renders valley pills for the active region without province chips', () => {
     const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "savoy"; activeProvince = "all"; activeValley = "all";', context);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "all";', context);
     vm.runInContext('renderAreaFilters(null);', context);
 
     const row = document.getElementById('areaFilterRow');
-    expect(row.innerHTML).toContain('data-province="all"');
-    expect(row.innerHTML).toContain('All provinces');
-    expect(row.innerHTML).toContain('Savoie');
-    expect(row.innerHTML).toContain('Haute-Savoie');
+    expect(row.innerHTML).toContain('data-valley="all"');
+    expect(row.innerHTML).toContain('Maurienne');
+    expect(row.innerHTML).toContain('Tarentaise – Vanoise');
+    expect(row.innerHTML).not.toContain('data-province');
+    expect(row.innerHTML).not.toContain('province-pills');
   });
 
-  test('province selection narrows the visible valley chips', () => {
+  test('switching region tab resets valley and re-renders valley chips', () => {
     const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "savoy"; activeProvince = "savoie"; activeValley = "all";', context);
-    vm.runInContext('renderAreaFilters(null);', context);
-
-    const row = document.getElementById('areaFilterRow');
-    expect(row.textContent).toContain('Maurienne');
-    expect(row.textContent).toContain('Tarentaise – Vanoise');
-    expect(row.textContent).toContain('Beaufortain');
-    expect(row.textContent).not.toContain('Chamonix – Mont Blanc');
-    expect(row.textContent).not.toContain('Aravis – Annecy');
-  });
-
-  test('clicking a province resets valley selection to all', () => {
-    const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "savoy"; activeProvince = "all"; activeValley = "Maurienne"; renderAreaFilters(null);', context);
-
-    const hauteSavoieChip = document.querySelector('[data-province="haute-savoie"]');
-    expect(hauteSavoieChip).not.toBeNull();
-    hauteSavoieChip.click();
-
-    expect(vm.runInContext('activeProvince', context)).toBe('haute-savoie');
-    expect(vm.runInContext('activeValley', context)).toBe('all');
-  });
-
-  test('result count reflects province + valley filters together', async () => {
-    const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "savoy"; activeProvince = "savoie"; activeValley = "all"; activeProvenance = "all"; showingSavedOnly = false;', context);
-    await vm.runInContext('renderReturningHomepage(null);', context);
-    expect(document.getElementById('returningCount').textContent).toBe('3 trails');
-
-    vm.runInContext('activeValley = "Maurienne";', context);
-    await vm.runInContext('renderReturningHomepage(null);', context);
-    expect(document.getElementById('returningCount').textContent).toBe('1 trail');
-  });
-
-  test('renders province chips for Dolomites with south-tyrol/trentino/belluno', () => {
-    const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "dolomites"; activeProvince = "all"; activeValley = "all";', context);
-    vm.runInContext('renderAreaFilters(null);', context);
-
-    const row = document.getElementById('areaFilterRow');
-    expect(row.innerHTML).toContain('data-province="all"');
-    expect(row.innerHTML).toContain('All provinces');
-    expect(row.textContent).toContain('South Tyrol');
-    expect(row.textContent).toContain('Trentino');
-    expect(row.textContent).toContain('Belluno');
-  });
-
-  test('Dolomites province selection narrows visible valley chips', () => {
-    const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "dolomites"; activeProvince = "trentino"; activeValley = "all";', context);
-    vm.runInContext('renderAreaFilters(null);', context);
-
-    const row = document.getElementById('areaFilterRow');
-    expect(row.textContent).toContain('Primiero – Pale');
-    expect(row.textContent).not.toContain('Val Gardena');
-    expect(row.textContent).not.toContain('Cortina – Ampezzo');
-  });
-
-  test('switching from Savoy to Dolomites resets province and valley', () => {
-    const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "savoy"; activeProvince = "savoie"; activeValley = "Maurienne"; renderAreaFilters(null);', context);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "Maurienne"; renderAreaFilters(null);', context);
 
     const dolomitesTab = document.querySelector('[data-region="dolomites"]');
     expect(dolomitesTab).not.toBeNull();
     dolomitesTab.click();
 
     expect(vm.runInContext('activeRegion', context)).toBe('dolomites');
-    expect(vm.runInContext('activeProvince', context)).toBe('all');
     expect(vm.runInContext('activeValley', context)).toBe('all');
   });
 
-  test('Dolomites result count reflects province filter', async () => {
+  test('clicking a valley pill updates activeValley', () => {
     const context = loadHomepageContext(sampleTrails);
-    vm.runInContext('activeRegion = "dolomites"; activeProvince = "all"; activeValley = "all"; activeProvenance = "all"; showingSavedOnly = false;', context);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "all"; renderAreaFilters(null);', context);
+
+    const mauriennePill = document.querySelector('[data-valley="Maurienne"]');
+    expect(mauriennePill).not.toBeNull();
+    mauriennePill.click();
+
+    expect(vm.runInContext('activeValley', context)).toBe('Maurienne');
+  });
+
+  test('result count reflects region filter', async () => {
+    const context = loadHomepageContext(sampleTrails);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "all"; activeProvenance = "all"; showingSavedOnly = false;', context);
     await vm.runInContext('renderReturningHomepage(null);', context);
     expect(document.getElementById('returningCount').textContent).toBe('3 trails');
+  });
 
-    vm.runInContext('activeProvince = "belluno";', context);
+  test('result count reflects valley filter', async () => {
+    const context = loadHomepageContext(sampleTrails);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "Maurienne"; activeProvenance = "all"; showingSavedOnly = false;', context);
+    await vm.runInContext('renderReturningHomepage(null);', context);
+    expect(document.getElementById('returningCount').textContent).toBe('1 trail');
+  });
+
+  test('provenance filter shows only verified trails', async () => {
+    const context = loadHomepageContext(sampleTrails);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "all"; activeProvenance = "verified"; showingSavedOnly = false;', context);
+    await vm.runInContext('renderReturningHomepage(null);', context);
+    expect(document.getElementById('returningCount').textContent).toBe('2 trails');
+  });
+
+  test('provenance filter shows only imported trails', async () => {
+    const context = loadHomepageContext(sampleTrails);
+    vm.runInContext('activeRegion = "savoy"; activeValley = "all"; activeProvenance = "imported"; showingSavedOnly = false;', context);
     await vm.runInContext('renderReturningHomepage(null);', context);
     expect(document.getElementById('returningCount').textContent).toBe('1 trail');
   });
