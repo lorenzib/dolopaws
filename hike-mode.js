@@ -43,8 +43,14 @@ function initHikeMode(map, trail){
 
   // ---- UI elements ---------------------------------------------------------
   const startBtn = document.createElement('button');
+  const hikeLabel = (key, fallback) => {
+    const text = window.t ? window.t(key) : fallback;
+    return String(text || fallback).replace(/^\s*🐾\s*/, '');
+  };
+  const hikeButtonHtml = label => `<svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;vertical-align:-3px;margin-right:6px;fill:currentColor;"><path d="M12 18.2c-2.4 0-4.2-1.5-4.2-3.6 0-1.4 1.1-2.5 2.5-2.5.7 0 1.2.3 1.7.7.5-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 2.1-1.8 3.6-4.2 3.6Z"></path><circle cx="6.7" cy="10.4" r="1.7"></circle><circle cx="10.2" cy="8" r="1.7"></circle><circle cx="13.8" cy="8" r="1.7"></circle><circle cx="17.3" cy="10.4" r="1.7"></circle></svg>${label}`;
   startBtn.type = 'button';
-  startBtn.textContent = window.t ? window.t('hike.start') : '🐾 Start hike';
+  startBtn.id = 'mapStartHikeBtn';
+  startBtn.innerHTML = hikeButtonHtml(hikeLabel('hike.start', 'Start hike'));
   startBtn.style.cssText = 'position:absolute;top:10px;left:10px;z-index:6;padding:9px 18px;border-radius:14px;background:var(--ink);color:#fff;border:none;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);';
   container.appendChild(startBtn);
 
@@ -193,7 +199,7 @@ function initHikeMode(map, trail){
     offRouteStreak = 0;
     // A hiker needs a navigation screen, not an article: go fullscreen.
     if (window.DoloPawsMapFS) window.DoloPawsMapFS.enter();
-    startBtn.textContent = window.t('hike.end');
+    startBtn.textContent = hikeLabel('hike.end', 'End hike');
     startBtn.style.background = '#9C3A25';
     panel.style.display = 'block';
     panel.innerHTML = window.t('hike.getting');
@@ -220,7 +226,7 @@ function initHikeMode(map, trail){
     if (window.DoloPawsMapFS) window.DoloPawsMapFS.exit();
     if (watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
     if (wakeLock){ try { wakeLock.release(); } catch (e) {} wakeLock = null; }
-    startBtn.textContent = window.t('hike.start');
+    startBtn.innerHTML = hikeButtonHtml(hikeLabel('hike.start', 'Start hike'));
     startBtn.style.background = 'var(--ink)';
     if (!keepPanel) panel.style.display = 'none';
     banner.style.display = 'none';

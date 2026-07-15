@@ -198,22 +198,23 @@
     const isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
     const directionsUrl = isApple ? `https://maps.apple.com/?daddr=${lat},${lng}` : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     const startBtn = $('startNavigationBtn');
-    if (startBtn && typeof lat === 'number') { startBtn.href = directionsUrl; startBtn.target = '_blank'; startBtn.rel = 'noopener'; }
-    const bestTime = t.tips && /arrive|crowd|popular/i.test(t.tips) ? 'Arrive early' : 'Check conditions';
-    const essentials = [
-      ['park', 'Getting there', sp.label || 'Trailhead', true],
-      ['route', 'Route type', `${t.distance} km${Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? ' loop' : ''}`],
-      ['crowd', 'Best time', bestTime],
-    ];
-    if (essentialEl) essentialEl.innerHTML = essentials.map(([icon, title, sub, hasDirections]) =>
-      `<div class="trail-essential">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span>${hasDirections ? `<a href="${directionsUrl}" target="_blank" rel="noopener">Get directions →</a>` : ''}</div>`).join('');
+    if (startBtn) {
+      startBtn.addEventListener('click', (event) => {
+        const mapStart = $('mapStartHikeBtn');
+        if (!mapStart) return;
+        event.preventDefault();
+        mapStart.click();
+      });
+    }
+    if (essentialEl) essentialEl.innerHTML =
+      `<div class="trail-arrival-card">${svg('park')}<span><b>Get me there</b><small>${esc(sp.label || 'Trailhead')}</small></span><a href="${directionsUrl}" target="_blank" rel="noopener">Get directions →</a></div>`;
 
     const aboutFacts = $('aboutFacts');
     if (aboutFacts) {
       const facts = [
         ['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')],
         ['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route'],
-        ['loop', 'Simple route logistics', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? 'You return to the same parking area' : 'Check your return transport'],
+        ['loop', 'Loop route', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? `${t.distance} km — back to the same parking area` : 'Check your return transport'],
         ['mountain', `${Math.max(...(t.elevationProfile || [{ elev: 0 }]).map(p => p.elev))} m altitude`, 'Mountain weather can change quickly'],
       ];
       aboutFacts.innerHTML = facts.map(([icon, title, sub]) => `<div class="about-fact">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');

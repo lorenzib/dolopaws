@@ -42,12 +42,10 @@
   <div class="trail-hero-dark trail-decision-hero" style="margin-top:14px;">
     <div class="trail-hero-content">
       <p class="trail-hero-eyebrow">DOG-FRIENDLY TRAIL GUIDE</p>
+      <span id="verifiedSeal" class="verified-seal" hidden></span>
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
       <h1 id="trailName" style="font-size:clamp(28px,4vw,44px);color:#fff;margin:0;" aria-busy="true"><span class="skeleton skeleton--light" style="width:min(260px,60vw);height:36px;" aria-label="Loading trail"></span></h1>
-      <div style="display:flex;align-items:center;gap:12px;flex:none;">
-        <span id="verifiedSeal" class="verified-seal" hidden></span>
-        <span id="trailMatch" class="th-match" hidden></span>
-      </div>
+      <div id="heroRating" class="hero-rating" hidden></div>
       </div>
       <p id="heroVerdict" class="trail-hero-verdict">A clear answer for you and your dog, before you set off.</p>
     <div id="trailFacts" class="th-facts"></div>
@@ -87,6 +85,8 @@
   <div id="quickFacts" style="display:none;"></div>
   <div id="weatherWidget" style="display:none;" hidden></div>
 
+  <div id="trailEssentials" class="trail-arrival"></div>
+
   <section id="personalMatch" class="personal-match" aria-labelledby="personalMatchTitle">
     <div class="personal-match__top">
       <div id="matchDogAvatar" class="match-dog-avatar" aria-hidden="true"></div>
@@ -97,7 +97,7 @@
       </div>
       <div id="personalScore" class="personal-score" hidden></div>
       <div class="personal-actions">
-        <a id="startNavigationBtn" class="start-navigation-btn" href="#trailMapBox">⌁ Start navigation</a>
+        <a id="startNavigationBtn" class="start-navigation-btn" href="#trailMapBox">🐾 Start hike</a>
         <button id="detailSaveBtn" class="save-trail-btn" type="button">⌑ Save trail</button>
       </div>
     </div>
@@ -109,13 +109,9 @@
   </section>
   <section class="trail-about-section" aria-labelledby="aboutTrailTitle">
     <div class="trail-section-heading">
-      <span class="section-kicker">ABOUT THIS TRAIL</span><h2 id="aboutTrailTitle" data-i18n="trail.aboutTitle">About this trail</h2>
+      <div><span class="section-kicker">ABOUT THIS TRAIL</span><h2 id="aboutTrailTitle" data-i18n="trail.aboutTitle">About this trail</h2></div>
     </div>
     <div class="trail-about-card">
-      <div class="trail-about-card__head">
-        <p class="trail-about-card__label">The walk, in a nutshell</p>
-      <span class="about-verified">✓ Verified by DoloPaws</span>
-      </div>
       <p id="trailDesc" class="trail-about-card__intro"></p>
       <div id="aboutFacts" class="about-facts"></div>
       <details class="trail-data-details"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
@@ -126,7 +122,6 @@
 </div>
 
 <div class="wrap" style="padding-top:16px;">
-  <div id="trailEssentials" class="trail-essentials"></div>
   <div id="trailMapBox" class="trail-map-box trail-map-box--wide">
     <div id="trailDetailMap" style="width:100%;height:100%;background:var(--sage-dim);"></div>
     <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⛶ <span>Expand map</span></button>
@@ -175,8 +170,9 @@
   <div class="community-card">
     <div class="community-card__top">
       <p>Trail reports help everyone prepare. Reviews share the experience; reports flag anything that needs attention.</p>
-      <div class="community-actions"><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button><button id="addReportBtn" type="button" class="add-report-btn" data-i18n="reports.button">⚠️ Report something</button></div>
+      <div class="community-actions"><button id="addPhotoBtn" type="button" class="add-photo-btn">▧ Add trail photo</button><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button><button id="addReportBtn" type="button" class="add-report-btn" data-i18n="reports.button">⚠️ Report something</button></div>
     </div>
+    <div id="trailPhotosList" class="trail-photos-list"></div>
     <div id="trailReviewsList" class="trail-reviews-list"></div>
     <div class="community-reports-label">Safety reports</div>
     <div id="trailFlagsList"></div>

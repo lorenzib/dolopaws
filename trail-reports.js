@@ -38,6 +38,9 @@ function initTrailReports(map, trail){
   const reviewListEl = document.getElementById('trailReviewsList');
   const addReviewBtn = document.getElementById('addReviewBtn');
   const ratingEl = document.getElementById('communityRating');
+  const heroRatingEl = document.getElementById('heroRating');
+  const photosListEl = document.getElementById('trailPhotosList');
+  const addPhotoBtn = document.getElementById('addPhotoBtn');
   if (!listEl || !addBtn) return;
 
   let flagMarkers = [];
@@ -69,6 +72,15 @@ function initTrailReports(map, trail){
         ratingEl.innerHTML = `<span class="community-rating__stars" aria-label="${average.toFixed(1)} out of 5 stars">★</span><strong>${average.toFixed(1)}</strong><span>${visible.length} ${visible.length === 1 ? 'review' : 'reviews'}</span>`;
       }
     }
+    if (heroRatingEl){
+      if (!visible.length){
+        heroRatingEl.hidden = true;
+      } else {
+        const average = visible.reduce((total, review) => total + Number(review.rating), 0) / visible.length;
+        heroRatingEl.hidden = false;
+        heroRatingEl.innerHTML = `<span aria-hidden="true">★</span> ${average.toFixed(1)} <span>(${visible.length} ${visible.length === 1 ? 'review' : 'reviews'})</span>`;
+      }
+    }
 
     if (!reviewListEl) return;
     if (!visible.length){
@@ -87,6 +99,20 @@ function initTrailReports(map, trail){
         ${review.text ? `<p>${trEsc(review.text)}</p>` : ''}
         <footer>${reviewer} <span>·</span> ${dateLabel}</footer>
       </article>`;
+    }).join('');
+  }
+
+  function renderPhotos(photos){
+    if (!photosListEl) return;
+    const visible = photos.filter(photo => typeof photo.image === 'string' && photo.image.startsWith('data:image/'))
+      .sort((a, b) => {
+        const aDate = reviewDate(a), bDate = reviewDate(b);
+        return (bDate ? bDate.getTime() : 0) - (aDate ? aDate.getTime() : 0);
+      });
+    photosListEl.innerHTML = visible.slice(0, 6).map(photo => {
+      const dog = photo.dogContext && photo.dogContext.name;
+      const caption = photo.caption ? trEsc(photo.caption) : (dog ? `Shared by ${trEsc(dog)}’s human` : 'Shared by the DoloPaws community');
+      return `<figure class="community-photo"><img src="${trEsc(photo.image)}" alt="${caption}"><figcaption>${caption}</figcaption></figure>`;
     }).join('');
   }
 
@@ -183,12 +209,77 @@ function initTrailReports(map, trail){
 
   async function load(){
     if (!window.DoloPawsCommunity || !window.DoloPawsCommunity.getActiveFlags) return;
-    const [flags, reviews] = await Promise.all([
+    const [flags, reviews, photos] = await Promise.all([
       window.DoloPawsCommunity.getActiveFlags(trail.id),
       window.DoloPawsCommunity.getReviews ? window.DoloPawsCommunity.getReviews(trail.id) : Promise.resolve([]),
+      window.DoloPawsCommunity.getTrailPhotos ? window.DoloPawsCommunity.getTrailPhotos(trail.id) : Promise.resolve([]),
     ]);
     if (Array.isArray(flags)) render(flags);
     renderReviews(Array.isArray(reviews) ? reviews : []);
+    renderPhotos(Array.isArray(photos) ? photos : []);
+  }
+
+  function downscaleTrailPhoto(file){
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const url = URL.createObjectURL(file);
+      image.onload = () => {
+        try {
+          const scale = Math.min(1, 900 / Math.max(image.width, image.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(url);
+          resolve(canvas.toDataURL('image/jpeg', 0.78));
+        } catch (error) { URL.revokeObjectURL(url); reject(error); }
+      };
+      image.onerror = () => { URL.revokeObjectURL(url); reject(new Error('decode failed')); };
+      image.src = url;
+    });
+  }
+
+  function openPhotoModal(){
+    if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
+      if (window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      return;
+    }
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `<div class="modal" style="max-width:420px;">
+      <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
+      <h2 style="font-size:19px;">Add a trail photo</h2>
+      <p class="hint">Share a recent, useful view of this trail. Photos appear with the community reviews.</p>
+      <input data-photo type="file" accept="image/*" style="font-size:13px;margin:8px 0 12px;">
+      <textarea data-caption maxlength="240" rows="3" placeholder="Add a short caption (optional)" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
+      <div data-err style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
+      <button type="button" data-submit class="auth-submit" style="margin-top:12px;">Add photo</button>
+    </div>`;
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.querySelector('[data-close]').addEventListener('click', close);
+    overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+    overlay.querySelector('[data-submit]').addEventListener('click', async () => {
+      const error = overlay.querySelector('[data-err]');
+      const file = overlay.querySelector('[data-photo]').files[0];
+      if (!file || !file.type.startsWith('image/') || file.size > 10 * 1024 * 1024){
+        error.textContent = 'Choose an image smaller than 10 MB.';
+        error.hidden = false;
+        return;
+      }
+      const submit = overlay.querySelector('[data-submit]');
+      submit.disabled = true;
+      submit.textContent = 'Adding…';
+      try {
+        const image = await downscaleTrailPhoto(file);
+        const result = await window.DoloPawsCommunity.addTrailPhoto(trail.id, image, overlay.querySelector('[data-caption]').value.trim());
+        if (result.ok){ close(); load(); return; }
+        error.textContent = result.message || 'Could not add this photo — please try again.';
+      } catch (e) { error.textContent = 'Could not prepare this photo — please try another image.'; }
+      error.hidden = false;
+      submit.disabled = false;
+      submit.textContent = 'Add photo';
+    });
   }
 
   // ---- "Leave a review" modal --------------------------------------------
@@ -331,6 +422,7 @@ function initTrailReports(map, trail){
 
   addBtn.addEventListener('click', openReportModal);
   if (addReviewBtn) addReviewBtn.addEventListener('click', openReviewModal);
+  if (addPhotoBtn) addPhotoBtn.addEventListener('click', openPhotoModal);
 
   // Re-render on login/logout so Remove links appear/disappear.
   window.addEventListener('dolopaws-auth-changed', load);
