@@ -234,8 +234,9 @@
       // Add loop callout if it's a loop
       const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
       if (isLoop && $('loopCallout')) {
+        const loopSvg = svg('loop').replace('width="25"', 'width="18"').replace('height="25"', 'height="18"');
         $('loopCallout').innerHTML = `<div class="loop-callout" style="display: flex; gap: 10px; align-items: center; padding: 10px 12px; background: var(--sage-dim); border-radius: 8px; margin-bottom: 16px; border-left: 3px solid var(--success);">
-          ${svg('loop')}<div style="font-size: 12px; color: var(--ink);"><b style="display: block; margin-bottom: 2px;">Loop route</b><span style="color: var(--ink-soft);">${t.distance} km back to parking</span></div>
+          ${loopSvg}<div style="font-size: 12px; color: var(--ink);"><b style="display: block; margin-bottom: 2px;">Loop route</b><span style="color: var(--ink-soft);">${t.distance} km back to parking</span></div>
         </div>`;
       }
     }
