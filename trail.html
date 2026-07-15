@@ -39,17 +39,36 @@
 <div class="wrap" style="padding-top:28px;">
   <a href="browse-trails.html" onclick="if(history.length>1 && document.referrer.indexOf(location.hostname)!==-1){history.back();return false;}" style="font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;">← Back</a>
 
-  <div class="trail-hero-dark" style="margin-top:14px;">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-      <h1 id="trailName" style="font-size:clamp(22px,3.4vw,30px);color:#fff;margin:0;" aria-busy="true"><span class="skeleton skeleton--light" style="width:min(260px,60vw);height:26px;" aria-label="Loading trail"></span></h1>
+  <div class="trail-hero-dark trail-decision-hero" style="margin-top:14px;">
+    <div class="trail-hero-content">
+      <p class="trail-hero-eyebrow">DOG-FRIENDLY TRAIL GUIDE</p>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+      <h1 id="trailName" style="font-size:clamp(28px,4vw,44px);color:#fff;margin:0;" aria-busy="true"><span class="skeleton skeleton--light" style="width:min(260px,60vw);height:36px;" aria-label="Loading trail"></span></h1>
       <div style="display:flex;align-items:center;gap:12px;flex:none;">
         <span id="verifiedSeal" class="verified-seal" hidden></span>
         <span id="trailMatch" class="th-match" hidden></span>
         <button id="detailSaveBtn" class="fav-btn" style="font-size:12.5px;padding:8px 20px;">Save</button>
       </div>
-    </div>
+      </div>
+      <p id="heroVerdict" class="trail-hero-verdict">A clear answer for you and your dog, before you set off.</p>
     <div id="trailFacts" class="th-facts"></div>
+    </div>
   </div>
+
+  <nav class="trail-section-nav" aria-label="Trail page sections">
+    <a href="#trailOverview" class="active">Overview</a>
+    <a href="#trailMapBox">Map</a>
+    <a href="#trailPlan">Trail plan</a>
+    <a href="#trailReportsWrap">Reports</a>
+  </nav>
+
+  <section id="trailOverview" class="trail-overview-panel" aria-labelledby="trailOverviewTitle">
+    <div class="trail-overview-heading">
+      <div><span class="section-kicker">AT A GLANCE</span><h2 id="trailOverviewTitle">Can we do this?</h2></div>
+      <p id="trailOverviewSummary">The essentials for deciding quickly.</p>
+    </div>
+    <div id="decisionSignals" class="decision-signals" aria-live="polite"></div>
+  </section>
 
   <div id="qaStrip" class="qa-strip" hidden>
     <div class="qa-card" id="qaDog">
@@ -76,6 +95,15 @@
   <div id="trailTags" style="display:none;"></div>
   <div id="quickFacts" style="display:none;"></div>
   <div id="weatherWidget" style="display:none;" hidden></div>
+
+  <section class="dog-safety-panel" aria-labelledby="dogSafetyTitle">
+    <div class="dog-safety-head">
+      <div><span class="section-kicker">DOG SAFETY</span><h2 id="dogSafetyTitle">What matters for your dog</h2></div>
+      <span id="dogSafetyVerdict" class="safety-verdict">Checking trail…</span>
+    </div>
+    <div id="dogSafetySignals" class="dog-safety-signals"></div>
+    <p id="dogSafetyWhy" class="dog-safety-why"></p>
+  </section>
 </div>
 
 <div class="wrap" style="padding-top:16px;">
@@ -90,7 +118,12 @@
     </details>
   </div>
 
-  <div class="trail-grid" style="margin-top:14px;">
+  <div id="trailPlan" class="trail-plan-heading">
+    <span class="section-kicker">TRAIL PLAN</span>
+    <h2>What you’ll experience</h2>
+    <p>Follow the route from the trailhead, with effort and dog-friendly stops in context.</p>
+  </div>
+  <div class="trail-grid trail-experience-grid" style="margin-top:14px;">
     <div class="tg-left">
       <div class="itin-card" id="elevCard">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">

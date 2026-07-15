@@ -141,4 +141,58 @@
     const note = $('dogTipsNote');
     if (note && t.curated !== false && t.tips) note.hidden = false;
   })();
+
+  /* ---- Decision-first hero and safety dashboard ------------------ */
+  (function decisionFlow() {
+    const hero = document.querySelector('.trail-decision-hero');
+    if (hero && t.imageIcon) hero.style.backgroundImage = `url("${String(t.imageIcon).replace(/["')]/g, '')}")`;
+
+    const easyTerrain = Number(t.terrainRank) === 0;
+    const goodShade = Number(t.shadeCoverage) >= 40;
+    const hasWater = Array.isArray(t.waterSources) && t.waterSources.length > 0;
+    const lowRisk = t.safetyLevel === 'low-risk';
+    const duration = t.hours ? `${t.hours} h` : 'Not listed';
+    const signals = [
+      { icon:'↗', title:'Effort', value:`${t.distance} km · ${duration}`, good:Number(t.distance) <= 8 },
+      { icon:'⌁', title:'Paw terrain', value:t.terrainType || 'Mixed trail', good:easyTerrain },
+      { icon:'◒', title:'Shade', value:`${Number(t.shadeCoverage) || 0}% of the route`, good:goodShade },
+      { icon:'♒', title:'Water', value:hasWater ? `${t.waterSources.length} source${t.waterSources.length === 1 ? '' : 's'} on route` : 'Carry all water', good:hasWater },
+    ];
+    const decisionEl = $('decisionSignals');
+    if (decisionEl) decisionEl.innerHTML = signals.map(s => `
+      <div class="decision-signal ${s.good ? 'good' : 'watch'}">
+        <span class="signal-icon" aria-hidden="true">${s.icon}</span><b>${s.title}</b><span>${esc(s.value)}</span>
+      </div>`).join('');
+
+    const verdict = lowRisk && easyTerrain
+      ? 'A gentle, low-risk choice for most dogs, with the usual checks for heat and crowds.'
+      : t.safetyLevel === 'caution'
+        ? 'A more demanding trail: check the hazards and your dog’s confidence before committing.'
+        : 'A manageable trail for prepared dogs; review the terrain and conditions before setting off.';
+    const heroVerdict = $('heroVerdict');
+    const overviewSummary = $('trailOverviewSummary');
+    if (heroVerdict) heroVerdict.textContent = verdict;
+    if (overviewSummary) overviewSummary.textContent = lowRisk ? 'The essentials look positive — check today’s conditions below.' : 'Review the amber signals before deciding.';
+
+    const safetyItems = [
+      ['Paw risk', easyTerrain ? 'Low' : (Number(t.terrainRank) >= 2 ? 'High' : 'Moderate')],
+      ['Heat risk', t.heatRisk ? t.heatRisk[0].toUpperCase() + t.heatRisk.slice(1) : 'Unknown'],
+      ['Water', hasWater ? 'Available' : 'None listed'],
+      ['Exposure', t.exposure ? 'Exposed sections' : 'Low'],
+    ];
+    const safetyEl = $('dogSafetySignals');
+    if (safetyEl) safetyEl.innerHTML = safetyItems.map(([label,value]) =>
+      `<div class="dog-safety-signal"><b>${esc(label)}</b><span>${esc(value)}</span></div>`).join('');
+    const safetyVerdict = $('dogSafetyVerdict');
+    if (safetyVerdict) safetyVerdict.textContent = safetyLabel(t.safetyLevel);
+    const why = $('dogSafetyWhy');
+    if (why) why.textContent = t.tips || (lowRisk ? 'Straightforward underpaw, with no major trail hazards listed.' : 'Match the terrain and distance to your dog’s experience.');
+
+    document.querySelectorAll('.trail-section-nav a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.querySelectorAll('.trail-section-nav a').forEach(other => other.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+  })();
 })();

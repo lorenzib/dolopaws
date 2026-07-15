@@ -799,3 +799,42 @@ body.map-fs-open{overflow:hidden;}
 .near-card:hover{border-color:var(--ink);}
 .near-card b{font-size:13.5px;display:block;margin-bottom:5px;font-family:'Source Serif 4',serif;}
 .near-card span{font-size:11.5px;color:var(--ink-soft);}
+
+/* ---- Trail detail: decision-first customer flow ---------------- */
+.trail-decision-hero{position:relative;isolation:isolate;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:34px 38px;background-size:cover;background-position:center;box-shadow:0 18px 42px rgba(31,48,35,.13);}
+.trail-decision-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(23,42,28,.94) 0%,rgba(23,42,28,.77) 52%,rgba(23,42,28,.28) 100%);}
+.trail-hero-content{max-width:760px;}
+.trail-hero-eyebrow,.section-kicker{display:block;margin:0 0 8px;font:700 10px/1.2 'Inter',sans-serif;letter-spacing:.13em;color:#9FE1CB;}
+.trail-hero-verdict{max-width:600px;margin:13px 0 0;color:#edf4ee;font-size:15px;line-height:1.55;}
+.trail-section-nav{position:sticky;top:0;z-index:40;display:flex;gap:6px;margin:14px 0 0;padding:7px;background:rgba(255,255,255,.94);border:1px solid var(--paper-line);border-radius:14px;box-shadow:0 8px 25px rgba(31,48,35,.07);backdrop-filter:blur(10px);overflow:auto;}
+.trail-section-nav a{flex:1;min-width:max-content;padding:9px 16px;border-radius:9px;color:var(--ink-soft);font-size:12px;font-weight:700;text-align:center;text-decoration:none;}
+.trail-section-nav a:hover,.trail-section-nav a.active{background:var(--sage-dim);color:var(--ink);}
+.trail-overview-panel,.dog-safety-panel{margin-top:14px;padding:20px 22px;background:var(--card);border:1px solid var(--paper-line);border-radius:16px;}
+.trail-overview-heading,.dog-safety-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:16px;}
+.trail-overview-heading h2,.dog-safety-head h2,.trail-plan-heading h2{font-size:20px;margin:0;}
+.trail-overview-heading p,.trail-plan-heading p{margin:0;color:var(--ink-soft);font-size:12px;}
+.trail-overview-panel .section-kicker,.dog-safety-panel .section-kicker,.trail-plan-heading .section-kicker{color:var(--accent);}
+.decision-signals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.decision-signal{min-width:0;padding:14px;border-radius:12px;background:var(--bg);border:1px solid transparent;}
+.decision-signal.good{background:#edf6e9;border-color:#d8e8d2;}
+.decision-signal.watch{background:#fff5df;border-color:#f3dfb5;}
+.decision-signal .signal-icon{font-size:19px;margin-bottom:9px;display:block;}
+.decision-signal b{display:block;font-size:12.5px;margin-bottom:4px;}
+.decision-signal span:last-child{display:block;color:var(--ink-soft);font-size:11px;line-height:1.4;}
+.dog-safety-panel{background:linear-gradient(135deg,#f7faf1,#fffdf7);border-color:#dce5d1;}
+.safety-verdict{padding:6px 11px;border-radius:999px;background:#dcefd7;color:#24562c;font-size:11px;font-weight:800;white-space:nowrap;}
+.dog-safety-signals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.dog-safety-signal{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:rgba(255,255,255,.75);border:1px solid #e4eadc;border-radius:10px;font-size:11.5px;}
+.dog-safety-signal b{font-size:10.5px;color:var(--ink-soft);font-weight:600;}
+.dog-safety-signal span{font-weight:800;text-align:right;}
+.dog-safety-why{margin:12px 0 0;padding-top:12px;border-top:1px solid #e1e7d9;color:var(--ink);font-size:12px;line-height:1.5;}
+.trail-plan-heading{padding-top:24px;scroll-margin-top:70px;}
+.trail-plan-heading p{margin-top:5px;}
+#trailOverview,#trailMapBox,#trailReportsWrap{scroll-margin-top:70px;}
+@media (max-width:760px){
+  .trail-decision-hero{min-height:360px;padding:26px 22px;background-position:65% center;}
+  .trail-decision-hero::before{background:linear-gradient(0deg,rgba(23,42,28,.96) 0%,rgba(23,42,28,.65) 72%,rgba(23,42,28,.28) 100%);}
+  .decision-signals,.dog-safety-signals{grid-template-columns:repeat(2,1fr);}
+  .trail-overview-heading,.dog-safety-head{align-items:flex-start;flex-direction:column;gap:8px;}
+}
+@media (max-width:420px){.decision-signals{grid-template-columns:1fr 1fr}.trail-section-nav a{padding:9px 12px}.trail-overview-panel,.dog-safety-panel{padding:17px}}
