@@ -484,6 +484,7 @@ img,svg{max-width:100%;height:auto;}
 .region-tab{padding:9px 22px;border-radius:999px;font-size:13.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;border:none;background:transparent;font-family:inherit;}
 .region-tab.active{background:var(--ink);color:#fff;box-shadow:var(--shadow);}
 .region-tab .count{font-weight:600;opacity:.65;font-size:12px;margin-left:5px;}
+.province-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .prov-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
 .valley-pills{display:flex;gap:8px;flex-wrap:wrap;}
 .pill-count{font-size:10.5px;opacity:.7;margin-left:4px;}
