@@ -110,11 +110,11 @@
   function assign(list) {
     if (!Array.isArray(list)) return;
     for (const t of list) {
-      if (t.region && t.valley && t.province) continue;
       if (!t.province) {
         const inferredProvince = provinceFromTrail(t);
         if (inferredProvince) t.province = inferredProvince;
       }
+      if (t.region && t.valley && t.province) continue;
       if (t.region && t.valley) continue;
       if (typeof t.lat !== 'number' || typeof t.lng !== 'number') {
         t.region = t.region || 'dolomites'; // safe default for coordinate-less entries

@@ -13,7 +13,7 @@ function tForTests(key, params = {}){
   if(key === 'home.bubble') return 'Where are we heading today?';
   if(key === 'home.pickArea') return `Pick a province or valley below — trails are ranked for ${params.name || 'your dog'}.`;
   if(key === 'home.pickAreaNoName') return 'Pick a province or valley below — trails are ranked for your dog.';
-  if(key === 'home.nTrails') return `${params.n} trails`;
+  if(key === 'home.nTrails') return `${params.n} ${params.n === 1 ? 'trail' : 'trails'}`;
   if(key === 'home.nSaved') return `${params.n} saved trails`;
   if(key === 'home.nSaved1') return '1 saved trail';
   if(key === 'home.savedTrails') return 'Saved trails';
@@ -157,6 +157,6 @@ describe('returning homepage province + valley filters', () => {
 
     vm.runInContext('activeValley = "Maurienne";', context);
     await vm.runInContext('renderReturningHomepage(null);', context);
-    expect(document.getElementById('returningCount').textContent).toBe('1 trails');
+    expect(document.getElementById('returningCount').textContent).toBe('1 trail');
   });
 });
