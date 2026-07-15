@@ -155,6 +155,7 @@ describe('trail page map legend', () => {
     context.addTerrainToggle({}, 'trailDetailMap', 1.5, 45);
 
     expect(createdButtons).toHaveLength(1);
+    expect(createdButtons[0].textContent).toBe('trail.view3d');
     expect(createdButtons[0].className).toContain('map-btn--terrain');
     expect(createdButtons[0].style.left).toBeUndefined();
   });
