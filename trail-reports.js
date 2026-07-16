@@ -40,6 +40,27 @@ function initTrailReports(map, trail){
   const ratingEl = document.getElementById('communityRating');
   const heroRatingEl = document.getElementById('heroRating');
   const photosListEl = document.getElementById('trailPhotosList');
+  let actionStatusTimer = null;
+
+  function showActionStatus(message){
+    let status = document.getElementById('trailActionStatus');
+    if (!status){
+      status = document.createElement('div');
+      status.id = 'trailActionStatus';
+      status.className = 'dw-toast';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      document.body.appendChild(status);
+    }
+    if (actionStatusTimer) clearTimeout(actionStatusTimer);
+    status.textContent = message;
+    status.hidden = false;
+    status.className = 'dw-toast dw-toast--in';
+    actionStatusTimer = setTimeout(() => {
+      status.hidden = true;
+      status.className = 'dw-toast';
+    }, 4200);
+  }
   const addPhotoBtn = document.getElementById('addPhotoBtn');
   if (!listEl || !addBtn) return;
 
@@ -273,7 +294,12 @@ function initTrailReports(map, trail){
       try {
         const image = await downscaleTrailPhoto(file);
         const result = await window.DoloPawsCommunity.addTrailPhoto(trail.id, image, overlay.querySelector('[data-caption]').value.trim());
-        if (result.ok){ close(); load(); return; }
+        if (result.ok){
+          close();
+          await load();
+          showActionStatus('Photo added to this trail.');
+          return;
+        }
         error.textContent = result.message || 'Could not add this photo — please try again.';
       } catch (e) { error.textContent = 'Could not prepare this photo — please try another image.'; }
       error.hidden = false;
@@ -331,19 +357,26 @@ function initTrailReports(map, trail){
       const submit = overlay.querySelector('[data-submit]');
       submit.disabled = true;
       submit.textContent = 'Posting…';
-      const result = await window.DoloPawsCommunity.setReview(
-        trail.id,
-        selectedRating,
-        overlay.querySelector('[data-text]').value.trim(),
-        null,
-      );
-      if (result.ok){ close(); load(); }
-      else {
+      try {
+        const result = await window.DoloPawsCommunity.setReview(
+          trail.id,
+          selectedRating,
+          overlay.querySelector('[data-text]').value.trim(),
+          null,
+        );
+        if (result.ok){
+          close();
+          await load();
+          showActionStatus('Review posted. Thank you for helping the community.');
+          return;
+        }
         error.textContent = result.message || 'Could not post your review — please try again.';
-        error.hidden = false;
-        submit.disabled = false;
-        submit.textContent = 'Post review';
+      } catch (e) {
+        error.textContent = 'Could not post your review — please try again.';
       }
+      error.hidden = false;
+      submit.disabled = false;
+      submit.textContent = 'Post review';
     });
   }
 
@@ -410,13 +443,20 @@ function initTrailReports(map, trail){
       const text = overlay.querySelector('[data-text]').value.trim();
       const submitBtn = overlay.querySelector('[data-submit]');
       submitBtn.disabled = true; submitBtn.textContent = window.t('reports.posting');
-      const res = await window.DoloPawsCommunity.addFlag(trail.id, selectedType, km, text);
-      if (res.ok){ close(); load(); }
-      else {
+      try {
+        const res = await window.DoloPawsCommunity.addFlag(trail.id, selectedType, km, text);
+        if (res.ok){
+          close();
+          await load();
+          showActionStatus('Hazard report posted. Thank you for keeping others informed.');
+          return;
+        }
         err.textContent = res.message || window.t('reports.error');
-        err.hidden = false;
-        submitBtn.disabled = false; submitBtn.textContent = window.t('reports.post');
+      } catch (e) {
+        err.textContent = window.t('reports.error');
       }
+      err.hidden = false;
+      submitBtn.disabled = false; submitBtn.textContent = window.t('reports.post');
     });
   }
 
