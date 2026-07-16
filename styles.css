@@ -925,3 +925,108 @@ body.map-fs-open{overflow:hidden;}
 .breed-insight-foot span{font-size:12px;color:var(--ink-soft);}
 .breed-insight-foot a{font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
 @media(max-width:700px){.breed-insight-grid{grid-template-columns:1fr;}}
+
+/* ============================================================
+   COMPANION LAYOUT — personalised trail-browse screen
+   (logged-in homepage: dog profile + conditions + filters sidebar,
+   map, sortable ranked list). Uses the site's own type pair
+   (Source Serif 4 / Inter) and colour tokens throughout — this is a
+   density/layout change, not a new visual language.
+   ============================================================ */
+.companion-wrap{max-width:1320px;margin:0 auto;padding:0 24px;}
+.companion-grid{display:grid;grid-template-columns:296px 1fr;gap:28px;align-items:start;}
+.companion-sidebar{position:sticky;top:88px;display:flex;flex-direction:column;gap:14px;}
+.companion-card{background:var(--card);border:1px solid var(--paper-line);border-radius:16px;padding:18px;}
+
+/* Dog profile card */
+.companion-dog-head{display:flex;align-items:center;gap:13px;}
+.companion-dog-avatar{width:54px;height:54px;border-radius:14px;flex:none;background:linear-gradient(135deg,var(--sage-dim),var(--success-dim));display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);}
+.companion-dog-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.companion-dog-name{font-family:'Source Serif 4',serif;font-weight:600;font-size:19px;line-height:1.1;}
+.companion-dog-meta{font-size:12px;color:var(--ink-soft);margin-top:4px;white-space:nowrap;}
+.companion-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.companion-chip{font-size:11px;font-weight:600;background:var(--success-dim);color:var(--success);padding:4px 10px;border-radius:8px;white-space:nowrap;}
+.companion-edit-link{display:inline-flex;align-items:center;gap:5px;margin-top:14px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;}
+.companion-edit-link:hover{color:var(--accent-hover);}
+
+/* Conditions / readiness card — honest substitute for live weather:
+   DoloPaws has no weather feed, so this reflects the dog's actual
+   heat-sensitivity profile and links to the real adjust-for-today tool
+   rather than inventing a temperature. */
+.companion-conditions{background:#F6ECDB;border:1px solid #E6D3B4;}
+.companion-conditions .head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.companion-conditions .label{font:700 10.5px/1.2 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8A5A26;}
+.companion-heat-meter{display:flex;align-items:center;gap:9px;margin-top:12px;}
+.companion-heat-meter .meter-label{font-size:12px;color:#6E5A3C;width:60px;flex:none;}
+.companion-heat-meter .bars{flex:1;display:flex;gap:4px;}
+.companion-heat-meter .bar{flex:1;height:7px;border-radius:4px;background:#E6D3B4;}
+.companion-heat-meter .bar.on{background:#C98A3E;}
+.companion-heat-meter .reading{font-size:11.5px;font-weight:600;color:#8A5A26;white-space:nowrap;}
+.companion-conditions p{margin:12px 0 0;font-size:12.5px;line-height:1.5;color:#6E5A3C;}
+.companion-conditions-cta{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#8A5A26;background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;font-family:'Inter',sans-serif;}
+
+/* Filters card */
+.companion-filter-label{font:700 10.5px/1.2 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 9px;}
+.companion-filter-label:first-child{margin-top:0;}
+.companion-seg{display:flex;gap:6px;}
+.companion-seg button{flex:1;font:600 12.5px 'Inter',sans-serif;padding:8px 8px;border-radius:10px;cursor:pointer;border:1px solid var(--paper-line);background:none;color:var(--ink);}
+.companion-seg button.active{background:var(--success);border-color:var(--success);color:#fff;}
+.companion-seg.is-dark button.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+.companion-valleys{display:flex;flex-wrap:wrap;gap:6px;}
+
+/* Saved row */
+.companion-saved{display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.companion-saved .txt{font-size:13.5px;color:var(--ink);font-weight:600;}
+.companion-saved .count{font:700 13px 'Inter',sans-serif;background:var(--success-dim);color:var(--success);padding:3px 11px;border-radius:999px;}
+.companion-saved.active .txt{color:var(--success);}
+
+/* Main column */
+.companion-kicker{font:700 11px/1.2 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px;}
+.companion-list-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:26px 0 14px;}
+.companion-list-title{font-family:'Source Serif 4',serif;font-weight:600;font-size:22px;}
+.companion-list-sub{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
+.companion-sort{display:flex;align-items:center;gap:8px;}
+.companion-sort-label{font-size:12px;color:var(--ink-soft);}
+.companion-sort-group{display:flex;gap:4px;background:var(--sage-dim);padding:4px;border-radius:11px;}
+.companion-sort-group button{font:600 12px 'Inter',sans-serif;padding:6px 12px;border-radius:8px;border:none;background:none;color:#5B6B5E;cursor:pointer;}
+.companion-sort-group button.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1);}
+
+/* Ranked trail cards — reuse .trail-card as the row, new inner parts */
+.trail-card .tc-thumb{width:98px;height:auto;align-self:stretch;flex:none;border-radius:13px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.tc-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.tc-thumb-label{font:400 9px ui-monospace,monospace;color:#a29d8c;}
+.tc-meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+.tc-risk-dot{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);}
+.tc-risk-dot .dot{width:7px;height:7px;border-radius:50%;flex:none;}
+.tc-heat-pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+.tc-reason{display:inline-flex;align-items:flex-start;gap:6px;margin-top:8px;background:var(--success-dim);border-radius:8px;padding:5px 10px;align-self:flex-start;max-width:100%;}
+.tc-reason .mark{color:var(--success);font-size:11px;line-height:1.4;flex:none;}
+.tc-reason .txt{font-size:12px;line-height:1.35;color:var(--success);}
+.tc-stats{font-size:12px;color:var(--ink-soft);margin-top:8px;}
+.tc-actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--paper-line);}
+.tc-actions a, .tc-actions button{font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;background:none;border:none;padding:0;cursor:pointer;font-family:'Inter',sans-serif;}
+.tc-actions .locate{color:var(--success);}
+.tc-actions .save.saved{color:var(--success);}
+.companion-match-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:none;padding-left:14px;border-left:1px solid var(--paper-line);}
+.tc-ring{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;}
+.tc-ring-inner{width:45px;height:45px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font:700 13px 'Inter',sans-serif;color:var(--ink);}
+.tc-ring-label{font:700 8.5px 'Inter',sans-serif;letter-spacing:.08em;color:var(--ink-soft);margin-top:5px;text-align:center;white-space:nowrap;}
+.trail-card.tc-selected{border-color:var(--success);box-shadow:0 14px 26px -18px rgba(74,124,89,.55);}
+
+/* Map pin selection + floating callout (added on top of the existing
+   trailMap / dp-marker-dot system, no change to marker logic itself) */
+.dp-marker-dot.tc-pin-selected{width:20px;height:20px;box-shadow:0 0 0 4px rgba(74,124,89,.28),0 1px 4px rgba(0,0,0,.35);z-index:7;}
+.map-callout{position:absolute;left:50%;top:14px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:8px 14px;box-shadow:0 6px 18px rgba(27,31,25,.18);font-family:'Inter',sans-serif;z-index:9;max-width:calc(100% - 28px);}
+.map-callout .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+.map-callout .name{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.map-callout .pct{font-size:12px;font-weight:700;color:var(--success);white-space:nowrap;}
+.map-callout .close{cursor:pointer;color:var(--ink-soft);font-size:16px;line-height:1;padding-left:2px;}
+
+@media(max-width:900px){
+  .companion-grid{grid-template-columns:1fr;}
+  .companion-sidebar{position:static;}
+}
+@media(max-width:640px){
+  .companion-list-head{align-items:flex-start;}
+  .trail-card .tc-thumb{width:72px;}
+}

@@ -89,6 +89,8 @@ let lastFilterKey = '';            // legacy, kept for safety
 let activeRegion = 'dolomites';
 let activeValley = 'all';
 let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
+let sortKey = 'match';             // 'match' | 'distance' | 'effort' — Companion sort control
+let selectedTrailId = null;        // map pin / card selection (Companion layout)
 
 function filterTrailsForReturningView(list){
   let displayList = showingSavedOnly ? list.filter(x => currentFavorites[x.id]) : list;
@@ -96,7 +98,39 @@ function filterTrailsForReturningView(list){
   if(activeValley !== 'all') displayList = displayList.filter(x => x.valley === activeValley);
   if(activeProvenance === 'verified') displayList = displayList.filter(x => x.curated !== false);
   if(activeProvenance === 'imported') displayList = displayList.filter(x => x.curated === false);
+
+  // Sort is applied last so it always reflects the current filtered set.
+  // 'match' just keeps the incoming order — the list is already sorted by
+  // score desc before filtering, in renderReturningHomepage().
+  if(sortKey === 'distance') displayList = displayList.slice().sort((a, b) => a.distance - b.distance);
+  else if(sortKey === 'effort') displayList = displayList.slice().sort((a, b) => a.elevation - b.elevation);
+
   return displayList;
+}
+
+// Short, honest "why this fits" line for a trail card — built from the
+// trail's real fields relative to this dog's real tolerances, same data
+// scoreTrail() already used. No invented copy per trail.
+function matchReason(t, overrides){
+  const heatSensitive = !!(overrides && overrides.heatSensitive);
+  const bits = [];
+  if(t.shadeCoverage >= 60) bits.push(heatSensitive ? 'well shaded, low heat load' : 'shaded route');
+  else if(t.heatRisk === 'low') bits.push('low heat risk');
+  else if(heatSensitive && (t.heatRisk === 'high' || t.heatRisk === 'moderate')) bits.push('exposed, go early');
+
+  if(t.exposure) bits.push('some exposure');
+  else if(t.terrainRank === 0) bits.push('flat, easy underfoot');
+
+  if(overrides && typeof overrides.distance === 'number' || overrides && !isNaN(parseFloat(overrides.distance))){
+    const cap = parseFloat(overrides.distance);
+    if(!isNaN(cap) && t.distance <= cap * 0.6) bits.push('comfortably short');
+  }
+  if(t.waterSources && t.waterSources.length > 0 && !bits.some(b => b.includes('shad'))) bits.push('water on route');
+
+  if(bits.length === 0) return 'Matches your dog\'s fitness and terrain tolerance';
+  // Cap at two clauses so the pill stays a pill, not a paragraph.
+  const chosen = bits.slice(0, 2).join(', ');
+  return chosen.charAt(0).toUpperCase() + chosen.slice(1);
 }
 
 function createMapOverlayControls(map, containerId, allLiftMarkers){
@@ -622,6 +656,20 @@ function makeTrailDot(){
   return el;
 }
 
+// Companion selection: syncs the map pin, the floating callout, and the
+// card border/shadow for one trail at a time. Reused by pin clicks,
+// "Locate on map", and clicking a card thumbnail.
+function selectTrail(t){
+  selectedTrailId = t.id;
+  Object.entries(trailMarkers).forEach(([id, m]) => {
+    m.getElement().classList.toggle('tc-pin-selected', id === t.id);
+  });
+  document.querySelectorAll('.trail-card.tc-selected').forEach(c => c.classList.remove('tc-selected'));
+  const card = document.getElementById(`trail-card-${t.id}`);
+  if(card) card.classList.add('tc-selected');
+  if(typeof showMapCallout === 'function') showMapCallout(t);
+}
+
 function jumpToCard(trailId){
   const card = document.getElementById(`trail-card-${trailId}`);
   if(!card) return;
@@ -676,20 +724,20 @@ function updateMapMarkers(list){
     } else if(Array.isArray(t.path) && t.path.length > 0){
       [markerLat, markerLng] = t.path[0];
     }
-    const isEstPopup = t.curated === false;
-    const popup = new maplibregl.Popup({ offset: 20 }).setHTML(
-      `<b>${t.name}</b>
-       <div class="popup-match"><span style="font-size:21px;font-weight:800;color:${matchColor(t.score)};">${isEstPopup ? '≈' : ''}${t.score}%</span><span class="match-lbl">${window.t('card.matchWord')}</span>${isEstPopup ? `<span class="match-est">${window.t('card.estimated')}</span>` : ''}</div>
-       <a href="trail.html?id=${t.id}" style="display:inline-block;font-weight:700;color:#3E7A91;text-decoration:none;">${window.t('card.details')}</a>`
-    );
+    // Selection now drives a single floating callout (showMapCallout) that
+    // mirrors the card's match % and risk colour, rather than a separate
+    // per-pin hover popup — one selection UI instead of two overlapping ones.
     const marker = new maplibregl.Marker({ element: makeTrailDot() })
       .setLngLat([markerLng, markerLat])
-      .setPopup(popup)
       .addTo(trailMapInstance);
     marker.getElement().style.cursor = 'pointer';
-    marker.getElement().addEventListener('click', () => jumpToCard(t.id));
+    marker.getElement().addEventListener('click', () => { selectTrail(t); jumpToCard(t.id); });
     trailMarkers[t.id] = marker;
   });
+
+  if(selectedTrailId && trailMarkers[selectedTrailId]){
+    trailMarkers[selectedTrailId].getElement().classList.add('tc-pin-selected');
+  }
 
   // Fit the view to whatever's currently visible, so filtering the list
   // also re-frames the map instead of leaving it zoomed to the wrong area.
@@ -721,22 +769,25 @@ function renderAreaFilters(profile){
   if(activeValley !== 'all' && !valleys.some(([v]) => v === activeValley)) activeValley = 'all';
 
   row.innerHTML = `
-    <div class="region-tabs">
+    <div class="companion-filter-label">Region</div>
+    <div class="region-tabs" style="width:100%;">
       ${['dolomites','savoy'].map(r => `
-        <button class="region-tab ${r === activeRegion ? 'active' : ''}" data-region="${r}">
+        <button class="region-tab ${r === activeRegion ? 'active' : ''}" data-region="${r}" style="flex:1;">
           ${r === 'dolomites' ? t('region.dolomites') : t('region.savoy')} <span class="count">${regionCounts[r]}</span>
         </button>`).join('')}
     </div>
-    <div class="prov-row">
-      <div class="valley-pills">
-        <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">${t('areas.allValleys')}</div>
-        ${valleys.map(([v, n]) => `
-          <div class="area-pill ${v === activeValley ? 'active' : ''}" data-valley="${v}">${v} <span class="pill-count">${n}</span></div>`).join('')}
-      </div>
-      <div class="prov-toggle">
-        ${[['all', t('filter.all')],['verified', t('filter.verified')],['imported', t('filter.imported')]].map(([k, label]) => `
-          <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}">${label}</div>`).join('')}
-      </div>
+
+    <div class="companion-filter-label">Source</div>
+    <div class="prov-toggle" style="width:100%;">
+      ${[['all', t('filter.all')],['verified', t('filter.verified')],['imported', t('filter.imported')]].map(([k, label]) => `
+        <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}" style="flex:1;text-align:center;">${label}</div>`).join('')}
+    </div>
+
+    <div class="companion-filter-label">Valley</div>
+    <div class="valley-pills companion-valleys">
+      <div class="area-pill ${activeValley === 'all' ? 'active' : ''}" data-valley="all">${t('areas.allValleys')}</div>
+      ${valleys.map(([v, n]) => `
+        <div class="area-pill ${v === activeValley ? 'active' : ''}" data-valley="${v}">${v} <span class="pill-count">${n}</span></div>`).join('')}
     </div>
   `;
 
@@ -759,6 +810,80 @@ function renderAreaFilters(profile){
       renderReturningHomepage(profile);
     });
   });
+}
+
+// Companion sidebar — dog profile card. Avatar, breed/age line, and up to
+// three trait chips reused straight from breedInsights() titles (so the
+// wording is always identical to the homepage insight card and the
+// per-trail "why this works" copy — one source of truth, three surfaces).
+function renderDogProfileCard(profile){
+  const nameEl = document.getElementById('companionDogName');
+  const metaEl = document.getElementById('companionDogMeta');
+  const chipsEl = document.getElementById('companionDogChips');
+  const avatarEl = document.getElementById('companionDogAvatar');
+  if(!nameEl || !metaEl || !chipsEl || !avatarEl) return;
+
+  const name = (profile && profile.name) ? profile.name : 'Your dog';
+  nameEl.textContent = name;
+
+  const breed = profile && profile.breed;
+  const hasBreedName = breed && !NON_BREED_LABELS.has(breed);
+  const age = profile ? dogAgeYears(profile) : null;
+  const ageLabel = age != null ? (age < 1 ? 'under 1 yr' : Math.round(age) + ' yrs') : null;
+  metaEl.textContent = [hasBreedName ? breed : null, ageLabel].filter(Boolean).join(' · ') || (profile ? 'Profile saved' : 'No profile yet');
+
+  const kg = profile ? dogWeightKg(profile) : null;
+  const sizeLabel = kg == null ? null : kg < 10 ? 'Small' : kg <= 25 ? 'Medium' : kg <= 45 ? 'Large' : 'Giant';
+  const chips = [];
+  if(sizeLabel) chips.push(kg ? `${sizeLabel} · ${Math.round(kg)} kg` : sizeLabel);
+  if(typeof breedInsights === 'function' && breed){
+    breedInsights(breed).slice(0, 2).forEach(l => chips.push(l.title));
+  }
+  chipsEl.innerHTML = chips.slice(0, 3).map(c => `<span class="companion-chip">${c}</span>`).join('');
+
+  const photo = profile && profile.photo;
+  avatarEl.innerHTML = (typeof photo === 'string' && photo.startsWith('data:image/'))
+    ? `<img src="${photo}" alt="${name}">`
+    : '<span aria-hidden="true">🐾</span>';
+}
+
+// Companion sidebar — conditions / readiness card. DoloPaws has no live
+// weather feed, so rather than inventing a temperature this reflects the
+// dog's REAL heat-sensitivity (breed traits + declared health conditions,
+// the same flag effectiveOverrides() already uses to penalise the score)
+// and points at the real adjust-for-today tool instead of a fake forecast.
+function renderConditionsCard(profile){
+  const card = document.getElementById('companionConditionsCard');
+  const labelEl = document.getElementById('companionConditionsLabel');
+  const barsEl = document.getElementById('companionHeatBars');
+  const readingEl = document.getElementById('companionHeatReading');
+  const noteEl = document.getElementById('companionConditionsNote');
+  if(!card) return;
+
+  // The "Adjust for today" button lives inside this card, so the card
+  // itself must stay visible even with no saved profile yet — otherwise
+  // a logged-in user without a dog profile would have no way to reach it.
+  if(!profile){
+    labelEl.textContent = 'HEAT READINESS';
+    barsEl.innerHTML = [0,1,2].map(() => '<span class="bar"></span>').join('');
+    readingEl.textContent = '';
+    noteEl.innerHTML = `Add your dog's details to see their real heat tolerance here. Meanwhile, trails below use an average-dog default.`;
+    card.hidden = false;
+    return;
+  }
+
+  const overrides = effectiveOverrides(profile, null);
+  const sensitive = !!overrides.heatSensitive;
+  const level = sensitive ? 2 : 1; // segments lit out of 3
+  const name = profile.name || 'your dog';
+
+  labelEl.textContent = sensitive ? 'HEAT-SENSITIVE DOG' : 'HEAT READINESS';
+  barsEl.innerHTML = [0,1,2].map(i => `<span class="bar${i < level ? ' on' : ''}"></span>`).join('');
+  readingEl.textContent = sensitive ? 'Higher risk' : 'Typical';
+  noteEl.innerHTML = sensitive
+    ? `${name}'s breed or health profile runs hotter on exposed climbs, so shaded and low routes are ranked higher below. <strong>Start early on warm days.</strong>`
+    : `Match scores already account for ${name}'s heat tolerance. Use "Adjust for today" if today's weather changes what's sensible.`;
+  card.hidden = false;
 }
 
 // Personalised breed-insight card on the logged-in homepage. Reads documented
@@ -823,9 +948,14 @@ async function renderReturningHomepage(profile){
   if(!heading || typeof trails === 'undefined') return;
 
   renderAreaFilters(profile);
+  renderDogProfileCard(profile);
+  renderConditionsCard(profile);
 
   const name = (profile && profile.name) ? profile.name : 'there';
   const overrides = profile ? effectiveOverrides(profile, adjustOverride) : { terrain:'1', distance:'10', heatSensitive:false };
+
+  const kicker = document.getElementById('companionKicker');
+  if(kicker) kicker.textContent = profile && profile.name ? `Ranked for ${profile.name}` : 'Ranked for your dog';
 
   const scored = trails.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
 
@@ -854,6 +984,10 @@ async function renderReturningHomepage(profile){
 
   renderBreedInsight(profile);
 
+  const titleEl = document.getElementById('companionListTitle');
+  const titleName = (profile && profile.name) ? profile.name : 'your dog';
+  if(titleEl) titleEl.textContent = showingSavedOnly ? `Saved for ${titleName}` : `Top trails for ${titleName}`;
+
   let displayList = filterTrailsForReturningView(scored);
 
   countEl.textContent = showingSavedOnly
@@ -874,7 +1008,10 @@ async function renderReturningHomepage(profile){
   if(collapsed) countEl.textContent = t('home.topOf', {a: Math.min(TOP_MATCHES, displayList.length), b: displayList.length});
 
   if(savedTrailsBtn){
-    savedTrailsBtn.textContent = showingSavedOnly ? t('home.allTrailsBtn') : t('home.savedTrails');
+    const savedLabel = savedTrailsBtn.querySelector('.txt-label');
+    if(savedLabel) savedLabel.textContent = showingSavedOnly ? t('home.allTrailsBtn') : t('home.savedTrails');
+    const savedCountEl = document.getElementById('companionSavedCount');
+    if(savedCountEl) savedCountEl.textContent = Object.keys(currentFavorites).length;
     savedTrailsBtn.classList.toggle('active', showingSavedOnly);
   }
 
@@ -904,31 +1041,37 @@ async function renderReturningHomepage(profile){
     const isNew = newIds.has(t.id);
     const isEst = t.curated === false;
     const dim = adjustActive && t.score < 60;
-    const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">` : pathThumbnailSvg(t.path);
+    const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy">` : pathThumbnailSvg(t.path);
+    const ringColor = SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)';
+    const heat = t.heatRisk === 'high' ? { l: 'High', bg: '#FBEAE6', fg: '#9C3A25' }
+      : t.heatRisk === 'moderate' ? { l: 'Med', bg: '#F5E4C6', fg: '#8A5A16' }
+      : { l: 'Low', bg: '#DCEBDD', fg: '#2C5C34' };
+    const selected = t.id === selectedTrailId;
     return `
-    <div class="trail-card" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
-      <div class="photo" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
+    <div class="trail-card${selected ? ' tc-selected' : ''}" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
+      <div class="photo tc-thumb" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
       <div class="body">
-        <div class="top-row">
+        <div class="tc-meta-row">
           ${t.curated !== false ? `<span class="badge-pill badge-verified">${window.t('badge.verified')}</span>` : `<span class="badge-pill badge-imported">${window.t('badge.imported')}</span>`}
           ${isNew ? `<span class="badge-pill badge-new">${window.t('badge.new')}</span>` : ''}
-          <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
-            <button class="fav-btn save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}" style="font-size:11.5px;padding:5px 14px;">${isFav ? window.t('card.saved') : window.t('card.save')}</button>
-          </div>
+          <span class="tc-risk-dot"><span class="dot" style="background:${ringColor};"></span>${safetyLabel(t.safetyLevel)}</span>
+          <span class="tc-heat-pill" style="background:${heat.bg};color:${heat.fg};">Heat ${heat.l}</span>
         </div>
-        <a href="trail.html?id=${t.id}" class="name" style="margin-top:6px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
-        <div class="meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="width:9px;height:9px;border-radius:50%;background:${SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)'};flex:none;"></span>${safetyLabel(t.safetyLevel)} · ${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h</div>
-        <span class="tag">${t.terrainType}</span>
-        ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:6px;">${window.t('card.routeShape')}</div>` : ''}
-        <div style="display:flex;gap:16px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-          <a href="trail.html?id=${t.id}" style="font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">${window.t('card.details')}</a>
+        <a href="trail.html?id=${t.id}" class="name" style="margin-top:2px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
+        <div class="tc-reason"><span class="mark">✦</span><span class="txt">${matchReason(t, overrides)}</span></div>
+        <div class="tc-stats">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h · ${t.terrainType}</div>
+        ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:4px;">${window.t('card.routeShape')}</div>` : ''}
+        <div class="tc-actions">
+          <a href="trail.html?id=${t.id}">${window.t('card.details')}</a>
           <button type="button" class="locate-btn" data-id="${t.id}">${window.t('card.locate')}</button>
+          <button type="button" class="save save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}">${isFav ? '✓ ' + window.t('card.saved') : window.t('card.save')}</button>
         </div>
       </div>
-      <div class="match-col">
-        <span class="match-num" style="color:${matchColor(t.score)};">${isEst ? '≈' : ''}${t.score}%</span>
-        <span class="match-lbl">${window.t('card.matchWord')}</span>
-        ${isEst ? `<span class="match-est">${window.t('card.estimated')}</span>` : ''}
+      <div class="companion-match-col">
+        <div class="tc-ring" style="background:conic-gradient(${ringColor} ${Math.round((t.score/100)*360)}deg,var(--paper-line) 0);">
+          <div class="tc-ring-inner">${isEst ? '≈' : ''}${t.score}%</div>
+        </div>
+        <span class="tc-ring-label">${window.t('card.matchWord')}</span>
       </div>
     </div>`;
   }).join('');
@@ -1000,6 +1143,7 @@ function focusMapOnTrail(trailId, list){
   if(!trailMapInstance) return;
   const t = list.find(x => x.id === trailId);
   if(!t) return;
+  selectTrail(t);
   document.getElementById('trailMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
   if(Array.isArray(t.path) && t.path.length > 1){
     const bounds = new maplibregl.LngLatBounds();
@@ -1008,8 +1152,6 @@ function focusMapOnTrail(trailId, list){
   } else if(typeof t.lat === 'number' && typeof t.lng === 'number'){
     trailMapInstance.flyTo({ center: [t.lng, t.lat], zoom: 13 });
   }
-  const marker = trailMarkers[trailId];
-  if(marker) marker.togglePopup();
 }
 
 // Adjust-for-today panel wiring
@@ -1024,6 +1166,41 @@ if(savedTrailsBtn){
     showingSavedOnly = !showingSavedOnly;
     renderReturningHomepage(currentProfileForAdjust);
   });
+}
+
+// Companion sort control — Best match / Shortest / Least climb
+const companionSortGroup = document.getElementById('companionSortGroup');
+if(companionSortGroup){
+  companionSortGroup.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-sort]');
+    if(!btn) return;
+    sortKey = btn.dataset.sort;
+    companionSortGroup.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+    renderReturningHomepage(currentProfileForAdjust);
+  });
+}
+
+// Map pin / card selection callout — clears via the × on the callout.
+const mapCalloutClose = document.getElementById('mapCalloutClose');
+if(mapCalloutClose){
+  mapCalloutClose.addEventListener('click', () => {
+    selectedTrailId = null;
+    hideMapCallout();
+    document.querySelectorAll('.trail-card.tc-selected').forEach(c => c.classList.remove('tc-selected'));
+    Object.values(trailMarkers).forEach(m => m.getElement().classList.remove('tc-pin-selected'));
+  });
+}
+function showMapCallout(t){
+  const callout = document.getElementById('mapCallout');
+  if(!callout) return;
+  document.getElementById('mapCalloutDot').style.background = SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)';
+  document.getElementById('mapCalloutName').textContent = t.name;
+  document.getElementById('mapCalloutPct').textContent = (t.curated === false ? '≈' : '') + t.score + '% match';
+  callout.hidden = false;
+}
+function hideMapCallout(){
+  const callout = document.getElementById('mapCallout');
+  if(callout) callout.hidden = true;
 }
 
 if(adjustToggle){

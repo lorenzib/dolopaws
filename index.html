@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"/>
 </head>
@@ -115,86 +115,145 @@
   </div>
 </div>
 
-<!-- RETURNING-VISITOR HOMEPAGE (shown once logged in) -->
+<!-- RETURNING-VISITOR HOMEPAGE (shown once logged in) — "Companion" layout:
+     sticky dog-profile + conditions + filters sidebar, map, sortable
+     ranked list. Same fonts/colours/components as the rest of the site. -->
 <div id="returningCustomerHomepage" hidden>
-  <div class="wrap" style="padding-top:32px;">
-    <div style="background:var(--sage-dim);border-radius:12px;padding:22px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-      <div id="dogPhotoBubble" class="dog-photo-bubble" hidden>
-        <div class="dog-bubble-photo">
-          <span class="dog-bubble-fallback" aria-hidden="true">🐾</span>
-          <img id="dogBubbleImg" alt="Your dog's photo" hidden>
+  <div class="companion-wrap" style="padding-top:28px;padding-bottom:60px;">
+    <div class="companion-grid">
+
+      <!-- ================= SIDEBAR ================= -->
+      <aside class="companion-sidebar">
+        <!-- Dog profile card -->
+        <div class="companion-card" id="companionDogCard">
+          <div class="companion-dog-head">
+            <div class="companion-dog-avatar" id="companionDogAvatar"><span aria-hidden="true">🐾</span></div>
+            <div>
+              <div class="companion-dog-name" id="companionDogName">Your dog</div>
+              <div class="companion-dog-meta" id="companionDogMeta"></div>
+            </div>
+          </div>
+          <div class="companion-chips" id="companionDogChips"></div>
+          <a class="companion-edit-link" href="account.html" data-i18n="home.editProfile">Edit profile &rarr;</a>
         </div>
-      </div>
-      <div style="flex:1;min-width:240px;">
-        <h1 id="returningHeading" class="dog-speech-cloud">“Where are we heading today?”</h1>
-        <p class="sub" id="returningSubline" style="font-size:13px;margin:10px 0 0;" aria-busy="true"><span class="skeleton" style="width:200px;height:12px;" aria-label="Loading your matches"></span></p>
-      </div>
+
+        <!-- Conditions / readiness card — real profile data, not invented
+             weather; opens the real adjust-for-today tool. -->
+        <div class="companion-card companion-conditions" id="companionConditionsCard" hidden>
+          <div class="head">
+            <span class="label" id="companionConditionsLabel">HEAT READINESS</span>
+          </div>
+          <div class="companion-heat-meter">
+            <span class="meter-label">Heat load</span>
+            <div class="bars" id="companionHeatBars"></div>
+            <span class="reading" id="companionHeatReading"></span>
+          </div>
+          <p id="companionConditionsNote"></p>
+          <button type="button" id="adjustToggle" class="companion-conditions-cta" aria-expanded="false">Adjust for today's conditions &rarr;</button>
+        </div>
+
+        <!-- Filters (region / source / valley) — populated by
+             renderAreaFilters(), same logic as before, restyled markup -->
+        <div class="companion-card" id="areaFilterRow"></div>
+
+        <!-- Saved trails toggle -->
+        <button type="button" id="savedTrailsBtn" class="companion-card companion-saved">
+          <span class="txt">♥ <span class="txt-label">Saved trails</span></span>
+          <span class="count" id="companionSavedCount">0</span>
+        </button>
+      </aside>
+
+      <!-- ================= MAIN ================= -->
+      <main>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <div id="dogPhotoBubble" class="dog-photo-bubble" hidden>
+            <div class="dog-bubble-photo">
+              <span class="dog-bubble-fallback" aria-hidden="true">🐾</span>
+              <img id="dogBubbleImg" alt="Your dog's photo" hidden>
+            </div>
+          </div>
+          <div style="flex:1;min-width:240px;">
+            <span class="companion-kicker" id="companionKicker">Ranked for your dog</span>
+            <h1 id="returningHeading" class="dog-speech-cloud">“Where are we heading today?”</h1>
+          </div>
+        </div>
+        <p class="sub" id="returningSubline" style="font-size:13px;margin:12px 0 0;" aria-busy="true"><span class="skeleton" style="width:200px;height:12px;" aria-label="Loading your matches"></span></p>
+
+        <div id="breedInsightCard" class="breed-insight-card" hidden style="margin-top:20px;">
+          <span class="section-kicker" id="breedInsightKicker" style="color:var(--success);margin-bottom:12px;"></span>
+          <div id="breedInsightGrid" class="breed-insight-grid"></div>
+          <div class="breed-insight-foot">
+            <span id="breedInsightNote"></span>
+            <a id="breedInsightCta" href="#returningTrailList"></a>
+          </div>
+        </div>
+
+        <!-- TEMPORARY OVERRIDE PANEL — session-only, never touches the saved profile -->
+        <div id="adjustPanel" hidden class="adjust-panel" style="margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;">
+              <span data-dp-icon="adjust" data-dp-icon-mode="inline" aria-hidden="true"></span>
+              <span data-i18n="adjust.title">Adjusting for today only</span>
+            </div>
+            <button type="button" id="adjustCloseBtn" style="font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;" data-i18n="adjust.close">✕ Close</button>
+          </div>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;" data-i18n="adjust.note">This won't change your saved profile — just today's list.</p>
+
+          <div style="margin-bottom:14px;">
+            <div class="adj-filter-label" data-i18n="adjust.terrain">Terrain today</div>
+            <div class="adj-pill-row" data-group="terrain" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="0" data-i18n="adjust.t0">Paved / packed dirt only</button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="1" data-i18n="adjust.t1">Gravel &amp; mixed rock OK</button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="2" data-i18n="adjust.t2">Loose rock / scree OK</button>
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div class="adj-filter-label" data-i18n="adjust.distance">Distance today</div>
+            <div class="adj-pill-row" data-group="distance" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="5" data-i18n="adjust.d5">Up to 5 km</button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="10" data-i18n="adjust.d10">Up to 10 km</button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="99" data-i18n="adjust.dNo">No limit</button>
+            </div>
+          </div>
+          <div>
+            <div class="adj-filter-label" data-i18n="adjust.energy">Energy level today</div>
+            <div class="adj-pill-row" data-group="energy" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="low"><span aria-hidden="true">🐌</span> <span data-i18n="adjust.eLow">Low</span></button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="medium"><span aria-hidden="true">🐕</span> <span data-i18n="adjust.eMedium">Medium</span></button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="high"><span aria-hidden="true">🚀</span> <span data-i18n="adjust.eHigh">High</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="trailMapWrap" style="position:relative;margin-top:22px;">
+          <div id="trailMap" style="width:100%;height:320px;border-radius:20px;border:1px solid var(--paper-line);background:var(--sage-dim);overflow:hidden;"></div>
+          <div id="mapCallout" class="map-callout" hidden>
+            <span class="dot" id="mapCalloutDot"></span>
+            <span class="name" id="mapCalloutName"></span>
+            <span class="pct" id="mapCalloutPct"></span>
+            <span class="close" id="mapCalloutClose" role="button" aria-label="Clear selection">&times;</span>
+          </div>
+        </div>
+        <div id="trailMapLegend" style="display:flex;gap:16px;margin:10px 0 0;font-size:11.5px;color:var(--ink-soft);flex-wrap:wrap;align-items:center;"></div>
+
+        <div class="companion-list-head">
+          <div>
+            <div class="companion-list-title" id="companionListTitle">Top trails</div>
+            <div class="companion-list-sub" id="returningCount"></div>
+          </div>
+          <div class="companion-sort">
+            <span class="companion-sort-label">Sort</span>
+            <div class="companion-sort-group" id="companionSortGroup">
+              <button type="button" data-sort="match" class="active">Best match</button>
+              <button type="button" data-sort="distance">Shortest</button>
+              <button type="button" data-sort="effort">Least climb</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="returningTrailList"></div>
+      </main>
     </div>
-  </div>
-
-  <div class="wrap" style="padding-top:12px;">
-    <div id="breedInsightCard" class="breed-insight-card" hidden>
-      <span class="section-kicker" id="breedInsightKicker" style="color:var(--success);margin-bottom:12px;"></span>
-      <div id="breedInsightGrid" class="breed-insight-grid"></div>
-      <div class="breed-insight-foot">
-        <span id="breedInsightNote"></span>
-        <a id="breedInsightCta" href="#returningResults"></a>
-      </div>
-    </div>
-  </div>
-
-  <div class="wrap" id="returningResults" style="padding-top:24px;padding-bottom:60px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <button id="savedTrailsBtn" class="area-pill" data-i18n="home.savedTrails">Saved trails</button>
-        <span style="font-size:12.5px;color:var(--ink-soft);" id="returningCount"></span>
-      </div>
-      <button id="adjustToggle" class="adjust-toggle-btn" aria-expanded="false"><span data-dp-icon="adjust" data-dp-icon-mode="inline" aria-hidden="true"></span><span data-i18n="home.adjust">Adjust for today's conditions</span></button>
-    </div>
-
-    <!-- TEMPORARY OVERRIDE PANEL — session-only, never touches the saved profile -->
-    <div id="adjustPanel" hidden class="adjust-panel">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div style="font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;">
-          <span data-dp-icon="adjust" data-dp-icon-mode="inline" aria-hidden="true"></span>
-          <span data-i18n="adjust.title">Adjusting for today only</span>
-        </div>
-        <button type="button" id="adjustCloseBtn" style="font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;" data-i18n="adjust.close">✕ Close</button>
-      </div>
-      <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;" data-i18n="adjust.note">This won't change your saved profile — just today's list.</p>
-
-      <div style="margin-bottom:14px;">
-        <div class="adj-filter-label" data-i18n="adjust.terrain">Terrain today</div>
-        <div class="adj-pill-row" data-group="terrain" style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="0" data-i18n="adjust.t0">Paved / packed dirt only</button>
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="1" data-i18n="adjust.t1">Gravel &amp; mixed rock OK</button>
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="2" data-i18n="adjust.t2">Loose rock / scree OK</button>
-        </div>
-      </div>
-      <div style="margin-bottom:14px;">
-        <div class="adj-filter-label" data-i18n="adjust.distance">Distance today</div>
-        <div class="adj-pill-row" data-group="distance" style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="5" data-i18n="adjust.d5">Up to 5 km</button>
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="10" data-i18n="adjust.d10">Up to 10 km</button>
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="99" data-i18n="adjust.dNo">No limit</button>
-        </div>
-      </div>
-      <div>
-        <div class="adj-filter-label" data-i18n="adjust.energy">Energy level today</div>
-        <div class="adj-pill-row" data-group="energy" style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="low"><span aria-hidden="true">🐌</span> <span data-i18n="adjust.eLow">Low</span></button>
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="medium"><span aria-hidden="true">🐕</span> <span data-i18n="adjust.eMedium">Medium</span></button>
-          <button type="button" class="adj-pill" aria-pressed="false" data-value="high"><span aria-hidden="true">🚀</span> <span data-i18n="adjust.eHigh">High</span></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="area-filter-row" id="areaFilterRow"></div>
-
-    <div id="trailMap" style="width:100%;height:520px;border-radius:16px;border:1px solid var(--paper-line);margin-bottom:8px;background:var(--sage-dim);overflow:hidden;"></div>
-    <div id="trailMapLegend" style="display:flex;gap:16px;margin-bottom:20px;font-size:11.5px;color:var(--ink-soft);flex-wrap:wrap;align-items:center;"></div>
-
-    <div id="returningTrailList"></div>
   </div>
 </div>
 
