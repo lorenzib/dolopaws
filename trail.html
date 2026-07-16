@@ -3,227 +3,372 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title id="pageTitle">Trail — DoloPaws</title>
-<meta name="theme-color" content="#2E4034">
+<title id="pageTitle">Trail | DoloPaws</title>
+<meta name="theme-color" content="#2f5138">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"/>
+<style>
+/* ---- Companion reference tokens, trail detail (design-handoff fidelity) ---- */
+body{background:#efeadd;font-family:'Hanken Grotesk',system-ui,sans-serif;color:#1b1f19;}
+.td-wrap{max-width:1200px;margin:0 auto;padding:24px 32px 80px;}
+.td-crumb{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#6b6f64;margin-bottom:20px;text-decoration:none;}
+h1,h2,h3{font-family:'Spectral','Source Serif 4',serif;}
+
+/* Title hero */
+.td-hero{position:relative;border-radius:22px;overflow:hidden;padding:34px 32px;}
+.td-hero-photo{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#cfc9b7 0 16px,#d8d2c1 16px 32px);background-size:cover;background-position:center;}
+.td-hero-veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(239,234,221,.95) 0%,rgba(239,234,221,.78) 52%,rgba(239,234,221,.9) 100%);}
+.td-hero-in{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:32px;}
+.td-tags{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.verified-seal{font:700 10px 'Hanken Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase;background:#e5efe7;color:#2f5138;padding:4px 9px;border-radius:6px;white-space:nowrap;}
+.td-risk{display:flex;align-items:center;gap:6px;font-size:13px;color:#6b6f64;white-space:nowrap;}
+.td-risk .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+#trailName{margin:0;font:500 42px/1.03 'Spectral',serif;color:#1b1f19;}
+.trail-hero-verdict{margin:12px 0 0;font-size:15px;color:#5c6055;max-width:60ch;line-height:1.55;font-family:'Hanken Grotesk',sans-serif;}
+.th-facts{display:flex;flex-wrap:wrap;gap:20px 30px;margin-top:22px;}
+.th-facts .f b{display:block;font:500 19px 'Spectral',serif;color:#1b1f19;}
+.th-facts .f span{display:block;font:400 11px 'Hanken Grotesk',sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#8a8d80;margin-top:3px;}
+.th-facts .f.safe b{color:#2f5138;}
+
+/* Match + actions card */
+.td-actions{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:20px;padding:22px 26px;}
+.td-ring{position:relative;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4a7c59 360deg,#e6e0cf 0);}
+.td-ring-in{width:74px;height:74px;border-radius:50%;background:#fbfaf4;display:grid;place-items:center;font:600 24px 'Hanken Grotesk',sans-serif;color:#1b1f19;}
+.td-match-label{text-align:center;}
+.td-match-label .k{font:700 10px 'Hanken Grotesk',sans-serif;letter-spacing:.1em;color:#8a8d80;}
+.td-match-label .b{font-size:12px;color:#767a6d;margin-top:3px;}
+.td-btn-col{display:flex;flex-direction:column;gap:8px;width:200px;position:relative;}
+.td-btn-dark{font:500 14px 'Hanken Grotesk',sans-serif;background:#1b1f19;color:#f2eee2;border:none;padding:12px;border-radius:11px;cursor:pointer;text-align:center;text-decoration:none;display:block;}
+.td-btn-half{flex:1;font:500 13.5px 'Hanken Grotesk',sans-serif;background:#fbfaf4;color:#4a4d43;border:1px solid rgba(27,31,25,.16);padding:11px;border-radius:11px;cursor:pointer;}
+.td-btn-half.saved{background:#e5efe7;color:#2f5138;border-color:#d5e3d3;}
+.td-share-pop{position:absolute;top:100%;left:0;right:0;margin-top:6px;display:flex;flex-direction:column;gap:2px;background:#fbfaf4;border:1px solid rgba(27,31,25,.12);border-radius:12px;padding:6px;box-shadow:0 10px 24px -14px rgba(27,31,25,.45);z-index:15;}
+.td-share-pop[hidden]{display:none;}
+.td-share-pop button,.td-share-pop a{text-align:left;font:500 13px 'Hanken Grotesk',sans-serif;background:none;border:none;padding:9px 11px;border-radius:8px;cursor:pointer;color:#4a4d43;text-decoration:none;display:block;}
+.td-share-pop button:hover,.td-share-pop a:hover{background:#efeadd;}
+#trailMatch a{color:#2f5138 !important;text-decoration:underline;}
+
+/* Map hero */
+.trail-map-box{position:relative;height:396px;border-radius:20px;overflow:hidden;border:1px solid rgba(27,31,25,.1);margin-top:24px;background:linear-gradient(160deg,#d9e4cf 0%,#c7d6bb 45%,#e7ead9 100%);}
+#trailDetailMap{width:100%;height:100%;}
+.td-map-chip{position:absolute;left:16px;top:16px;z-index:6;font-size:12.5px;font-weight:600;background:rgba(251,250,244,.94);padding:7px 13px;border-radius:9px;color:#2f5138;box-shadow:0 2px 8px rgba(0,0,0,.12);font-family:'Hanken Grotesk',sans-serif;}
+.map-expand-btn{position:absolute;right:16px;bottom:44px;z-index:6;font:500 12px 'Hanken Grotesk',sans-serif;background:#fbfaf4;border:none;padding:7px 13px;border-radius:9px;box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:pointer;color:#1b1f19;}
+.map-key--dock{position:absolute;left:16px;bottom:16px;z-index:6;background:rgba(251,250,244,.94);border-radius:9px;padding:6px 10px;font-size:11px;box-shadow:0 2px 6px rgba(0,0,0,.12);max-width:60%;}
+.map-key--dock summary{cursor:pointer;font-weight:600;color:#2f5138;}
+.legend-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+
+/* Sub tabs */
+.td-tabs{display:flex;gap:4px;margin:28px 0 22px;border-bottom:1px solid rgba(27,31,25,.1);}
+.td-tabs button{font:500 14.5px 'Hanken Grotesk',sans-serif;background:none;border:none;border-bottom:2px solid transparent;color:#8a8d80;padding:10px 16px;cursor:pointer;margin-bottom:-1px;}
+.td-tabs button.active{color:#1b1f19;border-bottom-color:#1b1f19;}
+
+/* Body grid */
+.td-grid{display:grid;grid-template-columns:1fr 340px;gap:34px;align-items:start;}
+.td-side{position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;}
+
+/* Overview */
+.td-whyfits{background:#eef3ec;border:1px solid #d5e3d3;border-radius:18px;padding:22px;}
+.td-whyfits .head{display:flex;align-items:center;gap:9px;margin-bottom:16px;}
+.td-whyfits .paw{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#c9d6bf,#7f9a6c);display:grid;place-items:center;font-size:15px;}
+.td-whyfits .title{font:500 18px 'Spectral',serif;color:#2f5138;}
+.match-signals{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.match-signal{display:flex;gap:11px;}
+.match-signal .mark{flex:0 0 auto;color:#4a7c59;font-size:13px;margin-top:2px;}
+.match-signal b{display:block;font:600 13.5px 'Hanken Grotesk',sans-serif;color:#2f5138;}
+.match-signal small{display:block;font-size:13px;line-height:1.45;color:#4d6350;margin-top:2px;}
+.td-h3{font:500 19px 'Spectral',serif;margin:30px 0 12px;color:#1b1f19;}
+#elevProf{width:100%;height:180px;display:block;border-radius:14px;border:1px solid rgba(27,31,25,.1);background:#fbfaf4;touch-action:none;}
+.td-elev-figs{display:flex;gap:28px;margin-top:12px;font-size:13px;color:#5c6055;font-family:'Hanken Grotesk',sans-serif;}
+.td-elev-figs strong{font-weight:600;color:#1b1f19;}
+#matchDescription{font-size:14.5px;line-height:1.7;color:#3a3d34;margin:0;font-family:'Hanken Grotesk',sans-serif;}
+.trail-data-details{margin-top:22px;font-size:12px;color:#8a8d80;}
+.trail-data-details summary{cursor:pointer;}
+
+/* Dog safety */
+.dog-safety-rows{display:flex;flex-direction:column;gap:12px;}
+.safety-row{display:flex;align-items:flex-start;gap:14px;background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:14px;padding:16px 18px;}
+.safety-row .pill{flex:0 0 auto;font:600 11px 'Hanken Grotesk',sans-serif;padding:4px 10px;border-radius:999px;margin-top:1px;}
+.safety-row.is-good .pill{background:#e5efe7;color:#2f5138;}
+.safety-row.is-caution .pill{background:#f6ecdb;color:#8a5a26;}
+.safety-row b{font:600 14.5px 'Hanken Grotesk',sans-serif;display:block;}
+.safety-row small{display:block;font-size:13.5px;line-height:1.5;color:#5c6055;margin-top:3px;}
+.td-hz-head{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 12px;}
+.td-hz-head .from{font-size:12px;color:#8a8d80;}
+.td-report-panel{margin-top:14px;background:#f6ecdb;border:1px solid #e6d3b4;border-radius:14px;padding:16px 18px;}
+.td-report-panel .row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.td-report-panel .t1{font:600 14.5px 'Hanken Grotesk',sans-serif;color:#8a5a26;}
+.td-report-panel .t2{font-size:13px;color:#6e5a3c;margin-top:2px;}
+.add-report-btn{flex:0 0 auto;font:500 13.5px 'Hanken Grotesk',sans-serif;background:#1b1f19;color:#f2eee2;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;}
+
+/* Reviews */
+.td-rv-title{font:500 18px 'Spectral',serif;margin:0 0 13px;}
+.trail-photos-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;}
+.trail-reviews-list{display:flex;flex-direction:column;gap:14px;}
+.community-actions{display:flex;gap:8px;margin:14px 0 22px;}
+.add-photo-btn,.add-review-btn{font:500 12.5px 'Hanken Grotesk',sans-serif;background:none;border:1px solid rgba(27,31,25,.16);border-radius:8px;padding:7px 12px;cursor:pointer;color:#4a4d43;}
+
+/* Sidebar cards */
+.td-cond{background:#f6ecdb;border:1px solid #e6d3b4;border-radius:18px;padding:18px;}
+.td-cond .head{display:flex;align-items:center;justify-content:space-between;}
+.td-cond .k{font:700 11px 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a5a26;}
+.td-cond .temp{font-size:11px;color:#a07b45;}
+.td-cond .meter{display:flex;align-items:center;gap:9px;margin-top:12px;}
+.td-cond .meter .lbl{font-size:12px;color:#6e5a3c;width:64px;}
+.td-cond .meter .bars{flex:1;display:flex;gap:4px;}
+.td-cond .meter .bars span{flex:1;height:7px;border-radius:4px;background:#e6d3b4;}
+.td-cond .meter .rd{font-size:11.5px;font-weight:600;color:#2f5138;}
+.td-cond p{margin:12px 0 0;font-size:12.5px;line-height:1.5;color:#6e5a3c;}
+.td-fc{background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:18px;padding:18px;}
+.td-fc .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;}
+.td-fc .head .t{font:500 15px 'Spectral',serif;}
+.td-fc .head .v{font-size:11.5px;color:#8a8d80;}
+.fc-strip{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:66px;}
+.fc-strip .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;}
+.fc-strip .bar{width:100%;border-radius:4px;}
+.fc-strip .hl{font-size:9.5px;color:#8a8d80;}
+.fc-legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:11.5px;color:#5c6055;}
+.fc-legend i{width:8px;height:8px;border-radius:50%;display:inline-block;font-style:normal;}
+.td-fc .rule{height:1px;background:rgba(27,31,25,.08);margin:15px 0 6px;}
+.fc-day{display:flex;align-items:center;gap:9px;padding:7px 0;}
+.fc-day .d{width:44px;font:500 13px 'Hanken Grotesk',sans-serif;}
+.fc-day .s{flex:1;font-size:12.5px;color:#767a6d;}
+.fc-day .hi{font:500 13px 'Hanken Grotesk',sans-serif;width:36px;text-align:right;}
+.fc-day .w{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+
+/* Similar gallery */
+.td-similar{margin-top:52px;}
+.td-similar .head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;}
+.td-similar h3{font:500 23px 'Spectral',serif;margin:0;}
+.near-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.near-card{display:block;background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:16px;overflow:hidden;text-decoration:none;}
+.near-card .ph{position:relative;height:156px;background:repeating-linear-gradient(45deg,#e2ddcb 0 11px,#e9e4d4 11px 22px);background-size:cover;background-position:center;}
+.near-card .pct{position:absolute;right:12px;top:12px;font:600 13px 'Hanken Grotesk',sans-serif;background:#fbfaf4;color:#4a7c59;padding:4px 11px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.near-card .bd{padding:15px 17px;}
+.near-card .nm{font:500 17px 'Spectral',serif;color:#1b1f19;line-height:1.15;}
+.near-card .mt{font-size:12.5px;color:#767a6d;margin-top:5px;}
+
+/* Footer quote */
+.td-footer{border-top:1px solid rgba(27,31,25,.09);padding:56px 32px 64px;text-align:center;background:#efeadd;}
+.td-footer p{max-width:640px;margin:0 auto;font:500 italic 22px/1.45 'Spectral',serif;color:#3a3d34;}
+.td-footer .by{margin-top:14px;font-size:13px;color:#8a8d80;}
+
+@media (max-width:960px){
+  .td-grid{grid-template-columns:1fr;}
+  .td-side{position:static;flex-direction:row;flex-wrap:wrap;}
+  .td-cond,.td-fc{flex:1 1 280px;}
+  .td-hero-in{flex-direction:column;}
+  .near-grid,.trail-photos-list{grid-template-columns:1fr 1fr;}
+  #trailName{font-size:32px;}
+}
+</style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute;" aria-hidden="true">
-  <defs>
-    <g id="bp-paw"><ellipse cx="12" cy="15.6" rx="3.9" ry="3.1" fill="#3F8F77"/><ellipse cx="6.7" cy="10.6" rx="1.4" ry="1.9" fill="#3F8F77"/><ellipse cx="10.2" cy="8.5" rx="1.4" ry="1.9" fill="#3F8F77"/><ellipse cx="13.8" cy="8.5" rx="1.4" ry="1.9" fill="#3F8F77"/><ellipse cx="17.3" cy="10.6" rx="1.4" ry="1.9" fill="#3F8F77"/></g>
-    <g id="bp-sun"><circle cx="12" cy="13" r="3.7" fill="#C99038"/><g stroke="#C99038" stroke-width="1.8" stroke-linecap="round"><path d="M12 5.2v2M4.6 13h2M17.4 13h2M6.6 7.6l1.4 1.4M17.4 7.6L16 9"/></g></g>
-    <g id="bp-park"><rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="#fff" stroke="#4C87C6" stroke-width="1.6"/><path d="M10 16.2 V7.8 h3.1 a2.6 2.6 0 0 1 0 5.2 h-3.1" fill="none" stroke="#4C87C6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></g>
-  </defs>
-</svg>
-
 <div class="topnav">
-  <a class="brand" href="index.html"><img src="logo.svg?v=3" alt="DoloPaws logo">DoloPaws</a>
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">▲</span>DoloPaws</a>
   <div class="links">
-    <a href="index.html" data-i18n="nav.home">Home</a>
-    <a href="browse-trails.html" data-i18n="nav.browse">Browse our trails</a>
+    <a href="browse-trails.html" class="active">Trails</a>
     <a href="journal.html">My Journal</a>
-    <a href="safety-guide.html" data-i18n="nav.guide">Dog safety guide</a>
-    <a href="about.html" data-i18n="nav.about">About</a>
-    <button id="accountBtn" class="account-btn" data-i18n="nav.login">Log in</button>
+    <a href="safety-guide.html">Safety guide</a>
+    <a href="about.html">About</a>
+    <button id="accountBtn" class="account-btn">Log in</button>
   </div>
 </div>
 
-<div class="wrap" style="padding-top:28px;">
-  <a href="browse-trails.html" onclick="if(history.length>1 && document.referrer.indexOf(location.hostname)!==-1){history.back();return false;}" style="font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;">← Back</a>
+<div class="td-wrap">
+  <a class="td-crumb" id="tdBreadcrumb" href="browse-trails.html" onclick="if(history.length>1 && document.referrer.indexOf(location.hostname)!==-1){history.back();return false;}">← Trails</a>
 
-  <div class="trail-hero-dark trail-decision-hero" style="margin-top:14px;">
-    <div class="trail-hero-content">
-      <p class="trail-hero-eyebrow">DOG-FRIENDLY TRAIL GUIDE</p>
-      <span id="verifiedSeal" class="verified-seal" hidden></span>
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-      <h1 id="trailName" style="font-size:clamp(28px,4vw,44px);color:#fff;margin:0;" aria-busy="true"><span class="skeleton skeleton--light" style="width:min(260px,60vw);height:36px;" aria-label="Loading trail"></span></h1>
-      <div id="heroRating" class="hero-rating" hidden></div>
+  <!-- ============ TITLE HERO ============ -->
+  <div class="td-hero">
+    <div class="td-hero-photo" id="tdHeroPhoto"></div>
+    <div class="td-hero-veil"></div>
+    <div class="td-hero-in">
+      <div style="flex:1;min-width:0;">
+        <div class="td-tags">
+          <span id="verifiedSeal" hidden></span>
+          <span class="td-risk" id="tdRiskLine" hidden><span class="dot" id="tdRiskDot"></span><span id="tdRiskLabel"></span></span>
+          <div id="heroRating" class="hero-rating" hidden></div>
+        </div>
+        <h1 id="trailName" aria-busy="true"><span class="skeleton" style="width:min(260px,60vw);height:36px;display:inline-block;" aria-label="Loading trail"></span></h1>
+        <p id="heroVerdict" class="trail-hero-verdict"></p>
+        <div id="trailFacts" class="th-facts"></div>
       </div>
-      <p id="heroVerdict" class="trail-hero-verdict">A clear answer for you and your dog, before you set off.</p>
-    <div id="trailFacts" class="th-facts"></div>
+
+      <!-- match + actions -->
+      <div class="td-actions">
+        <div id="personalScore" hidden></div>
+        <div class="td-match-label" id="tdMatchLabel" hidden>
+          <div class="k" id="tdMatchName">MATCH FOR YOUR DOG</div>
+          <div class="b" id="tdMatchBreed"></div>
+        </div>
+        <span id="trailMatch" hidden style="font-size:12.5px;text-align:center;max-width:200px;"></span>
+        <div class="td-btn-col">
+          <a id="getDirectionsBtn" class="td-btn-dark" href="#">Get directions</a>
+          <div style="display:flex;gap:8px;">
+            <button id="detailSaveBtn" class="td-btn-half" type="button">♥ Save</button>
+            <button id="detailShareBtn" class="td-btn-half" type="button" aria-haspopup="true" aria-expanded="false"><span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"></path><path d="M12 3v12"></path><path d="M8 7l4-4 4 4"></path></svg>Share</span></button>
+          </div>
+          <div class="td-share-pop" id="tdSharePop" hidden>
+            <button type="button" id="tdCopyLink">Copy link</button>
+            <a id="tdShareSms" href="#">Message a walking buddy</a>
+            <a id="tdShareMail" href="#">Email this trail</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="qaStrip" class="qa-strip" hidden>
-    <div class="qa-card" id="qaDog">
-      <svg class="qa-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#bp-paw"/></svg>
-      <span><b id="qaDogTitle"></b><span id="qaDogSub" class="qa-sub"></span></span>
-    </div>
-    <div class="qa-card" id="qaToday" hidden>
-      <svg class="qa-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#bp-sun"/></svg>
-      <span><b id="qaTodayTitle"></b><span id="qaTodaySub" class="qa-sub"></span></span>
-    </div>
-    <div class="qa-card" id="qaAccess" hidden>
-      <svg class="qa-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#bp-park"/></svg>
-      <span><b id="qaAccessTitle"></b><span id="qaAccessSub" class="qa-sub"></span></span>
-    </div>
+  <!-- hidden legacy slots trail.js still writes into -->
+  <div hidden>
+    <div id="qaStrip" hidden><b id="qaDogTitle"></b><span id="qaDogSub"></span><div id="qaToday" hidden><b id="qaTodayTitle"></b><span id="qaTodaySub"></span></div><div id="qaAccess" hidden><b id="qaAccessTitle"></b><span id="qaAccessSub"></span></div><div id="qaDog"></div></div>
+    <div id="trailChips"><span id="weatherChip" hidden></span></div>
+    <div id="trailBadges"></div><div id="trailMeta"></div><div id="trailTags"></div>
+    <div id="quickFacts"></div><div id="weatherWidget" hidden></div>
+    <section id="personalMatch"><div id="matchDogAvatar"></div><h2 id="personalMatchTitle"></h2><p id="matchSummary"></p><span id="dogsChip" hidden></span><a id="startNavigationBtn" href="#trailMapBox" hidden></a></section>
+    <p id="assessmentNote"></p>
+    <div id="aboutFacts" hidden></div>
+    <p id="trailDesc" hidden></p><div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
+    <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
+    <div id="directionsWrap" hidden><ol id="trailDirections"></ol></div>
+    <div id="trailItinerary" hidden></div>
+    <span id="elevReadout" hidden></span><div id="elevationProfileWrap" hidden></div>
+    <div id="communityRating" hidden></div>
   </div>
 
-  <div id="trailChips" class="trail-chips"><span id="weatherChip" class="trail-chip" hidden></span></div>
-
-  <div id="trailBadges" style="display:none;"></div>
-  <div id="trailMeta" style="display:none;"></div>
-  <div id="trailTags" style="display:none;"></div>
-  <div id="quickFacts" style="display:none;"></div>
-  <div id="weatherWidget" style="display:none;" hidden></div>
-
-  <section id="personalMatch" class="personal-match" aria-labelledby="personalMatchTitle">
-    <div class="personal-match__top">
-      <div id="matchDogAvatar" class="match-dog-avatar" aria-hidden="true"></div>
-      <div class="personal-match__copy">
-        <span class="section-kicker">YOUR DOG'S TRAIL MATCH</span>
-        <h2 id="personalMatchTitle">A great match for your dog</h2>
-        <p id="matchSummary">We’ll weigh this trail against your dog’s profile.</p>
-        <span id="dogsChip" class="trail-chip trail-chip--sage match-weekly" hidden style="display: none;"></span>
-      </div>
-      <div id="personalScore" class="personal-score" hidden></div>
-      <div class="personal-actions">
-        <a id="startNavigationBtn" class="start-navigation-btn" href="#trailMapBox"><svg class="start-hike-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18.2c-2.4 0-4.2-1.5-4.2-3.6 0-1.4 1.1-2.5 2.5-2.5.7 0 1.2.3 1.7.7.5-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 2.1-1.8 3.6-4.2 3.6Z"></path><circle cx="6.7" cy="10.4" r="1.7"></circle><circle cx="10.2" cy="8" r="1.7"></circle><circle cx="13.8" cy="8" r="1.7"></circle><circle cx="17.3" cy="10.4" r="1.7"></circle></svg>Start hike</a>
-        <a id="getDirectionsBtn" class="directions-btn" href="#">⌁ Get me there</a>
-        <button id="detailSaveBtn" class="save-trail-btn" type="button">⌑ Save for later</button>
-        <button id="detailShareBtn" class="save-trail-btn" type="button" aria-label="Share this trail">↗ Share</button>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- Route map — prominent, directly under the match block (Companion order) -->
-<div class="wrap" style="padding-top:16px;">
-  <div id="trailMapBox" class="trail-map-box trail-map-box--wide">
-    <div id="trailDetailMap" style="width:100%;height:100%;background:var(--sage-dim);"></div>
+  <!-- ============ MAP HERO ============ -->
+  <div id="trailMapBox" class="trail-map-box">
+    <div id="trailDetailMap"></div>
+    <span class="td-map-chip" id="tdMapChip" hidden></span>
     <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⛶ <span>Expand map</span></button>
-    <details class="map-key map-key--dock" open><summary data-i18n="trail.mapKey">Map key</summary>
+    <details class="map-key map-key--dock"><summary data-i18n="trail.mapKey">Map key</summary>
       <div id="mapLegend">
         <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
-        <div id="legendChips" class="legend-chips legend-chips--aligned"></div>
+        <div id="legendChips" class="legend-chips"></div>
       </div>
     </details>
   </div>
 
-  <!-- In-page tabs (Companion structure): Overview / Dog safety / Reviews & photos -->
-  <nav class="trail-section-nav" id="trailTabsNav" aria-label="Trail page sections" role="tablist" style="margin-top:20px;">
+  <!-- ============ SUB TABS ============ -->
+  <nav class="td-tabs" id="trailTabsNav" aria-label="Trail page sections" role="tablist">
     <button type="button" class="active" data-tab="tabOverview" role="tab" aria-selected="true">Overview</button>
     <button type="button" data-tab="tabSafety" role="tab" aria-selected="false">Dog safety</button>
     <button type="button" data-tab="tabReviews" role="tab" aria-selected="false">Reviews &amp; photos</button>
   </nav>
 
-  <div class="trail-detail-grid">
+  <!-- ============ BODY GRID ============ -->
+  <div class="td-grid">
     <div class="trail-tab-panels">
 
-      <!-- ============ TAB: OVERVIEW ============ -->
+      <!-- OVERVIEW -->
       <div id="tabOverview" role="tabpanel">
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-          <span class="section-kicker" style="display: block; margin: 0 0 8px; font: 700 10px 'Inter', sans-serif; letter-spacing: 0.13em; color: var(--success); text-transform: uppercase;">Why this works</span>
-          <h2 id="matchWhyTitle" style="font-size: 21px; margin: 0 0 12px; color: var(--ink);">How your dog will experience this trail</h2>
-          <p id="assessmentNote" style="max-width: 100%; margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.6;"></p>
-        </div>
-        <section class="match-why" aria-labelledby="matchWhyTitle">
-          <p id="matchDescription" class="trail-about-card__intro" style="max-width: 100%; margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; line-height: 1.7;"></p>
-          <div id="matchSignals" class="match-signals" style="padding-bottom:18px;border-bottom:1px solid var(--paper-line);"></div>
-          <div id="aboutFacts" class="about-facts" hidden></div>
-          <div id="matchAdvice" class="match-advice" hidden></div>
-          <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
-          <details class="trail-data-details" style="margin-top:16px;"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
-          <p id="trailDesc" hidden></p>
-          <div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
-          <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
-        </section>
-
-        <div id="trailPlan" class="trail-plan-heading">
-          <span class="section-kicker">TRAIL PLAN</span>
-          <h2>What you’ll experience</h2>
-          <p>Follow the route from the trailhead, with effort and dog-friendly stops in context.</p>
-        </div>
-        <div class="trail-grid trail-experience-grid" style="margin-top:14px;">
-          <div class="tg-left">
-            <div class="itin-card">
-              <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
-              <div id="trailItinerary" class="itin-list"></div>
-            </div>
+        <div class="td-whyfits">
+          <div class="head">
+            <span class="paw" aria-hidden="true">🐾</span>
+            <span class="title" id="tdWhyTitle">Why this fits your dog</span>
           </div>
-          <div class="tg-right">
-            <div class="itin-card" id="elevCard">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-                <h2 style="font-size:17px;margin:0;" data-i18n="trail.elevTitle">Elevation profile</h2>
-                <span id="elevReadout" style="font-size:11.5px;color:var(--ink);font-weight:700;" data-i18n="trail.elevHint">hover the graph →</span>
-              </div>
-              <div id="elevationProfileWrap" hidden></div>
-              <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
-            </div>
-          </div>
+          <div id="matchSignals" class="match-signals"></div>
         </div>
 
-        <div id="directionsWrap" style="display:none;" hidden>
-          <ol id="trailDirections"></ol>
+        <h3 class="td-h3" id="tdElevH">Elevation profile</h3>
+        <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none"></svg>
+        <div class="td-elev-figs" id="tdElevFigs" hidden>
+          <div><strong id="tdElevStart"></strong> start</div>
+          <div><strong id="tdElevHigh"></strong> high point</div>
+          <div><strong id="tdElevClimb"></strong> total climb</div>
         </div>
+
+        <h3 class="td-h3">The route</h3>
+        <p id="matchDescription"></p>
+
+        <details class="trail-data-details"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
       </div>
 
-      <!-- ============ TAB: DOG SAFETY ============ -->
+      <!-- DOG SAFETY -->
       <div id="tabSafety" role="tabpanel" hidden>
-        <div style="margin-top:10px;margin-bottom:14px;">
-          <span class="section-kicker" style="display:block;margin:0 0 8px;font:700 10px 'Inter',sans-serif;letter-spacing:.13em;color:var(--success);text-transform:uppercase;">Dog safety</span>
-          <h2 style="font-size:21px;margin:0 0 6px;color:var(--ink);">What to check before you go</h2>
-          <p style="margin:0;color:var(--ink-soft);font-size:13px;line-height:1.6;">Built from this trail's verified data. Good means no special preparation; caution means plan for it.</p>
-        </div>
         <div id="dogSafetyRows" class="dog-safety-rows"></div>
 
-        <div id="trailReportsWrap" style="margin-top:26px;">
-          <div class="community-reports-label" style="margin-top:0;">Recent safety reports</div>
-          <div id="trailFlagsList"></div>
-          <button id="addReportBtn" type="button" class="add-report-btn" style="margin-top:12px;" data-i18n="reports.button">⚠️ Report something</button>
+        <div class="td-hz-head">
+          <h3 style="font:500 19px 'Spectral',serif;margin:0;">Recent hazard reports</h3>
+          <span class="from">from the DoloPaws community</span>
         </div>
+        <div id="trailFlagsList"></div>
+
+        <div class="td-report-panel">
+          <div class="row">
+            <div>
+              <div class="t1">Spotted something risky?</div>
+              <div class="t2">Report a hazard to keep other dogs safe. It feeds the trail's risk score.</div>
+            </div>
+            <button id="addReportBtn" type="button" class="add-report-btn" data-i18n="reports.button">Report a hazard</button>
+          </div>
+        </div>
+
+        <div id="matchAdvice" class="match-advice" hidden style="margin-top:22px;"></div>
+        <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
       </div>
 
-      <!-- ============ TAB: REVIEWS & PHOTOS ============ -->
+      <!-- REVIEWS & PHOTOS -->
       <div id="tabReviews" role="tabpanel" hidden>
-        <div class="trail-section-heading community-section__heading" style="margin-top:10px;">
-          <div><span class="section-kicker">FROM THE COMMUNITY</span><h2>Dogs and their humans on this trail</h2></div>
-          <div id="communityRating" class="community-rating" hidden></div>
+        <div class="td-rv-title">Dogs and their humans on this trail</div>
+        <div class="community-actions">
+          <button id="addPhotoBtn" type="button" class="add-photo-btn">▧ Add trail photo</button>
+          <button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button>
         </div>
-        <div class="community-card">
-          <div class="community-card__top">
-            <p>Trail reports help everyone prepare. Reviews share the experience; photos show it.</p>
-            <div class="community-actions"><button id="addPhotoBtn" type="button" class="add-photo-btn">▧ Add trail photo</button><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button></div>
-          </div>
-          <div id="trailPhotosList" class="trail-photos-list"></div>
-          <div id="trailReviewsList" class="trail-reviews-list"></div>
-        </div>
+        <div id="trailPhotosList" class="trail-photos-list"></div>
+        <div class="td-rv-title" style="margin-top:4px;">Reviews</div>
+        <div id="trailReviewsList" class="trail-reviews-list"></div>
       </div>
 
     </div>
 
-    <!-- ============ STICKY SIDEBAR: today + walking forecast ============ -->
-    <aside class="trail-side" aria-label="Conditions and forecast">
-      <div class="trail-side-card" id="sideConditions" hidden>
-        <div class="trail-side-label">Today at the trailhead</div>
-        <div id="sideConditionsBody" style="font-size:13px;color:var(--ink);line-height:1.55;"></div>
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="td-side" aria-label="Conditions and forecast">
+      <div class="td-cond" id="sideConditions" hidden>
+        <div class="head">
+          <span class="k" id="sideCondTitle">Today</span>
+          <span class="temp" id="sideCondTemp"></span>
+        </div>
+        <div class="meter">
+          <span class="lbl">Heat load</span>
+          <div class="bars" id="sideHeatBars"><span></span><span></span><span></span></div>
+          <span class="rd" id="sideHeatReading"></span>
+        </div>
+        <p id="sideCondWindow"></p>
       </div>
-      <div class="trail-side-card" id="sideForecast" hidden>
-        <div class="trail-side-label">Walking forecast</div>
+
+      <div class="td-fc" id="sideForecast" hidden>
+        <div class="head">
+          <span class="t">Walking forecast</span>
+          <span class="v" id="sideFcValley"></span>
+        </div>
         <div id="sideForecastToday"></div>
+        <div class="fc-legend"><i style="background:#5c8a52;"></i>Cool <i style="background:#c98a3e;margin-left:6px;"></i>Warm <i style="background:#b2542e;margin-left:6px;"></i>Hot</div>
+        <div class="rule"></div>
         <div id="sideForecastDays"></div>
-        <p style="margin:10px 0 0;font-size:10.5px;color:var(--ink-soft);">Source: Open-Meteo, at the trailhead's coordinates.</p>
       </div>
     </aside>
   </div>
+
+  <!-- ============ SIMILAR GALLERY ============ -->
+  <div class="td-similar" id="nearbyTrails" hidden>
+    <div class="head">
+      <h3 id="nearbyTitle">Similar trails</h3>
+      <a href="browse-trails.html" style="font-size:13px;font-weight:500;">Browse all →</a>
+    </div>
+    <div id="nearbyGrid" class="near-grid"></div>
+  </div>
 </div>
 
-<div class="wrap" id="nearbyTrails" style="padding-top:24px;" hidden>
-  <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.nearbyTitle">Nearby trails</h2>
-  <div id="nearbyGrid" class="near-grid"></div>
-  <p style="font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;" data-i18n="trail.beforeYouGo">Before you go: <a href="safety-guide.html">the dog safety guide</a> · <a href="guides/water-for-dogs-on-trail.html">water for dogs on trail</a> · <a href="guides/dogs-on-cable-cars.html">dogs on cable cars</a> · <a href="guides/livestock-guard-dogs.html">meeting a guardian dog</a></p>
-</div>
-
-<footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; A personalised trail guide for dogs and their humans.</footer>
+<footer class="td-footer">
+  <p>“A walk is never just a walk when it's shared with a dog; it becomes an act of companionship, curiosity, and joy.”</p>
+  <div class="by">DoloPaws</div>
+</footer>
 
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <script src="i18n.js"></script>

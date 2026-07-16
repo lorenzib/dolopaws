@@ -127,32 +127,34 @@
     const pool = trails.filter(o => o.id !== t.id);
     const sameValley = pool.filter(o => o.valley && o.valley === t.valley);
     const sameRegion = pool.filter(o => o.region === t.region && o.valley !== t.valley);
-    const picks = sameValley.slice(0, 4);
-    for (const o of sameRegion) { if (picks.length >= 4) break; picks.push(o); }
+    const picks = sameValley.slice(0, 3);
+    for (const o of sameRegion) { if (picks.length >= 3) break; picks.push(o); }
     if (!picks.length) return;
+    // Reference gallery card: photo, floating match % chip, serif name, meta.
     grid.innerHTML = picks.map(o => `
       <a class="near-card" href="trail.html?id=${encodeURIComponent(o.id)}" data-near-id="${esc(o.id)}">
-        <b>${esc(o.name)}</b>
-        <span><span class="safety-badge ${safetyClass(o.safetyLevel)}" style="font-size:10.5px;padding:1px 8px;">${safetyLabel(o.safetyLevel)}</span> ${o.distance} km${o.hours ? ' · ' + esc(o.hours) + ' h' : ''}<span class="near-pct"></span></span>
+        <div class="ph"${o.imageIcon ? ` style="background-image:url('${esc(o.imageIcon)}');"` : ''}><span class="pct near-pct" hidden></span></div>
+        <div class="bd">
+          <div class="nm">${esc(o.name)}</div>
+          <div class="mt">${esc(o.valley || o.area || '')} · ${o.distance} km · ${safetyLabel(o.safetyLevel)}</div>
+        </div>
       </a>`).join('');
     wrapEl.hidden = false;
 
-    // Personalise: when a dog profile exists, retitle the section and add
-    // each pick's real match % — same scoreTrail() as everywhere else.
+    // Personalise: retitle the section and fill each pick's real match %
+    // chip — same scoreTrail() as everywhere else.
     function personalise() {
       if (typeof scoreTrail !== 'function' || !window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) return;
       window.DoloPawsAuth.getDogProfile().then(profile => {
         if (!profile) return;
-        const heading = wrapEl.querySelector('h2');
-        if (heading && profile.name) heading.textContent = tt('trail.similarFor', { name: profile.name }, 'Similar trails for ' + profile.name);
+        const heading = $('nearbyTitle');
+        if (heading && profile.name) heading.textContent = 'Similar trails for ' + profile.name;
         const ov = (typeof effectiveOverrides === 'function') ? effectiveOverrides(profile, null) : profile;
         for (const o of picks) {
           const slot = grid.querySelector(`[data-near-id="${CSS.escape(o.id)}"] .near-pct`);
           if (!slot) continue;
-          const n = scoreTrail(o, ov);
-          slot.textContent = ' · ' + (o.curated === false ? '≈' : '') + n + '% match';
-          slot.style.fontWeight = '700';
-          slot.style.color = n >= 70 ? 'var(--success)' : 'var(--ink-soft)';
+          slot.textContent = (o.curated === false ? '≈' : '') + scoreTrail(o, ov) + '%';
+          slot.hidden = false;
         }
       }).catch(() => {});
     }
@@ -169,8 +171,51 @@
 
   /* ---- Decision-first hero and safety dashboard ------------------ */
   (function decisionFlow() {
-    const hero = document.querySelector('.trail-decision-hero');
-    if (hero && t.imageIcon) hero.style.backgroundImage = `url("${String(t.imageIcon).replace(/["')]/g, '')}")`;
+    // Hero photo behind the title (reference: dimmed photo + cream veil).
+    const heroPhoto = $('tdHeroPhoto');
+    if (heroPhoto && t.imageIcon) heroPhoto.style.backgroundImage = `url("${String(t.imageIcon).replace(/["')]/g, '')}")`;
+
+    // Breadcrumb: "← Trails · {region} · {valley}"
+    const crumb = $('tdBreadcrumb');
+    if (crumb) {
+      const regionName = t.region === 'savoy' ? 'Savoy' : 'Dolomites';
+      crumb.textContent = '← Trails · ' + regionName + (t.valley ? ' · ' + t.valley : '');
+    }
+
+    // Risk dot line next to the verified seal.
+    const riskLine = $('tdRiskLine');
+    if (riskLine && t.safetyLevel) {
+      const dotColors = { 'low-risk': '#4a7c59', 'moderate': '#c98a3e', 'caution': '#b2542e' };
+      const labels = { 'low-risk': 'Low-risk terrain', 'moderate': 'Moderate terrain', 'caution': 'Caution terrain' };
+      $('tdRiskDot').style.background = dotColors[t.safetyLevel] || '#8a8d80';
+      $('tdRiskLabel').textContent = labels[t.safetyLevel] || '';
+      riskLine.hidden = false;
+    }
+
+    // Map overlay chip: "{km} km · loop/one way · {valley}"
+    const mapChip = $('tdMapChip');
+    if (mapChip) {
+      const loop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length - 1]) < 200;
+      mapChip.textContent = `${t.distance} km · ${loop ? 'loop' : 'one way'}${t.valley ? ' · ' + t.valley : ''}`;
+      mapChip.hidden = false;
+    }
+
+    // Elevation figures under the real chart; hide the block honestly
+    // when the trail has no profile data.
+    const prof = Array.isArray(t.elevationProfile) ? t.elevationProfile.map(p => Number(p.elev) || 0) : [];
+    if (prof.length > 1) {
+      const figs = $('tdElevFigs');
+      if (figs) {
+        $('tdElevStart').textContent = prof[0].toLocaleString() + ' m';
+        $('tdElevHigh').textContent = Math.max(...prof).toLocaleString() + ' m';
+        $('tdElevClimb').textContent = '+' + (t.elevation != null ? t.elevation : Math.max(...prof) - Math.min(...prof)) + ' m';
+        figs.hidden = false;
+      }
+    } else {
+      const h = $('tdElevH'), svg = $('elevProf');
+      if (h) h.hidden = true;
+      if (svg) svg.style.display = 'none';
+    }
 
     const easyTerrain = Number(t.terrainRank) === 0;
     const goodShade = Number(t.shadeCoverage) >= 40;
@@ -215,9 +260,19 @@
       signalData.push(['mountain', `${maxAltitude} m altitude`, 'Weather can change quickly']);
     }
     if (signalEl) {
-      signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
-        `<div class="match-signal">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
+      // Reference: 2x2 grid of ✦ rationale items inside the green card.
+      signalEl.innerHTML = signalData.slice(0, 4).map(([icon, title, sub]) =>
+        `<div class="match-signal"><span class="mark" aria-hidden="true">✦</span><span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
     }
+    // "Why this fits {name}" heading follows the profile when one exists.
+    function paintWhyTitle() {
+      if (!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) return;
+      window.DoloPawsAuth.getDogProfile().then(p => {
+        if (p && p.name && $('tdWhyTitle')) $('tdWhyTitle').textContent = 'Why this fits ' + p.name;
+      }).catch(() => {});
+    }
+    if (window.DoloPawsAuth) paintWhyTitle();
+    else window.addEventListener('dolopaws-auth-ready', paintWhyTitle, { once: true });
 
     // Assessment note ABOVE the box, below the heading
     const assessmentNote = $('assessmentNote');
@@ -261,21 +316,33 @@
       directionsBtn.rel = 'noopener';
     }
 
-    // Share: native share sheet where available, copy-link fallback with
-    // an inline confirmation. No third-party share widgets.
+    // Share popover (reference): Copy link with inline "✓ Link copied",
+    // Message a walking buddy (sms:), Email this trail (mailto:).
     const shareBtn = $('detailShareBtn');
-    if (shareBtn) {
+    const sharePop = $('tdSharePop');
+    if (shareBtn && sharePop) {
       const shareUrl = location.origin + location.pathname + '?id=' + encodeURIComponent(t.id);
-      shareBtn.addEventListener('click', async () => {
-        if (navigator.share) {
-          try { await navigator.share({ title: t.name + ' | DoloPaws', url: shareUrl }); return; }
-          catch (e) { if (e && e.name === 'AbortError') return; }
+      const shareText = t.name + ' on DoloPaws: ' + shareUrl;
+      const smsLink = $('tdShareSms'), mailLink = $('tdShareMail');
+      if (smsLink) smsLink.href = 'sms:?&body=' + encodeURIComponent(shareText);
+      if (mailLink) mailLink.href = 'mailto:?subject=' + encodeURIComponent(t.name + ' | DoloPaws') + '&body=' + encodeURIComponent(shareText);
+      shareBtn.addEventListener('click', () => {
+        sharePop.hidden = !sharePop.hidden;
+        shareBtn.setAttribute('aria-expanded', sharePop.hidden ? 'false' : 'true');
+      });
+      document.addEventListener('click', (e) => {
+        if (!sharePop.hidden && !sharePop.contains(e.target) && e.target !== shareBtn && !shareBtn.contains(e.target)) {
+          sharePop.hidden = true;
+          shareBtn.setAttribute('aria-expanded', 'false');
         }
+      });
+      const copyBtn = $('tdCopyLink');
+      if (copyBtn) copyBtn.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(shareUrl);
-          const prev = shareBtn.textContent;
-          shareBtn.textContent = '✓ Link copied';
-          setTimeout(() => { shareBtn.textContent = prev; }, 1800);
+          copyBtn.textContent = '✓ Link copied';
+          copyBtn.style.color = '#2f5138';
+          setTimeout(() => { copyBtn.textContent = 'Copy link'; copyBtn.style.color = ''; sharePop.hidden = true; }, 1400);
         } catch (e) {
           window.prompt(tt('trail.copyLink', null, 'Copy this link'), shareUrl);
         }
@@ -362,24 +429,23 @@
         if (!profile) return;
         const name = profile.name || 'your dog';
         const score = scoreTrail(t, typeof effectiveOverrides === 'function' ? effectiveOverrides(profile, null) : profile);
-        // Honest tiering: the headline and label follow the actual score
-        // instead of calling everything a great match.
-        const tier = score >= 85 ? ['A great match for', 'Excellent match']
-          : score >= 70 ? ['A good match for', 'Good match']
-          : score >= 50 ? ['A fair match for', 'Fair match']
-          : ['A tough match for', 'Demanding today'];
-        if (matchTitle) matchTitle.textContent = `${tier[0]} ${name}`;
-        if (matchSummary) matchSummary.textContent = score >= 70
-          ? `This ${t.distance} km trail suits ${name}'s profile, age and walking experience.`
-          : `This ${t.distance} km trail asks more of ${name}'s profile. Check the notes below before committing.`;
+        // Reference action card: 96px conic ring (#4a7c59 on #e6e0cf track),
+        // "MATCH FOR {NAME}" kicker, breed line underneath.
         if (personalScore) {
-          const ringColor = score >= 70 ? 'var(--success)' : score >= 50 ? '#8A5A16' : '#9C3A25';
+          const ringColor = score >= 70 ? '#4a7c59' : score >= 50 ? '#c98a3e' : '#b2542e';
           personalScore.innerHTML =
-            `<div class="tc-ring" style="background:conic-gradient(${ringColor} ${Math.round((score / 100) * 360)}deg,var(--paper-line) 0);">` +
-            `<div class="tc-ring-inner">${t.curated === false ? '≈' : ''}${score}%</div></div>` +
-            `<span class="tc-ring-label">${esc(tier[1]).toUpperCase()}</span>`;
+            `<div class="td-ring" style="background:conic-gradient(${ringColor} ${Math.round((score / 100) * 360)}deg,#e6e0cf 0);">` +
+            `<div class="td-ring-in">${t.curated === false ? '≈' : ''}${score}%</div></div>`;
           personalScore.hidden = false;
         }
+        const label = $('tdMatchLabel');
+        if (label) {
+          $('tdMatchName').textContent = 'MATCH FOR ' + name.toUpperCase();
+          $('tdMatchBreed').textContent = profile.breed || '';
+          label.hidden = false;
+        }
+        if (matchTitle) matchTitle.textContent = `Match for ${name}`;
+        if (matchSummary) matchSummary.textContent = '';
         if (avatar && profile.photo) avatar.innerHTML = `<img src="${esc(profile.photo)}" alt="${esc(name)}">`;
       }).catch(() => {});
     }
@@ -448,59 +514,37 @@
 
     box.innerHTML = rows.map(r => `
       <div class="safety-row ${r.ok ? 'is-good' : 'is-caution'}">
-        <span class="safety-row-mark" aria-hidden="true">${r.ok ? '✓' : '!'}</span>
-        <span><b>${esc(r.title)}</b> · <span class="safety-row-state">${r.ok ? 'Good' : 'Caution'}</span><small>${esc(r.sub)}</small></span>
+        <span class="pill">${r.ok ? 'Good' : 'Caution'}</span>
+        <span><b>${esc(r.title)}</b><small>${esc(r.sub)}</small></span>
       </div>`).join('');
   })();
 
-  /* ---- Sticky sidebar: today's conditions + walking forecast -------- */
+  /* ---- Sticky sidebar: today's conditions + walking forecast --------
+     Reference markup, real Open-Meteo data at the trailhead. ---------- */
   (function sidebar() {
     const sp = t.startPoint || {};
     const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
     const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
-
-    // Today: mirror the live chip trail.js fills from Open-Meteo (no second
-    // call for current conditions).
-    const condCard = $('sideConditions'), condBody = $('sideConditionsBody');
-    const chip = $('weatherChip');
-    if (condCard && condBody && chip) {
-      const sync = () => {
-        const txt = chip.textContent.trim();
-        if (!txt) return;
-        let hint = '';
-        if (t.heatRisk === 'high') hint = '<br><small style="color:var(--ink-soft);">Exposed route, start early.</small>';
-        else if (t.heatRisk === 'moderate') hint = '<br><small style="color:var(--ink-soft);">Some exposed stretches.</small>';
-        condBody.innerHTML = esc(txt) + hint;
-        condCard.hidden = false;
-      };
-      new MutationObserver(sync).observe(chip, { childList: true, characterData: true, subtree: true });
-      if (chip.textContent.trim()) sync();
-    }
-
-    // Walking forecast: real Open-Meteo 5-day forecast at the trailhead.
-    // Coolest-window labels come from the same hourly series, not guesses.
     const fcCard = $('sideForecast'), fcToday = $('sideForecastToday'), fcDays = $('sideForecastDays');
-    if (!fcCard || typeof lat !== 'number') return;
+    const condCard = $('sideConditions');
+    if (typeof lat !== 'number') return;
+
+    const valleyEl = $('sideFcValley');
+    if (valleyEl) valleyEl.textContent = t.valley || t.area || '';
+
     const WMO = (c) => c === 0 ? 'Clear' : c <= 2 ? 'Mostly clear' : c === 3 ? 'Overcast'
       : c <= 48 ? 'Fog' : c <= 57 ? 'Drizzle' : c <= 67 ? 'Rain' : c <= 77 ? 'Snow'
       : c <= 82 ? 'Showers' : c <= 86 ? 'Snow showers' : 'Thunderstorms';
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weathercode,temperature_2m_max,precipitation_probability_max&hourly=temperature_2m&forecast_days=5&timezone=auto`)
+    const heatColor = (v) => v < 15 ? '#5c8a52' : v < 22 ? '#c98a3e' : '#b2542e';
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,precipitation_probability_max&hourly=temperature_2m&forecast_days=5&timezone=auto`)
       .then(r => r.json())
       .then(d => {
         if (!d || !d.daily || !d.hourly) return;
-        const hrs = d.hourly.time.map((iso, i) => ({ iso, h: new Date(iso).getHours(), day: iso.slice(0, 10), temp: d.hourly.temperature_2m[i] }));
-
-        // Today's heat strip, 06:00 to 20:00.
+        const hrs = d.hourly.time.map((iso, i) => ({ h: new Date(iso).getHours(), day: iso.slice(0, 10), temp: d.hourly.temperature_2m[i] }));
         const todayKey = d.daily.time[0];
-        const strip = hrs.filter(x => x.day === todayKey && x.h >= 6 && x.h <= 20);
-        if (fcToday && strip.length) {
-          const barColor = (v) => v < 15 ? 'var(--success)' : v < 22 ? '#C9A25E' : '#B2542E';
-          fcToday.innerHTML = '<div class="fc-strip">' + strip.map(x =>
-            `<span title="${x.h}:00 · ${Math.round(x.temp)}°C" style="background:${barColor(x.temp)};height:${Math.max(6, Math.min(30, Math.round(x.temp)))}px;"></span>`).join('') +
-            '</div><div class="fc-strip-label"><span>06:00</span><span>today, hour by hour</span><span>20:00</span></div>';
-        }
 
-        // Coolest 3-hour daylight window per day, from the hourly series.
+        // Coolest 3-hour daylight window for a day, from the hourly series.
         const coolestWindow = (dayKey) => {
           const day = hrs.filter(x => x.day === dayKey && x.h >= 6 && x.h <= 20);
           if (day.length < 3) return null;
@@ -509,22 +553,53 @@
             const avg = (day[i].temp + day[i + 1].temp + day[i + 2].temp) / 3;
             if (avg < bestAvg) { bestAvg = avg; best = i; }
           }
-          const pad = (n) => String(n).padStart(2, '0');
-          return `${pad(day[best].h)}:00–${pad(day[best + 2].h + 1)}:00`;
+          return { from: day[best].h, to: day[best + 2].h + 1 };
         };
 
+        // Today's conditions card (warm), real current weather.
+        if (condCard && d.current) {
+          const cur = Math.round(d.current.temperature_2m);
+          const sky = WMO(d.current.weathercode).toLowerCase();
+          $('sideCondTitle').textContent = 'Today · ' + sky;
+          $('sideCondTemp').textContent = cur + '°C';
+          const level = cur < 15 ? 1 : cur < 22 ? 2 : 3;
+          const reading = ['Low', 'Moderate', 'High'][level - 1];
+          $('sideHeatBars').innerHTML = [1, 2, 3].map(i =>
+            `<span style="${i <= level ? 'background:' + heatColor(cur) + ';' : ''}"></span>`).join('');
+          $('sideHeatReading').textContent = reading;
+          const win = coolestWindow(todayKey);
+          $('sideCondWindow').innerHTML = win
+            ? `Best window: <strong style="font-weight:600;">${win.from}:00 to ${win.to}:00</strong>, the coolest stretch of daylight at this trailhead.`
+            : 'Mountain weather turns quickly; recheck before you set off.';
+          condCard.hidden = false;
+        }
+
+        // Today's hourly heat strip, 06:00 to 20:00.
+        const strip = hrs.filter(x => x.day === todayKey && x.h >= 6 && x.h <= 20 && x.h % 2 === 0);
+        if (fcToday && strip.length) {
+          fcToday.innerHTML = '<div class="fc-strip">' + strip.map(x =>
+            `<div class="col"><div class="bar" title="${x.h}:00 · ${Math.round(x.temp)}°C" style="background:${heatColor(x.temp)};height:${Math.max(14, Math.min(100, Math.round((x.temp / 30) * 100)))}%;"></div><span class="hl">${x.h < 12 ? x.h + 'a' : (x.h === 12 ? '12p' : (x.h - 12) + 'p')}</span></div>`).join('') +
+            '</div>';
+        }
+
+        // 5-day outlook with per-day coolest-window pill.
         if (fcDays) {
           fcDays.innerHTML = d.daily.time.map((iso, i) => {
             const label = i === 0 ? 'Today' : new Date(iso).toLocaleDateString(undefined, { weekday: 'short' });
+            const hi = Math.round(d.daily.temperature_2m_max[i]);
             const win = coolestWindow(iso);
+            const pillBg = hi < 15 ? '#e5efe7' : hi < 22 ? '#f6ecdb' : '#f3e2d6';
+            const pillFg = heatColor(hi);
+            const rain = d.daily.precipitation_probability_max[i];
             return `<div class="fc-day">
-              <b>${label}</b>
-              <span>${WMO(d.daily.weathercode[i])} · ${Math.round(d.daily.temperature_2m_max[i])}°C${d.daily.precipitation_probability_max[i] >= 30 ? ' · ' + d.daily.precipitation_probability_max[i] + '% rain' : ''}</span>
-              ${win ? `<small>coolest ${win}</small>` : ''}
+              <span class="d">${label}</span>
+              <span class="s">${WMO(d.daily.weathercode[i])}${rain >= 30 ? ' · ' + rain + '% rain' : ''}</span>
+              <span class="hi">${hi}°</span>
+              ${win ? `<span class="w" style="background:${pillBg};color:${pillFg};">${win.from}:00 to ${win.to}:00</span>` : ''}
             </div>`;
           }).join('');
         }
-        fcCard.hidden = false;
+        if (fcCard) fcCard.hidden = false;
       })
       .catch(() => {});
   })();

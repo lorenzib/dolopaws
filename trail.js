@@ -634,8 +634,8 @@ function renderTrail(t){
     const experienceGrid = elevationCard.closest('.trail-experience-grid');
     if(experienceGrid) experienceGrid.classList.toggle('trail-experience-grid--itinerary-only', !hasElevationProfile);
   }
-  document.title = `${t.name} — DoloPaws`;
-  document.getElementById('pageTitle').textContent = `${t.name} — DoloPaws`;
+  document.title = `${t.name} | DoloPaws`;
+  document.getElementById('pageTitle').textContent = `${t.name} | DoloPaws`;
   document.getElementById('trailName').textContent = t.name;
   document.getElementById('trailMeta').textContent =
     `${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h · ${t.terrainType}`;
@@ -1088,7 +1088,7 @@ function renderTrail(t){
   // Save button — reflects and updates real account state, same pattern as the trail cards.
   const saveBtn = document.getElementById('detailSaveBtn');
   function paintSaveBtn(isFav){
-    saveBtn.textContent = isFav ? 'Saved for later' : 'Save for later';
+    saveBtn.textContent = isFav ? '✓ Saved' : '♥ Save';
     saveBtn.classList.toggle('saved', isFav);
   }
   window.addEventListener('dolopaws-auth-changed', async (e) => {
