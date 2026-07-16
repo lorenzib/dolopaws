@@ -323,28 +323,55 @@
     const shareBtn = $('detailShareBtn');
     const sharePop = $('tdSharePop');
     if (shareBtn && sharePop) {
-      const shareUrl = location.origin + location.pathname + '?id=' + encodeURIComponent(t.id);
-      const shareText = t.name + ' on DoloPaws: ' + shareUrl;
       const smsLink = $('tdShareSms'), mailLink = $('tdShareMail');
-      if (smsLink) smsLink.href = 'sms:?&body=' + encodeURIComponent(shareText);
-      if (mailLink) mailLink.href = 'mailto:?subject=' + encodeURIComponent(t.name + ' | DoloPaws') + '&body=' + encodeURIComponent(shareText);
+      const shareDetails = () => {
+        const url = new URL(location.pathname, location.href);
+        url.searchParams.set('id', t.id);
+        const activeTab = new URLSearchParams(location.search).get('tab');
+        if (/^(?:safety|reviews)$/.test(activeTab || '')) url.searchParams.set('tab', activeTab);
+        const shareUrl = url.href;
+        return {
+          url: shareUrl,
+          text: t.name + ' on DoloPaws: ' + shareUrl
+        };
+      };
+      const closeShare = () => {
+        sharePop.hidden = true;
+        shareBtn.setAttribute('aria-expanded', 'false');
+      };
+      const updateShareLinks = () => {
+        const details = shareDetails();
+        if (smsLink) smsLink.href = 'sms:?body=' + encodeURIComponent(details.text);
+        if (mailLink) mailLink.href = 'mailto:?subject=' + encodeURIComponent(t.name + ' | DoloPaws') + '&body=' + encodeURIComponent(details.text);
+      };
       shareBtn.addEventListener('click', () => {
         sharePop.hidden = !sharePop.hidden;
         shareBtn.setAttribute('aria-expanded', sharePop.hidden ? 'false' : 'true');
+        if (!sharePop.hidden) updateShareLinks();
       });
       document.addEventListener('click', (e) => {
         if (!sharePop.hidden && !sharePop.contains(e.target) && e.target !== shareBtn && !shareBtn.contains(e.target)) {
-          sharePop.hidden = true;
-          shareBtn.setAttribute('aria-expanded', 'false');
+          closeShare();
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sharePop.hidden) {
+          closeShare();
+          shareBtn.focus();
         }
       });
       const copyBtn = $('tdCopyLink');
       if (copyBtn) copyBtn.addEventListener('click', async () => {
+        const shareUrl = shareDetails().url;
         try {
           await navigator.clipboard.writeText(shareUrl);
           copyBtn.textContent = '✓ Link copied';
           copyBtn.style.color = '#2f5138';
-          setTimeout(() => { copyBtn.textContent = 'Copy link'; copyBtn.style.color = ''; sharePop.hidden = true; }, 1400);
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy link';
+            copyBtn.style.color = '';
+            closeShare();
+          }, 1400);
         } catch (e) {
           window.prompt(tt('trail.copyLink', null, 'Copy this link'), shareUrl);
         }
