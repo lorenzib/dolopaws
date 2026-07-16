@@ -393,11 +393,139 @@
       descEl.textContent = String(t.desc).trim();
     }
     
-    document.querySelectorAll('.trail-section-nav a').forEach(a => {
-      a.addEventListener('click', () => {
-        document.querySelectorAll('.trail-section-nav a').forEach(other => other.classList.remove('active'));
-        a.classList.add('active');
+    // In-page tabs: Overview / Dog safety / Reviews & photos.
+    const tabsNav = $('trailTabsNav');
+    if (tabsNav) {
+      const panelIds = ['tabOverview', 'tabSafety', 'tabReviews'];
+      tabsNav.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabsNav.querySelectorAll('[data-tab]').forEach(b => {
+            const on = b === btn;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-selected', on ? 'true' : 'false');
+          });
+          panelIds.forEach(id => { const p = $(id); if (p) p.hidden = id !== btn.dataset.tab; });
+        });
       });
-    });
+    }
+  })();
+
+  /* ---- Dog safety tab: Good/Caution rows from real trail fields ---- */
+  (function safetyRows() {
+    const box = $('dogSafetyRows');
+    if (!box) return;
+    const text = `${t.tips || ''} ${t.desc || ''} ${(t.surfaceHazards || []).join(' ')}`.toLowerCase();
+    const hasWater = Array.isArray(t.waterSources) && t.waterSources.length > 0;
+    const shade = typeof t.shadeCoverage === 'number' ? t.shadeCoverage : null;
+    const maxAlt = Math.max(0, ...(t.elevationProfile || []).map(p => Number(p.elev) || 0));
+    const rows = [];
+    const good = (title, sub) => rows.push({ ok: true, title, sub });
+    const caution = (title, sub) => rows.push({ ok: false, title, sub });
+
+    hasWater
+      ? good('Water', 'A water source is mapped on this route. Bring a bowl.')
+      : caution('Water', 'No water source is mapped. Carry enough for the dog, roughly 0.5 l per 10 kg on a warm day.');
+    if (shade !== null) {
+      shade >= 40
+        ? good('Shade', `About ${shade}% of the route has meaningful shade.`)
+        : caution('Shade', `Only about ${shade}% of the route is shaded. Start early on warm days.`);
+    }
+    if (t.heatRisk) {
+      t.heatRisk === 'low'
+        ? good('Heat', 'Low heat risk for the area and aspect.')
+        : caution('Heat', t.heatRisk === 'high' ? 'High heat risk: exposed or south-facing. Early start strongly advised.' : 'Moderate heat risk: plan water and rest stops.');
+    }
+    Number(t.terrainRank) === 0
+      ? good('Paw surface', 'Paved or packed surfaces, easy on pads.')
+      : caution('Paw surface', (t.terrainType || 'Gravel and mixed rock') + '. Check pads at breaks; consider booties for tender paws.');
+    if (t.exposure) caution('Exposure', 'Narrow ledges or unprotected drop-offs on parts of the route. Keep the dog leashed and on the inside.');
+    if (/livestock|patou|guardian|cattle|herd|pasture|alpage|graz/.test(text)) {
+      caution('Livestock & leash', 'Grazing animals (possibly with guardian dogs) reported on or near this route. Leash through pastures, give herds a wide berth.');
+    } else {
+      good('Leash', 'No livestock noted in our field data for this route. Local leash rules still apply.');
+    }
+    if (maxAlt >= 1800) caution('Season & altitude', `Tops out around ${maxAlt} m. Snow lingers into early summer and weather turns quickly.`);
+
+    box.innerHTML = rows.map(r => `
+      <div class="safety-row ${r.ok ? 'is-good' : 'is-caution'}">
+        <span class="safety-row-mark" aria-hidden="true">${r.ok ? '✓' : '!'}</span>
+        <span><b>${esc(r.title)}</b> · <span class="safety-row-state">${r.ok ? 'Good' : 'Caution'}</span><small>${esc(r.sub)}</small></span>
+      </div>`).join('');
+  })();
+
+  /* ---- Sticky sidebar: today's conditions + walking forecast -------- */
+  (function sidebar() {
+    const sp = t.startPoint || {};
+    const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
+    const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
+
+    // Today: mirror the live chip trail.js fills from Open-Meteo (no second
+    // call for current conditions).
+    const condCard = $('sideConditions'), condBody = $('sideConditionsBody');
+    const chip = $('weatherChip');
+    if (condCard && condBody && chip) {
+      const sync = () => {
+        const txt = chip.textContent.trim();
+        if (!txt) return;
+        let hint = '';
+        if (t.heatRisk === 'high') hint = '<br><small style="color:var(--ink-soft);">Exposed route, start early.</small>';
+        else if (t.heatRisk === 'moderate') hint = '<br><small style="color:var(--ink-soft);">Some exposed stretches.</small>';
+        condBody.innerHTML = esc(txt) + hint;
+        condCard.hidden = false;
+      };
+      new MutationObserver(sync).observe(chip, { childList: true, characterData: true, subtree: true });
+      if (chip.textContent.trim()) sync();
+    }
+
+    // Walking forecast: real Open-Meteo 5-day forecast at the trailhead.
+    // Coolest-window labels come from the same hourly series, not guesses.
+    const fcCard = $('sideForecast'), fcToday = $('sideForecastToday'), fcDays = $('sideForecastDays');
+    if (!fcCard || typeof lat !== 'number') return;
+    const WMO = (c) => c === 0 ? 'Clear' : c <= 2 ? 'Mostly clear' : c === 3 ? 'Overcast'
+      : c <= 48 ? 'Fog' : c <= 57 ? 'Drizzle' : c <= 67 ? 'Rain' : c <= 77 ? 'Snow'
+      : c <= 82 ? 'Showers' : c <= 86 ? 'Snow showers' : 'Thunderstorms';
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weathercode,temperature_2m_max,precipitation_probability_max&hourly=temperature_2m&forecast_days=5&timezone=auto`)
+      .then(r => r.json())
+      .then(d => {
+        if (!d || !d.daily || !d.hourly) return;
+        const hrs = d.hourly.time.map((iso, i) => ({ iso, h: new Date(iso).getHours(), day: iso.slice(0, 10), temp: d.hourly.temperature_2m[i] }));
+
+        // Today's heat strip, 06:00 to 20:00.
+        const todayKey = d.daily.time[0];
+        const strip = hrs.filter(x => x.day === todayKey && x.h >= 6 && x.h <= 20);
+        if (fcToday && strip.length) {
+          const barColor = (v) => v < 15 ? 'var(--success)' : v < 22 ? '#C9A25E' : '#B2542E';
+          fcToday.innerHTML = '<div class="fc-strip">' + strip.map(x =>
+            `<span title="${x.h}:00 · ${Math.round(x.temp)}°C" style="background:${barColor(x.temp)};height:${Math.max(6, Math.min(30, Math.round(x.temp)))}px;"></span>`).join('') +
+            '</div><div class="fc-strip-label"><span>06:00</span><span>today, hour by hour</span><span>20:00</span></div>';
+        }
+
+        // Coolest 3-hour daylight window per day, from the hourly series.
+        const coolestWindow = (dayKey) => {
+          const day = hrs.filter(x => x.day === dayKey && x.h >= 6 && x.h <= 20);
+          if (day.length < 3) return null;
+          let best = 0, bestAvg = Infinity;
+          for (let i = 0; i + 2 < day.length; i++) {
+            const avg = (day[i].temp + day[i + 1].temp + day[i + 2].temp) / 3;
+            if (avg < bestAvg) { bestAvg = avg; best = i; }
+          }
+          const pad = (n) => String(n).padStart(2, '0');
+          return `${pad(day[best].h)}:00–${pad(day[best + 2].h + 1)}:00`;
+        };
+
+        if (fcDays) {
+          fcDays.innerHTML = d.daily.time.map((iso, i) => {
+            const label = i === 0 ? 'Today' : new Date(iso).toLocaleDateString(undefined, { weekday: 'short' });
+            const win = coolestWindow(iso);
+            return `<div class="fc-day">
+              <b>${label}</b>
+              <span>${WMO(d.daily.weathercode[i])} · ${Math.round(d.daily.temperature_2m_max[i])}°C${d.daily.precipitation_probability_max[i] >= 30 ? ' · ' + d.daily.precipitation_probability_max[i] + '% rain' : ''}</span>
+              ${win ? `<small>coolest ${win}</small>` : ''}
+            </div>`;
+          }).join('');
+        }
+        fcCard.hidden = false;
+      })
+      .catch(() => {});
   })();
 })();

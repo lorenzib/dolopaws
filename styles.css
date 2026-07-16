@@ -823,8 +823,37 @@ body.map-fs-open{overflow:hidden;}
 .hero-rating{display:flex;align-items:center;gap:6px;margin-top:7px;color:#F7C96B;font:700 15px/1 'Inter',sans-serif;white-space:nowrap;}.hero-rating span{font:600 11px/1 'Inter',sans-serif;color:#edf4ee;}
 .trail-hero-verdict{max-width:600px;margin:13px 0 0;color:#edf4ee;font-size:15px;line-height:1.55;}
 .trail-section-nav{position:sticky;top:0;z-index:40;display:flex;gap:6px;margin:14px 0 0;padding:7px;background:rgba(255,255,255,.94);border:1px solid var(--paper-line);border-radius:14px;box-shadow:0 8px 25px rgba(31,48,35,.07);backdrop-filter:blur(10px);overflow:auto;}
-.trail-section-nav a{flex:1;min-width:max-content;padding:9px 16px;border-radius:9px;color:var(--ink-soft);font-size:12px;font-weight:700;text-align:center;text-decoration:none;}
-.trail-section-nav a:hover,.trail-section-nav a.active{background:var(--sage-dim);color:var(--ink);}
+.trail-section-nav a,.trail-section-nav button{flex:1;min-width:max-content;padding:9px 16px;border-radius:9px;color:var(--ink-soft);font-size:12px;font-weight:700;text-align:center;text-decoration:none;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;}
+.trail-section-nav a:hover,.trail-section-nav a.active,.trail-section-nav button:hover,.trail-section-nav button.active{background:var(--sage-dim);color:var(--ink);}
+
+/* ---- Trail detail: tabbed panels + sticky conditions sidebar ---- */
+.trail-detail-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px;align-items:start;margin-top:6px;}
+.trail-side{position:sticky;top:70px;display:flex;flex-direction:column;gap:14px;}
+.trail-side-card{background:var(--card);border:1px solid var(--paper-line);border-radius:16px;padding:15px 16px;}
+.trail-side-label{font:700 10.5px/1.2 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:9px;}
+.dog-safety-rows{display:flex;flex-direction:column;gap:10px;}
+.safety-row{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--paper-line);border-radius:12px;padding:12px 14px;font-size:13px;}
+.safety-row b{font-size:13px;}
+.safety-row small{display:block;color:var(--ink-soft);font-size:12px;line-height:1.5;margin-top:2px;}
+.safety-row-mark{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+.safety-row.is-good .safety-row-mark{background:var(--success-dim);color:#2C5C34;}
+.safety-row.is-caution .safety-row-mark{background:#F5E4C6;color:#8A5A16;}
+.safety-row.is-good .safety-row-state{color:#2C5C34;font-weight:700;}
+.safety-row.is-caution .safety-row-state{color:#8A5A16;font-weight:700;}
+.fc-strip{display:flex;align-items:flex-end;gap:2px;height:32px;}
+.fc-strip span{flex:1;border-radius:2px 2px 0 0;min-width:3px;}
+.fc-strip-label{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-soft);margin-top:4px;}
+.fc-day{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-top:1px dashed var(--paper-line);font-size:12px;flex-wrap:wrap;}
+.fc-day:first-child{border-top:none;}
+.fc-day b{width:44px;flex:none;font-size:12px;}
+.fc-day span{color:var(--ink);}
+.fc-day small{color:var(--ink-soft);font-size:11px;margin-left:auto;}
+#sideForecastToday{margin-bottom:10px;}
+@media (max-width:900px){
+  .trail-detail-grid{grid-template-columns:1fr;}
+  .trail-side{position:static;order:-1;flex-direction:row;flex-wrap:wrap;}
+  .trail-side-card{flex:1 1 260px;}
+}
 .trail-overview-panel,.dog-safety-panel{margin-top:14px;padding:20px 22px;background:var(--card);border:1px solid var(--paper-line);border-radius:16px;}
 .trail-overview-heading,.dog-safety-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:16px;}
 .trail-overview-heading h2,.dog-safety-head h2,.trail-plan-heading h2{font-size:20px;margin:0;}

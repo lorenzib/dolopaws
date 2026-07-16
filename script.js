@@ -1204,11 +1204,11 @@ const adjustPanel = document.getElementById('adjustPanel');
 const adjustCloseBtn = document.getElementById('adjustCloseBtn');
 let currentProfileForAdjust = null;
 
+// The Saved row opens the dedicated Saved screen (Companion structure).
 const savedTrailsBtn = document.getElementById('savedTrailsBtn');
 if(savedTrailsBtn){
   savedTrailsBtn.addEventListener('click', () => {
-    showingSavedOnly = !showingSavedOnly;
-    renderReturningHomepage(currentProfileForAdjust);
+    window.location.href = 'saved.html';
   });
 }
 

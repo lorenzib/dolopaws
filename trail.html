@@ -30,6 +30,7 @@
   <div class="links">
     <a href="index.html" data-i18n="nav.home">Home</a>
     <a href="browse-trails.html" data-i18n="nav.browse">Browse our trails</a>
+    <a href="journal.html">My Journal</a>
     <a href="safety-guide.html" data-i18n="nav.guide">Dog safety guide</a>
     <a href="about.html" data-i18n="nav.about">About</a>
     <button id="accountBtn" class="account-btn" data-i18n="nav.login">Log in</button>
@@ -51,13 +52,6 @@
     <div id="trailFacts" class="th-facts"></div>
     </div>
   </div>
-
-  <nav class="trail-section-nav" aria-label="Trail page sections">
-    <a href="#trailOverview" class="active">Overview</a>
-    <a href="#trailMapBox">Map</a>
-    <a href="#trailPlan">Trail plan</a>
-    <a href="#trailReportsWrap">Reports</a>
-  </nav>
 
   <div id="qaStrip" class="qa-strip" hidden>
     <div class="qa-card" id="qaDog">
@@ -100,24 +94,9 @@
       </div>
     </div>
   </section>
-  <div style="margin-top: 10px; margin-bottom: 10px;">
-    <span class="section-kicker" style="display: block; margin: 0 0 8px; font: 700 10px 'Inter', sans-serif; letter-spacing: 0.13em; color: var(--success); text-transform: uppercase;">Why this works</span>
-    <h2 id="matchWhyTitle" style="font-size: 21px; margin: 0 0 12px; color: var(--ink);">How your dog will experience this trail</h2>
-    <p id="assessmentNote" style="max-width: 100%; margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.6;"></p>
-  </div>
-  <section class="match-why" aria-labelledby="matchWhyTitle">
-    <p id="matchDescription" class="trail-about-card__intro" style="max-width: 100%; margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; line-height: 1.7;"></p>
-    <div id="matchSignals" class="match-signals" style="padding-bottom:18px;border-bottom:1px solid var(--paper-line);"></div>
-    <div id="aboutFacts" class="about-facts" hidden></div>
-    <div id="matchAdvice" class="match-advice" hidden></div>
-    <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
-    <details class="trail-data-details" style="margin-top:16px;"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
-    <p id="trailDesc" hidden></p>
-    <div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
-    <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
-  </section>
 </div>
 
+<!-- Route map — prominent, directly under the match block (Companion order) -->
 <div class="wrap" style="padding-top:16px;">
   <div id="trailMapBox" class="trail-map-box trail-map-box--wide">
     <div id="trailDetailMap" style="width:100%;height:100%;background:var(--sage-dim);"></div>
@@ -130,51 +109,113 @@
     </details>
   </div>
 
-  <div id="trailPlan" class="trail-plan-heading">
-    <span class="section-kicker">TRAIL PLAN</span>
-    <h2>What you’ll experience</h2>
-    <p>Follow the route from the trailhead, with effort and dog-friendly stops in context.</p>
-  </div>
-  <div class="trail-grid trail-experience-grid" style="margin-top:14px;">
-    <div class="tg-left">
-      <div class="itin-card">
-        <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
-        <div id="trailItinerary" class="itin-list"></div>
-      </div>
-    </div>
-    <div class="tg-right">
-      <div class="itin-card" id="elevCard">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-          <h2 style="font-size:17px;margin:0;" data-i18n="trail.elevTitle">Elevation profile</h2>
-          <span id="elevReadout" style="font-size:11.5px;color:var(--ink);font-weight:700;" data-i18n="trail.elevHint">hover the graph →</span>
-        </div>
-        <div id="elevationProfileWrap" hidden></div>
-        <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
-      </div>
-    </div>
-  </div>
+  <!-- In-page tabs (Companion structure): Overview / Dog safety / Reviews & photos -->
+  <nav class="trail-section-nav" id="trailTabsNav" aria-label="Trail page sections" role="tablist" style="margin-top:20px;">
+    <button type="button" class="active" data-tab="tabOverview" role="tab" aria-selected="true">Overview</button>
+    <button type="button" data-tab="tabSafety" role="tab" aria-selected="false">Dog safety</button>
+    <button type="button" data-tab="tabReviews" role="tab" aria-selected="false">Reviews &amp; photos</button>
+  </nav>
 
-  <div id="directionsWrap" style="display:none;" hidden>
-    <ol id="trailDirections"></ol>
+  <div class="trail-detail-grid">
+    <div class="trail-tab-panels">
+
+      <!-- ============ TAB: OVERVIEW ============ -->
+      <div id="tabOverview" role="tabpanel">
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+          <span class="section-kicker" style="display: block; margin: 0 0 8px; font: 700 10px 'Inter', sans-serif; letter-spacing: 0.13em; color: var(--success); text-transform: uppercase;">Why this works</span>
+          <h2 id="matchWhyTitle" style="font-size: 21px; margin: 0 0 12px; color: var(--ink);">How your dog will experience this trail</h2>
+          <p id="assessmentNote" style="max-width: 100%; margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.6;"></p>
+        </div>
+        <section class="match-why" aria-labelledby="matchWhyTitle">
+          <p id="matchDescription" class="trail-about-card__intro" style="max-width: 100%; margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; line-height: 1.7;"></p>
+          <div id="matchSignals" class="match-signals" style="padding-bottom:18px;border-bottom:1px solid var(--paper-line);"></div>
+          <div id="aboutFacts" class="about-facts" hidden></div>
+          <div id="matchAdvice" class="match-advice" hidden></div>
+          <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
+          <details class="trail-data-details" style="margin-top:16px;"><summary>Trail data and sources</summary><p id="trailCoords"></p><p class="trail-sources"><span data-i18n="trail.sourcesLabel">Sources:</span> Waymarked Trails · OpenStreetMap · Open-Meteo · DoloPaws field notes</p></details>
+          <p id="trailDesc" hidden></p>
+          <div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
+          <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
+        </section>
+
+        <div id="trailPlan" class="trail-plan-heading">
+          <span class="section-kicker">TRAIL PLAN</span>
+          <h2>What you’ll experience</h2>
+          <p>Follow the route from the trailhead, with effort and dog-friendly stops in context.</p>
+        </div>
+        <div class="trail-grid trail-experience-grid" style="margin-top:14px;">
+          <div class="tg-left">
+            <div class="itin-card">
+              <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.itinTitle">Getting there and along the trail</h2>
+              <div id="trailItinerary" class="itin-list"></div>
+            </div>
+          </div>
+          <div class="tg-right">
+            <div class="itin-card" id="elevCard">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+                <h2 style="font-size:17px;margin:0;" data-i18n="trail.elevTitle">Elevation profile</h2>
+                <span id="elevReadout" style="font-size:11.5px;color:var(--ink);font-weight:700;" data-i18n="trail.elevHint">hover the graph →</span>
+              </div>
+              <div id="elevationProfileWrap" hidden></div>
+              <svg id="elevProf" viewBox="0 0 1000 170" preserveAspectRatio="none" style="width:100%;height:150px;display:block;touch-action:none;background:var(--card);border:1px solid var(--paper-line);border-radius:10px;"></svg>
+            </div>
+          </div>
+        </div>
+
+        <div id="directionsWrap" style="display:none;" hidden>
+          <ol id="trailDirections"></ol>
+        </div>
+      </div>
+
+      <!-- ============ TAB: DOG SAFETY ============ -->
+      <div id="tabSafety" role="tabpanel" hidden>
+        <div style="margin-top:10px;margin-bottom:14px;">
+          <span class="section-kicker" style="display:block;margin:0 0 8px;font:700 10px 'Inter',sans-serif;letter-spacing:.13em;color:var(--success);text-transform:uppercase;">Dog safety</span>
+          <h2 style="font-size:21px;margin:0 0 6px;color:var(--ink);">What to check before you go</h2>
+          <p style="margin:0;color:var(--ink-soft);font-size:13px;line-height:1.6;">Built from this trail's verified data. Good means no special preparation; caution means plan for it.</p>
+        </div>
+        <div id="dogSafetyRows" class="dog-safety-rows"></div>
+
+        <div id="trailReportsWrap" style="margin-top:26px;">
+          <div class="community-reports-label" style="margin-top:0;">Recent safety reports</div>
+          <div id="trailFlagsList"></div>
+          <button id="addReportBtn" type="button" class="add-report-btn" style="margin-top:12px;" data-i18n="reports.button">⚠️ Report something</button>
+        </div>
+      </div>
+
+      <!-- ============ TAB: REVIEWS & PHOTOS ============ -->
+      <div id="tabReviews" role="tabpanel" hidden>
+        <div class="trail-section-heading community-section__heading" style="margin-top:10px;">
+          <div><span class="section-kicker">FROM THE COMMUNITY</span><h2>Dogs and their humans on this trail</h2></div>
+          <div id="communityRating" class="community-rating" hidden></div>
+        </div>
+        <div class="community-card">
+          <div class="community-card__top">
+            <p>Trail reports help everyone prepare. Reviews share the experience; photos show it.</p>
+            <div class="community-actions"><button id="addPhotoBtn" type="button" class="add-photo-btn">▧ Add trail photo</button><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button></div>
+          </div>
+          <div id="trailPhotosList" class="trail-photos-list"></div>
+          <div id="trailReviewsList" class="trail-reviews-list"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============ STICKY SIDEBAR: today + walking forecast ============ -->
+    <aside class="trail-side" aria-label="Conditions and forecast">
+      <div class="trail-side-card" id="sideConditions" hidden>
+        <div class="trail-side-label">Today at the trailhead</div>
+        <div id="sideConditionsBody" style="font-size:13px;color:var(--ink);line-height:1.55;"></div>
+      </div>
+      <div class="trail-side-card" id="sideForecast" hidden>
+        <div class="trail-side-label">Walking forecast</div>
+        <div id="sideForecastToday"></div>
+        <div id="sideForecastDays"></div>
+        <p style="margin:10px 0 0;font-size:10.5px;color:var(--ink-soft);">Source: Open-Meteo, at the trailhead's coordinates.</p>
+      </div>
+    </aside>
   </div>
 </div>
-
-<section class="wrap community-section" id="trailReportsWrap" style="padding-top:24px;">
-  <div class="trail-section-heading community-section__heading">
-    <div><span class="section-kicker">FROM THE COMMUNITY</span><h2>Dogs and their humans on this trail</h2></div>
-    <div id="communityRating" class="community-rating" hidden></div>
-  </div>
-  <div class="community-card">
-    <div class="community-card__top">
-      <p>Trail reports help everyone prepare. Reviews share the experience; reports flag anything that needs attention.</p>
-      <div class="community-actions"><button id="addPhotoBtn" type="button" class="add-photo-btn">▧ Add trail photo</button><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button><button id="addReportBtn" type="button" class="add-report-btn" data-i18n="reports.button">⚠️ Report something</button></div>
-    </div>
-    <div id="trailPhotosList" class="trail-photos-list"></div>
-    <div id="trailReviewsList" class="trail-reviews-list"></div>
-    <div class="community-reports-label">Safety reports</div>
-    <div id="trailFlagsList"></div>
-  </div>
-</section>
 
 <div class="wrap" id="nearbyTrails" style="padding-top:24px;" hidden>
   <h2 style="font-size:17px;margin:0 0 12px;" data-i18n="trail.nearbyTitle">Nearby trails</h2>

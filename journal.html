@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Journal | DoloPaws</title>
+<meta name="description" content="Your walking journal: every hike you and your dog have logged.">
+<meta name="theme-color" content="#2E4034">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .jn-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px;}
+  .jn-stat{background:var(--card);border:1px solid var(--paper-line);border-radius:16px;padding:14px 16px;}
+  .jn-stat b{display:block;font:700 22px/1.1 'Source Serif 4',serif;color:var(--ink);}
+  .jn-stat span{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;font-weight:700;}
+  .jn-tabs{display:inline-flex;background:var(--card);border:1px solid var(--paper-line);border-radius:999px;padding:3px;}
+  .jn-tabs button{border:none;background:none;padding:7px 16px;border-radius:999px;font:600 12.5px 'Inter',sans-serif;color:var(--ink-soft);cursor:pointer;}
+  .jn-tabs button.active{background:var(--ink);color:#fff;}
+  .jn-entry{display:flex;gap:16px;background:var(--card);border:1px solid var(--paper-line);border-radius:16px;padding:16px 18px;}
+  .jn-date{flex:none;width:52px;text-align:center;}
+  .jn-date b{display:block;font:700 22px/1 'Source Serif 4',serif;color:var(--ink);}
+  .jn-date span{font-size:11px;color:var(--ink-soft);font-weight:600;}
+  .jn-entry h3{margin:0;font-size:16px;}
+  .jn-entry .meta{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+  .jn-entry .note{font-size:13px;color:var(--ink);line-height:1.55;margin:8px 0 0;font-style:italic;}
+  .jn-entry .row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:12px;}
+  .jn-cond{background:var(--sage-dim);color:var(--ink);border-radius:999px;padding:3px 10px;font-weight:600;font-size:11px;}
+  .jn-stars{color:#C99038;letter-spacing:1px;font-size:13px;}
+  .jn-again{margin-left:auto;color:var(--accent);font-weight:700;text-decoration:none;font-size:12px;}
+  .jn-overlay{position:fixed;inset:0;background:rgba(31,40,33,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:80;}
+  .jn-modal{background:var(--card);border-radius:20px;max-width:480px;width:100%;padding:24px;max-height:90vh;overflow:auto;}
+  .jn-modal label{display:block;font:600 12px 'Inter',sans-serif;color:var(--ink-soft);margin:14px 0 5px;}
+  .jn-modal input,.jn-modal select,.jn-modal textarea{width:100%;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:var(--bg);box-sizing:border-box;}
+  .jn-star-row button{background:none;border:none;font-size:24px;cursor:pointer;color:var(--paper-line);padding:2px;}
+  .jn-star-row button.on{color:#C99038;}
+  .jn-empty{border:2px dashed var(--paper-line);border-radius:20px;padding:44px 24px;text-align:center;margin-top:18px;}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="brand" href="index.html"><img src="logo.svg?v=3" alt="DoloPaws logo">DoloPaws</a>
+  <div class="links">
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="browse-trails.html" data-i18n="nav.browse">Browse our trails</a>
+    <a href="journal.html" style="color:var(--ink);">My Journal</a>
+    <a href="safety-guide.html" data-i18n="nav.guide">Dog safety guide</a>
+    <a href="about.html" data-i18n="nav.about">About</a>
+    <button id="accountBtn" class="account-btn" data-i18n="nav.login">Log in</button>
+  </div>
+</div>
+
+<div class="wrap" style="max-width:1000px;padding-top:28px;padding-bottom:60px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+    <div>
+      <h1 id="jnTitle" style="font-size:clamp(26px,4vw,34px);margin:0;">My Journal</h1>
+      <p id="jnSub" style="margin:6px 0 0;color:var(--ink-soft);font-size:14px;">Every walk you log builds the story of where you and your dog have been.</p>
+    </div>
+    <button type="button" id="jnLogBtn" class="auth-submit" style="width:auto;padding:11px 20px;">+ Log a walk</button>
+  </div>
+
+  <div class="jn-stats" id="jnStats"></div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 14px;">
+    <h2 style="font-size:19px;margin:0;">Walks</h2>
+    <div class="jn-tabs" id="jnTabs">
+      <button type="button" data-f="all" class="active">All time</button>
+      <button type="button" data-f="month">This month</button>
+    </div>
+  </div>
+
+  <div id="jnTimeline" style="display:flex;flex-direction:column;gap:12px;"></div>
+  <div id="jnEmpty" class="jn-empty" hidden>
+    <div style="font-size:28px;" aria-hidden="true">&#128062;</div>
+    <p style="font-family:'Source Serif 4',serif;font-weight:700;font-size:19px;margin:10px 0 6px;color:var(--ink);">No walks logged yet</p>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin:0;">Log your dog's next outing to start the story.</p>
+  </div>
+  <div id="jnLoggedOut" hidden style="text-align:center;padding:40px 20px;">
+    <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">Log in to keep a walking journal.</p>
+    <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Go to homepage to log in</a>
+  </div>
+  <p id="jnStorageNote" style="margin-top:18px;font-size:11.5px;color:var(--ink-soft);" hidden>Journal entries are stored in this browser for your account.</p>
+</div>
+
+<!-- Log a walk modal -->
+<div class="jn-overlay" id="jnOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="jnModalTitle">
+  <div class="jn-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 id="jnModalTitle" style="margin:0;font-size:20px;">Log a walk</h2>
+      <button type="button" id="jnClose" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink-soft);" aria-label="Close">&times;</button>
+    </div>
+    <label for="jnTrail">Trail</label>
+    <select id="jnTrail"></select>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><label for="jnDist">Distance (km)</label><input type="number" id="jnDist" min="0" step="0.1" placeholder="4.0"></div>
+      <div><label for="jnDur">Duration (min)</label><input type="number" id="jnDur" min="0" step="5" placeholder="60"></div>
+    </div>
+    <label for="jnCond">Conditions</label>
+    <input type="text" id="jnCond" placeholder="Cool morning, some cloud">
+    <label>Rating</label>
+    <div class="jn-star-row" id="jnStars" role="radiogroup" aria-label="Rating out of 5"></div>
+    <label for="jnNote">Notes</label>
+    <textarea id="jnNote" rows="3" placeholder="How did it go for the dog?"></textarea>
+    <button type="button" id="jnSave" class="auth-submit" style="width:100%;margin-top:18px;">Save walk</button>
+  </div>
+</div>
+
+<footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; A personalised trail guide for dogs and their humans.</footer>
+
+<script src="i18n.js"></script>
+<script type="module" src="firebase-init.js"></script>
+<script src="auth-ui.js" defer></script>
+<script src="trails-data.js" defer></script>
+<script src="osm-trails-data.js" defer></script>
+<script src="osm-trails-savoy-data.js" defer></script>
+<script src="regions-config.js" defer></script>
+<script>
+// My Journal. Entries are per-account, stored locally in this browser
+// (same pattern as the locally-stored dog photo).
+// TODO: move journal entries to a backend API (Firestore) so they sync
+// across devices; the render layer below is storage-agnostic.
+document.addEventListener('DOMContentLoaded', function(){
+  var state = { filter: 'all', rating: 5, entries: [] };
+  var uid = null;
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function key(){ return 'dolopaws-journal-' + uid; }
+  function load(){ try { return JSON.parse(localStorage.getItem(key())) || []; } catch(e){ return []; } }
+  function persist(){ try { localStorage.setItem(key(), JSON.stringify(state.entries)); } catch(e){} }
+
+  function fmtStats(e){
+    return [e.dist ? e.dist + ' km' : null, e.dur ? fmtDur(e.dur) : null].filter(Boolean).join(' · ') || 'Walk logged';
+  }
+  function fmtDur(min){
+    min = Number(min);
+    return min >= 60 ? Math.floor(min / 60) + ' h ' + (min % 60 ? (min % 60) + ' min' : '').trim() : min + ' min';
+  }
+  function stars(n){
+    var out = '';
+    for(var i = 1; i <= 5; i++) out += i <= n ? '★' : '☆';
+    return out;
+  }
+  function thisMonth(iso){
+    var now = new Date();
+    return iso.slice(0, 7) === now.toISOString().slice(0, 7);
+  }
+
+  function renderStats(){
+    var el = document.getElementById('jnStats');
+    var all = state.entries;
+    var totalKm = all.reduce(function(a, e){ return a + (Number(e.dist) || 0); }, 0);
+    var month = all.filter(function(e){ return thisMonth(e.date); }).length;
+    var byValley = {};
+    all.forEach(function(e){ if(e.region) byValley[e.region] = (byValley[e.region] || 0) + 1; });
+    var topValley = Object.keys(byValley).sort(function(a, b){ return byValley[b] - byValley[a]; })[0] || '–';
+    el.innerHTML =
+      '<div class="jn-stat"><b>' + all.length + '</b><span>Walks logged</span></div>' +
+      '<div class="jn-stat"><b>' + (Math.round(totalKm * 10) / 10) + ' km</b><span>Total distance</span></div>' +
+      '<div class="jn-stat"><b>' + month + '</b><span>This month</span></div>' +
+      '<div class="jn-stat"><b style="font-size:16px;line-height:1.3;padding-top:4px;">' + esc(topValley) + '</b><span>Most walked</span></div>';
+  }
+
+  function renderTimeline(){
+    var list = state.filter === 'month' ? state.entries.filter(function(e){ return thisMonth(e.date); }) : state.entries;
+    var box = document.getElementById('jnTimeline');
+    document.getElementById('jnEmpty').hidden = list.length > 0;
+    box.innerHTML = list.map(function(e){
+      var d = new Date(e.date);
+      var link = e.trailId ? '<a class="jn-again" href="trail.html?id=' + encodeURIComponent(e.trailId) + '">Walk it again &rarr;</a>' : '';
+      return '<div class="jn-entry">' +
+        '<div class="jn-date"><b>' + d.getDate() + '</b><span>' + d.toLocaleDateString(undefined, { month: 'short' }) + '<br>' + d.toLocaleDateString(undefined, { weekday: 'short' }) + '</span></div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<h3>' + esc(e.trail) + '</h3>' +
+          '<div class="meta">' + esc(e.region || '') + (e.region ? ' · ' : '') + esc(fmtStats(e)) + '</div>' +
+          (e.note ? '<p class="note">&ldquo;' + esc(e.note) + '&rdquo;</p>' : '') +
+          '<div class="row2">' +
+            '<span class="jn-stars" aria-label="' + e.rating + ' out of 5">' + stars(e.rating) + '</span>' +
+            (e.cond ? '<span class="jn-cond">' + esc(e.cond) + '</span>' : '') +
+            link +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderAll(){ renderStats(); renderTimeline(); }
+
+  // --- Modal ---
+  var overlay = document.getElementById('jnOverlay');
+  function fillTrailSelect(){
+    var sel = document.getElementById('jnTrail');
+    var opts = '<option value="">Somewhere else (type it in the notes)</option>';
+    if(typeof trails !== 'undefined'){
+      opts += trails.slice().sort(function(a, b){ return a.name.localeCompare(b.name); })
+        .map(function(t){ return '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>'; }).join('');
+    }
+    sel.innerHTML = opts;
+  }
+  function renderStarInput(){
+    var row = document.getElementById('jnStars');
+    row.innerHTML = '';
+    for(var i = 1; i <= 5; i++){
+      (function(n){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = '★';
+        b.className = n <= state.rating ? 'on' : '';
+        b.setAttribute('aria-label', n + ' star' + (n > 1 ? 's' : ''));
+        b.addEventListener('click', function(){ state.rating = n; renderStarInput(); });
+        row.appendChild(b);
+      })(i);
+    }
+  }
+  document.getElementById('jnLogBtn').addEventListener('click', function(){
+    if(!uid){ window.location.href = 'index.html'; return; }
+    overlay.hidden = false;
+    renderStarInput();
+  });
+  document.getElementById('jnClose').addEventListener('click', function(){ overlay.hidden = true; });
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.hidden = true; });
+
+  document.getElementById('jnSave').addEventListener('click', function(){
+    var sel = document.getElementById('jnTrail');
+    var tr = (typeof trails !== 'undefined') ? trails.find(function(t){ return t.id === sel.value; }) : null;
+    var entry = {
+      id: 'w' + Date.now(),
+      date: new Date().toISOString(),
+      trailId: tr ? tr.id : null,
+      trail: tr ? tr.name : 'A walk',
+      region: tr ? (tr.valley || tr.area || '') : '',
+      dist: document.getElementById('jnDist').value,
+      dur: document.getElementById('jnDur').value,
+      cond: document.getElementById('jnCond').value.trim(),
+      rating: state.rating,
+      note: document.getElementById('jnNote').value.trim()
+    };
+    state.entries.unshift(entry);
+    persist();
+    overlay.hidden = true;
+    ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
+    state.rating = 5;
+    renderAll();
+  });
+
+  document.getElementById('jnTabs').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-f]');
+    if(!btn) return;
+    state.filter = btn.dataset.f;
+    this.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b === btn); });
+    renderTimeline();
+  });
+
+  function init(){
+    var outEl = document.getElementById('jnLoggedOut');
+    if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser){
+      outEl.hidden = false;
+      document.getElementById('jnLogBtn').style.display = 'none';
+      return;
+    }
+    outEl.hidden = true;
+    document.getElementById('jnLogBtn').style.display = '';
+    uid = window.DoloPawsAuth.currentUser.uid;
+    if(window.DoloPawsRegions && typeof trails !== 'undefined') window.DoloPawsRegions.assign(trails);
+    state.entries = load();
+    fillTrailSelect();
+    renderAll();
+    document.getElementById('jnStorageNote').hidden = false;
+    window.DoloPawsAuth.getDogProfile().then(function(p){
+      if(p && p.name){
+        document.getElementById('jnTitle').textContent = p.name + "'s journal";
+        document.getElementById('jnSub').textContent = 'Every walk you log builds the story of where you and ' + p.name + ' have been.';
+      }
+    }).catch(function(){});
+  }
+  if(window.DoloPawsAuth) init();
+  else window.addEventListener('dolopaws-auth-ready', init, { once: true });
+  window.addEventListener('dolopaws-auth-changed', init);
+});
+</script>
+</body>
+</html>
