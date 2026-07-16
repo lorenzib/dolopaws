@@ -326,3 +326,54 @@ function breedTraits(name){
     heatSensitive: brachy || thickCoat,
   };
 }
+
+/**
+ * breedInsights(name) → array of { icon, title, sub } insight lines for a
+ * breed, derived ONLY from documented physical traits (and FCI Group 1 for
+ * the livestock/leash line). Never temperament. Unknown or free-text breeds
+ * return [] — the caller then shows the health-profile fallback instead of
+ * generic filler. Keep wording in sync with the safety guide.
+ */
+function breedIsHerding(name){
+  const b = name || '';
+  const g1 = (typeof FCI_BREED_GROUPS !== 'undefined')
+    ? FCI_BREED_GROUPS.find(g => g.id === 'g1') : null;
+  return !!(g1 && g1.breeds.includes(b));
+}
+
+function breedInsights(name){
+  const tr = breedTraits(name);
+  const out = [];
+
+  if(tr.brachy){
+    out.push({ icon:'heat', title:'Breathing is the limit',
+      sub:'A short muzzle makes panting less effective — hot, exposed climbs cost far more. Start early and favour shade.' });
+  } else if(tr.thickCoat){
+    out.push({ icon:'heat', title:'Heat is the real limit',
+      sub:'A heavy double coat makes hot, exposed routes costly even on days you find mild. Start early.' });
+  }
+
+  if(tr.giant){
+    out.push({ icon:'mountain', title:'Descents load joints',
+      sub:'Weight multiplies impact downhill on hard rock — favour gradual descents and a slow pace down.' });
+    out.push({ icon:'loop', title:'Lifts may have size limits',
+      sub:'Some gondolas cap dog size or require a muzzle — check the specific lift before building a route around it.' });
+  }
+
+  if(tr.shortLegged){
+    out.push({ icon:'paw', title:'Short legs, longer day',
+      sub:'Scree and rock steps are far more effort than for a tall dog — halve your usual distance at first.' });
+  }
+
+  if(tr.backRisk){
+    out.push({ icon:'shade', title:'Protect the spine',
+      sub:'Repeated jumping down from rocks loads a long back — pick low-step routes and lift over big drops.' });
+  }
+
+  if(breedIsHerding(name)){
+    out.push({ icon:'crowd', title:'Leash through pastures',
+      sub:'Grazing livestock and guardian dogs will not tolerate being herded — keep the leash on across any alpage.' });
+  }
+
+  return out;
+}

@@ -761,6 +761,47 @@ function renderAreaFilters(profile){
   });
 }
 
+// Personalised breed-insight card on the logged-in homepage. Reads documented
+// physical traits via breedInsights() (breeds-data.js) and shows only lines
+// that apply. Unknown/mixed breeds → card stays hidden (health profile does the
+// work instead). Physical traits only, never temperament.
+function renderBreedInsight(profile){
+  const card = document.getElementById('breedInsightCard');
+  if(!card || typeof breedInsights !== 'function') return;
+  const kicker = document.getElementById('breedInsightKicker');
+  const grid = document.getElementById('breedInsightGrid');
+  const note = document.getElementById('breedInsightNote');
+  const cta = document.getElementById('breedInsightCta');
+
+  const breed = profile && profile.breed;
+  const lines = breed ? breedInsights(breed) : [];
+  if(!lines.length){ card.hidden = true; return; }
+
+  const ICONS = {
+    paw:'<circle cx="8" cy="8.2" r="1.6" fill="#5DCAA5"/><circle cx="12" cy="6.6" r="1.6" fill="#5DCAA5"/><circle cx="16" cy="8.2" r="1.6" fill="#5DCAA5"/><path d="M8.4 16.5c0-2.4 1.5-4.2 3.6-4.2s3.6 1.8 3.6 4.2c0 1.4-1.1 2.5-2.5 2.5-.7 0-1.1-.3-1.7-.7-.5.4-1 .7-1.7.7-1.3 0-2.3-1.1-2.3-2.5Z" fill="#1D9E75"/>',
+    shade:'<path d="M12 5v14M7 19h10M6 12c0-3 2.7-6 6-6s6 3 6 6Z" fill="none" stroke="#4A7856" stroke-width="1.8"/><path d="m7 12-3 3M17 12l3 3" fill="none" stroke="#4A7856" stroke-width="1.8"/>',
+    heat:'<circle cx="12" cy="12" r="4" fill="#D6A038"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" fill="none" stroke="#D6A038" stroke-width="1.8" stroke-linecap="round"/>',
+    mountain:'<path d="m4 18 6-10 3 5 2-3 5 8Z" fill="none" stroke="#BA7517" stroke-width="1.8" stroke-linejoin="round"/>',
+    loop:'<path d="M18 8a7 7 0 1 0 1 7M18 4v4h-4" fill="none" stroke="#3E7A91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>',
+    crowd:'<circle cx="6.5" cy="7" r="1.8" fill="#7A5C4F"/><path d="M4 9c-0.6 0-1 0.5-1 1.2v2.8h5v-2.8c0-0.7-0.4-1.2-1-1.2h-1.5l-0.8-1.2" fill="#7A5C4F"/><path d="M4 15L3 20M8 15L9 20" stroke="#7A5C4F" stroke-width="1.5" stroke-linecap="round"/><circle cx="17.5" cy="7" r="1.5" fill="#5DCAA5"/><path d="M15 9c-0.6 0-1 0.5-1 1.2v2.8h6v-2.8c0-0.7-0.4-1.2-1-1.2h-1.5l-1.2-1.5" fill="#5DCAA5"/><path d="M15 15L14 20M21 15L22 20" stroke="#5DCAA5" stroke-width="1.5" stroke-linecap="round"/>'
+  };
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const name = (profile && profile.name) ? profile.name : 'your dog';
+
+  if(kicker) kicker.textContent = 'What the mountains ask of a ' + breed;
+  // 3 columns reads best; if only 1-2 lines the grid still balances.
+  grid.style.gridTemplateColumns = 'repeat(' + Math.min(3, Math.max(1, lines.length)) + ', 1fr)';
+  grid.innerHTML = lines.slice(0, 6).map(function(l){
+    return '<div class="breed-insight-signal"><svg viewBox="0 0 24 24" aria-hidden="true">' +
+      (ICONS[l.icon] || ICONS.paw) + '</svg><span><b>' + esc(l.title) +
+      '</b><small>' + esc(l.sub) + '</small></span></div>';
+  }).join('');
+
+  if(note) note.textContent = 'Baked into every match score for ' + name + '.';
+  if(cta) cta.textContent = 'See trails picked for ' + name + ' \u2192';
+  card.hidden = false;
+}
+
 async function renderReturningHomepage(profile){
   const heading = document.getElementById('returningHeading');
   const subline = document.getElementById('returningSubline');
@@ -797,6 +838,8 @@ async function renderReturningHomepage(profile){
     ? ' ' + (newIds.size === 1 ? t('home.newMatch1') : t('home.newMatches', {n: newIds.size}))
     : '';
   subline.innerHTML = `${pickLine}${newsLine} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">${t('home.editProfile')}</a>`;
+
+  renderBreedInsight(profile);
 
   let displayList = filterTrailsForReturningView(scored);
 

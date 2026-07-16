@@ -913,3 +913,15 @@ body.map-fs-open{overflow:hidden;}
 .review-star-picker{display:flex;gap:4px;margin:14px 0 12px;}.review-star-picker button{border:0;background:none;padding:2px;color:#BA7517;font:28px/1 Georgia,serif;cursor:pointer;transition:transform .15s ease;}.review-star-picker button:hover,.review-star-picker button.is-selected{transform:translateY(-1px);}
 @media (max-width:760px){.personal-match__top{align-items:flex-start;flex-wrap:wrap;}.personal-score{align-items:flex-start;}.personal-actions{width:100%;flex-direction:row;}.personal-actions>*{flex:1;}.match-signals,.about-facts{grid-template-columns:repeat(2,1fr);}.match-advice ul{grid-template-columns:1fr;}.trail-essentials{grid-template-columns:1fr;}.trail-arrival-card{align-items:flex-start;flex-wrap:wrap;}.trail-arrival-card a{margin-left:37px;}.trail-essential a{margin-left:0;margin-top:4px;}.trail-essential{flex-wrap:wrap;}.trail-section-heading,.community-card__top{align-items:flex-start;flex-direction:column;}.community-actions{width:100%;}.community-actions button{flex:1;}}
 @media (max-width:420px){.match-dog-avatar{width:56px;height:56px;}.personal-match{padding:17px;}.match-signals,.about-facts{grid-template-columns:1fr;}.personal-actions{flex-direction:column;}.trail-section-nav{top:0;}}
+
+/* Breed insight card — logged-in homepage */
+.breed-insight-card{background:var(--card);border:1px solid var(--paper-line);border-radius:12px;padding:18px 20px;}
+.breed-insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.breed-insight-signal{display:flex;gap:9px;min-width:0;}
+.breed-insight-signal svg{width:24px;height:24px;flex:none;overflow:visible;}
+.breed-insight-signal b{font-size:12.5px;color:var(--ink);}
+.breed-insight-signal small{display:block;font-size:11px;color:var(--ink-soft);line-height:1.4;margin-top:2px;}
+.breed-insight-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--paper-line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.breed-insight-foot span{font-size:12px;color:var(--ink-soft);}
+.breed-insight-foot a{font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;}
+@media(max-width:700px){.breed-insight-grid{grid-template-columns:1fr;}}
