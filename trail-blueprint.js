@@ -379,6 +379,13 @@
     (function relevantGuides() {
       const box = $('trailGuideLinks');
       if (!box) return;
+      const trailReturn = encodeURIComponent('trail.html?id=' + t.id);
+      const fromTrail = href => {
+        const hashAt = href.indexOf('#');
+        const page = hashAt >= 0 ? href.slice(0, hashAt) : href;
+        const hash = hashAt >= 0 ? href.slice(hashAt) : '';
+        return page + '?from=' + trailReturn + hash;
+      };
       const text = `${t.tips || ''} ${t.desc || ''} ${(t.startPoint && t.startPoint.label) || ''} ${(t.surfaceHazards || []).join(' ')}`.toLowerCase();
       const maxAlt = Math.max(...(t.elevationProfile || []).map(p => Number(p.elev) || 0));
       const shade = typeof t.shadeCoverage === 'number' ? t.shadeCoverage : null;
@@ -395,11 +402,11 @@
       }
       // Heat / exposure — exposed route OR high heat risk OR little shade
       if (t.exposure === true || t.heatRisk === 'high' || (shade !== null && shade < 25)) {
-        guides.push(['☀️', 'Heat and exposure with your dog', 'safety-guide.html#heat']);
+        guides.push(['☀️', 'Heat and exposure with your dog', 'guides/heat-overheating.html']);
       }
       // Altitude — high trailhead/summit
       if (maxAlt >= 1800) {
-        guides.push(['⛰️', 'Hiking at altitude', 'safety-guide.html#altitude']);
+        guides.push(['⛰️', 'Hiking at altitude', 'guides/altitude-with-your-dog.html']);
       }
       // Water — none mapped, or long route
       if (!hasWaterSrc || Number(t.distance) >= 8) {
@@ -414,7 +421,7 @@
       box.innerHTML = `<div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--paper-line);">
         <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Read before you go</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;">${guides.slice(0,4).map(([icon,label,href]) =>
-          `<a href="${href}" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--sage-dim);border:1px solid var(--paper-line);border-radius:999px;font-size:12px;font-weight:600;color:var(--ink);text-decoration:none;">${icon} ${esc(label)}</a>`).join('')}</div>
+          `<a href="${fromTrail(href)}" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--sage-dim);border:1px solid var(--paper-line);border-radius:999px;font-size:12px;font-weight:600;color:var(--ink);text-decoration:none;">${icon} ${esc(label)}</a>`).join('')}</div>
       </div>`;
       box.hidden = false;
     })();
