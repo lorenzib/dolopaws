@@ -58,12 +58,12 @@
 
     function guest() {
       title.textContent = tt('qa.dogGuest', null, 'Would this suit your dog?');
-      sub.innerHTML = esc(factLine) + (factLine ? ' — ' : '') +
+      sub.innerHTML = esc(factLine) + (factLine ? ' · ' : '') +
         '<a href="account.html">' + tt('qa.dogGuestCta', null, 'create a free profile to find out') + ' →</a>';
     }
     function noProfile() {
       title.textContent = tt('qa.dogNoProfile', null, 'Whose paws are we scoring?');
-      sub.innerHTML = '<a href="account.html">' + tt('qa.dogNoProfileCta', null, 'Add your dog — 2 minutes') + ' →</a>';
+      sub.innerHTML = '<a href="account.html">' + tt('qa.dogNoProfileCta', null, 'Add your dog, 2 minutes') + ' →</a>';
     }
     function paint() {
       if (typeof scoreTrail !== 'function' || !window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) { guest(); return; }
@@ -94,7 +94,7 @@
       if (!txt) return;
       title.textContent = tt('qa.todayTitle', null, 'Today at the trailhead');
       let hint = '';
-      if (t.heatRisk === 'high') hint = ' · ' + tt('qa.todayHeatHint', null, 'exposed route — start early');
+      if (t.heatRisk === 'high') hint = ' · ' + tt('qa.todayHeatHint', null, 'exposed route, start early');
       else if (t.heatRisk === 'moderate') hint = ' · ' + tt('qa.todayShadeHint', null, 'some exposed stretches');
       sub.textContent = txt + hint;
       card.hidden = false;
@@ -115,7 +115,7 @@
     title.textContent = tt('qa.accessTitle', null, 'Getting there');
     const label = sp.label ? esc(sp.label) : tt('trail.itinParkFallback', null, 'Trailhead');
     sub.innerHTML = label +
-      ` — <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener">` +
+      ` · <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener">` +
       tt('trail.openMaps', null, 'get directions') + ' →</a>';
     card.hidden = false;
   })();
@@ -131,11 +131,34 @@
     for (const o of sameRegion) { if (picks.length >= 4) break; picks.push(o); }
     if (!picks.length) return;
     grid.innerHTML = picks.map(o => `
-      <a class="near-card" href="trail.html?id=${encodeURIComponent(o.id)}">
+      <a class="near-card" href="trail.html?id=${encodeURIComponent(o.id)}" data-near-id="${esc(o.id)}">
         <b>${esc(o.name)}</b>
-        <span><span class="safety-badge ${safetyClass(o.safetyLevel)}" style="font-size:10.5px;padding:1px 8px;">${safetyLabel(o.safetyLevel)}</span> ${o.distance} km${o.hours ? ' · ' + esc(o.hours) + ' h' : ''}</span>
+        <span><span class="safety-badge ${safetyClass(o.safetyLevel)}" style="font-size:10.5px;padding:1px 8px;">${safetyLabel(o.safetyLevel)}</span> ${o.distance} km${o.hours ? ' · ' + esc(o.hours) + ' h' : ''}<span class="near-pct"></span></span>
       </a>`).join('');
     wrapEl.hidden = false;
+
+    // Personalise: when a dog profile exists, retitle the section and add
+    // each pick's real match % — same scoreTrail() as everywhere else.
+    function personalise() {
+      if (typeof scoreTrail !== 'function' || !window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) return;
+      window.DoloPawsAuth.getDogProfile().then(profile => {
+        if (!profile) return;
+        const heading = wrapEl.querySelector('h2');
+        if (heading && profile.name) heading.textContent = tt('trail.similarFor', { name: profile.name }, 'Similar trails for ' + profile.name);
+        const ov = (typeof effectiveOverrides === 'function') ? effectiveOverrides(profile, null) : profile;
+        for (const o of picks) {
+          const slot = grid.querySelector(`[data-near-id="${CSS.escape(o.id)}"] .near-pct`);
+          if (!slot) continue;
+          const n = scoreTrail(o, ov);
+          slot.textContent = ' · ' + (o.curated === false ? '≈' : '') + n + '% match';
+          slot.style.fontWeight = '700';
+          slot.style.color = n >= 70 ? 'var(--success)' : 'var(--ink-soft)';
+        }
+      }).catch(() => {});
+    }
+    if (window.DoloPawsAuth) personalise();
+    else window.addEventListener('dolopaws-auth-ready', personalise, { once: true });
+    window.addEventListener('dolopaws-auth-changed', personalise);
   })();
 
   /* ---- Dog tips note (verified trails only) ----------------------- */
@@ -238,12 +261,33 @@
       directionsBtn.rel = 'noopener';
     }
 
+    // Share: native share sheet where available, copy-link fallback with
+    // an inline confirmation. No third-party share widgets.
+    const shareBtn = $('detailShareBtn');
+    if (shareBtn) {
+      const shareUrl = location.origin + location.pathname + '?id=' + encodeURIComponent(t.id);
+      shareBtn.addEventListener('click', async () => {
+        if (navigator.share) {
+          try { await navigator.share({ title: t.name + ' | DoloPaws', url: shareUrl }); return; }
+          catch (e) { if (e && e.name === 'AbortError') return; }
+        }
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          const prev = shareBtn.textContent;
+          shareBtn.textContent = '✓ Link copied';
+          setTimeout(() => { shareBtn.textContent = prev; }, 1800);
+        } catch (e) {
+          window.prompt(tt('trail.copyLink', null, 'Copy this link'), shareUrl);
+        }
+      });
+    }
+
     const aboutFacts = $('aboutFacts');
     if (false && aboutFacts) {
       const facts = [
         ['paw', 'Comfortable underpaw', easyTerrain ? 'Paved and packed-gravel surfaces' : (t.terrainType || 'Mixed trail')],
         ['water', hasWater ? 'Water at the trailhead' : 'Bring water', hasWater ? 'Fill up before joining the route' : 'No source is listed on this route'],
-        ['loop', 'Loop route', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? `${t.distance} km — back to the same parking area` : 'Check your return transport'],
+        ['loop', 'Loop route', Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200 ? `${t.distance} km, back to the same parking area` : 'Check your return transport'],
         ['mountain', `${Math.max(...(t.elevationProfile || [{ elev: 0 }]).map(p => p.elev))} m altitude`, 'Mountain weather can change quickly'],
       ];
       aboutFacts.innerHTML = facts.map(([icon, title, sub]) => `<div class="about-fact">${svg(icon)}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
@@ -318,9 +362,24 @@
         if (!profile) return;
         const name = profile.name || 'your dog';
         const score = scoreTrail(t, typeof effectiveOverrides === 'function' ? effectiveOverrides(profile, null) : profile);
-        if (matchTitle) matchTitle.textContent = `A great match for ${name}`;
-        if (matchSummary) matchSummary.textContent = `This ${t.distance} km trail suits ${name}'s profile, age and walking experience.`;
-        if (personalScore) { personalScore.innerHTML = `<b>${t.curated === false ? '≈' : ''}${score}%</b><span>Excellent match</span>`; personalScore.hidden = false; }
+        // Honest tiering: the headline and label follow the actual score
+        // instead of calling everything a great match.
+        const tier = score >= 85 ? ['A great match for', 'Excellent match']
+          : score >= 70 ? ['A good match for', 'Good match']
+          : score >= 50 ? ['A fair match for', 'Fair match']
+          : ['A tough match for', 'Demanding today'];
+        if (matchTitle) matchTitle.textContent = `${tier[0]} ${name}`;
+        if (matchSummary) matchSummary.textContent = score >= 70
+          ? `This ${t.distance} km trail suits ${name}'s profile, age and walking experience.`
+          : `This ${t.distance} km trail asks more of ${name}'s profile. Check the notes below before committing.`;
+        if (personalScore) {
+          const ringColor = score >= 70 ? 'var(--success)' : score >= 50 ? '#8A5A16' : '#9C3A25';
+          personalScore.innerHTML =
+            `<div class="tc-ring" style="background:conic-gradient(${ringColor} ${Math.round((score / 100) * 360)}deg,var(--paper-line) 0);">` +
+            `<div class="tc-ring-inner">${t.curated === false ? '≈' : ''}${score}%</div></div>` +
+            `<span class="tc-ring-label">${esc(tier[1]).toUpperCase()}</span>`;
+          personalScore.hidden = false;
+        }
         if (avatar && profile.photo) avatar.innerHTML = `<img src="${esc(profile.photo)}" alt="${esc(name)}">`;
       }).catch(() => {});
     }

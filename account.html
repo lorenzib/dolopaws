@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My account — DoloPaws</title>
+<title>My account | DoloPaws</title>
 <meta name="description" content="Manage your DoloPaws account and dog profile.">
 <meta name="theme-color" content="#2E4034">
 <link rel="manifest" href="manifest.json">
@@ -33,7 +33,7 @@
   <p class="sub" style="margin-top:14px;" id="accountSubline" aria-busy="true"><span class="skeleton" style="width:230px;height:13px;" aria-label="Checking your login status"></span></p>
 </div>
 
-<div class="guide-article">
+<div class="guide-article account-article">
 
   <div id="loggedOutState" hidden style="text-align:center;padding:40px 20px;">
     <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">You're not logged in.</p>
@@ -52,11 +52,13 @@
 
     <section class="guide-section" id="passwordSection">
       <h2>Password</h2>
-      <p id="passwordHint">Send a password reset link to your email — click it to set a new password.</p>
+      <p id="passwordHint">Send a password reset link to your email, then click it to set a new password.</p>
       <button id="sendResetBtn" class="auth-submit" style="width:auto;padding:10px 20px;">Send password reset link</button>
       <p id="resetStatus" style="margin-top:12px;font-size:13px;" hidden></p>
     </section>
 
+    <div class="account-grid">
+    <div class="account-form-col">
     <section class="guide-section">
       <h2>Your dog</h2>
       <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:16px;">Save your dog's details so the trail finder can start pre-set to their fitness level.</p>
@@ -88,16 +90,16 @@
       </label>
       <label class="field-label">Fitness level
         <select id="dogFitness">
-          <option value="low">Low — puppy, senior, or just starting out</option>
-          <option value="moderate" selected>Moderate — everyday walker</option>
-          <option value="high">High — mountain-ready</option>
+          <option value="low">Low: puppy, senior, or just starting out</option>
+          <option value="moderate" selected>Moderate: everyday walker</option>
+          <option value="high">High: mountain-ready</option>
         </select>
       </label>
     </section>
 
     <section class="guide-section">
       <h2>Health information</h2>
-      <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:16px;">This helps us flag trails that might not be a good fit — none of this is required.</p>
+      <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:16px;">This helps us flag trails that might not be a good fit. None of this is required.</p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <label class="field-label">Date of birth
@@ -134,7 +136,7 @@
 
       <div class="field-label" style="margin-top:4px;">Health conditions
         <details id="dogCondBox" class="cond-box">
-          <summary id="dogCondSummary">None selected — tap to choose</summary>
+          <summary id="dogCondSummary">None selected, tap to choose</summary>
           <div class="cond-list">
             <label><input type="checkbox" name="dogCond" value="joints"> Joint or mobility issues (hip or elbow dysplasia, arthritis, luxating patella)</label>
             <label><input type="checkbox" name="dogCond" value="back"> Back or disc problems (e.g. IVDD)</label>
@@ -154,6 +156,24 @@
       <button id="saveDogBtn" class="auth-submit" style="width:auto;padding:10px 20px;margin-top:4px;">Save dog profile</button>
       <p id="dogStatus" style="margin-top:12px;font-size:13px;" hidden></p>
     </section>
+    </div>
+
+    <!-- Live summary: mirrors the form as it's edited, and explains how
+         each answer shapes the trail ranking. Derived from the same
+         breedTraits/profileInsights functions the scorer uses. -->
+    <aside class="account-summary" aria-label="How this shapes your dog's trails">
+      <div class="guide-section" style="margin:0;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;">Profile summary</div>
+        <div id="summaryName" style="font-family:'Source Serif 4',serif;font-weight:700;font-size:19px;">Your dog</div>
+        <div id="summaryMeta" style="font-size:12.5px;color:var(--ink-soft);margin-top:2px;"></div>
+        <div id="summaryChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;"></div>
+        <div style="height:1px;background:var(--paper-line);margin:14px 0;"></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;" id="summaryHowTitle">How this shapes the trails</div>
+        <ul id="summaryEffects" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;font-size:12.5px;line-height:1.5;color:var(--ink);"></ul>
+        <p id="summaryEmpty" style="font-size:12.5px;color:var(--ink-soft);margin:0;">Fill in the form and this panel will show how each answer changes the ranking.</p>
+      </div>
+    </aside>
+    </div>
 
     <section class="guide-section" style="text-align:center;">
       <button id="logOutBtn" class="fav-btn">Log out</button>
@@ -187,6 +207,82 @@
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="breeds-data.js" defer></script>
+<script src="scoring.js" defer></script>
 <script src="account.js" defer></script>
+<script>
+// Live profile summary. Mirrors the form into the sidebar as it's edited,
+// using the SAME functions the scorer uses (breedTraits, profileInsights,
+// dogAgeYears, dogWeightKg), so what it promises is what the ranking does.
+document.addEventListener('DOMContentLoaded', function(){
+  var col = document.querySelector('.account-form-col');
+  var nameEl = document.getElementById('summaryName');
+  var metaEl = document.getElementById('summaryMeta');
+  var chipsEl = document.getElementById('summaryChips');
+  var effectsEl = document.getElementById('summaryEffects');
+  var emptyEl = document.getElementById('summaryEmpty');
+  if(!col || !nameEl || typeof profileInsights !== 'function') return;
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function formProfile(){
+    var breedSel = document.getElementById('dogBreed');
+    var breed = breedSel ? breedSel.value : '';
+    if(breed === '__other__'){
+      var other = document.getElementById('dogBreedOther');
+      breed = other ? other.value.trim() : '';
+    }
+    var conds = Array.prototype.slice.call(document.querySelectorAll('input[name="dogCond"]:checked')).map(function(i){ return i.value; });
+    return {
+      name: (document.getElementById('dogName') || {}).value || '',
+      breed: breed,
+      fitness: (document.getElementById('dogFitness') || {}).value || 'moderate',
+      dob: (document.getElementById('dogDob') || {}).value || null,
+      ageBand: (document.getElementById('dogAgeBand') || {}).value || null,
+      weightBand: (document.getElementById('dogWeightBand') || {}).value || null,
+      conditions: conds
+    };
+  }
+
+  function render(){
+    var p = formProfile();
+    nameEl.textContent = p.name.trim() || 'Your dog';
+    var age = dogAgeYears(p);
+    var metaBits = [];
+    if(p.breed) metaBits.push(p.breed);
+    if(age != null) metaBits.push(age < 1 ? 'puppy' : Math.round(age) + ' yrs');
+    metaEl.textContent = metaBits.join(' · ');
+
+    var kg = dogWeightKg(p);
+    var tr = (typeof breedTraits === 'function' && p.breed) ? breedTraits(p.breed) : {};
+    var chips = [];
+    if(kg != null){
+      var size = kg < 10 ? 'Small' : kg <= 25 ? 'Medium' : kg <= 45 ? 'Large' : 'Giant';
+      chips.push(size + ' · ' + Math.round(kg) + ' kg');
+    }
+    if(tr.thickCoat) chips.push('Thick coat');
+    else if(tr.brachy) chips.push('Flat-faced');
+    if(age != null && age < 1) chips.push('Puppy');
+    else if(age != null && age >= 8) chips.push('Senior');
+    chipsEl.innerHTML = chips.slice(0, 3).map(function(c){
+      return '<span style="background:var(--sage-dim);color:var(--ink);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;">' + esc(c) + '</span>';
+    }).join('');
+
+    var effects = profileInsights(p).map(function(l){ return { t: l.title, s: l.sub }; });
+    if(p.fitness === 'low') effects.push({ t: 'Taking it gently', s: 'Low fitness keeps shorter, flatter routes at the top of the list.' });
+    else if(p.fitness === 'high') effects.push({ t: 'Mountain-ready', s: 'High fitness keeps longer climbs in the mix instead of filtering them out.' });
+    effects = effects.slice(0, 5);
+    effectsEl.innerHTML = effects.map(function(e){
+      return '<li><b style="display:block;font-size:12.5px;">' + esc(e.t) + '</b><span style="color:var(--ink-soft);">' + esc(e.s) + '</span></li>';
+    }).join('');
+    emptyEl.hidden = effects.length > 0;
+  }
+
+  col.addEventListener('input', render);
+  col.addEventListener('change', render);
+  // First paint after account.js has filled the form from the saved profile.
+  setTimeout(render, 600);
+  render();
+});
+</script>
 </body>
 </html>

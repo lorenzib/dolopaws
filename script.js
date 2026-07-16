@@ -104,6 +104,13 @@ function filterTrailsForReturningView(list){
   // score desc before filtering, in renderReturningHomepage().
   if(sortKey === 'distance') displayList = displayList.slice().sort((a, b) => a.distance - b.distance);
   else if(sortKey === 'effort') displayList = displayList.slice().sort((a, b) => a.elevation - b.elevation);
+  else if(sortKey === 'today'){
+    // "Coolest" — lowest heat load first, from the trail's real heat fields
+    // (heatRisk tier, then shade). Stable sort keeps match order within ties.
+    const hr = { low: 0, moderate: 1, high: 2 };
+    displayList = displayList.slice().sort((a, b) =>
+      ((hr[a.heatRisk] ?? 1) - (hr[b.heatRisk] ?? 1)) || ((b.shadeCoverage || 0) - (a.shadeCoverage || 0)));
+  }
 
   return displayList;
 }
@@ -982,7 +989,16 @@ async function renderReturningHomepage(profile){
   }
 
   // The cloud is Eddie speaking — one line, no counts, true for any area.
-  heading.textContent = '\u201C' + t('home.bubble') + '\u201D';
+  // When the owner has set "Adjust for today", the dog voices those declared
+  // conditions (never guessed weather); otherwise it asks the usual question.
+  let bubbleLine = t('home.bubble');
+  if(adjustOverride){
+    if(adjustOverride.energy === 'low') bubbleLine = "I'm on low battery, keep it short and easy today.";
+    else if(adjustOverride.distance === '5') bubbleLine = 'Something short and sweet today, please.';
+    else if(adjustOverride.terrain === '0') bubbleLine = 'Easy underfoot today, my paws say so.';
+    else if(adjustOverride.energy === 'high') bubbleLine = "I'm full of beans, let's go big today.";
+  }
+  heading.textContent = '\u201C' + bubbleLine + '\u201D';
   // The old copy ("Pick a province or valley below... Edit profile") duplicated
   // what the sidebar now already shows (filters + the dog card's edit link),
   // so this line is now just the one thing the sidebar can't say: whether
