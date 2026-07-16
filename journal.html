@@ -128,13 +128,36 @@
 document.addEventListener('DOMContentLoaded', function(){
   var state = { filter: 'all', rating: 5, entries: [] };
   var uid = null;
-  var pendingTrailId = new URLSearchParams(window.location.search).get('trail');
+  var journalParams = new URLSearchParams(window.location.search);
+  var pendingTrailId = journalParams.get('trail');
+  var pendingReturn = journalParams.get('from');
+  if(!/^trail\.html\?id=[a-z0-9._-]+$/i.test(pendingReturn || '')) pendingReturn = '';
   var openedPendingTrail = false;
+  var statusTimer = null;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function key(){ return 'dolopaws-journal-' + uid; }
   function load(){ try { return JSON.parse(localStorage.getItem(key())) || []; } catch(e){ return []; } }
   function persist(){ try { localStorage.setItem(key(), JSON.stringify(state.entries)); } catch(e){} }
+  function showStatus(message){
+    var status = document.getElementById('jnActionStatus');
+    if(!status){
+      status = document.createElement('div');
+      status.id = 'jnActionStatus';
+      status.className = 'dw-toast';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      document.body.appendChild(status);
+    }
+    if(statusTimer) clearTimeout(statusTimer);
+    status.textContent = message;
+    status.hidden = false;
+    status.className = 'dw-toast dw-toast--in';
+    statusTimer = setTimeout(function(){
+      status.hidden = true;
+      status.className = 'dw-toast';
+    }, 4200);
+  }
 
   function fmtStats(e){
     return [e.dist ? e.dist + ' km' : null, e.dur ? fmtDur(e.dur) : null].filter(Boolean).join(' · ') || 'Walk logged';
@@ -205,6 +228,13 @@ document.addEventListener('DOMContentLoaded', function(){
     sel.innerHTML = opts;
     if(pendingTrailId && Array.from(sel.options).some(function(o){ return o.value === pendingTrailId; })){
       sel.value = pendingTrailId;
+      var selectedTrail = trails.find(function(t){ return t.id === pendingTrailId; });
+      if(selectedTrail){
+        var dist = document.getElementById('jnDist');
+        var dur = document.getElementById('jnDur');
+        if(!dist.value && selectedTrail.distance) dist.value = selectedTrail.distance;
+        if(!dur.value && selectedTrail.hours) dur.value = Math.round(Number(selectedTrail.hours) * 60);
+      }
     }
   }
   function renderStarInput(){
@@ -235,8 +265,15 @@ document.addEventListener('DOMContentLoaded', function(){
     var accountBtn = document.getElementById('accountBtn');
     if(accountBtn) accountBtn.click();
   });
-  document.getElementById('jnClose').addEventListener('click', function(){ overlay.hidden = true; });
-  overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.hidden = true; });
+  function closeLog(){
+    if(pendingReturn){
+      window.location.href = pendingReturn;
+      return;
+    }
+    overlay.hidden = true;
+  }
+  document.getElementById('jnClose').addEventListener('click', closeLog);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeLog(); });
 
   document.getElementById('jnSave').addEventListener('click', function(){
     var sel = document.getElementById('jnTrail');
@@ -258,7 +295,13 @@ document.addEventListener('DOMContentLoaded', function(){
     overlay.hidden = true;
     ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
     state.rating = 5;
+    pendingTrailId = null;
+    pendingReturn = '';
+    if(window.history && window.history.replaceState){
+      window.history.replaceState({}, '', 'journal.html');
+    }
     renderAll();
+    showStatus('Walk saved to your journal.');
   });
 
   document.getElementById('jnTabs').addEventListener('click', function(e){

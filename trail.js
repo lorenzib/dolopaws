@@ -671,7 +671,10 @@ function renderTrail(t){
       : '← Back to trail results';
   }
   const logWalkBtn = document.getElementById('logWalkBtn');
-  if(logWalkBtn) logWalkBtn.href = `journal.html?trail=${encodeURIComponent(t.id)}`;
+  if(logWalkBtn){
+    const journalReturn = encodeURIComponent(`trail.html?id=${encodeURIComponent(t.id)}`);
+    logWalkBtn.href = `journal.html?trail=${encodeURIComponent(t.id)}&from=${journalReturn}`;
+  }
   // Do not reserve an empty elevation panel for routes without profile data.
   const elevationCard = document.getElementById('elevCard');
   const hasElevationProfile = Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1;
