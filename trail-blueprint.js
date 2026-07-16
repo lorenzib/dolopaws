@@ -58,12 +58,14 @@
 
     function guest() {
       title.textContent = tt('qa.dogGuest', null, 'Would this suit your dog?');
+      const returnToTrail = encodeURIComponent(location.pathname.split('/').pop() + location.search);
       sub.innerHTML = esc(factLine) + (factLine ? ' · ' : '') +
-        '<a href="account.html">' + tt('qa.dogGuestCta', null, 'create a free profile to find out') + ' →</a>';
+        '<a href="account.html?next=' + returnToTrail + '">' + tt('qa.dogGuestCta', null, 'create a free profile to find out') + ' →</a>';
     }
     function noProfile() {
       title.textContent = tt('qa.dogNoProfile', null, 'Whose paws are we scoring?');
-      sub.innerHTML = '<a href="account.html">' + tt('qa.dogNoProfileCta', null, 'Add your dog, 2 minutes') + ' →</a>';
+      const returnToTrail = encodeURIComponent(location.pathname.split('/').pop() + location.search);
+      sub.innerHTML = '<a href="account.html?next=' + returnToTrail + '">' + tt('qa.dogNoProfileCta', null, 'Add your dog, 2 minutes') + ' →</a>';
     }
     function paint() {
       if (typeof scoreTrail !== 'function' || !window.DoloPawsAuth || !window.DoloPawsAuth.currentUser) { guest(); return; }

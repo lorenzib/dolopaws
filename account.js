@@ -22,6 +22,19 @@
   const dogHealthNotes = document.getElementById('dogHealthNotes');
   const saveDogBtn = document.getElementById('saveDogBtn');
   const dogStatus = document.getElementById('dogStatus');
+  const requestedNext = new URLSearchParams(window.location.search).get('next');
+
+  function safeReturnTarget(value){
+    if(!value || /^(?:[a-z]+:|\/\/|\/)/i.test(value)) return '';
+    return /^[a-z0-9][a-z0-9._/-]*\.html(?:\?[^#]*)?(?:#.*)?$/i.test(value) ? value : '';
+  }
+
+  const returnTarget = safeReturnTarget(requestedNext);
+  const accountLoginLink = document.getElementById('accountLoginLink');
+  if(accountLoginLink){
+    const accountReturn = 'account.html' + (returnTarget ? '?next=' + encodeURIComponent(returnTarget) : '');
+    accountLoginLink.href = 'index.html?login=1&next=' + encodeURIComponent(accountReturn);
+  }
 
   // ---------- Dog photo — synced to the account ----------
   // The photo is downscaled in the browser to a small thumbnail and saved
@@ -266,7 +279,14 @@
     saveDogBtn.textContent = 'Save dog profile';
     dogStatus.hidden = false;
     dogStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
-    dogStatus.textContent = ok ? 'Saved.' : 'Something went wrong — please try again.';
+    if(ok && returnTarget){
+      dogStatus.textContent = 'Saved. Returning you to where you were…';
+      window.setTimeout(() => window.location.assign(returnTarget), 500);
+    } else if(ok) {
+      dogStatus.innerHTML = 'Saved. <a href="index.html" style="font-weight:700;">View your personalised trails →</a>';
+    } else {
+      dogStatus.textContent = 'Something went wrong — please try again.';
+    }
   });
 
   function waitForAuth(cb){

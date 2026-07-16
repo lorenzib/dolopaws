@@ -40,7 +40,7 @@ function renderTeaser(){
 function goToProfileCreation(){
   const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
   if(user){
-    window.location.href = 'account.html';
+    window.location.href = 'account.html?next=index.html';
   } else if(window.DoloPawsWizard){
     // Guests build the dog profile FIRST (no account needed); the
     // signup ask comes only after they've seen their dog's matches.
