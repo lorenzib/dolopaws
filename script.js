@@ -832,13 +832,20 @@ function renderDogProfileCard(profile){
   const ageLabel = age != null ? (age < 1 ? 'under 1 yr' : Math.round(age) + ' yrs') : null;
   metaEl.textContent = [hasBreedName ? breed : null, ageLabel].filter(Boolean).join(' · ') || (profile ? 'Profile saved' : 'No profile yet');
 
+  // Physical identity only (size/weight, coat, life stage) — the WHY behind
+  // each trait (cold at rest, thin skin, etc.) is the breed-insight card's
+  // job just below. Repeating those same titles up here read as duplicated
+  // content once both cards were on screen together, so this card now
+  // sticks to a quick-glance ID, not the reasoning.
   const kg = profile ? dogWeightKg(profile) : null;
   const sizeLabel = kg == null ? null : kg < 10 ? 'Small' : kg <= 25 ? 'Medium' : kg <= 45 ? 'Large' : 'Giant';
+  const tr = (typeof breedTraits === 'function' && breed) ? breedTraits(breed) : {};
   const chips = [];
   if(sizeLabel) chips.push(kg ? `${sizeLabel} · ${Math.round(kg)} kg` : sizeLabel);
-  if(typeof breedInsights === 'function' && breed){
-    breedInsights(breed).slice(0, 2).forEach(l => chips.push(l.title));
-  }
+  if(tr.thickCoat) chips.push('Thick coat');
+  else if(tr.brachy) chips.push('Flat-faced');
+  if(age != null && age < 1) chips.push('Puppy');
+  else if(age != null && age >= 8) chips.push('Senior');
   chipsEl.innerHTML = chips.slice(0, 3).map(c => `<span class="companion-chip">${c}</span>`).join('');
 
   const photo = profile && profile.photo;
@@ -976,11 +983,15 @@ async function renderReturningHomepage(profile){
 
   // The cloud is Eddie speaking — one line, no counts, true for any area.
   heading.textContent = '\u201C' + t('home.bubble') + '\u201D';
-  const pickLine = profile && profile.name ? t('home.pickArea', {name}) : t('home.pickAreaNoName');
+  // The old copy ("Pick a province or valley below... Edit profile") duplicated
+  // what the sidebar now already shows (filters + the dog card's edit link),
+  // so this line is now just the one thing the sidebar can't say: whether
+  // anything changed since last visit.
   const newsLine = newIds.size > 0
-    ? ' ' + (newIds.size === 1 ? t('home.newMatch1') : t('home.newMatches', {n: newIds.size}))
+    ? (newIds.size === 1 ? t('home.newMatch1') : t('home.newMatches', {n: newIds.size}))
     : '';
-  subline.innerHTML = `${pickLine}${newsLine} <a href="account.html" style="color:var(--ink);font-weight:700;text-decoration:underline;">${t('home.editProfile')}</a>`;
+  subline.innerHTML = newsLine || '';
+  subline.hidden = !newsLine;
 
   renderBreedInsight(profile);
 
