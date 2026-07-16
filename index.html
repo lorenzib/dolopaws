@@ -137,21 +137,6 @@
           <a class="companion-edit-link" href="account.html" data-i18n="home.editProfile">Edit profile &rarr;</a>
         </div>
 
-        <!-- Conditions / readiness card — real profile data, not invented
-             weather; opens the real adjust-for-today tool. -->
-        <div class="companion-card companion-conditions" id="companionConditionsCard" hidden>
-          <div class="head">
-            <span class="label" id="companionConditionsLabel">HEAT READINESS</span>
-          </div>
-          <div class="companion-heat-meter">
-            <span class="meter-label">Heat load</span>
-            <div class="bars" id="companionHeatBars"></div>
-            <span class="reading" id="companionHeatReading"></span>
-          </div>
-          <p id="companionConditionsNote"></p>
-          <button type="button" id="adjustToggle" class="companion-conditions-cta" aria-expanded="false">Adjust for today's conditions &rarr;</button>
-        </div>
-
         <!-- Filters (region / source / valley) — populated by
              renderAreaFilters(), same logic as before, restyled markup -->
         <div class="companion-card" id="areaFilterRow"></div>
@@ -161,6 +146,10 @@
           <span class="txt">♥ <span class="txt-label">Saved trails</span></span>
           <span class="count" id="companionSavedCount">0</span>
         </button>
+
+        <!-- Quiet entry to the real adjust-for-today tool (the design's
+             weather card is out; this keeps the tool reachable) -->
+        <button type="button" id="adjustToggle" class="companion-adjust-link" aria-expanded="false">Adjust for today's conditions &rarr;</button>
       </aside>
 
       <!-- ================= MAIN ================= -->
@@ -225,8 +214,8 @@
             <span class="pct" id="mapCalloutPct"></span>
             <span class="close" id="mapCalloutClose" role="button" aria-label="Clear selection">&times;</span>
           </div>
+          <div id="trailMapLegend" class="companion-map-legend"></div>
         </div>
-        <div id="trailMapLegend" style="display:flex;gap:16px;margin:10px 0 0;font-size:11.5px;color:var(--ink-soft);flex-wrap:wrap;align-items:center;"></div>
 
         <div class="companion-list-head">
           <div>
@@ -236,10 +225,10 @@
           <div class="companion-sort">
             <span class="companion-sort-label">Sort</span>
             <div class="companion-sort-group" id="companionSortGroup">
-              <button type="button" data-sort="match" class="active">Best match</button>
+              <button type="button" data-sort="match" class="active">Best</button>
               <button type="button" data-sort="distance">Shortest</button>
-              <button type="button" data-sort="effort">Least climb</button>
-              <button type="button" data-sort="today">Coolest</button>
+              <button type="button" data-sort="effort">Climb</button>
+              <button type="button" data-sort="today">For today</button>
             </div>
           </div>
         </div>

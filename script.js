@@ -786,8 +786,13 @@ function renderAreaFilters(profile){
 
     <div class="companion-filter-label">Source</div>
     <div class="prov-toggle" style="width:100%;">
-      ${[['all', t('filter.all')],['verified', t('filter.verified')],['imported', t('filter.imported')]].map(([k, label]) => `
-        <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}" style="flex:1;text-align:center;">${label}</div>`).join('')}
+      ${(() => {
+        const inRegion = trails.filter(x => x.region === activeRegion);
+        const nVerified = inRegion.filter(x => x.curated !== false).length;
+        const counts = { all: inRegion.length, verified: nVerified, imported: inRegion.length - nVerified };
+        return [['all', t('filter.all')],['verified', t('filter.verified')],['imported', t('filter.imported')]].map(([k, label]) => `
+        <div class="prov-opt ${k === activeProvenance ? 'active' : ''}" data-prov="${k}" style="flex:1;text-align:center;">${label} <span class="count">${counts[k]}</span></div>`).join('');
+      })()}
     </div>
 
     <div class="companion-filter-label">Valley</div>
@@ -849,8 +854,10 @@ function renderDogProfileCard(profile){
   const tr = (typeof breedTraits === 'function' && breed) ? breedTraits(breed) : {};
   const chips = [];
   if(sizeLabel) chips.push(kg ? `${sizeLabel} · ${Math.round(kg)} kg` : sizeLabel);
-  if(tr.thickCoat) chips.push('Thick coat');
+  if(tr.thickCoat) chips.push('Heavy double coat');
   else if(tr.brachy) chips.push('Flat-faced');
+  const fitness = profile && profile.fitness;
+  if(fitness) chips.push(fitness.charAt(0).toUpperCase() + fitness.slice(1) + ' fitness');
   if(age != null && age < 1) chips.push('Puppy');
   else if(age != null && age >= 8) chips.push('Senior');
   chipsEl.innerHTML = chips.slice(0, 3).map(c => `<span class="companion-chip">${c}</span>`).join('');
@@ -1017,9 +1024,17 @@ async function renderReturningHomepage(profile){
 
   let displayList = filterTrailsForReturningView(scored);
 
+  // "6 of 112 · ranked for a heavy-coated dog" — total is the active
+  // region's full count, the descriptor comes from real scored traits.
+  const regionTotal = scored.filter(x => x.region === activeRegion).length;
+  const trDesc = (typeof breedTraits === 'function' && profile && profile.breed) ? breedTraits(profile.breed) : {};
+  const descAdj = trDesc.thickCoat ? 'a heavy-coated' : trDesc.brachy ? 'a flat-faced'
+    : trDesc.giant ? 'a big' : trDesc.shortLegged ? 'a short-legged' : null;
+  const rankedFor = descAdj ? `ranked for ${descAdj} dog`
+    : (profile && profile.name) ? `ranked for ${profile.name}'s profile` : '';
   countEl.textContent = showingSavedOnly
     ? (displayList.length === 1 ? t('home.nSaved1') : t('home.nSaved', {n: displayList.length}))
-    : t('home.nTrails', {n: displayList.length});
+    : `${displayList.length} of ${regionTotal}` + (rankedFor ? ' · ' + rankedFor : '');
 
   updateMapMarkers(displayList);
 
@@ -1032,11 +1047,13 @@ async function renderReturningHomepage(profile){
   const pageList = collapsed
     ? displayList.slice(0, TOP_MATCHES)
     : displayList.slice((currentPage - 1) * TRAILS_PER_PAGE, currentPage * TRAILS_PER_PAGE);
-  if(collapsed) countEl.textContent = t('home.topOf', {a: Math.min(TOP_MATCHES, displayList.length), b: displayList.length});
+  if(collapsed) countEl.textContent = t('home.topOf', {a: Math.min(TOP_MATCHES, displayList.length), b: displayList.length}) + (rankedFor ? ' · ' + rankedFor : '');
 
   if(savedTrailsBtn){
     const savedLabel = savedTrailsBtn.querySelector('.txt-label');
-    if(savedLabel) savedLabel.textContent = showingSavedOnly ? t('home.allTrailsBtn') : t('home.savedTrails');
+    if(savedLabel) savedLabel.textContent = showingSavedOnly
+      ? t('home.allTrailsBtn')
+      : (profile && profile.name) ? `Saved for ${profile.name}` : t('home.savedTrails');
     const savedCountEl = document.getElementById('companionSavedCount');
     if(savedCountEl) savedCountEl.textContent = Object.keys(currentFavorites).length;
     savedTrailsBtn.classList.toggle('active', showingSavedOnly);
