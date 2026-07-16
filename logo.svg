@@ -1,17 +1,45 @@
-<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DoloPaws logo: a mountain paw inside a dark green rounded square">
-  <rect x="4" y="4" width="132" height="132" rx="25" fill="#2E4034"/>
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DoloPaws mountain paw logo">
+  <rect width="512" height="512" rx="108" fill="#2E4034"/>
 
-  <ellipse cx="37" cy="38" rx="6" ry="9" fill="#78AEC2" transform="rotate(-16 37 38)"/>
-  <ellipse cx="59" cy="29" rx="6.5" ry="9.5" fill="#78AEC2" transform="rotate(-6 59 29)"/>
-  <ellipse cx="82" cy="29" rx="6.5" ry="9.5" fill="#78AEC2" transform="rotate(6 82 29)"/>
-  <ellipse cx="104" cy="38" rx="6" ry="9" fill="#78AEC2" transform="rotate(16 104 38)"/>
+  <ellipse cx="147" cy="170" rx="14" ry="22" fill="#6FA8BE" transform="rotate(-18 147 170)"/>
+  <ellipse cx="216" cy="136" rx="16" ry="23" fill="#6FA8BE" transform="rotate(-5 216 136)"/>
+  <ellipse cx="296" cy="130" rx="16" ry="23" fill="#6FA8BE" transform="rotate(5 296 130)"/>
+  <ellipse cx="364" cy="162" rx="14" ry="22" fill="#6FA8BE" transform="rotate(18 364 162)"/>
 
-  <path d="M21,116
-           L28,105 L33,91 L37,75 L40,63
-           L51,62 L57,67 L61,82 L65,99
-           L70,107 L74,100 L78,67 L81,55
-           L86,51 L91,54 L95,68 L99,87
-           L103,102 L108,94 L112,72
-           L116,64 L120,78 L123,94 L128,116 Z"
-        fill="#F7F2E8"/>
+  <path fill="#F7F4EA" d="
+    M99 390
+    L118 361
+    L131 332
+    L141 309
+    L149 262
+    L154 232
+    L160 219
+    L190 216
+    L207 232
+    L211 270
+    L219 310
+    L229 319
+    L237 308
+    L239 261
+    L241 217
+    L247 190
+    L257 183
+    L270 186
+    L278 206
+    L287 249
+    L297 295
+    L306 313
+    L314 304
+    L319 276
+    L322 250
+    L330 232
+    L338 264
+    L345 250
+    L342 219
+    L348 208
+    L356 256
+    L368 234
+    L389 319
+    L410 390
+    Z"/>
 </svg>
