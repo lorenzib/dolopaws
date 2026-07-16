@@ -206,7 +206,7 @@ function nearbySection(t, slug, all) {
   for (const o of sameRegion) { if (picks.length >= 4) break; picks.push(o); }
   if (!picks.length) return '';
   const items = picks.map((o) =>
-    `<a class="sp-near" href="${o.slug}.html">
+    `<a class="sp-near" href="../trail.html?id=${encodeURIComponent(o.id)}">
         <span class="sp-near-name">${escapeHtml(o.name)}</span>
         <span class="sp-near-meta"><span class="safety-badge ${safetyClass(o.safetyLevel)}">${safetyLabel(o.safetyLevel)}</span> ${o.distance} km</span>
       </a>`
@@ -416,7 +416,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
       ${facts}
   </div>
 
-  <a class="sp-cta" href="../trail.html?id=${encodeURIComponent(t.id)}">Open the interactive map, elevation profile &amp; live weather →</a>
+  <a class="sp-cta" href="../trail.html?id=${encodeURIComponent(t.id)}">Open the full trail guide →</a>
 
   <div class="sp-body">
     ${glanceHtml}
@@ -428,7 +428,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
     ${insightsHtml}
     <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
-    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
+    <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html?next=trail.html%3Fid%3D${encodeURIComponent(t.id)}">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
     </div>
     <script>
     (function(){
@@ -447,7 +447,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
         } else {
           box.innerHTML = '<h2>One step left: save your dog\u2019s profile</h2>'
             + '<p>You\u2019re signed in, but there\u2019s no dog profile saved yet. Add your dog\u2019s build, age and health once, and every trail, including this one, gets a personal match score.</p>'
-            + '<p><a href="../account.html">Finish your dog\u2019s profile \u2192</a></p>';
+            + '<p><a href="../account.html?next=trail.html%3Fid%3D${encodeURIComponent(t.id)}">Finish your dog\u2019s profile \u2192</a></p>';
         }
       }catch(e){}
     })();
@@ -513,7 +513,7 @@ function updateBrowseIndex(entries) {
       (r) =>
         `<p style="font-weight:700;color:var(--ink);break-inside:avoid;">${escapeHtml(REGION_LABEL[r])}</p>\n` +
         byRegion[r]
-          .map((e) => `<a href="trails/${e.slug}.html" style="display:block;color:inherit;">${escapeHtml(e.name)}</a>`)
+          .map((e) => `<a href="trail.html?id=${encodeURIComponent(e.id)}" style="display:block;color:inherit;">${escapeHtml(e.name)}</a>`)
           .join('\n')
     )
     .join('\n');
@@ -555,7 +555,7 @@ function main() {
     entries.push({ t, slug });
   }
   const all = entries.map(({ t, slug }) => ({
-    slug, name: t.name, valley: t.valley, region: t.region,
+    id: t.id, slug, name: t.name, valley: t.valley, region: t.region,
     distance: t.distance, safetyLevel: t.safetyLevel,
   }));
 
@@ -565,7 +565,7 @@ function main() {
   for (const { t, slug } of entries) {
     fs.writeFileSync(path.join(OUT_DIR, `${slug}.html`), trailPage(t, slug, all), 'utf8');
     urls.push(`${BASE_URL}/trails/${slug}.html`);
-    indexEntries.push({ slug, name: t.name, region: t.region });
+    indexEntries.push({ id: t.id, slug, name: t.name, region: t.region });
     written++;
   }
 
