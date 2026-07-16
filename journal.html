@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('jnEmpty').hidden = list.length > 0;
     box.innerHTML = list.map(function(e){
       var d = new Date(e.date);
-      var link = e.trailId ? '<a class="jn-again" href="trail.html?id=' + encodeURIComponent(e.trailId) + '">Walk it again &rarr;</a>' : '';
+      var link = e.trailId ? '<a class="jn-again" href="trail.html?id=' + encodeURIComponent(e.trailId) + '&from=journal.html">Walk it again &rarr;</a>' : '';
       return '<div class="jn-entry">' +
         '<div class="jn-date"><b>' + d.getDate() + '</b><span>' + d.toLocaleDateString(undefined, { month: 'short' }) + '<br>' + d.toLocaleDateString(undefined, { weekday: 'short' }) + '</span></div>' +
         '<div style="flex:1;min-width:0;">' +

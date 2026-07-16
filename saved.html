@@ -128,11 +128,11 @@ document.addEventListener('DOMContentLoaded', function(){
             '<span class="tc-risk-dot"><span class="dot" style="background:' + s[1] + ';"></span>' + s[0] + '</span>' +
             '<span class="tc-heat-pill" style="background:' + heat[1] + ';color:' + heat[2] + ';">Heat ' + heat[0] + '</span>' +
           '</div>' +
-          '<a href="trail.html?id=' + encodeURIComponent(tr.id) + '" class="name" style="margin-top:2px;display:block;text-decoration:none;color:inherit;">' + esc(tr.name) + '</a>' +
+          '<a href="trail.html?id=' + encodeURIComponent(tr.id) + '&from=saved.html" class="name" style="margin-top:2px;display:block;text-decoration:none;color:inherit;">' + esc(tr.name) + '</a>' +
           '<div class="tc-reason"><span class="mark">&#10022;</span><span class="txt">' + esc(whyFits(tr, ov)) + '</span></div>' +
           '<div class="tc-stats">' + esc(tr.area || '') + ' · ' + tr.distance + ' km · ' + tr.elevation + ' m' + (tr.hours ? ' · ' + esc(tr.hours) + ' h' : '') + '</div>' +
           '<div class="tc-actions">' +
-            '<a href="trail.html?id=' + encodeURIComponent(tr.id) + '">Trail details &rarr;</a>' +
+            '<a href="trail.html?id=' + encodeURIComponent(tr.id) + '&from=saved.html">Trail details &rarr;</a>' +
             '<button type="button" class="save save-btn saved" data-remove="' + esc(tr.id) + '">Remove</button>' +
           '</div>' +
         '</div>' +

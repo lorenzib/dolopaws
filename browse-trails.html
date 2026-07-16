@@ -322,7 +322,30 @@
     // What stays personal (match %, saving, reporting) prompts login on
     // the trail page itself — at the moment it's actually wanted.
     const PER_PAGE = 15;
-    let page = 1;
+    const initialParams = new URLSearchParams(window.location.search);
+    const allowedRegions = ['all', 'dolomites', 'savoy'];
+    const allowedRisks = ['all', 'low-risk', 'moderate', 'caution'];
+    const allowedDistances = ['all', '5', '10', '20'];
+    search.value = initialParams.get('search') || '';
+    region.value = allowedRegions.includes(initialParams.get('region')) ? initialParams.get('region') : 'all';
+    risk.value = allowedRisks.includes(initialParams.get('risk')) ? initialParams.get('risk') : 'all';
+    distance.value = allowedDistances.includes(initialParams.get('distance')) ? initialParams.get('distance') : 'all';
+    let page = Math.max(1, Number.parseInt(initialParams.get('page'), 10) || 1);
+
+    function browseStateTarget(){
+      const state = new URLSearchParams();
+      if(search.value.trim()) state.set('search', search.value.trim());
+      if(region.value !== 'all') state.set('region', region.value);
+      if(risk.value !== 'all') state.set('risk', risk.value);
+      if(distance.value !== 'all') state.set('distance', distance.value);
+      if(page > 1) state.set('page', String(page));
+      const query = state.toString();
+      return 'browse-trails.html' + (query ? '?' + query : '');
+    }
+
+    function syncBrowseUrl(){
+      window.history.replaceState(null, '', browseStateTarget());
+    }
 
     function filteredTrails(){
       const q = search.value.trim().toLocaleLowerCase();
@@ -348,6 +371,7 @@
       clear.hidden = !hasFilters;
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
+      syncBrowseUrl();
       const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
       list.innerHTML = pageTrails.length ? pageTrails.map(t => {
@@ -360,7 +384,7 @@
           : `<span class="badge-pill badge-verified">${window.t('badge.verifiedS')}</span>`;
         const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
           .filter(Boolean).join(' · ');
-        const openAttr = `href="trail.html?id=${t.id}"`;
+        const openAttr = `href="trail.html?id=${encodeURIComponent(t.id)}&from=${encodeURIComponent(browseStateTarget())}"`;
         const cta = `<div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>`;
         return `
         <a ${openAttr} class="simple-card" style="text-decoration:none;display:block;color:inherit;">

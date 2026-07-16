@@ -607,6 +607,12 @@ function buildItinerary(t){
 
 const params = new URLSearchParams(window.location.search);
 const trailId = params.get('id');
+const trailReturnTarget = params.get('from');
+
+function safeTrailReturn(value){
+  if(!value || /^(?:[a-z]+:|\/\/|\/)/i.test(value)) return '';
+  return /^(?:browse-trails|saved|journal)\.html(?:\?[^#]*)?(?:#.*)?$/i.test(value) ? value : '';
+}
 
 function init(){
   const trail = (typeof trails !== 'undefined') ? trails.find(x => x.id === trailId) : null;
@@ -636,6 +642,14 @@ function init(){
 function renderTrail(t){
   buildItinerary(t);
   renderLegendChips(t);
+  const breadcrumb = document.getElementById('tdBreadcrumb');
+  const returnTarget = safeTrailReturn(trailReturnTarget);
+  if(breadcrumb && returnTarget){
+    breadcrumb.href = returnTarget;
+    breadcrumb.textContent = returnTarget.startsWith('saved.html') ? '← Back to saved trails'
+      : returnTarget.startsWith('journal.html') ? '← Back to journal'
+      : '← Back to trail results';
+  }
   const logWalkBtn = document.getElementById('logWalkBtn');
   if(logWalkBtn) logWalkBtn.href = `journal.html?trail=${encodeURIComponent(t.id)}`;
   // Do not reserve an empty elevation panel for routes without profile data.
