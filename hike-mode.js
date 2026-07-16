@@ -71,6 +71,7 @@ function initHikeMode(map, trail){
   let lastIdx = 0;          // last snapped path index — used for monotonic bias
   let offRouteStreak = 0;   // consecutive fixes far from the route
   let firstFix = true;
+  let hikeStartRecorded = false;
 
   // Map tile fetches fail silently when the connection drops mid-hike —
   // navigator.onLine often stays true on a weak mountain signal, so track
@@ -139,6 +140,7 @@ function initHikeMode(map, trail){
 
     if (firstFix){
       firstFix = false;
+      recordConfirmedHikeStart();
       map.easeTo({ center: [lng, lat], zoom: Math.max(map.getZoom(), 15), duration: 800 });
     }
 
@@ -187,24 +189,25 @@ function initHikeMode(map, trail){
       panel.innerHTML = window.t('hike.permission');
       stopHike(true);
       panel.style.display = 'block';
+    } else if (err.code === 2){ // POSITION_UNAVAILABLE
+      panel.innerHTML = window.t('hike.unavailable');
+      stopHike(true);
+      panel.style.display = 'block';
+    } else if (err.code === 3){ // TIMEOUT
+      panel.innerHTML = window.t('hike.timeout');
+      stopHike(true);
+      panel.style.display = 'block';
     } else {
       panel.innerHTML = window.t('hike.waiting');
     }
   }
 
   // ---- Start / stop ---------------------------------------------------------
-  function startHike(){
-    active = true;
-    firstFix = true;
-    offRouteStreak = 0;
-    // A hiker needs a navigation screen, not an article: go fullscreen.
-    if (window.DoloPawsMapFS) window.DoloPawsMapFS.enter();
-    startBtn.textContent = hikeLabel('hike.end', 'End hike');
-    startBtn.style.background = '#9C3A25';
-    panel.style.display = 'block';
-    panel.innerHTML = window.t('hike.getting');
-    // Community v0: one anonymous count event per trail per device per day
-    // (localStorage guard stops pause/resume from double-counting).
+  function recordConfirmedHikeStart(){
+    if (hikeStartRecorded) return;
+    hikeStartRecorded = true;
+    // One anonymous count event per trail per device per day. A confirmed
+    // GPS fix is required, so permission errors do not count as hikes.
     try {
       const guardKey = `dolopaws-hiked-${trail.id}-${new Date().toISOString().slice(0, 10)}`;
       if (!localStorage.getItem(guardKey) && window.DoloPawsCommunity) {
@@ -213,6 +216,19 @@ function initHikeMode(map, trail){
         });
       }
     } catch (e) { /* private browsing etc. — skip silently */ }
+  }
+
+  function startHike(){
+    active = true;
+    firstFix = true;
+    hikeStartRecorded = false;
+    offRouteStreak = 0;
+    // A hiker needs a navigation screen, not an article: go fullscreen.
+    if (window.DoloPawsMapFS) window.DoloPawsMapFS.enter();
+    startBtn.textContent = hikeLabel('hike.end', 'End hike');
+    startBtn.style.background = '#9C3A25';
+    panel.style.display = 'block';
+    panel.innerHTML = window.t('hike.getting');
     acquireWakeLock();
     watchId = navigator.geolocation.watchPosition(onFix, onError, {
       enableHighAccuracy: true,
