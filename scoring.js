@@ -103,6 +103,75 @@ function dogConditions(profile){
   return [profile.jointIssues && 'joints', profile.heatIssues && 'heat'].filter(Boolean);
 }
 
+/**
+ * profileInsights(profile) → array of { icon, title, sub } insight lines,
+ * layering breedInsights() (breed-name based) with insights derived from
+ * the SAME weight/age/condition fields and thresholds effectiveOverrides()
+ * below already uses for the real match score. This is what makes the
+ * homepage card work for "Mixed breed — small/medium/large" and
+ * "Rescue / unknown mix" profiles too: even with no breed name, weight,
+ * age and declared health conditions are real, structured facts about
+ * THIS dog, and every one of them already governs the score — so they
+ * should govern the tailored text as well, not just named purebreds.
+ */
+function profileInsights(profile){
+  if(!profile) return [];
+  const breedName = profile.breed || '';
+  const out = (typeof breedInsights === 'function') ? breedInsights(breedName).slice() : [];
+  const alreadyHas = title => out.some(l => l.title === title);
+
+  const tr = (typeof breedTraits === 'function') ? breedTraits(breedName) : {};
+  const conds = dogConditions(profile);
+  const age = dogAgeYears(profile);
+  const kg = dogWeightKg(profile);
+
+  // Weight-derived, breed-agnostic — same >=45kg / <5kg thresholds used
+  // below for giant/toy handling, so an unnamed or mixed-breed dog still
+  // gets the physically correct caution based on its own declared weight.
+  const heavyAlready = tr.giant
+    || (typeof HEAVY_BUILD_BREEDS !== 'undefined' && HEAVY_BUILD_BREEDS.includes(breedName));
+  if(kg != null && kg >= 45 && !heavyAlready){
+    out.push({ icon:'mountain', title:'Weight adds up on descents',
+      sub:'At this weight, descents load joints hard on rock — favour gradual descents and a slow pace down.' });
+  }
+  const toyAlready = tr.shortLegged
+    || (typeof TOY_BREEDS !== 'undefined' && TOY_BREEDS.includes(breedName));
+  if(kg != null && kg < 5 && !toyAlready){
+    out.push({ icon:'paw', title:'Small strides, long day',
+      sub:'At this weight, a normal route is far more steps — scale distance down and watch recovery closely.' });
+    if(!alreadyHas('Loses heat fast when wet')){
+      out.push({ icon:'cold', title:'Loses heat fast when wet',
+        sub:'A small body chills quickly after rain or a stream crossing — carry a dry layer.' });
+    }
+  }
+
+  // Life stage — same puppy / senior thresholds effectiveOverrides() uses.
+  if(age != null && age < 1){
+    out.push({ icon:'paw', title:'Still growing',
+      sub:'Growth plates are still closing — avoid long climbs and let a puppy set the pace, not the itinerary.' });
+  } else if(age != null && age >= 8){
+    out.push({ icon:'mountain', title:'Built for shorter days now',
+      sub:'Senior joints and stamina fade before the enthusiasm does — plan shorter routes with flat stretches and frequent rests.' });
+  }
+
+  // Declared health conditions — already scored by effectiveOverrides()
+  // below, surfaced here in plain terms instead of only moving a number.
+  if(conds.includes('joints') || conds.includes('back') || conds.includes('recovering')){
+    out.push({ icon:'paw', title:'Go easy on the joints',
+      sub:'A declared joint, back or recovering condition means technical, uneven ground costs more — favour smoother, gentler trails.' });
+  }
+  if((conds.includes('heat') || conds.includes('cardiac') || conds.includes('overweight')) && !tr.heatSensitive){
+    out.push({ icon:'heat', title:'Extra care in the heat',
+      sub:'A declared heart, weight or heat-related condition means hot, exposed routes cost more — start early and prioritise shade.' });
+  }
+  if(conds.includes('vision')){
+    out.push({ icon:'mountain', title:'Extra care on exposed edges',
+      sub:'A vision condition raises the stakes on narrow ledges and drop-offs — favour wider, well-marked paths.' });
+  }
+
+  return out;
+}
+
 function effectiveOverrides(profile, adjustOverride){
   if(adjustOverride) return adjustOverride;
   const defaults = FITNESS_DEFAULTS[profile.fitness] || FITNESS_DEFAULTS.moderate;

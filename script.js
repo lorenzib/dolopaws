@@ -765,16 +765,25 @@ function renderAreaFilters(profile){
 // physical traits via breedInsights() (breeds-data.js) and shows only lines
 // that apply. Unknown/mixed breeds → card stays hidden (health profile does the
 // work instead). Physical traits only, never temperament.
+// Breed labels that carry no classifiable breed information — coarse
+// size buckets or a genuine unknown. The card still renders for these,
+// just headed by the dog's name instead of a breed name (profileInsights
+// still supplies weight/age/condition-derived lines for them).
+const NON_BREED_LABELS = new Set([
+  'Mixed breed — small (under 10 kg)', 'Mixed breed — medium (10–25 kg)',
+  'Mixed breed — large (over 25 kg)', 'Rescue / unknown mix',
+]);
+
 function renderBreedInsight(profile){
   const card = document.getElementById('breedInsightCard');
-  if(!card || typeof breedInsights !== 'function') return;
+  if(!card || typeof profileInsights !== 'function') return;
   const kicker = document.getElementById('breedInsightKicker');
   const grid = document.getElementById('breedInsightGrid');
   const note = document.getElementById('breedInsightNote');
   const cta = document.getElementById('breedInsightCta');
 
   const breed = profile && profile.breed;
-  const lines = breed ? breedInsights(breed) : [];
+  const lines = profileInsights(profile);
   if(!lines.length){ card.hidden = true; return; }
 
   const ICONS = {
@@ -783,12 +792,16 @@ function renderBreedInsight(profile){
     heat:'<circle cx="12" cy="12" r="4" fill="#D6A038"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" fill="none" stroke="#D6A038" stroke-width="1.8" stroke-linecap="round"/>',
     mountain:'<path d="m4 18 6-10 3 5 2-3 5 8Z" fill="none" stroke="#BA7517" stroke-width="1.8" stroke-linejoin="round"/>',
     loop:'<path d="M18 8a7 7 0 1 0 1 7M18 4v4h-4" fill="none" stroke="#3E7A91" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>',
-    crowd:'<circle cx="6.5" cy="7" r="1.8" fill="#7A5C4F"/><path d="M4 9c-0.6 0-1 0.5-1 1.2v2.8h5v-2.8c0-0.7-0.4-1.2-1-1.2h-1.5l-0.8-1.2" fill="#7A5C4F"/><path d="M4 15L3 20M8 15L9 20" stroke="#7A5C4F" stroke-width="1.5" stroke-linecap="round"/><circle cx="17.5" cy="7" r="1.5" fill="#5DCAA5"/><path d="M15 9c-0.6 0-1 0.5-1 1.2v2.8h6v-2.8c0-0.7-0.4-1.2-1-1.2h-1.5l-1.2-1.5" fill="#5DCAA5"/><path d="M15 15L14 20M21 15L22 20" stroke="#5DCAA5" stroke-width="1.5" stroke-linecap="round"/>'
+    crowd:'<circle cx="6.5" cy="7" r="1.8" fill="#7A5C4F"/><path d="M4 9c-0.6 0-1 0.5-1 1.2v2.8h5v-2.8c0-0.7-0.4-1.2-1-1.2h-1.5l-0.8-1.2" fill="#7A5C4F"/><path d="M4 15L3 20M8 15L9 20" stroke="#7A5C4F" stroke-width="1.5" stroke-linecap="round"/><circle cx="17.5" cy="7" r="1.5" fill="#5DCAA5"/><path d="M15 9c-0.6 0-1 0.5-1 1.2v2.8h6v-2.8c0-0.7-0.4-1.2-1-1.2h-1.5l-1.2-1.5" fill="#5DCAA5"/><path d="M15 15L14 20M21 15L22 20" stroke="#5DCAA5" stroke-width="1.5" stroke-linecap="round"/>',
+    cold:'<path d="M12 3v18M12 3l-2.2 2.2M12 3l2.2 2.2M12 21l-2.2-2.2M12 21l2.2-2.2M4 8l16 8M4 8l2.8.6M4 8l1-2.7M20 16l-2.8-.6M20 16l-1 2.7M4 16l16-8M4 16l2.8-.6M4 16l1 2.7M20 8l-2.8.6M20 8l-1-2.7" fill="none" stroke="#4C87C6" stroke-width="1.4" stroke-linecap="round"/>',
+    water:'<path d="M12 4c2.8 3.4 4.5 6 4.5 8.4a4.5 4.5 0 1 1-9 0C7.5 10 9.2 7.4 12 4Z" fill="#378ADD"/>'
   };
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
   const name = (profile && profile.name) ? profile.name : 'your dog';
-
-  if(kicker) kicker.textContent = 'What the mountains ask of a ' + breed;
+  const hasBreedName = breed && !NON_BREED_LABELS.has(breed);
+  if(kicker) kicker.textContent = hasBreedName
+    ? 'What the mountains ask of a ' + breed
+    : 'What matters for ' + name + '\u2019s hikes';
   // 3 columns reads best; if only 1-2 lines the grid still balances.
   grid.style.gridTemplateColumns = 'repeat(' + Math.min(3, Math.max(1, lines.length)) + ', 1fr)';
   grid.innerHTML = lines.slice(0, 6).map(function(l){
