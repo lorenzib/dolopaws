@@ -626,6 +626,8 @@ function init(){
 function renderTrail(t){
   buildItinerary(t);
   renderLegendChips(t);
+  const logWalkBtn = document.getElementById('logWalkBtn');
+  if(logWalkBtn) logWalkBtn.href = `journal.html?trail=${encodeURIComponent(t.id)}`;
   // Do not reserve an empty elevation panel for routes without profile data.
   const elevationCard = document.getElementById('elevCard');
   const hasElevationProfile = Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1;

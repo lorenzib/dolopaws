@@ -128,6 +128,8 @@
 document.addEventListener('DOMContentLoaded', function(){
   var state = { filter: 'all', rating: 5, entries: [] };
   var uid = null;
+  var pendingTrailId = new URLSearchParams(window.location.search).get('trail');
+  var openedPendingTrail = false;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function key(){ return 'dolopaws-journal-' + uid; }
@@ -201,6 +203,9 @@ document.addEventListener('DOMContentLoaded', function(){
         .map(function(t){ return '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>'; }).join('');
     }
     sel.innerHTML = opts;
+    if(pendingTrailId && Array.from(sel.options).some(function(o){ return o.value === pendingTrailId; })){
+      sel.value = pendingTrailId;
+    }
   }
   function renderStarInput(){
     var row = document.getElementById('jnStars');
@@ -279,6 +284,10 @@ document.addEventListener('DOMContentLoaded', function(){
     fillTrailSelect();
     renderStarInput();
     renderAll();
+    if(pendingTrailId && !openedPendingTrail){
+      openedPendingTrail = true;
+      overlay.hidden = false;
+    }
     document.getElementById('jnStorageNote').hidden = false;
     window.DoloPawsAuth.getDogProfile().then(function(p){
       if(p && p.name){

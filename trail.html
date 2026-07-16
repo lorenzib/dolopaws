@@ -16,10 +16,10 @@
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"/>
 <style>
 /* ---- Companion reference tokens, trail detail (design-handoff fidelity) ---- */
-body{background:#efeadd;font-family:'Inter',system-ui,sans-serif;color:#1b1f19;}
+body{background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--ink);}
 .td-wrap{max-width:1200px;margin:0 auto;padding:24px 32px 80px;}
 .td-crumb{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#6b6f64;margin-bottom:20px;text-decoration:none;}
-h1,h2,h3{font-family:'Source Serif 4','Source Serif 4',serif;}
+h1,h2,h3{font-family:'Source Serif 4',serif;}
 
 /* Title hero */
 .td-hero{position:relative;border-radius:22px;overflow:hidden;padding:34px 32px;}
@@ -38,15 +38,17 @@ h1,h2,h3{font-family:'Source Serif 4','Source Serif 4',serif;}
 .th-facts .f.safe b{color:#2f5138;}
 
 /* Match + actions card */
-.td-actions{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:20px;padding:22px 26px;}
+.td-actions{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;background:var(--card);border:1px solid var(--paper-line);border-radius:var(--radius-lg);padding:22px 26px;}
 .td-ring{position:relative;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#4a7c59 360deg,#e6e0cf 0);}
 .td-ring-in{width:74px;height:74px;border-radius:50%;background:#fbfaf4;display:grid;place-items:center;font:600 24px 'Inter',sans-serif;color:#1b1f19;}
 .td-match-label{text-align:center;}
 .td-match-label .k{font:700 10px 'Inter',sans-serif;letter-spacing:.1em;color:#8a8d80;}
 .td-match-label .b{font-size:12px;color:#767a6d;margin-top:3px;}
 .td-btn-col{display:flex;flex-direction:column;gap:8px;width:200px;position:relative;}
-.td-btn-dark{font:500 14px 'Inter',sans-serif;background:#1b1f19;color:#f2eee2;border:none;padding:12px;border-radius:11px;cursor:pointer;text-align:center;text-decoration:none;display:block;}
-.td-btn-half{flex:1;font:500 13.5px 'Inter',sans-serif;background:#fbfaf4;color:#4a4d43;border:1px solid rgba(27,31,25,.16);padding:11px;border-radius:11px;cursor:pointer;}
+.td-btn-dark{font:700 14px 'Inter',sans-serif;background:var(--ink);color:#fff;border:none;padding:12px;border-radius:11px;cursor:pointer;text-align:center;text-decoration:none;display:block;}
+.td-btn-half{flex:1;font:600 13.5px 'Inter',sans-serif;background:var(--card);color:var(--ink);border:1px solid var(--paper-line);padding:11px;border-radius:11px;cursor:pointer;}
+.td-log-link{display:block;padding:6px 4px 0;color:var(--accent);font:700 12.5px 'Inter',sans-serif;text-align:center;text-decoration:none;}
+.td-log-link:hover{text-decoration:underline;}
 .td-btn-half.saved{background:#e5efe7;color:#2f5138;border-color:#d5e3d3;}
 .td-share-pop{position:absolute;top:100%;left:0;right:0;margin-top:6px;display:flex;flex-direction:column;gap:2px;background:#fbfaf4;border:1px solid rgba(27,31,25,.12);border-radius:12px;padding:6px;box-shadow:0 10px 24px -14px rgba(27,31,25,.45);z-index:15;}
 .td-share-pop[hidden]{display:none;}
@@ -153,11 +155,6 @@ h1,h2,h3{font-family:'Source Serif 4','Source Serif 4',serif;}
 .near-card .nm{font:500 17px 'Source Serif 4',serif;color:#1b1f19;line-height:1.15;}
 .near-card .mt{font-size:12.5px;color:#767a6d;margin-top:5px;}
 
-/* Footer quote */
-.td-footer{border-top:1px solid rgba(27,31,25,.09);padding:56px 32px 64px;text-align:center;background:#efeadd;}
-.td-footer p{max-width:640px;margin:0 auto;font:500 italic 22px/1.45 'Source Serif 4',serif;color:#3a3d34;}
-.td-footer .by{margin-top:14px;font-size:13px;color:#8a8d80;}
-
 @media (max-width:960px){
   .td-grid{grid-template-columns:1fr;}
   .td-side{position:static;flex-direction:row;flex-wrap:wrap;}
@@ -182,7 +179,7 @@ h1,h2,h3{font-family:'Source Serif 4','Source Serif 4',serif;}
 </div>
 
 <div class="td-wrap">
-  <a class="td-crumb" id="tdBreadcrumb" href="browse-trails.html" onclick="if(history.length>1 && document.referrer.indexOf(location.hostname)!==-1){history.back();return false;}">← Trails</a>
+  <a class="td-crumb" id="tdBreadcrumb" href="browse-trails.html">← Back to trails</a>
 
   <!-- ============ TITLE HERO ============ -->
   <div class="td-hero">
@@ -214,6 +211,7 @@ h1,h2,h3{font-family:'Source Serif 4','Source Serif 4',serif;}
             <button id="detailSaveBtn" class="td-btn-half" type="button">♥ Save</button>
             <button id="detailShareBtn" class="td-btn-half" type="button" aria-haspopup="true" aria-expanded="false"><span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"></path><path d="M12 3v12"></path><path d="M8 7l4-4 4 4"></path></svg>Share</span></button>
           </div>
+          <a id="logWalkBtn" class="td-log-link" href="journal.html">Log this walk</a>
           <div class="td-share-pop" id="tdSharePop" hidden>
             <button type="button" id="tdCopyLink">Copy link</button>
             <a id="tdShareSms" href="#">Message a walking buddy</a>
@@ -365,10 +363,7 @@ h1,h2,h3{font-family:'Source Serif 4','Source Serif 4',serif;}
   </div>
 </div>
 
-<footer class="td-footer">
-  <p>“A walk is never just a walk when it's shared with a dog; it becomes an act of companionship, curiosity, and joy.”</p>
-  <div class="by">DoloPaws</div>
-</footer>
+<footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; A personalised trail guide for dogs and their humans.</footer>
 
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <script src="i18n.js"></script>

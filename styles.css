@@ -75,7 +75,7 @@ img,svg{max-width:100%;height:auto;}
   border-bottom:1px solid rgba(27,31,25,.09);
 }
 .topnav .brand{
-  font:600 21px 'Source Serif 4','Source Serif 4',serif;
+  font:600 21px 'Source Serif 4',serif;
   color:#1b1f19;
   text-decoration:none;
   display:inline-flex;
@@ -98,7 +98,7 @@ img,svg{max-width:100%;height:auto;}
   border-radius:8px;
   display:block;
 }
-.topnav .links{display:flex;gap:30px;align-items:center;font-family:'Inter','Inter',sans-serif;font-size:14.5px;font-weight:400;color:#4a4d43;}
+.topnav .links{display:flex;gap:30px;align-items:center;font-family:'Inter',sans-serif;font-size:14.5px;font-weight:400;color:#4a4d43;}
 .topnav .links a{
   color:#4a4d43;
   text-decoration:none;
@@ -113,7 +113,7 @@ img,svg{max-width:100%;height:auto;}
   background:#1b1f19;
   color:#f2eee2;
   font-weight:500;
-  font-family:'Inter','Inter',sans-serif;
+  font-family:'Inter',sans-serif;
   font-size:13.5px;
   border:none;
   cursor:pointer;
