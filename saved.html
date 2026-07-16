@@ -18,7 +18,7 @@
 <body>
 
 <div class="topnav">
-  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">▲</span>DoloPaws</a>
+  <a class="brand" href="index.html"><img src="logo.svg" alt="">DoloPaws</a>
   <div class="links">
     <a href="browse-trails.html" class="active">Trails</a>
     <a href="journal.html">My Journal</a>
@@ -29,7 +29,7 @@
 </div>
 
 <div class="wrap" style="max-width:1000px;padding-top:28px;padding-bottom:60px;">
-  <a href="index.html" style="font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;">&larr; Back to trails</a>
+  <a href="browse-trails.html" style="font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;">&larr; Back to trails</a>
 
   <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:16px;">
     <h1 id="savedTitle" style="font-size:clamp(26px,4vw,34px);margin:0;">Saved trails</h1>
@@ -43,12 +43,12 @@
     <div style="font-size:30px;" aria-hidden="true">&#9825;</div>
     <p style="font-family:'Source Serif 4',serif;font-weight:700;font-size:19px;margin:10px 0 6px;color:var(--ink);">Nothing saved yet</p>
     <p style="color:var(--ink-soft);font-size:13.5px;margin:0 0 18px;">Tap the heart on any trail and it will wait for you here.</p>
-    <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Browse trails</a>
+    <a href="browse-trails.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Browse trails</a>
   </div>
 
   <div id="savedLoggedOut" hidden style="margin-top:24px;text-align:center;padding:40px 20px;">
     <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">Log in to see your saved trails.</p>
-    <a href="index.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Go to homepage to log in</a>
+    <button type="button" id="savedLoginBtn" class="auth-submit" style="width:auto;padding:11px 24px;">Log in</button>
   </div>
 </div>
 
@@ -75,6 +75,11 @@ document.addEventListener('DOMContentLoaded', function(){
   var titleEl = document.getElementById('savedTitle');
   var subEl = document.getElementById('savedSub');
   var SAFETY = { 'low-risk': ['Low-risk', '#2C5C34'], 'moderate': ['Moderate', '#8A5A16'], 'caution': ['Caution', '#9C3A25'] };
+  var loginBtn = document.getElementById('savedLoginBtn');
+  if(loginBtn) loginBtn.addEventListener('click', function(){
+    var accountBtn = document.getElementById('accountBtn');
+    if(accountBtn) accountBtn.click();
+  });
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 

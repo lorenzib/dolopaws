@@ -1319,11 +1319,11 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
   const returningHome = document.getElementById('returningCustomerHomepage');
   const browseNavLink = document.getElementById('browseNavLink');
   if(browseNavLink){
-    browseNavLink.href = user ? 'my-trails.html' : 'browse-trails.html';
-    // UI: the label must match the destination — it used to say "Browse
-    // our trails" while linking to My trails for logged-in users.
+    // Primary navigation must be predictable: "Trails" always opens the
+    // complete browse experience, regardless of authentication state.
+    browseNavLink.href = 'browse-trails.html';
     const navSpan = browseNavLink.querySelector('span');
-    if(navSpan) navSpan.textContent = user ? t('nav.myTrails') : t('nav.browse');
+    if(navSpan) navSpan.textContent = 'Trails';
   }
   if(!newHome || !returningHome) return;
 
