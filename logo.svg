@@ -1,7 +1,17 @@
-<svg viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DoloPaws logo: the Drei Zinnen north faces as a paw pad with four oval toes above">
-  <path d="M15,102 L22,92 L27,80 L30,73 L31,66 L34,47 L36,42 L47,41 L50,44 L53,47 L55,60 L57,73 L59,77 L61,74 L63,50 L64,38 L66,31 L70,29 L75,30 L77,34 L80,47 L83,60 L85,70 L87,75 L89,72 L91,54 L93,47 L95,51 L96,58 L98,54 L100,40 L102,38 L104,45 L105,55 L107,51 L109,47 L111,53 L113,62 L116,74 L120,88 L124,102 Z" fill="#2E4034"/>
-  <ellipse cx="32" cy="25" rx="5" ry="7.2" fill="#6FA8BE" transform="rotate(-16 32 25)"/>
-  <ellipse cx="56" cy="13" rx="5.6" ry="8" fill="#6FA8BE" transform="rotate(-5 56 13)"/>
-  <ellipse cx="84" cy="11" rx="5.6" ry="8" fill="#6FA8BE" transform="rotate(5 84 11)"/>
-  <ellipse cx="108" cy="22" rx="5" ry="7.2" fill="#6FA8BE" transform="rotate(16 108 22)"/>
+<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DoloPaws logo: a mountain paw inside a dark green rounded square">
+  <rect x="4" y="4" width="132" height="132" rx="25" fill="#2E4034"/>
+
+  <ellipse cx="37" cy="38" rx="6" ry="9" fill="#78AEC2" transform="rotate(-16 37 38)"/>
+  <ellipse cx="59" cy="29" rx="6.5" ry="9.5" fill="#78AEC2" transform="rotate(-6 59 29)"/>
+  <ellipse cx="82" cy="29" rx="6.5" ry="9.5" fill="#78AEC2" transform="rotate(6 82 29)"/>
+  <ellipse cx="104" cy="38" rx="6" ry="9" fill="#78AEC2" transform="rotate(16 104 38)"/>
+
+  <path d="M21,116
+           L28,105 L33,91 L37,75 L40,63
+           L51,62 L57,67 L61,82 L65,99
+           L70,107 L74,100 L78,67 L81,55
+           L86,51 L91,54 L95,68 L99,87
+           L103,102 L108,94 L112,72
+           L116,64 L120,78 L123,94 L128,116 Z"
+        fill="#F7F2E8"/>
 </svg>
