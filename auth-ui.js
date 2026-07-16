@@ -15,6 +15,18 @@
   const toggleText = document.getElementById('authToggleText');
   const toggleBtn = document.getElementById('authToggleBtn');
   const forgotBtn = document.getElementById('forgotPasswordBtn');
+  const requestedNext = new URLSearchParams(window.location.search).get('next');
+
+  function safeReturnTarget(value){
+    if(!value || /^(?:[a-z]+:|\/\/|\/)/i.test(value)) return '';
+    return /^[a-z0-9][a-z0-9._/-]*\.html(?:\?[^#]*)?(?:#.*)?$/i.test(value) ? value : '';
+  }
+
+  function finishAuth(){
+    closeModal();
+    const target = safeReturnTarget(requestedNext);
+    if(target) window.location.replace(target);
+  }
 
   function openModal(){
     if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
@@ -22,9 +34,12 @@
       return;
     }
     // Pages like trail.html and safety-guide.html don't carry the modal
-    // markup; send the visitor to the homepage, which auto-opens it.
+    // markup. Open it on the homepage, then return to the page and query
+    // state the visitor came from after authentication.
     if(!modal){
-      window.location.href = 'index.html?login=1';
+      const currentPage = (window.location.pathname.split('/').pop() || 'index.html')
+        + window.location.search + window.location.hash;
+      window.location.href = 'index.html?login=1&next=' + encodeURIComponent(currentPage);
       return;
     }
     errorBox.hidden = true;
@@ -98,7 +113,7 @@
     submitBtn.disabled = false;
     setMode(mode);
     if(result.ok){
-      closeModal();
+      finishAuth();
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
@@ -109,7 +124,7 @@
     if(!window.DoloPawsAuth) return;
     const result = await window.DoloPawsAuth.signInGoogle();
     if(result.ok){
-      closeModal();
+      finishAuth();
     } else {
       errorBox.textContent = result.message;
       errorBox.hidden = false;
