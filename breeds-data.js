@@ -334,12 +334,159 @@ function breedTraits(name){
  * return [] — the caller then shows the health-profile fallback instead of
  * generic filler. Keep wording in sync with the safety guide.
  */
+// Working stockdogs outside the FCI list under this exact name but with the
+// identical documented function as FCI Group 1 — added by name rather than
+// by editing FCI_BREED_GROUPS so the breed picker's grouping is untouched.
+const EXTRA_HERDING_BREEDS = ['Working Kelpie'];
+
 function breedIsHerding(name){
   const b = name || '';
+  if(EXTRA_HERDING_BREEDS.includes(b)) return true;
   const g1 = (typeof FCI_BREED_GROUPS !== 'undefined')
     ? FCI_BREED_GROUPS.find(g => g.id === 'g1') : null;
   return !!(g1 && g1.breeds.includes(b));
 }
+
+// Groups below share a documented WORKING FUNCTION (the reason FCI grouped
+// them together in the first place), not a personality trait — same basis
+// as the herding/leash line above. Each maps to one concrete trail action.
+function breedIsScentHound(name){
+  const b = name || '';
+  const g6 = (typeof FCI_BREED_GROUPS !== 'undefined')
+    ? FCI_BREED_GROUPS.find(g => g.id === 'g6') : null;
+  return !!(g6 && g6.breeds.includes(b));
+}
+function breedIsPointingDog(name){
+  const b = name || '';
+  const g7 = (typeof FCI_BREED_GROUPS !== 'undefined')
+    ? FCI_BREED_GROUPS.find(g => g.id === 'g7') : null;
+  return !!(g7 && g7.breeds.includes(b));
+}
+// Poodle-retriever crosses with a documented water-retrieving parent breed
+// on one side (Labrador / Golden Retriever) — same instinct, added by name.
+const EXTRA_RETRIEVER_WATER_BREEDS = ['Labradoodle', 'Goldendoodle'];
+
+function breedIsRetrieverWaterDog(name){
+  const b = name || '';
+  if(EXTRA_RETRIEVER_WATER_BREEDS.includes(b)) return true;
+  const g8 = (typeof FCI_BREED_GROUPS !== 'undefined')
+    ? FCI_BREED_GROUPS.find(g => g.id === 'g8') : null;
+  return !!(g8 && g8.breeds.includes(b));
+}
+
+/* ---------------------------------------------------------------------
+ * INSIGHT-ONLY breed lists below. These do NOT feed scoreTrail() or
+ * breedTraits() — they exist purely to enrich breedInsights() text for
+ * breeds outside the five scored trait categories above. Keeping them
+ * separate means expanding the insight card can never silently change a
+ * dog's match percentage. If a breed should also affect scoring, that is
+ * a deliberate, separate change to breedTraits() + scoring.js, not this.
+ * --------------------------------------------------------------------- */
+
+// FCI Group 10 — built for speed, not endurance in the cold: minimal body
+// fat, thin single coats, thin skin. Already described in the safety guide;
+// surfaced here per-breed instead of only in prose.
+function breedIsSighthound(name){
+  const b = name || '';
+  const g10 = (typeof FCI_BREED_GROUPS !== 'undefined')
+    ? FCI_BREED_GROUPS.find(g => g.id === 'g10') : null;
+  return !!(g10 && g10.breeds.includes(b));
+}
+
+// FCI Group 3 — terriers bred to go to ground after prey. The genuine trail
+// hazard is investigating marmot burrows, scree gaps and crevices, not
+// temperament.
+// Working terriers bred for underground fox/badger work under a name that
+// sits outside the FCI Group 3 list used above, same documented function.
+const EXTRA_EARTH_TERRIER_BREEDS = ['Patterdale Terrier'];
+
+function breedIsEarthTerrier(name){
+  const b = name || '';
+  if(EXTRA_EARTH_TERRIER_BREEDS.includes(b)) return true;
+  const g3 = (typeof FCI_BREED_GROUPS !== 'undefined')
+    ? FCI_BREED_GROUPS.find(g => g.id === 'g3') : null;
+  return !!(g3 && g3.breeds.includes(b));
+}
+
+// Toy-sized companion breeds (roughly under 6 kg per breed standard) that
+// are NOT already covered by SHORT_LEGGED_BREEDS above. Curated by hand —
+// deliberately excludes compound/ambiguous entries (e.g. breed standards
+// spanning both toy and non-toy varieties) and breeds already flagged
+// elsewhere (Pug and Cavalier King Charles Spaniel already surface a heat
+// warning via BRACHY_BREEDS).
+const TOY_BREEDS = [
+  'Miniature Pinscher', 'Yorkshire Terrier', 'Volpino Italiano',
+  'Bichon Frise', 'Bolognese', 'Chihuahua', 'Chinese Crested Dog',
+  'Continental Toy Spaniel (Papillon / Phalène)', 'Coton de Tulear',
+  'Griffon Belge', 'Griffon Bruxellois', 'Havanese', 'Japanese Chin',
+  'King Charles Spaniel', 'Little Lion Dog (Löwchen)', 'Maltese',
+  'Prague Ratter', 'Russian Toy',
+];
+
+// Large, heavy-boned, muscular breeds where descents load joints the same
+// way they do for GIANT_BREEDS, but that fall just under the giant/45kg
+// threshold used in scoring. Excludes anything already in GIANT_BREEDS.
+const HEAVY_BUILD_BREEDS = [
+  'Bullmastiff', 'Cane Corso (Italian Cane Corso)', 'Dobermann',
+  'Dogo Argentino', 'Dogo Canario', 'Rottweiler', 'Russian Black Terrier',
+  'Akita', 'American Akita', 'American Pit Bull Terrier',
+];
+
+// Lean, thin-coated primitive/hound-type breeds that share the sighthound
+// physical profile (minimal body fat, thin or absent coat) but sit outside
+// FCI Group 10 in this classification (mostly filed under Group 5 with the
+// thick-coated Nordic spitz breeds, which are the OPPOSITE build and are
+// deliberately excluded here). Hairless breeds are included — they carry
+// the same cold and skin-abrasion exposure, plus sunburn risk.
+const LEAN_PRIMITIVE_BREEDS = [
+  'Basenji', "Cirneco dell'Etna", 'Ibizan Podenco (Podenco Ibicenco)',
+  'Pharaoh Hound', 'Podenco Canario', 'Portuguese Podengo',
+  'Thai Ridgeback', 'Peruvian Hairless Dog', 'Xoloitzcuintle (Mexican Hairless)',
+  'Podenco Andaluz', 'Lurcher',
+];
+
+// FCI Group 2 breeds with a documented livestock- or property-guarding
+// function (as opposed to the herding function of Group 1) — bred to stay
+// with stock or a farm and deter strangers, not to round animals up. Same
+// "read the breed's job, not its mood" basis as the herding line.
+const LIVESTOCK_GUARDIAN_BREEDS = [
+  'Aidi (Atlas Mountain Dog)', 'Castro Laboreiro Dog', 'Cimarrón Uruguayo',
+  'Macedonian Shepherd Dog Karaman', 'Romanian Raven Shepherd Dog',
+  'Saint Miguel Cattle Dog', 'Hovawart', 'Appenzell Cattle Dog',
+  'Entlebuch Cattle Dog', 'Danish-Swedish Farmdog',
+];
+
+// Wire-coated ratting/all-purpose farm breeds (Pinscher-Schnauzer branch of
+// Group 2) — coat catches burrs and seed heads on brushy trail sections.
+// Purely a coat-texture note, not a heat or build claim.
+const WIRY_COAT_BREEDS = [
+  'Austrian Pinscher', 'German Pinscher', 'Giant Schnauzer',
+  'Miniature Schnauzer', 'Schnauzer (Standard)', 'Dutch Smoushond',
+];
+
+// Independent hunting, alarm, or all-purpose spitz breeds (mostly Group 5)
+// bred to work at a distance from their handler and think for themselves —
+// documented in their breed standards as historically off-lead hunting or
+// guard dogs, not companion-bred for constant check-in.
+const INDEPENDENT_SPITZ_BREEDS = [
+  'Canaan Dog', 'Finnish Spitz', 'Hokkaido', 'Iceland Sheepdog',
+  'Japanese Spitz', 'Kai', 'Kintamani-Bali Dog', 'Kishu', 'Korea Jindo Dog',
+  'Norrbottenspitz', 'Norwegian Buhund', 'Norwegian Lundehund', 'Shiba',
+  'Shikoku', 'Taiwan Dog', 'Thai Bangkaew Dog',
+];
+
+// Curly or dense wavy non-shedding coats (Poodle-type) that mat and collect
+// burrs on rough terrain regardless of body size — a grooming/coat-care
+// note, independent of the toy/short-legged/giant scored traits above.
+const CURLY_COAT_BREEDS = [
+  'Poodle (Toy, Miniature, Medium or Standard)', 'Tibetan Terrier',
+  'Kromfohrländer', 'Labradoodle', 'Goldendoodle', 'Cockapoo', 'Maltipoo',
+];
+
+// Sled/endurance working breeds bred for sustained pulling, under a name
+// outside the recognised breed lists above (Alaskan Husky is a working
+// type, not an FCI or major-registry breed).
+const ENDURANCE_WORKING_BREEDS = ['Alaskan Husky'];
 
 function breedInsights(name){
   const tr = breedTraits(name);
@@ -373,6 +520,70 @@ function breedInsights(name){
   if(breedIsHerding(name)){
     out.push({ icon:'crowd', title:'Leash through pastures',
       sub:'Grazing livestock and guardian dogs will not tolerate being herded — keep the leash on across any alpage.' });
+  }
+
+  if(breedIsSighthound(name) || LEAN_PRIMITIVE_BREEDS.includes(name || '')){
+    out.push({ icon:'cold', title:'Cold at rest',
+      sub:'Minimal body fat and a thin (or absent) coat mean the summit break is a shiver session — pack a light coat for stops.' });
+    out.push({ icon:'paw', title:'Thin skin tears easily',
+      sub:'Sharp limestone and dense scrub can nick thin skin — check legs and flanks at breaks, not just pads.' });
+  }
+
+  if(breedIsEarthTerrier(name)){
+    out.push({ icon:'paw', title:'Bred to investigate burrows',
+      sub:'Marmot holes and gaps in scree are a strong pull for earth-dog breeds — keep an eye near any burrow.' });
+  }
+
+  if(TOY_BREEDS.includes(name || '') && !tr.shortLegged){
+    out.push({ icon:'paw', title:'Small strides, long day',
+      sub:'A 10 km route is far more steps for a toy breed — scale distance down and watch recovery closely.' });
+    out.push({ icon:'cold', title:'Loses heat fast when wet',
+      sub:'A small body chills quickly after rain or a stream crossing — carry a dry layer.' });
+  }
+
+  if(HEAVY_BUILD_BREEDS.includes(name || '') && !tr.giant){
+    out.push({ icon:'mountain', title:'Weight adds up on descents',
+      sub:'A heavy, muscular build loads joints on the way down — favour gradual descents and a slow pace.' });
+  }
+
+  if(breedIsScentHound(name)){
+    out.push({ icon:'paw', title:'Nose over recall',
+      sub:'Bred to follow ground scent independently at a distance — once locked onto a trail, recall can lag. Leash or long-line on exposed or unmarked ground.' });
+  }
+
+  if(breedIsPointingDog(name)){
+    out.push({ icon:'paw', title:'Built to range and chase',
+      sub:'Bred to quarter ground fast and point or flush game — a marmot or chamois can trigger the same drive. Leash where wildlife is active.' });
+  }
+
+  if(breedIsRetrieverWaterDog(name)){
+    out.push({ icon:'water', title:'Drawn to water',
+      sub:'Bred to enter water eagerly — alpine lakes run glacially cold and some restrict swimming to protect water quality. Check signage before letting your dog in.' });
+  }
+
+  if(LIVESTOCK_GUARDIAN_BREEDS.includes(name || '')){
+    out.push({ icon:'crowd', title:'Bred to guard, not herd',
+      sub:'Livestock and farm-guardian breeds are wired to stay close to stock and be wary of strangers passing near it — give grazing animals and their guardian dogs a wide berth.' });
+  }
+
+  if(WIRY_COAT_BREEDS.includes(name || '')){
+    out.push({ icon:'paw', title:'Wiry coat catches debris',
+      sub:'A dense, wire coat picks up burrs and seed heads on brushy sections — plan a coat check after any scrub or hedgerow stretch.' });
+  }
+
+  if(INDEPENDENT_SPITZ_BREEDS.includes(name || '')){
+    out.push({ icon:'paw', title:'Bred to work at a distance',
+      sub:'These breeds have a history as independent hunting or alarm dogs, working out of sight of their handler — recall can lag behind an obedience-bred dog off-leash near wildlife.' });
+  }
+
+  if(CURLY_COAT_BREEDS.includes(name || '')){
+    out.push({ icon:'paw', title:'Curly coat mats easily',
+      sub:'Non-shedding, curly or dense wavy coats trap burrs and tangle on rough trail — a comb-through (and a shorter trim in summer) saves a lot of post-hike work.' });
+  }
+
+  if(ENDURANCE_WORKING_BREEDS.includes(name || '')){
+    out.push({ icon:'mountain', title:'Built to keep going',
+      sub:'Bred for sustained pulling over long distances, this build tends not to self-limit — watch for fatigue signs yourself rather than trusting your dog to slow down.' });
   }
 
   return out;
