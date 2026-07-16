@@ -379,7 +379,7 @@
     (function relevantGuides() {
       const box = $('trailGuideLinks');
       if (!box) return;
-      const trailReturn = encodeURIComponent('trail.html?id=' + t.id);
+      const trailReturn = encodeURIComponent('trail.html?id=' + t.id + '&tab=safety');
       const fromTrail = href => {
         const hashAt = href.indexOf('#');
         const page = hashAt >= 0 ? href.slice(0, hashAt) : href;
@@ -472,16 +472,40 @@
     const tabsNav = $('trailTabsNav');
     if (tabsNav) {
       const panelIds = ['tabOverview', 'tabSafety', 'tabReviews'];
-      tabsNav.querySelectorAll('[data-tab]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          tabsNav.querySelectorAll('[data-tab]').forEach(b => {
-            const on = b === btn;
-            b.classList.toggle('active', on);
-            b.setAttribute('aria-selected', on ? 'true' : 'false');
-          });
-          panelIds.forEach(id => { const p = $(id); if (p) p.hidden = id !== btn.dataset.tab; });
+      const tabNames = {
+        tabOverview: 'overview',
+        tabSafety: 'safety',
+        tabReviews: 'reviews'
+      };
+      const activateTab = (btn, updateUrl) => {
+        tabsNav.querySelectorAll('[data-tab]').forEach(b => {
+          const on = b === btn;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
         });
+        panelIds.forEach(id => {
+          const panel = $(id);
+          if (panel) panel.hidden = id !== btn.dataset.tab;
+        });
+        if (updateUrl && window.history && window.history.replaceState) {
+          const url = new URL(window.location.href);
+          const tabName = tabNames[btn.dataset.tab];
+          if (tabName === 'overview') url.searchParams.delete('tab');
+          else if (tabName) url.searchParams.set('tab', tabName);
+          window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+        }
+      };
+
+      tabsNav.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => activateTab(btn, true));
       });
+
+      const requestedTab = new URLSearchParams(window.location.search).get('tab');
+      const requestedPanel = Object.keys(tabNames).find(id => tabNames[id] === requestedTab);
+      const initialTab = requestedPanel
+        ? tabsNav.querySelector('[data-tab="' + requestedPanel + '"]')
+        : tabsNav.querySelector('[data-tab].active') || tabsNav.querySelector('[data-tab]');
+      if (initialTab) activateTab(initialTab, false);
     }
   })();
 

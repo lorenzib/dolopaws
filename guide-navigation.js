@@ -1,7 +1,7 @@
 (function(){
   const params = new URLSearchParams(window.location.search);
   const from = params.get('from');
-  if(!from || !/^trail\.html\?id=[a-z0-9._-]+$/i.test(from)) return;
+  if(!from || !/^trail\.html\?id=[a-z0-9._-]+(?:&tab=(?:overview|safety|reviews))?$/i.test(from)) return;
 
   const body = document.querySelector('.gp-body');
   if(body){
