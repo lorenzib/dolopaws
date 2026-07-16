@@ -272,8 +272,16 @@ document.addEventListener('DOMContentLoaded', function(){
   function init(){
     var outEl = document.getElementById('jnLoggedOut');
     if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser){
+      uid = null;
+      state.entries = [];
       outEl.hidden = false;
+      document.getElementById('jnTitle').textContent = 'My Journal';
+      document.getElementById('jnSub').textContent = 'Every walk you log builds the story of where you and your dog have been.';
       document.getElementById('jnLogBtn').style.display = 'none';
+      document.getElementById('jnStats').innerHTML = '';
+      document.getElementById('jnTimeline').innerHTML = '';
+      document.getElementById('jnEmpty').hidden = true;
+      document.getElementById('jnStorageNote').hidden = true;
       return;
     }
     outEl.hidden = true;

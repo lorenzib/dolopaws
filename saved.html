@@ -50,6 +50,11 @@
     <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">Log in to see your saved trails.</p>
     <button type="button" id="savedLoginBtn" class="auth-submit" style="width:auto;padding:11px 24px;">Log in</button>
   </div>
+
+  <div id="savedLoadError" hidden style="margin-top:24px;text-align:center;padding:40px 20px;">
+    <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">We couldn’t load your saved trails right now.</p>
+    <button type="button" id="savedRetryBtn" class="auth-submit" style="width:auto;padding:11px 24px;">Try again</button>
+  </div>
 </div>
 
 <footer class="site-footer" data-i18n="footer.line">DoloPaws &#124; A personalised trail guide for dogs and their humans.</footer>
@@ -71,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var listEl = document.getElementById('savedList');
   var emptyEl = document.getElementById('savedEmpty');
   var outEl = document.getElementById('savedLoggedOut');
+  var errorEl = document.getElementById('savedLoadError');
   var badge = document.getElementById('savedCountBadge');
   var titleEl = document.getElementById('savedTitle');
   var subEl = document.getElementById('savedSub');
@@ -148,14 +154,30 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function init(){
-    if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser){ outEl.hidden = false; return; }
+    errorEl.hidden = true;
+    if(!window.DoloPawsAuth || !window.DoloPawsAuth.currentUser){
+      outEl.hidden = false;
+      titleEl.textContent = 'Saved trails';
+      subEl.textContent = 'The trails you have bookmarked, ranked for your dog.';
+      listEl.innerHTML = '';
+      emptyEl.hidden = true;
+      badge.hidden = true;
+      return;
+    }
     outEl.hidden = true;
     Promise.all([window.DoloPawsAuth.getFavorites(), window.DoloPawsAuth.getDogProfile()])
       .then(function(res){
         if(window.DoloPawsRegions && typeof trails !== 'undefined') window.DoloPawsRegions.assign(trails);
         render(res[0] || {}, res[1]);
+      })
+      .catch(function(){
+        listEl.innerHTML = '';
+        emptyEl.hidden = true;
+        badge.hidden = true;
+        errorEl.hidden = false;
       });
   }
+  document.getElementById('savedRetryBtn').addEventListener('click', init);
   if(window.DoloPawsAuth) init();
   else window.addEventListener('dolopaws-auth-ready', init, { once: true });
   window.addEventListener('dolopaws-auth-changed', init);
