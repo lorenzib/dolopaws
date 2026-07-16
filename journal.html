@@ -34,6 +34,7 @@
   .jn-stars{color:#C99038;letter-spacing:1px;font-size:13px;}
   .jn-again{margin-left:auto;color:var(--accent);font-weight:700;text-decoration:none;font-size:12px;}
   .jn-overlay{position:fixed;inset:0;background:rgba(31,40,33,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:80;}
+  .jn-overlay[hidden]{display:none;}
   .jn-modal{background:var(--card);border-radius:20px;max-width:480px;width:100%;padding:24px;max-height:90vh;overflow:auto;}
   .jn-modal label{display:block;font:600 12px 'Inter',sans-serif;color:var(--ink-soft);margin:14px 0 5px;}
   .jn-modal input,.jn-modal select,.jn-modal textarea{width:100%;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:var(--bg);box-sizing:border-box;}
@@ -269,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(window.DoloPawsRegions && typeof trails !== 'undefined') window.DoloPawsRegions.assign(trails);
     state.entries = load();
     fillTrailSelect();
+    renderStarInput();
     renderAll();
     document.getElementById('jnStorageNote').hidden = false;
     window.DoloPawsAuth.getDogProfile().then(function(p){
