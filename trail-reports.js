@@ -241,7 +241,7 @@ function initTrailReports(map, trail){
 
   function openPhotoModal(){
     if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
-      if (window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      if (window.DoloPawsTrailAction) window.DoloPawsTrailAction.request('photo');
       return;
     }
     const overlay = document.createElement('div');
@@ -285,7 +285,7 @@ function initTrailReports(map, trail){
   // ---- "Leave a review" modal --------------------------------------------
   function openReviewModal(){
     if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
-      if (window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      if (window.DoloPawsTrailAction) window.DoloPawsTrailAction.request('review');
       return;
     }
 
@@ -350,7 +350,7 @@ function initTrailReports(map, trail){
   // ---- "Report something" modal --------------------------------------------
   function openReportModal(){
     if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
-      if (window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+      if (window.DoloPawsTrailAction) window.DoloPawsTrailAction.request('report');
       return;
     }
 
@@ -424,9 +424,30 @@ function initTrailReports(map, trail){
   if (addReviewBtn) addReviewBtn.addEventListener('click', openReviewModal);
   if (addPhotoBtn) addPhotoBtn.addEventListener('click', openPhotoModal);
 
-  // Re-render on login/logout so Remove links appear/disappear.
-  window.addEventListener('dolopaws-auth-changed', load);
+  let resumedAction = false;
+  function resumePendingAction(user){
+    if(resumedAction || !user || !window.DoloPawsTrailAction) return;
+    const action = window.DoloPawsTrailAction.pending;
+    const open = action === 'review' ? openReviewModal
+      : action === 'photo' ? openPhotoModal
+      : action === 'report' ? openReportModal
+      : null;
+    if(!open || !window.DoloPawsTrailAction.consume(action)) return;
+    resumedAction = true;
+    const targetTab = action === 'report' ? 'tabSafety' : 'tabReviews';
+    const tabButton = document.querySelector(`[data-tab="${targetTab}"]`);
+    if(tabButton) tabButton.click();
+    open();
+  }
+
+  // Re-render on login/logout so Remove links appear/disappear, and resume
+  // the exact community action that initiated an authentication detour.
+  window.addEventListener('dolopaws-auth-changed', event => {
+    load();
+    resumePendingAction(event.detail.user);
+  });
 
   if (window.DoloPawsCommunity) load();
   else window.addEventListener('dolopaws-auth-ready', load, { once: true });
+  if(window.DoloPawsAuth) resumePendingAction(window.DoloPawsAuth.currentUser);
 }

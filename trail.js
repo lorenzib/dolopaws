@@ -608,6 +608,26 @@ function buildItinerary(t){
 const params = new URLSearchParams(window.location.search);
 const trailId = params.get('id');
 const trailReturnTarget = params.get('from');
+const pendingTrailAction = params.get('action');
+let trailActionConsumed = false;
+
+window.DoloPawsTrailAction = {
+  request(action){
+    const url = new URL(window.location.href);
+    url.searchParams.set('action', action);
+    window.history.replaceState(null, '', url.pathname.split('/').pop() + url.search + url.hash);
+    if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin();
+  },
+  consume(action){
+    if(trailActionConsumed || pendingTrailAction !== action) return false;
+    trailActionConsumed = true;
+    const url = new URL(window.location.href);
+    url.searchParams.delete('action');
+    window.history.replaceState(null, '', url.pathname.split('/').pop() + url.search + url.hash);
+    return true;
+  },
+  pending: pendingTrailAction,
+};
 
 function safeTrailReturn(value){
   if(!value || /^(?:[a-z]+:|\/\/|\/)/i.test(value)) return '';
@@ -1117,13 +1137,19 @@ function renderTrail(t){
     saveBtn.textContent = isFav ? '✓ Saved' : '♥ Save';
     saveBtn.classList.toggle('saved', isFav);
   }
-  window.addEventListener('dolopaws-auth-changed', async (e) => {
-    if(!e.detail.user || !window.DoloPawsAuth){
-      saveBtn.onclick = () => { if(window.DoloPawsAuthUI) window.DoloPawsAuthUI.openLogin(); };
+  async function handleSaveAuth(user){
+    if(!user || !window.DoloPawsAuth){
+      saveBtn.onclick = () => {
+        if(window.DoloPawsTrailAction) window.DoloPawsTrailAction.request('save');
+      };
       paintSaveBtn(false);
       return;
     }
     const favorites = await window.DoloPawsAuth.getFavorites();
+    if(window.DoloPawsTrailAction && window.DoloPawsTrailAction.consume('save') && !favorites[t.id]){
+      favorites[t.id] = true;
+      await window.DoloPawsAuth.setFavorites(favorites);
+    }
     paintSaveBtn(!!favorites[t.id]);
     saveBtn.onclick = async () => {
       const current = await window.DoloPawsAuth.getFavorites();
@@ -1131,7 +1157,9 @@ function renderTrail(t){
       await window.DoloPawsAuth.setFavorites(current);
       paintSaveBtn(!!current[t.id]);
     };
-  });
+  }
+  window.addEventListener('dolopaws-auth-changed', e => handleSaveAuth(e.detail.user));
+  if(window.DoloPawsAuth) handleSaveAuth(window.DoloPawsAuth.currentUser);
 }
 
 if(document.readyState === 'loading'){
