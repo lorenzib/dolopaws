@@ -264,6 +264,45 @@ function initTrailReports(map, trail){
     return !dirty || window.confirm(window.t('form.discard'));
   }
 
+  function enableModalKeyboard(overlay, onEscape, initialFocus, returnFocus){
+    const title = overlay.querySelector('h2');
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    if (title){
+      title.id = 'trailModalTitle-' + Math.random().toString(36).slice(2, 8);
+      overlay.setAttribute('aria-labelledby', title.id);
+    }
+    const focusableSelector = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    const onKeydown = event => {
+      if (event.key === 'Escape'){
+        event.preventDefault();
+        onEscape();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(overlay.querySelectorAll(focusableSelector)).filter(el => !el.hidden);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    overlay.addEventListener('keydown', onKeydown);
+    setTimeout(() => {
+      const target = overlay.querySelector(initialFocus) || overlay.querySelector(focusableSelector);
+      if (target) target.focus();
+    }, 0);
+    return () => {
+      overlay.removeEventListener('keydown', onKeydown);
+      if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
+    };
+  }
+
   function openPhotoModal(){
     if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
       if (window.DoloPawsTrailAction) window.DoloPawsTrailAction.request('photo');
@@ -277,7 +316,7 @@ function initTrailReports(map, trail){
       <p class="hint">Share a recent, useful view of this trail. Photos appear with the community reviews.</p>
       <input data-photo type="file" accept="image/*" style="font-size:13px;margin:8px 0 12px;">
       <textarea data-caption maxlength="240" rows="3" placeholder="Add a short caption (optional)" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
-      <div data-err style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
+      <div data-err role="alert" style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
       <button type="button" data-submit class="auth-submit" style="margin-top:12px;">Add photo</button>
     </div>`;
     document.body.appendChild(overlay);
@@ -290,11 +329,14 @@ function initTrailReports(map, trail){
     window.addEventListener('beforeunload', warnBeforeUnload);
     overlay.querySelector('[data-photo]').addEventListener('change', () => { dirty = true; });
     overlay.querySelector('[data-caption]').addEventListener('input', () => { dirty = true; });
+    let cleanupKeyboard = () => {};
     const close = force => {
       if (force !== true && !confirmDiscard(dirty)) return;
       window.removeEventListener('beforeunload', warnBeforeUnload);
+      cleanupKeyboard();
       overlay.remove();
     };
+    cleanupKeyboard = enableModalKeyboard(overlay, () => close(false), '[data-photo]', addPhotoBtn);
     overlay.querySelector('[data-close]').addEventListener('click', () => close(false));
     overlay.addEventListener('click', event => { if (event.target === overlay) close(false); });
     overlay.querySelector('[data-submit]').addEventListener('click', async () => {
@@ -340,10 +382,10 @@ function initTrailReports(map, trail){
         <h2 style="font-size:19px;">Rate this trail</h2>
         <p class="hint">Your review helps other dogs and their humans choose the right walk.</p>
         <div data-stars class="review-star-picker" aria-label="Choose a rating">
-          ${[1, 2, 3, 4, 5].map(value => `<button type="button" data-rating="${value}" aria-label="${value} star${value === 1 ? '' : 's'}">☆</button>`).join('')}
+          ${[1, 2, 3, 4, 5].map(value => `<button type="button" role="radio" aria-checked="false" data-rating="${value}" aria-label="${value} star${value === 1 ? '' : 's'}">☆</button>`).join('')}
         </div>
         <textarea data-text maxlength="1000" rows="4" placeholder="What should other dog owners know? (optional)" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
-        <div data-err style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
+        <div data-err role="alert" style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
         <button type="button" data-submit class="auth-submit" style="margin-top:12px;">Post review</button>
       </div>`;
     document.body.appendChild(overlay);
@@ -365,16 +407,20 @@ function initTrailReports(map, trail){
           const active = Number(star.dataset.rating) <= selectedRating;
           star.textContent = active ? '★' : '☆';
           star.classList.toggle('is-selected', active);
+          star.setAttribute('aria-checked', Number(star.dataset.rating) === selectedRating ? 'true' : 'false');
         });
       });
     });
     overlay.querySelector('[data-text]').addEventListener('input', () => { dirty = true; });
 
+    let cleanupKeyboard = () => {};
     function close(force){
       if (force !== true && !confirmDiscard(dirty)) return;
       window.removeEventListener('beforeunload', warnBeforeUnload);
+      cleanupKeyboard();
       overlay.remove();
     }
+    cleanupKeyboard = enableModalKeyboard(overlay, () => close(false), '[data-rating]', addReviewBtn);
     overlay.querySelector('[data-close]').addEventListener('click', () => close(false));
     overlay.addEventListener('click', event => { if (event.target === overlay) close(false); });
     overlay.querySelector('[data-submit]').addEventListener('click', async () => {
@@ -427,7 +473,7 @@ function initTrailReports(map, trail){
         <p class="hint">${window.t('reports.modalHint')}</p>
         <div data-types style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;">
           ${Object.entries(FLAG_TYPES).map(([key, t]) => `
-            <button type="button" data-type="${key}" style="padding:10px 8px;border-radius:10px;border:1.5px solid var(--paper-line);background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;">${t.icon} ${window.t('flag.' + key)}</button>`).join('')}
+            <button type="button" aria-pressed="false" data-type="${key}" style="padding:10px 8px;border-radius:10px;border:1.5px solid var(--paper-line);background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;">${t.icon} ${window.t('flag.' + key)}</button>`).join('')}
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink);margin-bottom:6px;">
           <input type="checkbox" data-haskm> ${window.t('reports.knowWhere')}
@@ -437,7 +483,7 @@ function initTrailReports(map, trail){
           <div style="font-size:12px;color:var(--ink-soft);text-align:center;">${window.t('reports.atKm', {max: maxKm})}</div>
         </div>
         <textarea data-text maxlength="300" rows="3" placeholder="${window.t('reports.placeholder')}" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
-        <div data-err style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
+        <div data-err role="alert" style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
         <button type="button" data-submit class="auth-submit" style="margin-top:12px;">${window.t('reports.post')}</button>
       </div>`;
     document.body.appendChild(overlay);
@@ -456,6 +502,7 @@ function initTrailReports(map, trail){
         selectedType = btn.dataset.type;
         overlay.querySelectorAll('[data-type]').forEach(b => {
           b.style.background = 'none'; b.style.borderColor = 'var(--paper-line)'; b.style.color = 'var(--ink)';
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
         });
         btn.style.background = 'var(--ink)'; btn.style.borderColor = 'var(--ink)'; btn.style.color = '#fff';
       });
@@ -469,11 +516,14 @@ function initTrailReports(map, trail){
     kmInput.addEventListener('input', () => { dirty = true; if (kmVal) kmVal.textContent = kmInput.value; });
     overlay.querySelector('[data-text]').addEventListener('input', () => { dirty = true; });
 
+    let cleanupKeyboard = () => {};
     function close(force){
       if (force !== true && !confirmDiscard(dirty)) return;
       window.removeEventListener('beforeunload', warnBeforeUnload);
+      cleanupKeyboard();
       overlay.remove();
     }
+    cleanupKeyboard = enableModalKeyboard(overlay, () => close(false), '[data-type]', addBtn);
     overlay.querySelector('[data-close]').addEventListener('click', () => close(false));
     overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
 

@@ -221,6 +221,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // --- Modal ---
   var overlay = document.getElementById('jnOverlay');
+  var journalReturnFocus = null;
+  var journalFocusable = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
   function fillTrailSelect(){
     var sel = document.getElementById('jnTrail');
     var opts = '<option value="">Somewhere else (type it in the notes)</option>';
@@ -250,6 +252,8 @@ document.addEventListener('DOMContentLoaded', function(){
         b.type = 'button';
         b.textContent = '★';
         b.className = n <= state.rating ? 'on' : '';
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-checked', n === state.rating ? 'true' : 'false');
         b.setAttribute('aria-label', n + ' star' + (n > 1 ? 's' : ''));
         b.addEventListener('click', function(){ journalDirty = true; state.rating = n; renderStarInput(); });
         row.appendChild(b);
@@ -262,9 +266,11 @@ document.addEventListener('DOMContentLoaded', function(){
       if(accountBtn) accountBtn.click();
       return;
     }
+    journalReturnFocus = this;
     journalDirty = false;
     overlay.hidden = false;
     renderStarInput();
+    setTimeout(function(){ document.getElementById('jnTrail').focus(); }, 0);
   });
   document.getElementById('jnLoginBtn').addEventListener('click', function(){
     var accountBtn = document.getElementById('accountBtn');
@@ -290,9 +296,24 @@ document.addEventListener('DOMContentLoaded', function(){
       return;
     }
     overlay.hidden = true;
+    if(journalReturnFocus && document.contains(journalReturnFocus)) journalReturnFocus.focus();
   }
   document.getElementById('jnClose').addEventListener('click', closeLog);
   overlay.addEventListener('click', function(e){ if(e.target === overlay) closeLog(); });
+  overlay.addEventListener('keydown', function(event){
+    if(overlay.hidden) return;
+    if(event.key === 'Escape'){
+      event.preventDefault();
+      closeLog();
+      return;
+    }
+    if(event.key !== 'Tab') return;
+    var focusable = Array.from(overlay.querySelectorAll(journalFocusable)).filter(function(el){ return !el.hidden; });
+    if(!focusable.length) return;
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if(event.shiftKey && document.activeElement === first){ event.preventDefault(); last.focus(); }
+    else if(!event.shiftKey && document.activeElement === last){ event.preventDefault(); first.focus(); }
+  });
 
   document.getElementById('jnSave').addEventListener('click', function(){
     var sel = document.getElementById('jnTrail');
@@ -323,6 +344,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     renderAll();
     showStatus('Walk saved to your journal.');
+    document.getElementById('jnLogBtn').focus();
   });
 
   document.getElementById('jnTabs').addEventListener('click', function(e){
@@ -359,6 +381,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(pendingTrailId && !openedPendingTrail){
       openedPendingTrail = true;
       overlay.hidden = false;
+      setTimeout(function(){ document.getElementById('jnTrail').focus(); }, 0);
     }
     document.getElementById('jnStorageNote').hidden = false;
     window.DoloPawsAuth.getDogProfile().then(function(p){
