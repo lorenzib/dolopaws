@@ -127,6 +127,7 @@
 <script src="mobile-nav.js"></script>
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
+<script src="icon-system.js?v=20260717" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="breeds-data.js" defer></script>
 <script src="scoring.js" defer></script>
@@ -136,27 +137,27 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // Topic cards. General guidance, same facts the guides expand on.
   var TOPICS = [
-    { cat:'Heat', icon:'☀', bg:'#F6ECDB', title:'Heat & coats', points:[
+    { cat:'Heat', icon:'heat', bg:'#F6ECDB', title:'Heat & coats', points:[
       'A dense or double coat traps heat; heat load matters more than air temperature.',
       'Start before 10am on warm days and turn back if panting stays heavy at rest.',
       'Favour shaded, lakeside and forested routes when it is warm.']},
-    { cat:'Terrain', icon:'🐾', bg:'#E4EADF', title:'Paws & terrain', points:[
+    { cat:'Terrain', icon:'dog', bg:'#E4EADF', title:'Paws & terrain', points:[
       'Sun-baked rock and scree can burn pads; test with the back of your hand.',
       'Sharp limestone and dense scrub nick thin skin, so check legs and flanks at breaks.',
       'Long, steep descents stress large-breed hips and knees.']},
-    { cat:'Water', icon:'💧', bg:'#E6EFF4', title:'Water & hydration', points:[
+    { cat:'Water', icon:'water', bg:'#E6EFF4', title:'Water & hydration', points:[
       'Carry more water than you think, plus a collapsible bowl.',
       'Prefer routes with lake or stream access for cooling and drinking.',
       'Avoid still, algae-green water; it can make dogs sick.']},
-    { cat:'Hazards', icon:'🐄', bg:'#F6ECDB', title:'Wildlife & livestock', points:[
+    { cat:'Hazards', icon:'warning', bg:'#F6ECDB', title:'Wildlife & livestock', points:[
       'Leash near grazing cattle and sheep; guardian dogs may confront loose dogs.',
       'Give marmots, chamois and nesting birds a wide berth.',
       'Keep dogs close through fenced pasture and close every gate.']},
-    { cat:'Hazards', icon:'⛰', bg:'#E4EADF', title:'Cliffs & exposure', points:[
+    { cat:'Hazards', icon:'mountain', bg:'#E4EADF', title:'Cliffs & exposure', points:[
       'Keep dogs leashed on exposed ledges and near low or missing railings.',
       'Watch for cornices and loose edges early season.',
       'Recall is not enough near drop-offs; use the lead.']},
-    { cat:'Access', icon:'🚠', bg:'#E6EFF4', title:'Lifts & season', points:[
+    { cat:'Access', icon:'lifts', bg:'#E6EFF4', title:'Lifts & season', points:[
       'Many cable cars carry dogs, sometimes muzzled or ticketed; check first.',
       'Shoulder-season trails can be icy at altitude even when valleys are green.',
       'Note the last lift down if you are relying on one to exit.']}
@@ -166,8 +167,9 @@ document.addEventListener('DOMContentLoaded', function(){
   function renderTopics(){
     var list = activeCat === 'All' ? TOPICS : TOPICS.filter(function(t){ return t.cat === activeCat; });
     document.getElementById('sgTopics').innerHTML = list.map(function(t){
+      var icon = window.DoloPawsIcons ? window.DoloPawsIcons.renderIconSvg(t.icon, { mode:'inline', color:'currentColor', size:20 }) : '';
       return '<div class="sg-topic">' +
-        '<div class="head"><span class="ico" style="background:' + t.bg + ';" aria-hidden="true">' + t.icon + '</span>' +
+        '<div class="head"><span class="ico" style="background:' + t.bg + ';" aria-hidden="true">' + icon + '</span>' +
         '<div><span class="cat">' + esc(t.cat) + '</span><h3>' + esc(t.title) + '</h3></div></div>' +
         '<ul>' + t.points.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' +
       '</div>';

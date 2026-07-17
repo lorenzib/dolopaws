@@ -587,6 +587,9 @@ img,svg{max-width:100%;height:auto;}
 .dp-marker-dot:hover{transform:scale(1.45);}
 .dp-icon-host,.dp-chip-label,.dp-legend-item{display:inline-flex;align-items:center;gap:7px;}
 .dp-icon-host .dp-icon-svg,.dp-chip-label .dp-icon-svg,.dp-legend-item .dp-icon-svg{display:block;flex:none;}
+.dp-inline-status{display:inline-flex;align-items:center;gap:6px;}
+.dp-inline-status .dp-icon-svg,.trail-provenance>.dp-icon-svg{display:inline-block;vertical-align:-3px;flex:none;}
+.trail-provenance>.dp-icon-svg{margin-right:6px;}
 
 /* Map controls — white buttons matching MapLibre's own control style */
 .map-btn{position:absolute;bottom:10px;z-index:6;height:34px;padding:0 16px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:'Inter',sans-serif;}
@@ -596,11 +599,23 @@ img,svg{max-width:100%;height:auto;}
 .map-chip.on{border-color:var(--ink);background:var(--ink);color:#fff;}
 .map-chip .dp-chip-label{pointer-events:none;}
 
-/* Card badges */
-.badge-pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;}
-.badge-verified{color:var(--ink);background:var(--sage-dim);}
-.badge-imported{color:#00695c;background:#e0f2f1;}
-.badge-new{color:#fff;background:var(--accent);}
+/* Product badges — one shape, weight and icon treatment everywhere. */
+.dp-badge{display:inline-flex;align-items:center;gap:5px;min-height:24px;box-sizing:border-box;padding:4px 9px;border-radius:999px;font:700 10.5px/1 'Inter',sans-serif;letter-spacing:.02em;white-space:nowrap;}
+.dp-badge .dp-icon-svg{display:block;flex:none;}
+.dp-badge--verified{color:#2C5C34;background:#E5EFE7;}
+.dp-badge--imported{color:#28736B;background:#E3F1EF;}
+.dp-badge--new{color:#6E4812;background:#F5E4C6;}
+.dp-badge--low-risk,.dp-badge--heat-low{color:#2C5C34;background:#DCEBDD;}
+.dp-badge--moderate,.dp-badge--heat-moderate{color:#8A5A16;background:#F5E4C6;}
+.dp-badge--caution,.dp-badge--heat-high{color:#9C3A25;background:#F3D9D2;}
+.dp-badge--neutral{color:var(--ink-soft);background:var(--sage-dim);}
+
+/* Legacy badge hooks retain the same visual grammar while older static pages
+   are regenerated progressively. */
+.badge-pill{display:inline-flex;align-items:center;min-height:24px;box-sizing:border-box;font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap;}
+.badge-verified{color:#2C5C34;background:#E5EFE7;}
+.badge-imported{color:#28736B;background:#E3F1EF;}
+.badge-new{color:#6E4812;background:#F5E4C6;}
 
 /* Pagination */
 .page-btn{padding:9px 18px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:#fff;font-size:12.5px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}

@@ -14,6 +14,16 @@ function safetyClass(level){
   if(level === 'moderate') return 'safety-moderate';
   return 'safety-caution';
 }
+function trailProductBadge(type, label){
+  if(window.DoloPawsIcons) return window.DoloPawsIcons.badgeHtml(type, label);
+  return `<span class="dp-badge dp-badge--${type}"><span>${label}</span></span>`;
+}
+function trailProductIcon(type, size = 16){
+  return window.DoloPawsIcons ? window.DoloPawsIcons.renderIconSvg(type, { mode:'inline', color:'currentColor', size }) : '';
+}
+function withoutLeadingSymbol(label){
+  return String(label || '').replace(/^[^\p{L}\p{N}]+/u, '');
+}
 
 function renderTrailDetailContent(t){
   const rifugi = Array.isArray(t.rifugi) ? t.rifugi : [];
@@ -29,11 +39,11 @@ function renderTrailDetailContent(t){
 
   return `
     <div style="margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.rifugiHead')}</div>
+      <div class="dp-inline-status" style="font-weight:700;color:var(--ink);margin-bottom:4px;">${trailProductIcon('hut')}<span>${withoutLeadingSymbol(window.t('trail.rifugiHead'))}</span></div>
       ${rifugiHtml}
     </div>
     <div style="margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--ink);margin-bottom:4px;">${window.t('trail.waterHead')}</div>
+      <div class="dp-inline-status" style="font-weight:700;color:var(--ink);margin-bottom:4px;">${trailProductIcon('water')}<span>${withoutLeadingSymbol(window.t('trail.waterHead'))}</span></div>
       ${waterHtml}
     </div>
   `;
@@ -699,8 +709,8 @@ function renderTrail(t){
   document.getElementById('trailMeta').textContent =
     `${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h · ${t.terrainType}`;
   document.getElementById('trailBadges').innerHTML =
-    `<span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>` +
-    (t.paid ? `<span class="tag">${window.t('card.paid')}</span>` : '');
+    trailProductBadge(t.safetyLevel, safetyLabel(t.safetyLevel)) +
+    (t.paid ? trailProductBadge('neutral', window.t('card.paid')) : '');
   document.getElementById('routeSwatch').style.background = safetyColor(t.safetyLevel);
   document.getElementById('routeSwatchLabel').textContent = window.t('trail.route', {label: safetyLabel(t.safetyLevel)});
   const rawDescription = trField(t, 'desc');
@@ -725,7 +735,11 @@ function renderTrail(t){
       if (!n || n < 1) return;
       const chip = document.getElementById('dogsChip');
       if (!chip) return;
-      chip.textContent = `🐾 ${n === 1 ? window.t('trail.dogsWeek1') : window.t('trail.dogsWeek', {n})}`;
+      const weeklyLabel = n === 1 ? window.t('trail.dogsWeek1') : window.t('trail.dogsWeek', {n});
+      chip.innerHTML = window.DoloPawsIcons
+        ? window.DoloPawsIcons.renderIconSvg('dog', { mode:'inline', color:'currentColor', size:14 }) + `<span>${itinEsc(weeklyLabel)}</span>`
+        : itinEsc(weeklyLabel);
+      chip.classList.add('dp-inline-status');
       chip.hidden = false;
     });
   }
@@ -738,13 +752,17 @@ function renderTrail(t){
     if (!descEl || document.getElementById('osmProvenance')) return;
     const box = document.createElement('div');
     box.id = 'osmProvenance';
+    box.className = 'trail-provenance';
+    const provenanceIcon = window.DoloPawsIcons
+      ? window.DoloPawsIcons.renderIconSvg(t.curated === false ? 'imported' : 'verified', { mode:'inline', color:'currentColor', size:16 })
+      : '';
     if (t.curated === false) {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #00897b;background:#e0f2f1;border-radius:6px;font-size:13px;line-height:1.5;';
-      box.innerHTML = window.t('trail.importedBox')
+      box.innerHTML = provenanceIcon + window.t('trail.importedBox')
         + (t.waymarkedtrails ? ` <a href="${t.waymarkedtrails}" target="_blank" rel="noopener">${window.t('trail.viewSource')}</a>` : '');
     } else {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #2E4034;background:#eef3ef;border-radius:6px;font-size:13px;line-height:1.5;';
-      box.innerHTML = window.t('trail.verifiedBox');
+      box.innerHTML = provenanceIcon + window.t('trail.verifiedBox');
     }
     descEl.parentNode.insertBefore(box, descEl);
 
@@ -754,7 +772,8 @@ function renderTrail(t){
       const hz = document.createElement('div');
       hz.id = 'trailHazards';
       hz.style.cssText = 'margin:0 0 14px;padding:10px 14px;border-left:4px solid #9C3A25;background:#faeeea;border-radius:6px;font-size:13px;line-height:1.5;';
-      hz.innerHTML = '<strong>⚠️ ' + (window.t('trail.hazardsTitle') || 'Trail hazards') + '</strong><ul style="margin:6px 0 0 18px;padding:0;">'
+      const warningIcon = window.DoloPawsIcons ? window.DoloPawsIcons.renderIconSvg('warning', { mode:'inline', color:'currentColor', size:16 }) : '';
+      hz.innerHTML = '<strong class="dp-inline-status">' + warningIcon + '<span>' + itinEsc(window.t('trail.hazardsTitle') || 'Trail hazards') + '</span></strong><ul style="margin:6px 0 0 18px;padding:0;">'
         + t.surfaceHazards.map(h => '<li>' + String(h).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) + '</li>').join('')
         + '</ul>';
       descEl.parentNode.insertBefore(hz, descEl);

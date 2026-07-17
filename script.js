@@ -10,6 +10,13 @@ function safetyClass(level){
   if(level === 'moderate') return 'safety-moderate';
   return 'safety-caution';
 }
+function productBadge(type, label){
+  if(window.DoloPawsIcons) return window.DoloPawsIcons.badgeHtml(type, label);
+  return `<span class="dp-badge dp-badge--${type}"><span>${label}</span></span>`;
+}
+function productIcon(icon, size = 14){
+  return window.DoloPawsIcons ? window.DoloPawsIcons.renderIconSvg(icon, { mode:'inline', color:'currentColor', size }) : '';
+}
 
 // ============================================================
 // GUEST TEASER — generic default profile, illustrative blurred scores
@@ -1029,7 +1036,7 @@ function renderDogProfileCard(profile){
   const photo = profile && profile.photo;
   avatarEl.innerHTML = (typeof photo === 'string' && photo.startsWith('data:image/'))
     ? `<img src="${photo}" alt="${name}">`
-    : '<span aria-hidden="true">🐾</span>';
+    : (window.DoloPawsIcons ? window.DoloPawsIcons.renderIconSvg('dog', { mode:'inline', color:'currentColor', size:24 }) : '');
 }
 
 // Companion sidebar — conditions / readiness card. DoloPaws has no live
@@ -1255,15 +1262,19 @@ async function renderReturningHomepage(profile){
       : t.heatRisk === 'moderate' ? { l: 'Med', bg: '#F5E4C6', fg: '#8A5A16' }
       : { l: 'Low', bg: '#DCEBDD', fg: '#2C5C34' };
     const selected = t.id === selectedTrailId;
+    const provenanceBadge = productBadge(t.curated === false ? 'imported' : 'verified', t.curated === false ? window.t('badge.imported') : window.t('badge.verified'));
+    const newBadge = isNew ? productBadge('new', window.t('badge.new')) : '';
+    const riskBadge = productBadge(t.safetyLevel, safetyLabel(t.safetyLevel));
+    const heatBadge = productBadge(`heat-${t.heatRisk || 'low'}`, `Heat ${heat.l}`);
     return `
     <div class="trail-card${selected ? ' tc-selected' : ''}" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
       <div class="photo tc-thumb" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
       <div class="body">
         <div class="tc-meta-row">
-          ${t.curated !== false ? `<span class="badge-pill badge-verified">${window.t('badge.verified')}</span>` : `<span class="badge-pill badge-imported">${window.t('badge.imported')}</span>`}
-          ${isNew ? `<span class="badge-pill badge-new">${window.t('badge.new')}</span>` : ''}
-          <span class="tc-risk-dot"><span class="dot" style="background:${ringColor};"></span>${safetyLabel(t.safetyLevel)}</span>
-          <span class="tc-heat-pill" style="background:${heat.bg};color:${heat.fg};">Heat ${heat.l}</span>
+          ${provenanceBadge}
+          ${newBadge}
+          ${riskBadge}
+          ${heatBadge}
         </div>
         <a href="trail.html?id=${t.id}" class="name" style="margin-top:2px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
         <div class="tc-reason"><span class="mark">✦</span><span class="txt">${matchReason(t, overrides)}</span></div>
@@ -1771,7 +1782,7 @@ function addWaterSourcesLayers(map) {
     }
     
     if (props.seasonal === 'yes') {
-      content += `<br><small>⚠️ Seasonal water source</small>`;
+      content += `<br><small class="dp-inline-status">${productIcon('warning', 13)}<span>Seasonal water source</span></small>`;
     }
 
     new maplibregl.Popup({ offset: 25 })
@@ -2006,20 +2017,20 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor, iconGr
     const props = feature.properties;
 
     let placeType = 'Place';
-    if (props.tourism === 'alpine_hut') placeType = '🏔️ Mountain Hut (Rifugio)';
+    if (props.tourism === 'alpine_hut') placeType = `${productIcon('hut')} Mountain Hut (Rifugio)`;
     else if (props.tourism === 'wilderness_hut') placeType = '🛖 Wilderness Hut / Bivouac';
     else if (props.amenity === 'shelter') placeType = '⛺ Shelter';
     else if (props.amenity === 'bar') placeType = '🍺 Bar';
     else if (props.amenity === 'pub') placeType = '🍻 Pub';
     else if (props.amenity === 'cafe') placeType = '☕ Café';
-    else if (props.amenity === 'restaurant') placeType = '🍽️ Restaurant';
+    else if (props.amenity === 'restaurant') placeType = `${productIcon('food')} Restaurant`;
     else if (props.amenity === 'fast_food') placeType = '🍔 Fast food';
     else if (props.amenity === 'ice_cream') placeType = '🍦 Ice cream';
     else if (props.amenity === 'biergarten') placeType = '🍺 Beer garden';
 
     let content = `<b>${placeType}</b>`;
     if (props.name) content += `<br><b>${props.name}</b>`;
-    if (props.ele) content += `<br>⛰️ ${props.ele} m elevation`;
+    if (props.ele) content += `<br><span class="dp-inline-status">${productIcon('mountain')}<span>${props.ele} m elevation</span></span>`;
     if (props.cuisine) content += `<br>🍴 ${String(props.cuisine).split(';').join(', ').replace(/_/g, ' ')}`;
     if (props.opening_hours) content += `<br>🕐 ${props.opening_hours}`;
     if (props.phone || props['contact:phone']) content += `<br>📞 ${props.phone || props['contact:phone']}`;
@@ -2027,7 +2038,7 @@ function addPoiLayerSet(map, sourceId, prefix, circleColor, clusterColor, iconGr
       const url = props.website || props['contact:website'];
       content += `<br>🔗 <a href="${url}" target="_blank" rel="noopener">Website</a>`;
     }
-    if (props.dog === 'yes') content += `<br>🐕 Dogs welcome`;
+    if (props.dog === 'yes') content += `<br><span class="dp-inline-status">${productIcon('dog')}<span>Dogs welcome</span></span>`;
     else if (props.dog === 'leashed') content += `<br>🦮 Dogs on leash`;
     else if (props.dog === 'no') content += `<br>🚫 No dogs`;
     if (props.outdoor_seating && props.outdoor_seating !== 'no') content += `<br>🪑 Outdoor seating`;

@@ -208,7 +208,7 @@ function nearbySection(t, slug, all) {
   const items = picks.map((o) =>
     `<a class="sp-near" href="../trail.html?id=${encodeURIComponent(o.id)}">
         <span class="sp-near-name">${escapeHtml(o.name)}</span>
-        <span class="sp-near-meta"><span class="safety-badge ${safetyClass(o.safetyLevel)}">${safetyLabel(o.safetyLevel)}</span> ${o.distance} km</span>
+        <span class="sp-near-meta"><span class="dp-badge dp-badge--${o.safetyLevel}"><span data-dp-icon="${o.safetyLevel === 'low-risk' ? 'verified' : 'warning'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${safetyLabel(o.safetyLevel)}</span></span> ${o.distance} km</span>
       </a>`
   ).join('\n      ');
   const hub = VALLEY_GUIDES[t.valley];
@@ -235,8 +235,8 @@ function trailPage(t, slug, all) {
   const verified = t.curated !== false; // curated file entries have no `curated` flag
 
   const badge = verified
-    ? '<span class="badge-verified" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🐾 Verified by DoloPaws</span>'
-    : '<span class="badge-imported" style="padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:600;">🗺️ Imported from OpenStreetMap</span>';
+    ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>Verified by DoloPaws</span></span>'
+    : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported from OpenStreetMap</span></span>';
 
   const ogImage = t.imageIcon ? `${BASE_URL}/${t.imageIcon}` : `${BASE_URL}/icon-512.png`;
 
@@ -403,9 +403,9 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
   <div class="sp-breadcrumb"><a href="../browse-trails.html">All trails</a> › ${escapeHtml(regionLabel)} › ${escapeHtml(t.valley || t.area)}</div>
   <h1>${escapeHtml(t.name)}</h1>
   <div class="sp-badges">
-    <span class="safety-badge ${safetyClass(t.safetyLevel)}">${safetyLabel(t.safetyLevel)}</span>
+    <span class="dp-badge dp-badge--${t.safetyLevel}"><span data-dp-icon="${t.safetyLevel === 'low-risk' ? 'verified' : 'warning'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${safetyLabel(t.safetyLevel)}</span></span>
     ${badge}
-    ${t.paid ? '<span class="tag">Paid access</span>' : ''}
+    ${t.paid ? '<span class="dp-badge dp-badge--neutral"><span>Paid access</span></span>' : ''}
   </div>
   ${t.imageIcon ? `<img class="sp-img" src="../${escapeHtml(t.imageIcon)}" alt="${escapeHtml(t.name)}">` : routeHtml}
   ${t.imageIcon && t.imageCredit ? `<p class="sp-src" style="margin:-8px 0 14px;">${t.imageCredit.bare ? '' : 'Photo: '}${t.imageCredit.url ? `<a href="${escapeHtml(t.imageCredit.url)}" rel="noopener nofollow">${escapeHtml(t.imageCredit.text)}</a>` : escapeHtml(t.imageCredit.text)}</p>` : ''}
@@ -462,6 +462,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
   DoloPaws | A personalised trail guide for dogs and their humans.
 </div>
 
+<script src="../icon-system.js?v=20260717" defer></script>
 <script src="../mobile-nav.js"></script>
 </body>
 </html>

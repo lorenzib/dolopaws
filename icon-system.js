@@ -12,6 +12,16 @@
     start: '#2E4034',
     switch: '#D6A038',
     toilets: '#5B7A99',
+    verified: '#2C5C34',
+    imported: '#28736B',
+    new: '#8A5A16',
+    heat: '#9C3A25',
+    warning: '#9C3A25',
+    mountain: '#5A5548',
+    camera: '#2E4034',
+    'pace-low': '#4E7256',
+    'pace-medium': '#2C5C34',
+    'pace-high': '#8A5A16',
     unknown: '#5A5548',
   };
 
@@ -101,6 +111,50 @@
       <circle cx="15.5" cy="6.2" r="1.7"></circle>
       <path d="M15.5 8.5l-1.8 5h3.6z"></path>
       <path d="M15.5 14v4"></path>
+    `,
+    verified: `
+      <circle cx="12" cy="12" r="7"></circle>
+      <path d="m8.7 12.2 2.1 2.1 4.6-5"></path>
+    `,
+    imported: `
+      <path d="m5 6 4-2 6 2 4-2v14l-4 2-6-2-4 2z"></path>
+      <path d="M9 4v14"></path>
+      <path d="M15 6v14"></path>
+    `,
+    new: `
+      <path d="M12 4.5c.5 4.2 2.8 6.5 7 7-4.2.5-6.5 2.8-7 7-.5-4.2-2.8-6.5-7-7 4.2-.5 6.5-2.8 7-7Z"></path>
+    `,
+    heat: `
+      <path d="M10 5a2 2 0 0 1 4 0v8.2a4 4 0 1 1-4 0z"></path>
+      <path d="M12 9v6"></path>
+    `,
+    warning: `
+      <path d="M12 4 20 19H4z"></path>
+      <path d="M12 9v4"></path>
+      <path d="M12 16h.01"></path>
+    `,
+    mountain: `
+      <path d="m4 18 5.2-8 2.2 3.1L14.6 7 20 18z"></path>
+      <path d="m7.8 12.2 1.4-2.2 1.4 2"></path>
+    `,
+    camera: `
+      <path d="M5 8h3l1.2-2h5.6L16 8h3v10H5z"></path>
+      <circle cx="12" cy="13" r="3"></circle>
+    `,
+    'pace-low': `
+      <path d="M5 15c2.5-3 5.5-4.5 9-4.5"></path>
+      <path d="m12 8.5 2 2-2 2"></path>
+      <path d="M5 18h6"></path>
+    `,
+    'pace-medium': `
+      <path d="M4 16c3-4 6.5-6 11-6"></path>
+      <path d="m13 7.5 2.5 2.5-2.5 2.5"></path>
+      <path d="M4 19h9"></path>
+    `,
+    'pace-high': `
+      <path d="M4 17c3.5-5.5 8-8.5 14-9"></path>
+      <path d="m15.5 5.5 2.8 2.4-2.4 2.8"></path>
+      <path d="M4 20h12"></path>
     `,
     unknown: `
       <circle cx="12" cy="12" r="7"></circle>
@@ -212,6 +266,27 @@
   function legendItemHtml(iconKey, label, options = {}){
     const color = options.color || getCategoryColor(iconKey);
     return `<span class="dp-legend-item">${renderIconSvg(iconKey, { mode: 'legend', color, size: 18 })}<span>${escapeHtml(label)}</span></span>`;
+  }
+
+  const BADGE_TYPES = {
+    verified: { icon: 'verified' },
+    imported: { icon: 'imported' },
+    new: { icon: 'new' },
+    'low-risk': { icon: 'verified' },
+    moderate: { icon: 'warning' },
+    caution: { icon: 'warning' },
+    'heat-low': { icon: 'heat' },
+    'heat-moderate': { icon: 'heat' },
+    'heat-high': { icon: 'heat' },
+    neutral: { icon: null },
+  };
+
+  function badgeHtml(type, label, options = {}){
+    const normalizedType = BADGE_TYPES[type] ? type : 'neutral';
+    const config = BADGE_TYPES[normalizedType];
+    const iconKey = options.icon === false ? null : (options.icon || config.icon);
+    const icon = iconKey ? renderIconSvg(iconKey, { mode: 'inline', color: 'currentColor', size: 13 }) : '';
+    return `<span class="dp-badge dp-badge--${normalizedType}">${icon}<span>${escapeHtml(label)}</span></span>`;
   }
 
   function createMarkerElement(iconKey, options = {}){
@@ -370,6 +445,7 @@
 
   const api = {
     ICON_MIN_ZOOM,
+    badgeHtml,
     chipHtml,
     createMarkerElement,
     createSvgElement,

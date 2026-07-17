@@ -133,7 +133,7 @@
         <!-- Dog profile card -->
         <div class="companion-card" id="companionDogCard">
           <div class="companion-dog-head">
-            <div class="companion-dog-avatar" id="companionDogAvatar"><span aria-hidden="true">🐾</span></div>
+            <div class="companion-dog-avatar" id="companionDogAvatar"><span data-dp-icon="dog" data-dp-icon-size="24" aria-hidden="true"></span></div>
             <div>
               <div class="companion-dog-name" id="companionDogName">Your dog</div>
               <div class="companion-dog-meta" id="companionDogMeta"></div>
@@ -213,9 +213,9 @@
           <div>
             <div class="adj-filter-label" data-i18n="adjust.energy">Energy level today</div>
             <div class="adj-pill-row" data-group="energy" style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="low"><span aria-hidden="true">🐌</span> <span data-i18n="adjust.eLow">Low</span></button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="medium"><span aria-hidden="true">🐕</span> <span data-i18n="adjust.eMedium">Medium</span></button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="high"><span aria-hidden="true">🚀</span> <span data-i18n="adjust.eHigh">High</span></button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="low"><span data-dp-icon="pace-low" data-dp-icon-size="15" aria-hidden="true"></span> <span data-i18n="adjust.eLow">Low</span></button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="medium"><span data-dp-icon="pace-medium" data-dp-icon-size="15" aria-hidden="true"></span> <span data-i18n="adjust.eMedium">Medium</span></button>
+              <button type="button" class="adj-pill" aria-pressed="false" data-value="high"><span data-dp-icon="pace-high" data-dp-icon-size="15" aria-hidden="true"></span> <span data-i18n="adjust.eHigh">High</span></button>
             </div>
           </div>
         </div>
@@ -283,7 +283,7 @@
 <script src="mobile-nav.js"></script>
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js?v=20260717"></script>
-<script src="icon-system.js" defer></script>
+<script src="icon-system.js?v=20260717" defer></script>
 <script src="breeds-data.js" defer></script>
 <script src="scoring.js" defer></script>
 <script src="trails-data.js" defer></script>
@@ -294,7 +294,7 @@
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <script src="basemap-poi-click.js" defer></script>
 <script src="dog-routes-layer.js" defer></script>
-<script src="script.js" defer></script>
+<script src="script.js?v=20260717" defer></script>
 <script src="dog-wizard.js" defer></script>
 </body>
 </html>

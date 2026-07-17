@@ -20,4 +20,20 @@ describe('DoloPaws icon system', () => {
     expect(expr).toContain('#228B22');
     expect(expr[expr.length - 1]).toBe('#5A5548');
   });
+
+  test('renders product statuses through one badge component', () => {
+    const verified = icons.badgeHtml('verified', 'Verified by DoloPaws');
+    const caution = icons.badgeHtml('caution', 'Caution');
+    expect(verified).toContain('dp-badge dp-badge--verified');
+    expect(verified).toContain('<svg');
+    expect(caution).toContain('dp-badge dp-badge--caution');
+    expect(verified + caution).not.toMatch(/[🐾🗺️⚠️]/u);
+  });
+
+  test('provides shared functional icons used outside the map', () => {
+    ['verified','imported','new','heat','warning','mountain','camera','pace-low','pace-medium','pace-high'].forEach((key) => {
+      expect(icons.renderIconSvg(key)).toContain('<svg');
+      expect(icons.renderIconSvg(key)).not.toContain('unknown');
+    });
+  });
 });
