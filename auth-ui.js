@@ -133,9 +133,11 @@
 
   // Arriving from a modal-less page that asked for login? Open it now.
   if(new URLSearchParams(window.location.search).get('login') === '1'){
-    window.addEventListener('dolopaws-auth-ready', () => {
+    const openRequestedLogin = () => {
       if(!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)) openModal();
-    }, { once: true });
+    };
+    if(window.DoloPawsAuthReady) openRequestedLogin();
+    else window.addEventListener('dolopaws-auth-ready', openRequestedLogin, { once: true });
   }
 
   } // end if(modal)

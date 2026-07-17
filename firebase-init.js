@@ -385,4 +385,5 @@ window.DoloPawsCommunity = {
   reportContent,
 };
 
+window.DoloPawsAuthReady = true;
 window.dispatchEvent(new CustomEvent('dolopaws-auth-ready'));

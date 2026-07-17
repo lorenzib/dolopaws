@@ -638,6 +638,7 @@ function safeTrailReturn(value){
 }
 
 function init(){
+  if(window.DoloPawsRegions && typeof trails !== 'undefined') window.DoloPawsRegions.assign(trails);
   const trail = (typeof trails !== 'undefined') ? trails.find(x => x.id === trailId) : null;
 
   if(!trail){
