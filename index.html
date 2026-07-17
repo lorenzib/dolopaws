@@ -122,8 +122,14 @@
   <div class="companion-wrap" style="padding-top:28px;padding-bottom:60px;">
     <div class="companion-grid">
 
+      <button type="button" class="companion-panel-backdrop" id="companionPanelBackdrop" aria-label="Close filters and dog profile" aria-hidden="true" tabindex="-1"></button>
+
       <!-- ================= SIDEBAR ================= -->
-      <aside class="companion-sidebar">
+      <aside class="companion-sidebar" id="companionSidebar" aria-label="Filters and dog profile">
+        <div class="companion-sidebar-mobile-head">
+          <span>Filters &amp; dog profile</span>
+          <button type="button" id="companionPanelClose" aria-label="Close filters and dog profile">&times;</button>
+        </div>
         <!-- Dog profile card -->
         <div class="companion-card" id="companionDogCard">
           <div class="companion-dog-head">
@@ -159,6 +165,14 @@
           <h1 id="returningHeading" class="dog-speech-cloud">“Where are we heading today?”</h1>
         </div>
         <p class="sub" id="returningSubline" style="font-size:13px;margin:12px 0 0;" aria-busy="true"><span class="skeleton" style="width:200px;height:12px;" aria-label="Loading your matches"></span></p>
+
+        <button type="button" class="companion-mobile-tools" id="companionPanelToggle" aria-controls="companionSidebar" aria-expanded="false">
+          <span class="companion-mobile-tools-copy">
+            <strong>Filters &amp; <span id="companionMobileDogLabel">dog profile</span></strong>
+            <small>Region, valley, source and saved trails</small>
+          </span>
+          <span aria-hidden="true">Adjust &rarr;</span>
+        </button>
 
         <div id="breedInsightCard" class="breed-insight-card" hidden style="margin-top:20px;">
           <span class="section-kicker" id="breedInsightKicker" style="color:var(--success);margin-bottom:12px;"></span>

@@ -783,6 +783,41 @@ function updateMapMarkers(list){
   }
 }
 
+const companionPanelToggle = document.getElementById('companionPanelToggle');
+const companionPanelClose = document.getElementById('companionPanelClose');
+const companionPanelBackdrop = document.getElementById('companionPanelBackdrop');
+const companionSidebar = document.getElementById('companionSidebar');
+
+function companionPanelIsMobile(){
+  return window.matchMedia('(max-width: 900px)').matches;
+}
+
+function setCompanionPanelOpen(open, returnFocus){
+  const next = !!open && companionPanelIsMobile();
+  document.body.classList.toggle('companion-mobile-panel-open', next);
+  if(companionPanelToggle) companionPanelToggle.setAttribute('aria-expanded', String(next));
+  if(companionSidebar) companionSidebar.setAttribute('aria-hidden', String(companionPanelIsMobile() && !next));
+  if(next && companionPanelClose) companionPanelClose.focus();
+  if(!next && returnFocus && companionPanelToggle) companionPanelToggle.focus();
+}
+
+if(companionPanelToggle){
+  companionPanelToggle.addEventListener('click', () => setCompanionPanelOpen(true));
+}
+if(companionPanelClose){
+  companionPanelClose.addEventListener('click', () => setCompanionPanelOpen(false, true));
+}
+if(companionPanelBackdrop){
+  companionPanelBackdrop.addEventListener('click', () => setCompanionPanelOpen(false, true));
+}
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && document.body.classList.contains('companion-mobile-panel-open')){
+    setCompanionPanelOpen(false, true);
+  }
+});
+window.addEventListener('resize', () => setCompanionPanelOpen(false));
+setCompanionPanelOpen(false);
+
 function renderAreaFilters(profile){
   const row = document.getElementById('areaFilterRow');
   if(!row || typeof trails === 'undefined') return;
@@ -829,18 +864,21 @@ function renderAreaFilters(profile){
       activeRegion = tab.dataset.region;
       activeValley = 'all';
       renderReturningHomepage(profile);
+      setCompanionPanelOpen(false);
     });
   });
   row.querySelectorAll('[data-valley]').forEach(pill => {
     pill.addEventListener('click', () => {
       activeValley = pill.dataset.valley;
       renderReturningHomepage(profile);
+      setCompanionPanelOpen(false);
     });
   });
   row.querySelectorAll('.prov-opt').forEach(opt => {
     opt.addEventListener('click', () => {
       activeProvenance = opt.dataset.prov;
       renderReturningHomepage(profile);
+      setCompanionPanelOpen(false);
     });
   });
 }
@@ -858,6 +896,8 @@ function renderDogProfileCard(profile){
 
   const name = (profile && profile.name) ? profile.name : 'Your dog';
   nameEl.textContent = name;
+  const mobileLabel = document.getElementById('companionMobileDogLabel');
+  if(mobileLabel) mobileLabel.textContent = profile && profile.name ? `${profile.name}'s profile` : 'dog profile';
 
   const breed = profile && profile.breed;
   const hasBreedName = breed && !NON_BREED_LABELS.has(breed);
@@ -1285,6 +1325,8 @@ if(adjustToggle){
     adjustPanel.hidden = false;
     adjustToggle.hidden = true;
     adjustToggle.setAttribute('aria-expanded', 'true');
+    setCompanionPanelOpen(false);
+    if(companionPanelIsMobile()) adjustPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 if(adjustCloseBtn){
