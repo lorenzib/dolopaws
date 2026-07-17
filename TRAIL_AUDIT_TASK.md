@@ -7,11 +7,13 @@ not depend on any prior conversation.
 
 ## Objective
 
-Advance imported trails from **under review** to **route-audited** by running
-the route-audit mechanism defined in `VERIFICATION.md` and
-`SAVOY_TRAIL_AUDIT_GUIDE.md`: the gate checks (data integrity + hard
-disqualifiers + shade) **and** content enrichment. Produce the result as a
-**reviewable branch / pull request**, never a direct write to `main`.
+Advance trails from **under review** to **route-audited** by running the
+route-audit mechanism defined in `VERIFICATION.md` and `TRAIL_AUDIT_GUIDE.md`:
+the gate checks (data integrity + hard disqualifiers + shade) **and** content
+enrichment. This covers **both regions — Dolomites and Savoy** — not one; the
+worklist (`npm run check:trail-sources`) already spans both. Produce the
+result as a **reviewable branch / pull request**, never a direct write to
+`main`.
 
 ## Two hard limits — do not exceed them
 
@@ -40,7 +42,7 @@ in before editing.
 - `VERIFICATION.md` — the gate model (four roles + enrichment), the redefined
   categories, and the source hierarchy. **This is the authority; read it in
   full each run.**
-- `SAVOY_TRAIL_AUDIT_GUIDE.md` — the per-trail presentation checks and the
+- `TRAIL_AUDIT_GUIDE.md` — the per-trail presentation checks and the
   region-specific worked example.
 - `npm run check:trail-sources` — the worklist: under-review trails with their
   OSM cross-check, official links, and per-category progress.
@@ -49,13 +51,16 @@ in before editing.
 
 ## Per-run procedure
 
-1. **Read `VERIFICATION.md` and `SAVOY_TRAIL_AUDIT_GUIDE.md` fully.** They may
+1. **Read `VERIFICATION.md` and `TRAIL_AUDIT_GUIDE.md` fully.** They may
    have changed since the last run.
 2. **Create the branch** `trail-audit/<YYYY-MM-DD>-<n>`.
-3. **Get the worklist** with `npm run check:trail-sources`. Pick a small batch
-   (default **3 trails**) that are `under-review`, preferring ones with clean
-   geometry and an official per-route source — the realistic near-term
-   promotions.
+3. **Get the worklist** with `npm run check:trail-sources` (it spans both
+   Dolomites and Savoy). Pick a small batch (default **3 trails**) that are
+   `under-review`, preferring ones with clean geometry and an official
+   per-route source — the realistic near-term promotions. **Alternate regions
+   across runs** (or split the batch) so Dolomites and Savoy both progress
+   rather than one region being cleared first. Note each trail's region in the
+   PR.
 4. **For each trail, run the gate checks:**
    - **Data integrity** — photo/licensing, route geometry vs. the official
      source (type/distance/ascent must agree — a mismatch is a blocker, see

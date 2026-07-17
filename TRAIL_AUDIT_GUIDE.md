@@ -1,15 +1,19 @@
-# DoloPaws Savoy trail audit guide
+# DoloPaws trail audit guide
 
 ## Assignment
 
-Review every Savoy trail individually in alphabetical order and use this process
-as the trail's formal graduation from **imported** to **verified**. Complete one
-trail fully before moving to the next.
+Review trails individually and use this process as the trail's route-audit —
+its promotion from **under review** to **route-audited**. This applies to
+**both regions, Dolomites and Savoy**; the checks are identical, only the
+data files differ (see below). Complete one trail fully before moving to the
+next, and work each region's under-review trails in a stable order (e.g.
+alphabetical) so progress is resumable.
 
-Start with **Albanne** (`osm-14381570`). Its route presentation has been audited,
-but it has not graduated: unresolved safety evidence keeps its rating estimated.
-Do not move to **Albannette petite boucle** (`osm-14379937`) until Albanne either
-passes all ten checks or has clearly documented evidence blockers.
+**Albanne** (`osm-14381570`, Savoy) is the worked example throughout this
+guide: its route presentation has been audited, but it has not been promoted —
+unresolved safety evidence keeps its rating estimated. Treat it as the model
+for how a trail either passes all checks or carries clearly documented
+blockers.
 
 Never describe desk research as a field visit. A trail may still graduate from
 a thorough desk review, but every check must be supported by named, appropriate,
@@ -110,7 +114,9 @@ For each trail, verify all five areas below.
 - Look for geometry gaps, implausible straight segments, duplicated branches,
   or a path whose order jumps between disconnected pieces.
 - Keep the full route geometry even when the official distance is rounded.
-- Do not manually edit `osm-trails-savoy-data.js`; it is generated.
+- Do not manually edit the generated OSM files — `osm-trails-data.js`
+  (Dolomites) or `osm-trails-savoy-data.js` (Savoy). Corrections go in
+  `trail-audits.js`.
 
 ### 3. Map icons and waypoint locations
 
@@ -121,8 +127,9 @@ For each trail, verify all five areas below.
   `osmId: "node/123"`, alongside `lat`, `lng`, `km`, and the display label.
 - Trace water points to `water-sources-all-regions.geojson`.
 - Trace huts and food locations to `huts-bars-all-regions.geojson`.
-- Trace parking, bus stops, and lift access to
-  `data/access-points-savoy.geojson`.
+- Trace parking, bus stops, and lift access to the region's access-points
+  file — `data/access-points.geojson` (Dolomites) or
+  `data/access-points-savoy.geojson` (Savoy).
 - Measure each amenity's distance from the route. Do not call a place “on the
   trail” when it is merely nearby.
 - Where multiple mapped features represent one physical facility, avoid
@@ -207,8 +214,8 @@ that were checked or corrected.
 
 If the importer itself loses information needed by every future trail, improve
 `scripts/promote-osm-trails.js` as well. The importer now retains exact POI
-coordinates and OSM identifiers. Do not regenerate the entire Savoy catalogue
-unless the resulting large change has been inspected carefully.
+coordinates and OSM identifiers. Do not regenerate an entire region's
+catalogue unless the resulting large change has been inspected carefully.
 
 ## Source hierarchy
 
@@ -265,11 +272,12 @@ Reference files:
 
 ## Audit workflow for each trail
 
-1. Find the next Savoy trail alphabetically and record its trail ID and OSM
-   relation.
-2. Extract its current complete record from the three trail datasets plus
+1. Find the next under-review trail (either region) in your working order and
+   record its trail ID and OSM relation.
+2. Extract its current complete record from the trail datasets plus
    `trail-audits.js`.
-3. Inspect the raw Savoy GeoJSON route and its properties.
+3. Inspect the raw region GeoJSON route (`dog-friendly-routes.geojson` for
+   Dolomites, `dog-friendly-routes-savoy.geojson` for Savoy) and its properties.
 4. Find and read the strongest official route source.
 5. Compare name, route type, distance, ascent, duration, official start, and
    route geometry.
@@ -283,10 +291,10 @@ Reference files:
 11. Open the live local detail page and visually confirm the header, map line,
     markers/clusters, elevation chart, sources, and review date.
 12. Run all required tests.
-13. Graduate the trail only if all ten checks pass. Otherwise keep it imported
-    and record exact evidence blockers.
-14. Report what was corrected, whether the trail graduated, what remains
-    blocked, and name the next trail alphabetically.
+13. Promote the trail to route-audited only if all ten checks pass and it is
+    enriched. Otherwise keep it under review and record exact evidence blockers.
+14. Report what was corrected, whether the trail was promoted, what remains
+    blocked, and name the next trail in your working order.
 
 ## Required validation
 
@@ -318,7 +326,7 @@ For each trail, report:
 - **Still unverified:** especially current water availability and dog-safety
   conditions
 - **Validation:** tests and visual check performed
-- **Next trail:** next alphabetical Savoy entry
+- **Next trail:** next under-review trail in your working order (note the region)
 
 ## Guardrails
 
