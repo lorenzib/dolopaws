@@ -1080,7 +1080,11 @@ body.map-fs-open{overflow:hidden;}
 .companion-adjust-link{display:block;width:100%;text-align:left;margin-top:2px;padding:4px 6px;font:600 12px/1.4 'Inter',sans-serif;color:var(--ink-soft);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
 .companion-adjust-link:hover{color:var(--ink);}
 /* Risk legend floats inside the map card, bottom right (per the design) */
-.companion-map-legend{position:absolute;left:12px;bottom:12px;z-index:5;max-width:calc(100% - 24px);display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:rgba(255,255,255,.94);border:1px solid var(--paper-line);border-radius:999px;padding:5px 14px;font-size:11px;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.companion-map-key{position:absolute;left:88px;bottom:10px;z-index:7;height:34px;box-sizing:border-box;background:#fff;border:1px solid var(--paper-line);border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.15);font:700 12px 'Inter',sans-serif;color:var(--ink);}
+.companion-map-key summary{height:32px;padding:0 14px;display:flex;align-items:center;cursor:pointer;list-style:none;}
+.companion-map-key summary::-webkit-details-marker{display:none;}
+.companion-map-legend{position:absolute;left:0;bottom:42px;width:max-content;max-width:min(330px,calc(100vw - 40px));display:flex;gap:9px;align-items:flex-start;flex-direction:column;background:rgba(255,255,255,.97);border:1px solid var(--paper-line);border-radius:12px;padding:10px 12px;font-size:11px;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.16);}
+.companion-map-legend > span{white-space:nowrap;}
 .prov-opt .count{font-weight:600;opacity:.65;font-size:11px;margin-left:3px;}
 
 /* Filters card */

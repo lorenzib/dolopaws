@@ -170,7 +170,7 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   // UI: one compact "Layers" button that expands into a chip panel —
   // replaces the old stack of full-width buttons that covered a third of
   // the map on mobile.
-  const overlayStates = { routes: false, lifts: false, fountains: false, huts: false, barsCafes: false };
+  const overlayStates = { routes: false, lifts: false, fountains: false, huts: false, barsCafes: false, terrain: false };
   let dogFilterOn = false;
 
   const layersBtn = document.createElement('button');
@@ -237,6 +237,34 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
   mkChip(t('chips.huts'), 'huts');
   const barsChip = mkChip(t('chips.food'), 'barsCafes');
 
+  // Terrain is an option inside the same panel, not another floating map
+  // control. This leaves one clear entry point for optional map features.
+  const terrainChip = document.createElement('button');
+  terrainChip.type = 'button';
+  terrainChip.textContent = '3D terrain';
+  chipStyle(terrainChip, false);
+  terrainChip.addEventListener('click', () => {
+    overlayStates.terrain = !overlayStates.terrain;
+    if(overlayStates.terrain){
+      map.setTerrain({ source: 'terrain-dem', exaggeration: 1.3 });
+      if(!map.getLayer('hillshade-layer')){
+        map.addLayer({
+          id: 'hillshade-layer',
+          type: 'hillshade',
+          source: 'terrain-dem',
+          paint: { 'hillshade-exaggeration': 0.3 },
+        }, map.getLayer('trail-paths-line') ? 'trail-paths-line' : undefined);
+      }
+      map.easeTo({ pitch: 38, duration: 500 });
+    } else {
+      map.setTerrain(null);
+      if(map.getLayer('hillshade-layer')) map.removeLayer('hillshade-layer');
+      map.easeTo({ pitch: 0, duration: 500 });
+    }
+    chipStyle(terrainChip, overlayStates.terrain);
+  });
+  panel.appendChild(terrainChip);
+
   // 🐾 Dog-friendly filter — narrows food & drink to places OSM marks
   // dog=yes/leashed or with outdoor seating; dog=no always excluded.
   // Swaps the source data because a layer filter alone wouldn't change
@@ -278,8 +306,8 @@ function createMapOverlayControls(map, containerId, allLiftMarkers){
     const category = (iconKey, color, label) => icons
       ? icons.legendItemHtml(iconKey, label, { color })
       : `<span><span style="width:9px;height:9px;background:${color};display:inline-block;border-radius:50%;margin-right:4px;vertical-align:middle;border:1px solid #fff;"></span>${label}</span>`;
-    let html = line('#2C5C34', t('legend.low')) + line('#8A5A16', t('legend.moderate')) + line('#9C3A25', t('legend.caution'))
-      + line('#4E90A8', t('legend.liftConfirmed')) + dash('#5A5548', t('legend.liftUnknown'));
+    let html = line('#2C5C34', t('legend.low')) + line('#8A5A16', t('legend.moderate')) + line('#9C3A25', t('legend.caution'));
+    if(overlayStates.lifts) html += line('#4E90A8', t('legend.liftConfirmed')) + dash('#5A5548', t('legend.liftUnknown'));
     if(overlayStates.fountains) html += category('water', '#4E90A8', t('legend.water'));
     if(overlayStates.huts) html += category('hut', '#8A5A16', t('legend.hut'));
     if(overlayStates.barsCafes) html += category('food', '#C4652F', t('legend.food'));
@@ -467,10 +495,11 @@ function initGuestMap(){
 
 
 let trailMapInstance = null;
-let trailMarkers = {};
+let currentMapTrails = [];
 
 let trailMapLoaded = false;
 let pendingPathList = null;
+let pendingMarkerList = null;
 
 function initTrailMap(){
   if(trailMapInstance || typeof maplibregl === 'undefined') return;
@@ -484,7 +513,7 @@ function initTrailMap(){
     zoom: 9,
     scrollZoom: false,
   });
-  trailMapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
+  trailMapInstance.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
   trailMapInstance.addControl(new maplibregl.GeolocateControl({
     positionOptions: { enableHighAccuracy: true },
     trackUserLocation: true,
@@ -496,7 +525,6 @@ function initTrailMap(){
     addTerrainSource(trailMapInstance);
     increaseLabelDensity(trailMapInstance);
     preventTransitPoiDuplication(trailMapInstance);
-    addTerrainToggle(trailMapInstance, 'trailMap', 1.3, 0);
     if(window.DoloPawsIcons) await window.DoloPawsIcons.registerMapImages(trailMapInstance);
     
     const allLiftMarkers = renderGondolas(trailMapInstance, 'trailmap-gondolas');
@@ -525,6 +553,7 @@ function initTrailMap(){
       id: 'trail-paths-line',
       type: 'line',
       source: 'trail-paths',
+      minzoom: 10,
       layout: { 'line-join': 'round', 'line-cap': 'round' },
       paint: {
         'line-color': [
@@ -536,6 +565,89 @@ function initTrailMap(){
         ],
         'line-width': 3,
       },
+    });
+
+    // Cluster trailheads at wider zooms so the map communicates density
+    // without becoming a field of indistinguishable dots.
+    trailMapInstance.addSource('trail-points', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+      cluster: true,
+      clusterMaxZoom: 11,
+      clusterRadius: 48,
+    });
+    trailMapInstance.addLayer({
+      id: 'trail-clusters',
+      type: 'circle',
+      source: 'trail-points',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': '#2E4034',
+        'circle-radius': ['step', ['get', 'point_count'], 17, 10, 21, 30, 25],
+        'circle-stroke-width': 3,
+        'circle-stroke-color': 'rgba(255,255,255,.9)',
+      },
+    });
+    trailMapInstance.addLayer({
+      id: 'trail-cluster-count',
+      type: 'symbol',
+      source: 'trail-points',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': ['get', 'point_count_abbreviated'],
+        'text-size': 12,
+      },
+      paint: { 'text-color': '#fff' },
+    });
+    trailMapInstance.addLayer({
+      id: 'trail-unclustered',
+      type: 'circle',
+      source: 'trail-points',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-color': [
+          'match', ['get', 'safetyLevel'],
+          'low-risk', '#2C5C34',
+          'moderate', '#8A5A16',
+          'caution', '#9C3A25',
+          '#2E4034',
+        ],
+        'circle-radius': 7,
+        'circle-stroke-width': 2.5,
+        'circle-stroke-color': '#fff',
+      },
+    });
+    trailMapInstance.addLayer({
+      id: 'trail-selected-point',
+      type: 'circle',
+      source: 'trail-points',
+      filter: ['==', ['get', 'id'], '__none__'],
+      paint: {
+        'circle-color': 'rgba(0,0,0,0)',
+        'circle-radius': 12,
+        'circle-stroke-width': 4,
+        'circle-stroke-color': '#4A7C59',
+      },
+    });
+
+    trailMapInstance.on('click', 'trail-clusters', async (e) => {
+      const feature = e.features && e.features[0];
+      if(!feature) return;
+      const source = trailMapInstance.getSource('trail-points');
+      try {
+        const zoom = await source.getClusterExpansionZoom(feature.properties.cluster_id);
+        trailMapInstance.easeTo({ center: feature.geometry.coordinates, zoom });
+      } catch(err) { /* cluster may have changed during a filter update */ }
+    });
+    trailMapInstance.on('click', 'trail-unclustered', (e) => {
+      const feature = e.features && e.features[0];
+      if(!feature) return;
+      const selected = currentMapTrails.find(t => t.id === feature.properties.id);
+      if(selected){ selectTrail(selected); jumpToCard(selected.id); }
+    });
+    ['trail-clusters','trail-unclustered'].forEach(layerId => {
+      trailMapInstance.on('mouseenter', layerId, () => { trailMapInstance.getCanvas().style.cursor = 'pointer'; });
+      trailMapInstance.on('mouseleave', layerId, () => { trailMapInstance.getCanvas().style.cursor = ''; });
     });
 
     // Create overlay toggle controls
@@ -554,6 +666,7 @@ function initTrailMap(){
 
     trailMapLoaded = true;
     if(pendingPathList) updatePathLayer(pendingPathList);
+    if(pendingMarkerList) updateMapMarkers(pendingMarkerList);
   });
 }
 
@@ -689,13 +802,16 @@ function makeTrailDot(){
 // "Locate on map", and clicking a card thumbnail.
 function selectTrail(t){
   selectedTrailId = t.id;
-  Object.entries(trailMarkers).forEach(([id, m]) => {
-    m.getElement().classList.toggle('tc-pin-selected', id === t.id);
-  });
+  setSelectedTrailPoint(t.id);
   document.querySelectorAll('.trail-card.tc-selected').forEach(c => c.classList.remove('tc-selected'));
   const card = document.getElementById(`trail-card-${t.id}`);
   if(card) card.classList.add('tc-selected');
   if(typeof showMapCallout === 'function') showMapCallout(t);
+}
+
+function setSelectedTrailPoint(id){
+  if(!trailMapLoaded || !trailMapInstance || !trailMapInstance.getLayer('trail-selected-point')) return;
+  trailMapInstance.setFilter('trail-selected-point', ['==', ['get', 'id'], id || '__none__']);
 }
 
 function jumpToCard(trailId){
@@ -729,43 +845,30 @@ function updatePathLayer(list){
 function updateMapMarkers(list){
   if(!trailMapInstance) return;
   updatePathLayer(list);
-  const visibleIds = new Set(list.map(t => t.id));
+  currentMapTrails = list.slice();
+  if(!trailMapLoaded || !trailMapInstance.getSource('trail-points')){
+    pendingMarkerList = list.slice();
+    return;
+  }
 
-  // Remove markers for trails no longer in the filtered view
-  Object.keys(trailMarkers).forEach(id => {
-    if(!visibleIds.has(id)){
-      trailMarkers[id].remove();
-      delete trailMarkers[id];
-    }
-  });
-
-  // Add markers for newly-visible trails
-  list.forEach(t => {
-    if(trailMarkers[t.id] || typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
-    // Prefer the real, verified starting point over the general reference
-    // coordinate — a trail's own `lat`/`lng` is sometimes just an
-    // approximate area marker, while `startPoint` (or the path's own first
-    // point) is the actual real trailhead when we have real GPS data.
+  const features = list.map(t => {
+    if(typeof t.lat !== 'number' || typeof t.lng !== 'number') return null;
+    // Prefer the verified trailhead over an approximate area coordinate.
     let markerLat = t.lat, markerLng = t.lng;
     if(t.startPoint){
       markerLat = t.startPoint.lat; markerLng = t.startPoint.lng;
     } else if(Array.isArray(t.path) && t.path.length > 0){
       [markerLat, markerLng] = t.path[0];
     }
-    // Selection now drives a single floating callout (showMapCallout) that
-    // mirrors the card's match % and risk colour, rather than a separate
-    // per-pin hover popup — one selection UI instead of two overlapping ones.
-    const marker = new maplibregl.Marker({ element: makeTrailDot() })
-      .setLngLat([markerLng, markerLat])
-      .addTo(trailMapInstance);
-    marker.getElement().style.cursor = 'pointer';
-    marker.getElement().addEventListener('click', () => { selectTrail(t); jumpToCard(t.id); });
-    trailMarkers[t.id] = marker;
-  });
-
-  if(selectedTrailId && trailMarkers[selectedTrailId]){
-    trailMarkers[selectedTrailId].getElement().classList.add('tc-pin-selected');
-  }
+    return {
+      type: 'Feature',
+      properties: { id: t.id, name: t.name, safetyLevel: t.safetyLevel },
+      geometry: { type: 'Point', coordinates: [markerLng, markerLat] },
+    };
+  }).filter(Boolean);
+  trailMapInstance.getSource('trail-points').setData({ type: 'FeatureCollection', features });
+  setSelectedTrailPoint(selectedTrailId);
+  pendingMarkerList = null;
 
   // Fit the view to whatever's currently visible, so filtering the list
   // also re-frames the map instead of leaving it zoomed to the wrong area.
@@ -1304,7 +1407,7 @@ if(mapCalloutClose){
     selectedTrailId = null;
     hideMapCallout();
     document.querySelectorAll('.trail-card.tc-selected').forEach(c => c.classList.remove('tc-selected'));
-    Object.values(trailMarkers).forEach(m => m.getElement().classList.remove('tc-pin-selected'));
+    setSelectedTrailPoint(null);
   });
 }
 function showMapCallout(t){

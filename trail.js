@@ -969,7 +969,7 @@ function renderTrail(t){
       zoom: 14,
       pitch: 0, // clean, flat, label-first by default — 3D is opt-in via the toggle
     });
-    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
     // Fullscreen map — manual ⤢ toggle, and automatic during hike mode.
     const mapBox = document.getElementById('trailMapBox');
