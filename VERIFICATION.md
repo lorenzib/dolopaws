@@ -70,23 +70,59 @@ hazards and dog access, which aren't currently individually broken out.
   finding is a **removal**, not a downgrade — see the `BANNED`/`REMOVED`
   entries in `PROMOTED_RELATIONS` in `scripts/promote-osm-trails.js`.
 
+## Tracking progress: the `verified` field
+
+Prose comments (`// Facts from Decathlon Outdoor...`) are the human-readable
+record, but nothing can query them — there's no way to ask "which trails
+still need their livestock check?" without re-reading every comment. Each
+trail entry can carry a small structured field alongside the comment so
+progress is machine-readable and survives across sessions:
+
+```js
+"verified": {
+  "categories": ["livestock", "surfaceHazards"],  // subset of the 6 below, checked against a non-OSM source
+  "sources": ["Decathlon Outdoor — Chemin des Fours", "Dept. Haute-Savoie fiche"],
+  "date": "2026-07-14"
+}
+```
+
+The six canonical category names (match the checklist above and the keys
+`check-trail-sources.js` reports on): `water`, `heat`, `exposure`,
+`livestock`, `surfaceHazards`, `access`.
+
+- Absent `verified` field = no category-by-category source review is recorded.
+- `categories` only ever grows via real verification work — never add a
+  category you didn't actually check against a listed source.
+- `curated` records how the trail entered the catalogue (hand-authored versus
+  imported). It is not a substitute for review completeness. Only a record
+  with all six categories may be described to visitors as fully source
+  reviewed; partial records show their progress and keep unchecked facts
+  visibly unverified.
+- Add `reviewedAt`, `reviewedBy`, and route-specific `sourceLinks` so the
+  visitor can inspect the dated review record rather than seeing a generic
+  list of data providers.
+- The prose comment and the `verified` field should agree — write both in
+  the same edit, the comment for a human skimming the file, the field for
+  the script.
+
 ## Procedure
 
 1. Run `npm run check:trail-sources` (see below) to get a worklist of
-   imported trails, each with its OSM surface cross-check and its official
-   portal / Waymarked Trails links already pulled out — this replaces
-   manually hunting for each trail's OSM relation and website.
+   imported trails, each with its OSM surface cross-check, its official
+   portal / Waymarked Trails links, and its verification progress
+   (`categories` already checked vs. still missing) — this replaces
+   manually hunting for each trail's OSM relation, website, and prior notes.
 2. For each trail, open the official portal link and search recent trip
-   reports for the hazard categories above. Note what each source actually
-   says (or doesn't).
+   reports for the hazard categories still missing. Note what each source
+   actually says (or doesn't).
 3. Fill in only what a source supports. Leave the rest unknown — an
    unverified field beats a guessed one.
-4. If every hazard category has a citable non-OSM source, set
-   `curated: true` and add a dated comment above the entry naming the
-   sources (match the existing style: `// Facts from <source>, <source>,
-   verified <date>`).
-5. If some categories are resolved but not all, keep `curated: false` and
-   cite only what you added (the "Sentier du Four" pattern).
+4. Add the newly-resolved category names to `verified.categories`, the
+   source(s) to `verified.sources`, and today's date — plus the matching
+   dated prose comment above the entry.
+5. If every hazard category is now in `verified.categories`, the trail can be
+   labelled fully source reviewed. Otherwise its page must show the partial
+   count and mark the remaining categories unverified.
 6. If a source rules the route out for dogs (protected area, mandatory
    off-leash zone, alpine-grade terrain), remove it from `trails-data.js`
    and add its relation ID to `PROMOTED_RELATIONS` with a `BANNED`/`REMOVED`
@@ -106,7 +142,10 @@ API — everything it reports was already pulled by `fetch-dolomites-trails.js`
   trip report or field visit instead),
 - OSM `leash`/`dogFriendlyNotes`/`sac_scale` tags that exist but aren't
   reflected in the trail entry, in case a re-fetch has picked up tagging
-  that wasn't there before.
+  that wasn't there before,
+- verification progress from the `verified` field: which of the six
+  categories are already checked and which remain, so you can pick a trail
+  back up without re-reading its whole history.
 
 It does not and cannot check exposure, heat/shade, or livestock — those
 have no reliable OSM tagging in this region and stay a manual, source-cited

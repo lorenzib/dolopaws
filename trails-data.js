@@ -18,14 +18,22 @@ const trails = [
   },
   {
     id:'seceda', name:'Seceda Ridge Trail', area:'Val Gardena', lat:46.599, lng:11.68,
+    reviewedAt:'2026-07-17', reviewedBy:'DoloPaws desk review',
+    source:'https://www.seceda.it/en/',
+    sourceLinks:[
+      {label:'Seceda Cableways — summer access and dog ticket',url:'https://www.seceda.it/en/',categories:['access']},
+      {label:'Seceda official hiking map — leash and herd guidance',url:'https://www.seceda.it/files/wanderkarte_web.pdf',categories:['access','livestock']},
+      {label:'Val Gardena — ways to reach Seceda',url:'https://www.valgardena.it/en/summer-holidays-dolomites/trekking/seceda/the-way-to-the-seceda/',categories:['access']}
+    ],
+    verified:{categories:['livestock','access'],sources:['Seceda Cableways','Seceda official hiking map','Dolomites Val Gardena'],date:'2026-07-17'},
     distance:8, elevation:400, hours:'2.5–4', paid:true,
     terrainType:'Packed dirt with rocky steps', terrainRank:1,
     elevationProfile:[{km:0, elev:2500}, {km:2, elev:2300}, {km:4, elev:2130}, {km:5.5, elev:2080}, {km:8, elev:2500}],
     surfaceHazards:['Rocky steps near the ridge'], shadeCoverage:10, heatRisk:'high', safetyLevel:'moderate', exposure:false,
     waterSources:[{km:1,label:'Gondola station fountain'},{km:4,label:'Rest-area spring'}],
     rifugi:[{km:3,name:'Rifugio Firenze'},{km:6,name:'Baita Troier'}],
-    desc:"Sweeping ridge views over Val Gardena with rest areas and water along the way. Reached via the Ortisei–Furnes gondola.",
-    tips:"Keep dogs on lead near the ridge edges; the gondola will want a muzzle carried."
+    desc:"Sweeping ridge views over Val Gardena. The area is reached via the Ortisei–Furnes and Furnes–Seceda lifts; route-specific water, shade and exposure details are still being checked.",
+    tips:"Dogs must stay on lead. Keep a safe distance from grazing herds. The Seceda lifts accept dogs for a separate ticket; check the operator's current conditions before travel."
   },
   {
     id:'santa-maddalena', name:'Santa Maddalena Viewpoint', area:'Val di Funes', lat:46.647, lng:11.728,
@@ -40,6 +48,14 @@ const trails = [
   },
   {
     id:'tre-cime', name:'Tre Cime di Lavaredo Loop', area:'Sesto Dolomites', lat:46.618, lng:12.301,
+    reviewedAt:'2026-07-17', reviewedBy:'DoloPaws desk review',
+    source:'https://auronzo.info/en/tre-cime-di-lavaredo-dolomites/',
+    sourceLinks:[
+      {label:'Auronzo Tourism — official Tre Cime loop guide',url:'https://auronzo.info/en/tre-cime-di-lavaredo-dolomites/',categories:['surfaceHazards','access']},
+      {label:'Auronzo Tourism — road, bus and walking access',url:'https://auronzo.info/en/how-to-get-to-the-tre-cime-di-lavaredo/',categories:['access']},
+      {label:'3 Cime visitor guide — leash rule',url:'https://www.tre-cime.info/media/24bbbae6-15da-4f5d-a423-357169efceff/infobooklet-it-web.pdf',categories:['access']}
+    ],
+    verified:{categories:['surfaceHazards','access'],sources:['Auronzo Tourism','3 Cime visitor guide'],date:'2026-07-17'},
     path:[[46.61222,12.29641],[46.6133,12.29665],[46.6136,12.29764],[46.61365,12.29915],[46.61426,12.30163],[46.61416,12.30416],[46.61359,12.30496],[46.61363,12.30544],[46.61347,12.30666],[46.61351,12.3073],[46.6139,12.30832],[46.61408,12.30849],[46.61488,12.3087],[46.61558,12.3095],[46.61658,12.30997],[46.61723,12.31065],[46.61779,12.311],[46.61852,12.31203],[46.61945,12.31188],[46.62045,12.31204],[46.62071,12.31311],[46.62054,12.31419],[46.62089,12.31448],[46.62133,12.31436],[46.62153,12.31489],[46.62181,12.31516],[46.62276,12.31348],[46.62268,12.31245],[46.62238,12.31176],[46.62245,12.31147],[46.62327,12.31184],[46.62451,12.31297],[46.62488,12.31303],[46.6262,12.31273],[46.62725,12.31171],[46.62749,12.31173],[46.62809,12.31136],[46.62832,12.31135],[46.62827,12.31109],[46.6285,12.31095],[46.62954,12.31104],[46.63031,12.31057],[46.6316,12.31066],[46.63228,12.31109],[46.634,12.31188],[46.6342,12.31188],[46.63467,12.31157],[46.63495,12.31096],[46.63505,12.31098],[46.63501,12.31124],[46.63512,12.31113],[46.63513,12.31127],[46.63526,12.31103],[46.63531,12.31118],[46.63555,12.31095],[46.6356,12.31106],[46.63624,12.31112],[46.63653,12.31091],[46.63653,12.31111],[46.6369,12.31084],[46.63653,12.31111],[46.63653,12.31091],[46.63624,12.31112],[46.6356,12.31106],[46.63555,12.31095],[46.63529,12.31118],[46.63526,12.31103],[46.63515,12.31126],[46.6351,12.31114],[46.63471,12.31151],[46.63491,12.31099],[46.63473,12.31115],[46.63455,12.31037],[46.63469,12.30942],[46.63459,12.30814],[46.63484,12.30775],[46.63495,12.3068],[46.63469,12.30697],[46.63464,12.3062],[46.63419,12.30678],[46.63399,12.30682],[46.63421,12.30628],[46.63402,12.30647],[46.6337,12.30639],[46.63403,12.30599],[46.63409,12.3057],[46.63382,12.30571],[46.63366,12.30473],[46.63316,12.30405],[46.63268,12.30388],[46.63214,12.30396],[46.63171,12.30422],[46.63106,12.30422],[46.63041,12.30336],[46.63034,12.30246],[46.63012,12.30167],[46.63015,12.30017],[46.62992,12.29927],[46.62999,12.29875],[46.62986,12.29771],[46.62935,12.29614],[46.62899,12.29551],[46.62898,12.295],[46.62849,12.29437],[46.62812,12.29427],[46.62793,12.29403],[46.62737,12.29264],[46.62701,12.29244],[46.62681,12.29187],[46.62583,12.29058],[46.62507,12.29019],[46.6247,12.29018],[46.62458,12.28991],[46.62419,12.28978],[46.62396,12.2895],[46.62385,12.28806],[46.62413,12.28736],[46.62313,12.2861],[46.62279,12.28589],[46.62243,12.2857],[46.62108,12.28581],[46.62037,12.2852],[46.61953,12.28485],[46.61936,12.28495],[46.61788,12.28504],[46.61753,12.28473],[46.61752,12.28425],[46.61706,12.2844],[46.61637,12.28542],[46.61583,12.28675],[46.61584,12.28708],[46.61562,12.28729],[46.61545,12.28726],[46.6151,12.28784],[46.61495,12.28935],[46.61428,12.29103],[46.61375,12.29164],[46.61311,12.29292],[46.61213,12.29421],[46.61211,12.29492],[46.61187,12.29606],[46.61201,12.29635],[46.61222,12.29641]],
     distance:11.8, elevation:430, hours:'3–4', paid:true,
     terrainType:'Wide gravel', terrainRank:1,
@@ -49,11 +65,19 @@ const trails = [
     decisionPoints:[{km:5.3,lat:46.636902,lng:12.31056,instruction:"Switch from trail 101 onto trail 105, right at Rifugio Locatelli"}],
     rifugi:[{km:0,name:'Rifugio Auronzo',lat:46.612205,lng:12.296095},{km:2.1,name:'Rifugio Lavaredo',lat:46.618326,lng:12.312094},{km:5.3,name:'Rifugio Locatelli',lat:46.636902,lng:12.31056}],
     startPoint:{lat:46.612205,lng:12.296095,label:'Start here — Rifugio Auronzo toll-road parking'},
-    desc:"The classic loop around the iconic three peaks. Wide, well-graded path — one of the friendliest big-name hikes for dogs.",
-    tips:"Starts/ends at Rifugio Auronzo, a paid access road (car fee applies). Very popular — arrive early."
+    desc:"The classic loop around the iconic three peaks. The official guide describes a well-marked route without particular technical difficulties, over dirt roads and rocky mountain paths.",
+    tips:"Starts and ends at Rifugio Auronzo. Motor access uses a paid, advance-booked road; seasonal buses and walking approaches are alternatives. Dogs must stay on lead. Snow and hut closures can affect the route outside late June–September."
   },
   {
     id:'cadini', name:'Cadini di Misurina Viewpoint', area:'Sesto Dolomites', lat:46.61, lng:12.265,
+    reviewedAt:'2026-07-17', reviewedBy:'DoloPaws desk review',
+    source:'https://auronzo.info/en/dolomites/',
+    sourceLinks:[
+      {label:'Auronzo Tourism — Cadini and equipped Bonacossa trail',url:'https://auronzo.info/en/dolomites/',categories:['exposure','surfaceHazards']},
+      {label:'Rifugio Auronzo — Bonacossa route from the hut',url:'https://rifugioauronzo.it/la-posizione/',categories:['exposure','surfaceHazards']},
+      {label:'Auronzo Tourism — Tre Cime road and seasonal access',url:'https://auronzo.info/en/how-to-get-to-the-tre-cime-di-lavaredo/',categories:['access']}
+    ],
+    verified:{categories:['exposure','surfaceHazards','access'],sources:['Auronzo Tourism','Rifugio Auronzo'],date:'2026-07-17'},
     distance:4, elevation:250, hours:'1.5–2.5', paid:true,
     terrainType:'Rocky switchbacks, loose scree', terrainRank:2,
     elevationProfile:[{km:0, elev:2320}, {km:2, elev:2500}, {km:3, elev:2600}, {km:4, elev:2320}],
@@ -61,7 +85,7 @@ const trails = [
     waterSources:[],
     rifugi:[{km:0,name:'Rifugio Auronzo'}],
     desc:"A short but steep out-and-back to a jagged, fantasy-film viewpoint. Narrow sections with real drop-offs near the top.",
-    tips:"Skip this one in wet weather or with a dog unsure on narrow terrain."
+    tips:"This viewpoint uses the opening section of equipped trail 117. Treat it as an exposed mountain route: skip wet, icy or snowy conditions and do not take a dog that is uncertain on narrow terrain."
   },
   {
     id:'prato-piazza', name:'Prato Piazza (Plätzwiese)', area:'Fanes-Sennes-Prags', lat:46.701, lng:12.105,
@@ -87,14 +111,21 @@ const trails = [
   },
   {
     id:'sassolungo', name:'Sassolungo–Sassopiatto Loop', area:'Val Gardena / Passo Sella', lat:46.531, lng:11.753,
+    reviewedAt:'2026-07-17', reviewedBy:'DoloPaws desk review',
+    source:'https://www.valgardena.it/en/outdoor/base/outdoor/sassolungo-circuit/800558069/',
+    sourceLinks:[
+      {label:'Dolomites Val Gardena — official Sassolungo circuit',url:'https://www.valgardena.it/en/outdoor/base/outdoor/sassolungo-circuit/800558069/',categories:['access']},
+      {label:'Seceda / Val Gardena hiking map — leash and herd guidance',url:'https://www.seceda.it/files/wanderkarte_web.pdf',categories:['access','livestock']}
+    ],
+    verified:{categories:['livestock','access'],sources:['Dolomites Val Gardena','Val Gardena hiking map'],date:'2026-07-17'},
     distance:14, elevation:750, hours:'5–7', paid:true,
     terrainType:'Scree & rock', terrainRank:2,
     elevationProfile:[{km:0, elev:2244}, {km:3, elev:2500}, {km:6, elev:2680}, {km:9, elev:2550}, {km:12, elev:2350}, {km:14, elev:2244}],
     surfaceHazards:['Scree fields','Long exposed stretches'], shadeCoverage:10, heatRisk:'high', safetyLevel:'caution', exposure:true,
     waterSources:[{km:3,label:'Waterfall stream'}],
     rifugi:[{km:4,name:'Rifugio Sasso Piatto'},{km:8,name:'Rifugio Sandro Pertini'},{km:11,name:'Rifugio Vicenza'}],
-    desc:"A big day out circling the Sassolungo massif via scree slopes and a chain of rifugi, with a waterfall en route.",
-    tips:"Only for very fit, trail-hardened dogs — long, rocky, with real elevation."
+    desc:"A long, officially rated difficult circuit from Passo Sella via paths 557, 527 and 526, passing a chain of rifugi around the Sassolungo massif.",
+    tips:"The official circuit is rated difficult and requires substantial stamina. Dogs must stay on lead around grazing animals; keep well away from herds. Only consider it for very fit, trail-hardened dogs."
   },
   {
     id:'lago-braies', name:'Lago di Braies Loop', area:'Prags Valley', lat:46.695, lng:12.085, imageIcon:'images/lago-di-braies.webp',
@@ -124,6 +155,13 @@ const trails = [
   },
   {
     id:'lago-sorapis', name:'Lago di Sorapis Trail', area:"Cortina d'Ampezzo", lat:46.546, lng:12.226,
+    reviewedAt:'2026-07-17', reviewedBy:'DoloPaws desk review',
+    source:'https://cortina.dolomiti.org/en/escursioni/to-lago-sorapis-en/',
+    sourceLinks:[
+      {label:'Cortina Dolomiti — official Lago Sorapis route',url:'https://cortina.dolomiti.org/en/escursioni/to-lago-sorapis-en/',categories:['exposure','surfaceHazards']},
+      {label:'Cortina hiking guide — exposed cable-protected sections',url:'https://www.dolomiti.org/storage/oassets/LayoutWEPagine/Guida%20Generale_ci%20vediamo%20a%20Cortina_ITA_web.pdf',categories:['exposure','surfaceHazards']}
+    ],
+    verified:{categories:['exposure','surfaceHazards'],sources:['Cortina Dolomiti official route','Cortina hiking guide'],date:'2026-07-17'},
     distance:11, elevation:450, hours:'4–5', paid:false,
     terrainType:'Rocky, roots, narrow ledges', terrainRank:2,
     elevationProfile:[{km:0, elev:1805}, {km:4, elev:2000}, {km:7, elev:2150}, {km:9, elev:2250}, {km:11, elev:1923}],
@@ -131,7 +169,7 @@ const trails = [
     waterSources:[{km:2,label:'Stream crossing'},{km:5,label:'Lake shore'}],
     rifugi:[],
     desc:"A striking turquoise glacial lake, but the path in has narrow, exposed sections with fixed cables in places.",
-    tips:"Only for sure-footed, confident dogs — this is not a beginner trail despite how popular it is."
+    tips:"The official route is for expert hikers and includes metal ladders plus exposed ledges protected by wire ropes. Only consider it for a sure-footed, confident dog; popularity does not make it a beginner route."
   },
   {
     id:'valley-view', name:'Valley View Trail (partial)', area:'Near Val di Funes', lat:46.64, lng:11.72,
@@ -15284,4 +15322,3 @@ const gondolas = [
 // described in tourism sources. Left out rather than risk showing a route
 // that doesn't actually go where its name implies. Worth real verification
 // before adding.
-

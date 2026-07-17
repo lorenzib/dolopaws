@@ -823,6 +823,12 @@ body.map-fs-open{overflow:hidden;}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media (max-width:760px){ .about-grid{grid-template-columns:1fr;} }
 .trail-sources{margin:16px 0 0;font-size:11px;color:var(--ink-soft);}
+.trail-review-meta{margin:12px 0 0;font-size:12px;font-weight:700;color:var(--ink);}
+.trail-source-links{margin-top:10px;font-size:12px;color:var(--ink-soft);}
+.trail-source-heading{margin:0 0 6px;font-weight:700;color:var(--ink);}
+.trail-source-links ul{margin:0;padding-left:18px;display:grid;gap:7px;}
+.trail-source-links a{color:var(--forest);text-decoration:underline;text-underline-offset:2px;}
+.trail-source-links small{display:block;margin-top:1px;color:var(--ink-soft);}
 
 /* ---- Trail map legend chips ---- */
 .legend-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}

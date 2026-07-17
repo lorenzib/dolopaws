@@ -767,7 +767,12 @@ function renderTrail(t){
     const provenanceIcon = window.DoloPawsIcons
       ? window.DoloPawsIcons.renderIconSvg(t.curated === false ? 'imported' : 'verified', { mode:'inline', color:'currentColor', size:16 })
       : '';
-    if (t.curated === false) {
+    const trust = window.DoloPawsTrailTrust;
+    const reviewProgress = trust && trust.reviewProgress ? trust.reviewProgress(t) : null;
+    if (reviewProgress) {
+      box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #b7791f;background:#fff8e6;border-radius:6px;font-size:13px;line-height:1.5;';
+      box.innerHTML = provenanceIcon + '<strong>' + itinEsc(trust.provenanceLabel(t)) + '.</strong> Unchecked safety categories remain explicitly unverified below.';
+    } else if (t.curated === false) {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #00897b;background:#e0f2f1;border-radius:6px;font-size:13px;line-height:1.5;';
       box.innerHTML = provenanceIcon + window.t('trail.importedBox')
         + (t.waymarkedtrails ? ` <a href="${t.waymarkedtrails}" target="_blank" rel="noopener">${window.t('trail.viewSource')}</a>` : '');
@@ -779,7 +784,8 @@ function renderTrail(t){
 
     // Trail hazards — surfaceHazards used to feed only the match scoring;
     // surface them to the reader too, right under the provenance banner.
-    if (Array.isArray(t.surfaceHazards) && t.surfaceHazards.length && !document.getElementById('trailHazards')) {
+    const surfaceVerified = !trust || !trust.categoryVerified || trust.categoryVerified(t, 'surfaceHazards');
+    if (surfaceVerified && Array.isArray(t.surfaceHazards) && t.surfaceHazards.length && !document.getElementById('trailHazards')) {
       const hz = document.createElement('div');
       hz.id = 'trailHazards';
       hz.style.cssText = 'margin:0 0 14px;padding:10px 14px;border-left:4px solid #9C3A25;background:#faeeea;border-radius:6px;font-size:13px;line-height:1.5;';

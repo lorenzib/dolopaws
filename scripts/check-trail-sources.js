@@ -27,6 +27,10 @@ const TRAIL_FILES = ['trails-data.js', 'osm-trails-data.js', 'osm-trails-savoy-d
 const ROCKY_SURFACES = new Set(['rock', 'stone', 'scree', 'mud']);
 const ROCKY_SHARE_THRESHOLD = 0.3;
 
+// The six hazard categories VERIFICATION.md asks every curated trail to have
+// a non-OSM citable source for. Order here is the order they're reported in.
+const HAZARD_CATEGORIES = ['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access'];
+
 function loadTrails() {
   const src = TRAIL_FILES.map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
   return new Function(`${src}\nreturn trails;`)();
@@ -89,6 +93,12 @@ function checkTrail(trail, osmProps) {
   return { flags, links };
 }
 
+function verificationProgress(trail) {
+  const checked = ((trail.verified && trail.verified.categories) || []).filter((c) => HAZARD_CATEGORIES.includes(c));
+  const missing = HAZARD_CATEGORIES.filter((c) => !checked.includes(c));
+  return { checked, missing };
+}
+
 function main() {
   const args = process.argv.slice(2);
   const idIdx = args.indexOf('--id');
@@ -106,9 +116,13 @@ function main() {
     return;
   }
 
-  // Trails with no official portal link are the hardest to verify — surface those last,
-  // so the easiest wins (a citable source already on file) come first.
+  // Priority: trails already partway verified (finish what's started), then
+  // trails with an official portal link on file (easiest to verify next),
+  // then the rest last.
   candidates.sort((a, b) => {
+    const aProgress = verificationProgress(a).checked.length > 0 ? 0 : 1;
+    const bProgress = verificationProgress(b).checked.length > 0 ? 0 : 1;
+    if (aProgress !== bProgress) return aProgress - bProgress;
     const aHasSite = osmByRelation.get(a.osmRelation)?.website ? 0 : 1;
     const bHasSite = osmByRelation.get(b.osmRelation)?.website ? 0 : 1;
     return aHasSite - bHasSite;
@@ -118,15 +132,34 @@ function main() {
   for (const trail of candidates) {
     const osmProps = osmByRelation.get(trail.osmRelation);
     const { flags, links } = checkTrail(trail, osmProps);
-    if (flags.length === 0 && links.length === 0) continue;
+    const { checked, missing } = verificationProgress(trail);
+    if (flags.length === 0 && links.length === 0 && checked.length === 0) continue;
     flaggedCount += 1;
 
     console.log(`\n${trail.name}  (${trail.id}, curated: ${trail.curated !== false})`);
+    console.log(`  Verified: ${checked.length}/${HAZARD_CATEGORIES.length} (${checked.length ? checked.join(', ') : 'none yet'})`);
+    if (missing.length > 0) console.log(`  Still needed: ${missing.join(', ')}`);
+    for (const source of trail.sourceLinks || []) {
+      console.log(`  Review source: ${source.label} — ${source.url}`);
+    }
     for (const link of links) console.log(`  ${link}`);
     for (const flag of flags) console.log(`  ⚑ ${flag}`);
   }
 
   console.log(`\n${flaggedCount}/${candidates.length} trails have something to check.`);
+
+  const invalidReviews = trails.filter((trail) => {
+    if (!trail.verified) return false;
+    const categories = Array.isArray(trail.verified.categories) ? trail.verified.categories : [];
+    return categories.some((category) => !HAZARD_CATEGORIES.includes(category))
+      || !trail.reviewedAt
+      || !Array.isArray(trail.sourceLinks)
+      || trail.sourceLinks.length === 0;
+  });
+  if (invalidReviews.length) {
+    console.error(`\n${invalidReviews.length} reviewed trail records have invalid categories, no review date, or no route-specific source links.`);
+    process.exitCode = 1;
+  }
 }
 
 main();

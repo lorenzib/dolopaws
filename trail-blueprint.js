@@ -44,6 +44,33 @@
     el.hidden = false;
   })();
 
+  /* ---- Dated review record and route-specific sources ------------ */
+  (function sourceRecord() {
+    const meta = $('trailReviewMeta');
+    const links = $('trailSourceLinks');
+    if (!meta || !links) return;
+    const progress = trust && trust.reviewProgress ? trust.reviewProgress(t) : null;
+    if (progress) {
+      const date = trust.formatReviewDate(t.reviewedAt || (t.verified && t.verified.date));
+      meta.textContent = `Last desk review: ${date} · ${t.reviewedBy || 'DoloPaws'} · ${progress.checked}/${progress.total} safety checks complete`;
+    } else {
+      meta.textContent = t.curated === false
+        ? 'No route-specific DoloPaws source review is recorded yet.'
+        : 'A dated route-specific source review is not yet available.';
+    }
+    const sources = Array.isArray(t.sourceLinks) ? t.sourceLinks : [];
+    if (!sources.length) {
+      links.innerHTML = '<p class="trail-sources">General data: Waymarked Trails · OpenStreetMap · Open-Meteo</p>';
+      return;
+    }
+    links.innerHTML = '<p class="trail-source-heading">Route-specific sources</p><ul>' + sources.map(source => {
+      const support = Array.isArray(source.categories) && source.categories.length
+        ? ` <small>Supports: ${source.categories.map(category => category.replace(/([A-Z])/g, ' $1').toLowerCase()).join(', ')}</small>`
+        : '';
+      return `<li><a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)}</a>${support}</li>`;
+    }).join('') + '</ul>';
+  })();
+
   /* ---- Answer strip ---------------------------------------------- */
   const strip = $('qaStrip');
   // The personalised match below now carries the decision context, so these
@@ -531,9 +558,9 @@
       ? { ok: true, title: 'Water', detail: 'A water source is mapped on this route. Bring a bowl.' }
       : { ok: false, title: 'Water', detail: 'No water source is mapped. Carry enough for the dog.' }));
     addAssessment(trust ? trust.heatAssessment(t) : null);
-    if (Number(t.terrainRank) !== 0) {
-      caution('Surface hazards', (t.terrainType || 'Gravel and mixed rock') + (t.curated === false ? '. This surface description is mapped, not field reviewed.' : '.') + ' Check pads at breaks; consider booties for tender paws.');
-    }
+    addAssessment(trust ? trust.surfaceAssessment(t) : (Number(t.terrainRank) !== 0
+      ? { ok: false, title: 'Surface hazards', detail: (t.terrainType || 'Gravel and mixed rock') + '. Check pads at breaks; consider booties for tender paws.' }
+      : null));
     addAssessment(trust ? trust.exposureAssessment(t) : (t.exposure
       ? { ok: false, title: 'Exposure', detail: 'Narrow ledges or unprotected drop-offs occur on parts of the route.' }
       : null));

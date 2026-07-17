@@ -47,6 +47,23 @@ describe('trail data trust states', () => {
     expect(trust.livestockAssessment(reviewed, '').detail).toMatch(/curated trail information/i);
   });
 
+  test('partial source reviews expose progress and keep unchecked categories unverified', () => {
+    const trust = loadTrust();
+    const partial = {
+      safetyLevel:'caution', terrainRank:2, terrainType:'Rocky path', exposure:true,
+      reviewedAt:'2026-07-17', verified:{ categories:['exposure','surfaceHazards'], date:'2026-07-17' },
+      waterSources:[{ km:2, label:'Stream' }], shadeCoverage:40, heatRisk:'moderate',
+    };
+    expect(trust.provenanceLabel(partial)).toBe('DoloPaws source review · 17 Jul 2026 · 2/6 checks');
+    expect(trust.riskLabel(partial, 'Caution')).toBe('Estimated: Caution');
+    expect(trust.reviewProgress(partial).checked).toBe(2);
+    expect(trust.waterAssessment(partial).title).toBe('Water availability unverified');
+    expect(trust.heatAssessment(partial).title).toBe('Heat & shade unverified');
+    expect(trust.exposureAssessment(partial).title).toBe('Exposure');
+    expect(trust.surfaceAssessment(partial).title).toBe('Surface hazards');
+    expect(trust.livestockAssessment(partial, '').title).toBe('Livestock unverified');
+  });
+
   test('unknown imported fields cap match confidence at 80 percent', () => {
     const score = loadScoring();
     expect(score({
@@ -55,6 +72,15 @@ describe('trail data trust states', () => {
       terrainRank:0,
       distance:3,
       surfaceHazards:[],
+    })).toBe(80);
+  });
+
+  test('partial source reviews also cap match confidence at 80 percent', () => {
+    const score = loadScoring();
+    expect(score({
+      safetyLevel:'low-risk', terrainRank:0, distance:3, surfaceHazards:[], exposure:false,
+      shadeCoverage:80, heatRisk:'low',
+      verified:{ categories:['access','surfaceHazards'] },
     })).toBe(80);
   });
 

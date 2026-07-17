@@ -67,6 +67,12 @@ function scoreTrail(t, overrides){
     score = Math.min(score, 80);
   }
 
+  // A category-by-category source review can be useful before it is complete,
+  // but unchecked safety facts must not produce a high-confidence match.
+  if(t.verified && Array.isArray(t.verified.categories) && t.verified.categories.length < 6){
+    score = Math.min(score, 80);
+  }
+
   return Math.max(5, Math.round(score));
 }
 

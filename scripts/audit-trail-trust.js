@@ -17,6 +17,8 @@ const reviewed = trails.filter(t => t.curated !== false);
 const imported = trails.filter(t => t.curated === false);
 const missing = (list, field) => list.filter(t => t[field] === undefined || t[field] === null).length;
 const risks = list => Object.fromEntries(['low-risk', 'moderate', 'caution'].map(level => [level, list.filter(t => t.safetyLevel === level).length]));
+const reviewCategories = ['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access'];
+const sourceReviewed = trails.filter(t => t.verified && Array.isArray(t.verified.categories));
 
 const report = {
   total: trails.length,
@@ -37,6 +39,12 @@ const report = {
     missingDuration: missing(imported, 'hours'),
     riskRatings: risks(imported),
   },
+  sourceReviews: {
+    count: sourceReviewed.length,
+    complete: sourceReviewed.filter(t => reviewCategories.every(category => t.verified.categories.includes(category))).length,
+    partial: sourceReviewed.filter(t => !reviewCategories.every(category => t.verified.categories.includes(category))).length,
+    byCategory: Object.fromEntries(reviewCategories.map(category => [category, sourceReviewed.filter(t => t.verified.categories.includes(category)).length])),
+  },
 };
 
 console.log(JSON.stringify(report, null, 2));
@@ -45,9 +53,14 @@ const invalid = trails.filter(t =>
   !t.id || !t.name || !Number.isFinite(Number(t.distance)) ||
   !['low-risk', 'moderate', 'caution'].includes(t.safetyLevel)
 );
+const invalidSourceReviews = sourceReviewed.filter(t =>
+  !t.reviewedAt || !Array.isArray(t.sourceLinks) || !t.sourceLinks.length ||
+  t.verified.categories.some(category => !reviewCategories.includes(category))
+);
 
-if (invalid.length) {
-  console.error(`\n${invalid.length} trails are missing an id, name, distance, or valid safety rating.`);
+if (invalid.length || invalidSourceReviews.length) {
+  if (invalid.length) console.error(`\n${invalid.length} trails are missing an id, name, distance, or valid safety rating.`);
+  if (invalidSourceReviews.length) console.error(`\n${invalidSourceReviews.length} source-reviewed trails have invalid categories, no review date, or no source links.`);
   process.exitCode = 1;
 } else {
   console.log('\nCore trail records are structurally valid. Missing observations must remain labelled unknown until reviewed.');

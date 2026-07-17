@@ -97,7 +97,8 @@ function safetyLabel(level) {
 
 function displaySafetyLabel(t) {
   const label = safetyLabel(t.safetyLevel);
-  return t.curated === false ? `Estimated: ${label}` : label;
+  const partial = t.verified && Array.isArray(t.verified.categories) && t.verified.categories.length < REVIEW_CATEGORIES.length;
+  return t.curated === false || partial ? `Estimated: ${label}` : label;
 }
 
 function displayWaterLabel(t, label) {
@@ -118,6 +119,24 @@ function displayStartLabel(t, label) {
 }
 
 const REGION_LABEL = { dolomites: 'Dolomites, Italy', savoy: 'Savoy, France' };
+const REVIEW_CATEGORIES = ['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access'];
+
+function reviewProgress(t) {
+  if (!t.verified || !Array.isArray(t.verified.categories)) return null;
+  return REVIEW_CATEGORIES.filter(category => t.verified.categories.includes(category));
+}
+
+function categoryVerified(t, category) {
+  const progress = reviewProgress(t);
+  return progress === null || progress.includes(category);
+}
+
+function formatReviewDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
+  if (!match) return String(value || 'date unavailable');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${Number(match[3])} ${months[Number(match[2]) - 1]} ${match[1]}`;
+}
 
 // Valley hub guides (add here as new area guides are published)
 const VALLEY_GUIDES = {
@@ -255,15 +274,23 @@ function trailPage(t, slug, all) {
   const canonical = `${BASE_URL}/trails/${slug}.html`;
   const regionLabel = REGION_LABEL[t.region] || 'Dolomites, Italy';
   const verified = t.curated !== false; // curated file entries have no `curated` flag
+  const progress = reviewProgress(t);
+  const reviewLabel = progress
+    ? `DoloPaws source review · ${formatReviewDate(t.reviewedAt || t.verified.date)} · ${progress.length}/${REVIEW_CATEGORIES.length} checks`
+    : null;
 
-  const badge = verified
+  const badge = reviewLabel
+    ? `<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>${escapeHtml(reviewLabel)}</span></span>`
+    : verified
     ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>DoloPaws curated · date unavailable</span></span>'
     : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported · not field reviewed</span></span>';
 
   const ogImage = t.imageIcon ? `${BASE_URL}/${t.imageIcon}` : `${BASE_URL}/icon-512.png`;
 
   // Guard against upstream "NaN%" surface strings (promote-osm-trails.js bug)
-  const terrain = /NaN/.test(String(t.terrainType || ''))
+  const terrain = !categoryVerified(t, 'surfaceHazards')
+    ? 'Terrain detail not yet source checked'
+    : /NaN/.test(String(t.terrainType || ''))
     ? 'Surface data not yet mapped'
     : t.terrainType;
 
@@ -284,7 +311,9 @@ function trailPage(t, slug, all) {
     )
     .join('\n      ');
 
-  const waterHtml =
+  const waterHtml = !categoryVerified(t, 'water')
+    ? `<h2>Water availability unverified</h2><p>The listed water locations have not yet been checked for current flow, potability or seasonal availability. Carry a full supply.</p>`
+    :
     Array.isArray(t.waterSources) && t.waterSources.length
       ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> ${verified ? 'Water on trail' : 'Mapped water points'}</h2>
     <ul>${t.waterSources
@@ -327,7 +356,15 @@ function trailPage(t, slug, all) {
           .join('\n    ')}`
       : '';
 
-  const osmCredit = !verified
+  const sourceRecord = Array.isArray(t.sourceLinks) && t.sourceLinks.length
+    ? `<h2>Review record and sources</h2>
+    <p class="sp-src">Last desk review: ${escapeHtml(formatReviewDate(t.reviewedAt || (t.verified && t.verified.date)))} · ${escapeHtml(t.reviewedBy || 'DoloPaws')} · ${progress ? `${progress.length}/${REVIEW_CATEGORIES.length} safety checks complete` : 'review status unavailable'}</p>
+    <ul>${t.sourceLinks.map(source => `<li><a href="${escapeHtml(source.url)}" rel="noopener">${escapeHtml(source.label)}</a>${Array.isArray(source.categories) ? ` <span class="sp-src">· supports ${escapeHtml(source.categories.join(', '))}</span>` : ''}</li>`).join('')}</ul>`
+    : '';
+
+  const osmCredit = progress
+    ? `<p class="sp-src" style="margin-top:20px;">DoloPaws source review is in progress. ${progress.length} of ${REVIEW_CATEGORIES.length} safety categories have route-specific support; unchecked categories remain unverified.</p>`
+    : !verified
     ? `<p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). The safety rating is an automated estimate, not a field assessment.</p>`
     : '<p class="sp-src" style="margin-top:20px;">Manually curated by DoloPaws. A dated source record is not yet available; confirm current conditions locally.</p>';
 
@@ -448,7 +485,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
     ${rifugiHtml}
     ${tipsHtml}
     ${insightsHtml}
-    <div id="dogFit">
+${sourceRecord ? `    ${sourceRecord}\n` : ''}    <div id="dogFit">
     <h2>Is this trail right for <em>your</em> dog?</h2>
     <p>The trail rating above describes the mountain, and it's the same for every dog. What it can't tell you is how this route pairs with your dog's build, age, and health. <a href="../account.html?next=trail.html%3Fid%3D${encodeURIComponent(t.id)}">Create your dog's free profile</a> and DoloPaws scores every trail against your dog on six real safety factors: terrain, shade, water access, distance, exposure, and heat risk.</p>
     </div>

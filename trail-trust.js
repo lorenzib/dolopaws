@@ -10,6 +10,22 @@
   'use strict';
 
   const imported = trail => !!trail && trail.curated === false;
+  const REVIEW_CATEGORIES = Object.freeze(['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access']);
+  const hasSourceReview = trail => !!(trail && trail.verified && Array.isArray(trail.verified.categories));
+  const categoryVerified = (trail, category) => !hasSourceReview(trail) || trail.verified.categories.includes(category);
+
+  function reviewProgress(trail) {
+    if (!hasSourceReview(trail)) return null;
+    const checked = REVIEW_CATEGORIES.filter(category => trail.verified.categories.includes(category));
+    return { checked: checked.length, total: REVIEW_CATEGORIES.length, categories: checked };
+  }
+
+  function formatReviewDate(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
+    if (!match) return String(value || 'date unavailable');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${Number(match[3])} ${months[Number(match[2]) - 1]} ${match[1]}`;
+  }
 
   function translate(key, vars, fallback) {
     const out = typeof root.t === 'function' ? root.t(key, vars) : null;
@@ -21,17 +37,24 @@
   }
 
   function riskLabel(trail, baseLabel) {
-    if (!imported(trail)) return baseLabel;
+    const progress = reviewProgress(trail);
+    if (!imported(trail) && (!progress || progress.checked === progress.total)) return baseLabel;
     return translate('trust.estimatedRisk', { rating: baseLabel }, `Estimated: ${baseLabel}`);
   }
 
   function provenanceLabel(trail) {
+    const progress = reviewProgress(trail);
+    if (progress) {
+      const date = formatReviewDate(trail.reviewedAt || trail.verified.date);
+      return `DoloPaws source review · ${date} · ${progress.checked}/${progress.total} checks`;
+    }
     return imported(trail)
       ? translate('trust.imported', null, 'Imported · not field reviewed')
       : translate('trust.reviewed', null, 'DoloPaws curated · date unavailable');
   }
 
   function waterPointLabel(trail, label) {
+    if (!categoryVerified(trail, 'water')) return `${String(label || 'Potential water location')} — current availability unverified`;
     if (!imported(trail)) return label;
     return String(label || 'Water point')
       .replace(/Drinking water\s*\(OSM-verified location\)/i, 'Water point mapped in OpenStreetMap')
@@ -39,6 +62,7 @@
   }
 
   function startPointLabel(trail, label) {
+    if (!categoryVerified(trail, 'access')) return `Suggested start — ${String(label || 'route start').replace(/^Start here\s*[—-]\s*/i, '')}. Access suitability is not yet source reviewed.`;
     if (!imported(trail)) return label;
     const cleaned = String(label || 'Route start')
       .replace(/^Start here\s*[—-]\s*/i, '')
@@ -50,6 +74,9 @@
 
   function waterAssessment(trail) {
     const mapped = Array.isArray(trail.waterSources) && trail.waterSources.length > 0;
+    if (!categoryVerified(trail, 'water')) {
+      return { ok: false, title: 'Water availability unverified', detail: 'Potential water locations are listed, but flow, potability and seasonal availability have not yet been checked against a current source. Carry a full supply.' };
+    }
     if (imported(trail)) {
       return mapped
         ? { ok: false, title: 'Mapped water point', detail: 'A water point appears in OpenStreetMap, but current flow and seasonal availability are not verified. Carry a full supply.' }
@@ -62,6 +89,9 @@
 
   function heatAssessment(trail) {
     const shade = typeof trail.shadeCoverage === 'number' ? trail.shadeCoverage : null;
+    if (!categoryVerified(trail, 'heat')) {
+      return { ok: false, title: 'Heat & shade unverified', detail: 'The stored shade and heat estimate has not yet been checked against a route-specific source. Use the live forecast and plan as if shade may be limited.' };
+    }
     if (imported(trail) && shade === null && !trail.heatRisk) {
       return { ok: false, title: 'Heat & shade unknown', detail: 'Shade and heat exposure have not been field reviewed. Check the forecast and plan as if shade may be limited.' };
     }
@@ -78,6 +108,9 @@
   }
 
   function exposureAssessment(trail) {
+    if (!categoryVerified(trail, 'exposure')) {
+      return { ok: false, title: 'Exposure unverified', detail: 'Narrow sections and drop-offs have not yet been checked against a route-specific source. Verify recent local guidance before committing.' };
+    }
     if (trail.exposure === true) {
       return { ok: false, title: 'Exposure', detail: 'Narrow ledges or unprotected drop-offs occur on parts of the route. Keep the dog leashed and on the inside.' };
     }
@@ -88,6 +121,9 @@
   }
 
   function livestockAssessment(trail, combinedText) {
+    if (!categoryVerified(trail, 'livestock')) {
+      return { ok: false, title: 'Livestock unverified', detail: 'Grazing animals and guardian-dog presence have not yet been checked against a route-specific source. Keep a leash ready and verify locally.' };
+    }
     const noted = /livestock|patou|guardian|cattle|herd|pasture|alpage|graz/.test(combinedText || '');
     if (noted) {
       return { ok: false, title: 'Livestock & leash', detail: 'Grazing animals, possibly with guardian dogs, are reported on or near this route. Leash through pastures and give herds a wide berth.' };
@@ -98,7 +134,22 @@
     return { ok: true, title: 'Leash', detail: 'No livestock is noted in the curated trail information. The review date is unavailable and local leash rules still apply.' };
   }
 
+  function surfaceAssessment(trail) {
+    if (!categoryVerified(trail, 'surfaceHazards')) {
+      return { ok: false, title: 'Surface detail unverified', detail: 'The stored terrain description has not yet been checked against a route-specific source. Expect variable mountain footing and verify recent conditions.' };
+    }
+    if (Number(trail.terrainRank) === 0 && !(trail.surfaceHazards || []).length) return null;
+    const hazards = Array.isArray(trail.surfaceHazards) && trail.surfaceHazards.length
+      ? ` Reported hazards: ${trail.surfaceHazards.join('; ')}.`
+      : '';
+    return { ok: false, title: 'Surface hazards', detail: `${trail.terrainType || 'Variable mountain terrain'}.${hazards} Check pads at breaks and consider booties for tender paws.` };
+  }
+
   function assessmentNote(trail) {
+    const progress = reviewProgress(trail);
+    if (progress) {
+      return `<strong style="color: var(--ink);">Source review in progress:</strong> ${progress.checked} of ${progress.total} safety categories have route-specific support. Unchecked categories stay visibly unverified.`;
+    }
     return imported(trail)
       ? '<strong style="color: var(--ink);">Automated estimate from mapped route data:</strong> distance, elevation and mapped surface influence the match. Exposure, shade, livestock and current conditions remain unverified.'
       : '<strong style="color: var(--ink);">Our assessment of this curated trail:</strong> terrain, listed water, elevation and shade are weighed against your dog\'s profile. The review date is unavailable and current conditions can still change.';
@@ -106,6 +157,9 @@
 
   root.DoloPawsTrailTrust = Object.freeze({
     imported,
+    categoryVerified,
+    reviewProgress,
+    formatReviewDate,
     riskLabel,
     provenanceLabel,
     waterPointLabel,
@@ -114,6 +168,7 @@
     heatAssessment,
     exposureAssessment,
     livestockAssessment,
+    surfaceAssessment,
     assessmentNote,
   });
 })(window);
