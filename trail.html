@@ -252,6 +252,9 @@ body{background:#EFECE2;}
 .td2-hero-sub{font-size:13.5px;color:#A9B7AB;margin:7px 0 0;}
 .td2-hero .verified-seal{background:rgba(159,225,203,.16);color:#9FE1CB;}
 .td2-hero-rating{display:inline-flex;align-items:center;gap:6px;color:#F0C55E;font-size:13px;font-weight:800;}
+.td2-hero-rating .cnt{color:#A9B7AB;font-weight:600;}
+.td2-hero-rating.is-empty{color:#A9B7AB;}
+.td2-hero-rating.is-empty:hover .cnt{color:#EAF1E8;}
 .td2-hero-actions{display:flex;flex-direction:row;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;background:none;border:none;padding:0;position:relative;max-width:420px;}
 .td2-hero-actions .td2-btn-g{background:transparent;border:1.5px solid rgba(255,255,255,.28);color:#fff;}
 .td2-hero-actions #detailSaveBtn.saved{background:rgba(159,225,203,.16);border-color:rgba(159,225,203,.4);color:#9FE1CB;}
@@ -311,6 +314,7 @@ body{background:#EFECE2;}
 .td2 .td2-hazard .add-report-btn{padding:7px 12px;font-size:12px;}
 .td2-hazard-head .lhs{display:inline-flex;align-items:center;gap:9px;}
 .td2-active-pill{display:none;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;background:#F3D9D2;color:#9C3A25;}
+.td2-active-pill .dot{width:7px;height:7px;border-radius:50%;background:#9C3A25;flex:none;}
 .td2-hazard.has-active .td2-active-pill{display:inline-flex;}
 .td2 .add-report-btn{background:#fff;border:1.5px solid #E4B9A8;color:#9C3A25;border-radius:12px;padding:8px 14px;font-weight:700;}
 .td2 #trailFlagsList{display:flex;flex-direction:column;gap:10px;}
@@ -389,7 +393,8 @@ body{background:#EFECE2;}
 .td2 .td-safety-intro{grid-column:1/-1;margin:0 0 4px;padding:12px 14px;border-left:3px solid #7f9a6c;background:#EEF3EC;border-radius:0 12px 12px 0;}
 
 /* Community action buttons → ghost buttons (prototype .btn-g) */
-.td2 .add-report-btn,.td2 .add-photo-btn,.td2 .add-review-btn{font:700 13px 'Inter',sans-serif;background:#fff;border:1.5px solid #E4E0D3;color:#2E4034;border-radius:12px;padding:9px 15px;cursor:pointer;}
+.td2 .add-report-btn,.td2 .add-photo-btn,.td2 .add-review-btn{display:inline-flex;align-items:center;gap:7px;font:700 13px 'Inter',sans-serif;background:#fff;border:1.5px solid #E4E0D3;color:#2E4034;border-radius:12px;padding:9px 15px;cursor:pointer;}
+.td2 .add-report-btn svg,.td2 .add-photo-btn svg,.td2 .add-review-btn svg{flex:none;}
 .td2 .add-report-btn:hover,.td2 .add-photo-btn:hover,.td2 .add-review-btn:hover{border-color:#3E7A91;}
 .td2 .add-report-btn{border-color:#E4B9A8;color:#9C3A25;}
 
@@ -563,9 +568,9 @@ body{background:#EFECE2;}
         <div id="trailDetailMap"></div>
         <p id="routeDataNotice" class="route-data-notice" hidden></p>
         <span class="td-map-chip" id="tdMapChip" hidden></span>
-        <button id="poiToggle" type="button" class="td-map-toggle" aria-pressed="true">◉ <span>Points of interest</span></button>
+        <button id="poiToggle" type="button" class="td-map-toggle" aria-pressed="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg> <span>Points of interest</span></button>
         <span id="tdLivePill" class="td-live-pill" hidden><span class="dot"></span>You are here · live</span>
-        <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map">⛶ <span>Expand map</span></button>
+        <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> <span>Expand map</span></button>
         <details class="map-key map-key--dock"><summary data-i18n="trail.mapKey">Map key</summary>
           <div id="mapLegend">
             <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
@@ -612,13 +617,13 @@ body{background:#EFECE2;}
 
         <!-- PHOTOS -->
         <div class="td2-card td2-section">
-          <div class="td2-rev-head"><span class="td2-kick">Photos<span id="td2PhotoCount"></span></span><button id="addPhotoBtn" type="button" class="add-photo-btn">＋ Add a photo</button></div>
+          <div class="td2-rev-head"><span class="td2-kick">Photos<span id="td2PhotoCount"></span></span><button id="addPhotoBtn" type="button" class="add-photo-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add a photo</button></div>
           <div id="trailPhotosList" class="trail-photos-list"><div class="empty-state empty-state--compact"><p class="empty-state__title">No trail photos yet</p><p class="empty-state__copy">Add a recent, useful view so others can recognise the route and conditions.</p></div></div>
         </div>
 
         <!-- REVIEWS -->
         <div class="td2-card td2-section">
-          <div class="td2-rev-head"><span class="td2-kick">Reviews<span id="td2ReviewCount"></span></span><span class="td2-rev-actions"><span class="td2-rev-avg" id="td2ReviewAvg" hidden></span><button id="addReviewBtn" type="button" class="add-review-btn">✎ Write a review</button></span></div>
+          <div class="td2-rev-head"><span class="td2-kick">Reviews<span id="td2ReviewCount"></span></span><span class="td2-rev-actions"><span class="td2-rev-avg" id="td2ReviewAvg" hidden></span><button id="addReviewBtn" type="button" class="add-review-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg> Write a review</button></span></div>
           <div id="trailReviewsList" class="trail-reviews-list"><div class="empty-state empty-state--compact"><p class="empty-state__title">No reviews yet</p><p class="empty-state__copy">Share how the route felt for your dog and what another owner should know.</p></div></div>
         </div>
 
@@ -637,8 +642,8 @@ body{background:#EFECE2;}
         <!-- Trail hazards (sidebar, per prototype) -->
         <div class="td2-card td2-section td2-hazard" id="td2Hazards">
           <div class="td2-hazard-head">
-            <span class="lhs"><span class="td2-kick">Trail hazards<span id="td2HazardCount"></span></span><span class="td2-active-pill">● Active now</span></span>
-            <button id="addReportBtn" type="button" class="add-report-btn">⚑ Flag</button>
+            <span class="lhs"><span class="td2-kick">Trail hazards<span id="td2HazardCount"></span></span><span class="td2-active-pill"><span class="dot"></span>Active now</span></span>
+            <button id="addReportBtn" type="button" class="add-report-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3v18h2v-7h5l1 2h6V6h-5l-1-2H5z"/></svg> Flag</button>
           </div>
           <div id="trailFlagsList"><div class="empty-state empty-state--compact"><p class="empty-state__title">No recent hazard reports</p><p class="empty-state__copy">The community has not reported a current issue here. Conditions can still change.</p></div></div>
         </div>

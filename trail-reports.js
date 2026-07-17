@@ -94,13 +94,24 @@ function initTrailReports(map, trail){
       }
     }
     if (heroRatingEl){
+      const starSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:none;"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 18l-5.9 3.1 1.3-6.6L2.5 9.4l6.6-.8z"/></svg>';
+      heroRatingEl.hidden = false;
       if (!visible.length){
-        heroRatingEl.hidden = true;
+        // Honest zero state in the design's rating slot: invite the first
+        // review instead of pretending a score exists.
+        heroRatingEl.classList.add('is-empty');
+        heroRatingEl.innerHTML = `${starSvg} <span class="cnt">No reviews yet</span>`;
       } else {
         const average = visible.reduce((total, review) => total + Number(review.rating), 0) / visible.length;
-        heroRatingEl.hidden = false;
-        heroRatingEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:none;"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 18l-5.9 3.1 1.3-6.6L2.5 9.4l6.6-.8z"/></svg> ${average.toFixed(1)} <span>(${visible.length} ${visible.length === 1 ? 'review' : 'reviews'})</span>`;
+        heroRatingEl.classList.remove('is-empty');
+        heroRatingEl.innerHTML = `${starSvg} ${average.toFixed(1)} <span class="cnt">· ${visible.length} ${visible.length === 1 ? 'review' : 'reviews'}</span>`;
       }
+      // The rating is a shortcut to the reviews section either way.
+      heroRatingEl.style.cursor = 'pointer';
+      heroRatingEl.onclick = () => {
+        const list = document.getElementById('trailReviewsList');
+        if (list) list.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
     }
 
     if (!reviewListEl) return;
