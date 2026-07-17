@@ -107,6 +107,7 @@ img,svg{max-width:100%;height:auto;}
   gap:6px;
 }
 .topnav .links a:hover,.topnav .links a.active{color:#1b1f19;font-weight:500;}
+.mobile-nav-toggle{display:none;}
 .account-btn{
   padding:9px 18px;
   border-radius:var(--radius-pill);
@@ -504,9 +505,50 @@ img,svg{max-width:100%;height:auto;}
 }
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width:640px){
-  .topnav{padding:16px 20px;}
-  .topnav .links{gap:16px;font-size:12px;}
+@media (max-width:700px){
+  .topnav{padding:12px 20px;}
+  .topnav .brand{font-size:20px;gap:10px;}
+  .topnav .brand img{width:34px;height:34px;}
+  .mobile-nav-toggle{
+    width:44px;
+    height:44px;
+    padding:0;
+    border:1px solid var(--paper-line);
+    border-radius:12px;
+    background:var(--card);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    cursor:pointer;
+  }
+  .mobile-nav-toggle span{width:19px;height:2px;border-radius:2px;background:currentColor;transition:transform .16s ease,opacity .16s ease;}
+  .mobile-nav-open .mobile-nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .mobile-nav-open .mobile-nav-toggle span:nth-child(2){opacity:0;}
+  .mobile-nav-open .mobile-nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .topnav .links{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    display:none;
+    flex-direction:column;
+    align-items:stretch;
+    gap:4px;
+    padding:10px 20px 18px;
+    background:rgba(247,244,235,.98);
+    border-bottom:1px solid rgba(27,31,25,.12);
+    box-shadow:0 12px 24px rgba(27,31,25,.08);
+    font-size:15px;
+  }
+  .topnav.mobile-nav-open .links{display:flex;}
+  .topnav .links a{min-height:44px;padding:10px 12px;border-radius:10px;}
+  .topnav .links a:hover,.topnav .links a.active{background:var(--sage-dim);}
+  .topnav .links .account-btn{width:100%;min-height:44px;margin:4px 0 0;text-align:center;}
+  .topnav .links > div{display:block !important;width:100%;}
+  .topnav .links > div > button{width:100%;min-height:44px;text-align:center;}
 }
 
 /* ---------- AREA FILTER (shared: my-trails.html + homepage) ---------- */

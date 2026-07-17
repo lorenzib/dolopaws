@@ -462,6 +462,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
   DoloPaws | A personalised trail guide for dogs and their humans.
 </div>
 
+<script src="../mobile-nav.js"></script>
 </body>
 </html>
 `;
