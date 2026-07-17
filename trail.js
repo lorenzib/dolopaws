@@ -1136,6 +1136,26 @@ function renderTrail(t){
 
   // Save button — reflects and updates real account state, same pattern as the trail cards.
   const saveBtn = document.getElementById('detailSaveBtn');
+  let saveStatusTimer = null;
+  function showSaveStatus(message){
+    let status = document.getElementById('detailSaveStatus');
+    if(!status){
+      status = document.createElement('div');
+      status.id = 'detailSaveStatus';
+      status.className = 'dw-toast';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      document.body.appendChild(status);
+    }
+    if(saveStatusTimer) clearTimeout(saveStatusTimer);
+    status.textContent = message;
+    status.hidden = false;
+    status.className = 'dw-toast dw-toast--in';
+    saveStatusTimer = setTimeout(() => {
+      status.hidden = true;
+      status.className = 'dw-toast';
+    }, 4200);
+  }
   function paintSaveBtn(isFav){
     saveBtn.textContent = isFav ? '✓ Saved' : '♥ Save';
     saveBtn.classList.toggle('saved', isFav);
@@ -1151,14 +1171,28 @@ function renderTrail(t){
     const favorites = await window.DoloPawsAuth.getFavorites();
     if(window.DoloPawsTrailAction && window.DoloPawsTrailAction.consume('save') && !favorites[t.id]){
       favorites[t.id] = true;
-      await window.DoloPawsAuth.setFavorites(favorites);
+      const saved = await window.DoloPawsAuth.setFavorites(favorites);
+      if(saved) showSaveStatus('Trail saved.');
+      else {
+        delete favorites[t.id];
+        showSaveStatus('Could not save this trail. Please try again.');
+      }
     }
     paintSaveBtn(!!favorites[t.id]);
     saveBtn.onclick = async () => {
+      saveBtn.disabled = true;
       const current = await window.DoloPawsAuth.getFavorites();
-      if(current[t.id]) delete current[t.id]; else current[t.id] = true;
-      await window.DoloPawsAuth.setFavorites(current);
-      paintSaveBtn(!!current[t.id]);
+      const wasSaved = !!current[t.id];
+      if(wasSaved) delete current[t.id]; else current[t.id] = true;
+      const saved = await window.DoloPawsAuth.setFavorites(current);
+      if(saved){
+        paintSaveBtn(!wasSaved);
+        showSaveStatus(wasSaved ? 'Removed from saved trails.' : 'Trail saved.');
+      } else {
+        paintSaveBtn(wasSaved);
+        showSaveStatus('Could not update saved trails. Please try again.');
+      }
+      saveBtn.disabled = false;
     };
   }
   window.addEventListener('dolopaws-auth-changed', e => handleSaveAuth(e.detail.user));

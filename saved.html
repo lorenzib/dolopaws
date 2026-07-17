@@ -82,12 +82,33 @@ document.addEventListener('DOMContentLoaded', function(){
   var subEl = document.getElementById('savedSub');
   var SAFETY = { 'low-risk': ['Low-risk', '#2C5C34'], 'moderate': ['Moderate', '#8A5A16'], 'caution': ['Caution', '#9C3A25'] };
   var loginBtn = document.getElementById('savedLoginBtn');
+  var statusTimer = null;
   if(loginBtn) loginBtn.addEventListener('click', function(){
     var accountBtn = document.getElementById('accountBtn');
     if(accountBtn) accountBtn.click();
   });
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function showStatus(message){
+    var status = document.getElementById('savedActionStatus');
+    if(!status){
+      status = document.createElement('div');
+      status.id = 'savedActionStatus';
+      status.className = 'dw-toast';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      document.body.appendChild(status);
+    }
+    if(statusTimer) clearTimeout(statusTimer);
+    status.textContent = message;
+    status.hidden = false;
+    status.className = 'dw-toast dw-toast--in';
+    statusTimer = setTimeout(function(){
+      status.hidden = true;
+      status.className = 'dw-toast';
+    }, 4200);
+  }
 
   // Compact mirror of script.js matchReason(): real fields only.
   function whyFits(tr, ov){
@@ -147,8 +168,19 @@ document.addEventListener('DOMContentLoaded', function(){
 
     listEl.querySelectorAll('[data-remove]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        delete favs[btn.dataset.remove];
-        window.DoloPawsAuth.setFavorites(favs).then(function(){ render(favs, profile); });
+        var nextFavs = Object.assign({}, favs);
+        delete nextFavs[btn.dataset.remove];
+        btn.disabled = true;
+        btn.textContent = 'Removing…';
+        window.DoloPawsAuth.setFavorites(nextFavs).then(function(saved){
+          if(!saved) throw new Error('save failed');
+          render(nextFavs, profile);
+          showStatus('Removed from saved trails.');
+        }).catch(function(){
+          btn.disabled = false;
+          btn.textContent = 'Remove';
+          showStatus('Could not remove this trail. Please try again.');
+        });
       });
     });
   }
