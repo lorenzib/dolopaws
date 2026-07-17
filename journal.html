@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(!/^trail\.html\?id=[a-z0-9._-]+$/i.test(pendingReturn || '')) pendingReturn = '';
   var openedPendingTrail = false;
   var statusTimer = null;
+  var journalDirty = false;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function key(){ return 'dolopaws-journal-' + uid; }
@@ -250,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function(){
         b.textContent = '★';
         b.className = n <= state.rating ? 'on' : '';
         b.setAttribute('aria-label', n + ' star' + (n > 1 ? 's' : ''));
-        b.addEventListener('click', function(){ state.rating = n; renderStarInput(); });
+        b.addEventListener('click', function(){ journalDirty = true; state.rating = n; renderStarInput(); });
         row.appendChild(b);
       })(i);
     }
@@ -261,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if(accountBtn) accountBtn.click();
       return;
     }
+    journalDirty = false;
     overlay.hidden = false;
     renderStarInput();
   });
@@ -268,7 +270,21 @@ document.addEventListener('DOMContentLoaded', function(){
     var accountBtn = document.getElementById('accountBtn');
     if(accountBtn) accountBtn.click();
   });
+  overlay.addEventListener('input', function(){ journalDirty = true; });
+  overlay.addEventListener('change', function(){ journalDirty = true; });
+  window.addEventListener('beforeunload', function(event){
+    if(!journalDirty) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
+  function discardJournalDraft(){
+    ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
+    state.rating = 5;
+    journalDirty = false;
+  }
   function closeLog(){
+    if(journalDirty && !window.confirm(window.t('form.discard'))) return;
+    if(journalDirty) discardJournalDraft();
     if(pendingReturn){
       window.location.href = pendingReturn;
       return;
@@ -298,6 +314,7 @@ document.addEventListener('DOMContentLoaded', function(){
     overlay.hidden = true;
     ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
     state.rating = 5;
+    journalDirty = false;
     pendingTrailId = null;
     pendingDuration = 0;
     pendingReturn = '';

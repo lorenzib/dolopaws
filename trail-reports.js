@@ -260,6 +260,10 @@ function initTrailReports(map, trail){
     });
   }
 
+  function confirmDiscard(dirty){
+    return !dirty || window.confirm(window.t('form.discard'));
+  }
+
   function openPhotoModal(){
     if (!(window.DoloPawsAuth && window.DoloPawsAuth.currentUser)){
       if (window.DoloPawsTrailAction) window.DoloPawsTrailAction.request('photo');
@@ -277,9 +281,22 @@ function initTrailReports(map, trail){
       <button type="button" data-submit class="auth-submit" style="margin-top:12px;">Add photo</button>
     </div>`;
     document.body.appendChild(overlay);
-    const close = () => overlay.remove();
-    overlay.querySelector('[data-close]').addEventListener('click', close);
-    overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+    let dirty = false;
+    const warnBeforeUnload = event => {
+      if (!dirty) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warnBeforeUnload);
+    overlay.querySelector('[data-photo]').addEventListener('change', () => { dirty = true; });
+    overlay.querySelector('[data-caption]').addEventListener('input', () => { dirty = true; });
+    const close = force => {
+      if (force !== true && !confirmDiscard(dirty)) return;
+      window.removeEventListener('beforeunload', warnBeforeUnload);
+      overlay.remove();
+    };
+    overlay.querySelector('[data-close]').addEventListener('click', () => close(false));
+    overlay.addEventListener('click', event => { if (event.target === overlay) close(false); });
     overlay.querySelector('[data-submit]').addEventListener('click', async () => {
       const error = overlay.querySelector('[data-err]');
       const file = overlay.querySelector('[data-photo]').files[0];
@@ -295,7 +312,7 @@ function initTrailReports(map, trail){
         const image = await downscaleTrailPhoto(file);
         const result = await window.DoloPawsCommunity.addTrailPhoto(trail.id, image, overlay.querySelector('[data-caption]').value.trim());
         if (result.ok){
-          close();
+          close(true);
           await load();
           showActionStatus('Photo added to this trail.');
           return;
@@ -332,9 +349,17 @@ function initTrailReports(map, trail){
     document.body.appendChild(overlay);
 
     let selectedRating = 0;
+    let dirty = false;
+    const warnBeforeUnload = event => {
+      if (!dirty) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warnBeforeUnload);
     const starButtons = Array.from(overlay.querySelectorAll('[data-rating]'));
     starButtons.forEach(button => {
       button.addEventListener('click', () => {
+        dirty = true;
         selectedRating = Number(button.dataset.rating);
         starButtons.forEach(star => {
           const active = Number(star.dataset.rating) <= selectedRating;
@@ -343,10 +368,15 @@ function initTrailReports(map, trail){
         });
       });
     });
+    overlay.querySelector('[data-text]').addEventListener('input', () => { dirty = true; });
 
-    function close(){ overlay.remove(); }
-    overlay.querySelector('[data-close]').addEventListener('click', close);
-    overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+    function close(force){
+      if (force !== true && !confirmDiscard(dirty)) return;
+      window.removeEventListener('beforeunload', warnBeforeUnload);
+      overlay.remove();
+    }
+    overlay.querySelector('[data-close]').addEventListener('click', () => close(false));
+    overlay.addEventListener('click', event => { if (event.target === overlay) close(false); });
     overlay.querySelector('[data-submit]').addEventListener('click', async () => {
       const error = overlay.querySelector('[data-err]');
       if (!selectedRating){
@@ -365,7 +395,7 @@ function initTrailReports(map, trail){
           null,
         );
         if (result.ok){
-          close();
+          close(true);
           await load();
           showActionStatus('Review posted. Thank you for helping the community.');
           return;
@@ -413,8 +443,16 @@ function initTrailReports(map, trail){
     document.body.appendChild(overlay);
 
     let selectedType = null;
+    let dirty = false;
+    const warnBeforeUnload = event => {
+      if (!dirty) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warnBeforeUnload);
     overlay.querySelectorAll('[data-type]').forEach(btn => {
       btn.addEventListener('click', () => {
+        dirty = true;
         selectedType = btn.dataset.type;
         overlay.querySelectorAll('[data-type]').forEach(b => {
           b.style.background = 'none'; b.style.borderColor = 'var(--paper-line)'; b.style.color = 'var(--ink)';
@@ -427,12 +465,17 @@ function initTrailReports(map, trail){
     const kmRow = overlay.querySelector('[data-kmrow]');
     const kmInput = overlay.querySelector('[data-km]');
     const kmVal = overlay.querySelector('[data-kmval]');
-    hasKm.addEventListener('change', () => { kmRow.hidden = !hasKm.checked; });
-    kmInput.addEventListener('input', () => { if (kmVal) kmVal.textContent = kmInput.value; });
+    hasKm.addEventListener('change', () => { dirty = true; kmRow.hidden = !hasKm.checked; });
+    kmInput.addEventListener('input', () => { dirty = true; if (kmVal) kmVal.textContent = kmInput.value; });
+    overlay.querySelector('[data-text]').addEventListener('input', () => { dirty = true; });
 
-    function close(){ overlay.remove(); }
-    overlay.querySelector('[data-close]').addEventListener('click', close);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    function close(force){
+      if (force !== true && !confirmDiscard(dirty)) return;
+      window.removeEventListener('beforeunload', warnBeforeUnload);
+      overlay.remove();
+    }
+    overlay.querySelector('[data-close]').addEventListener('click', () => close(false));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
 
     overlay.querySelector('[data-submit]').addEventListener('click', async () => {
       const err = overlay.querySelector('[data-err]');
@@ -446,7 +489,7 @@ function initTrailReports(map, trail){
       try {
         const res = await window.DoloPawsCommunity.addFlag(trail.id, selectedType, km, text);
         if (res.ok){
-          close();
+          close(true);
           await load();
           showActionStatus('Hazard report posted. Thank you for keeping others informed.');
           return;
