@@ -1273,10 +1273,14 @@ async function renderReturningHomepage(profile){
       : t.heatRisk === 'low' ? { l: 'Low', bg: '#DCEBDD', fg: '#2C5C34' }
       : { l: 'Unknown', bg: '#ECE8DD', fg: '#59695D' };
     const selected = t.id === selectedTrailId;
-    const provenanceLabel = window.DoloPawsTrailTrust
-      ? window.DoloPawsTrailTrust.provenanceLabel(t)
+    const trust = window.DoloPawsTrailTrust;
+    const provenanceLabel = trust
+      ? trust.tierLabel(t)
       : (t.curated === false ? window.t('badge.imported') : window.t('badge.verified'));
-    const provenanceBadge = productBadge(t.curated === false ? 'imported' : 'verified', provenanceLabel);
+    const provenanceBadge = productBadge(
+      trust ? trust.tierBadgeStyle(t) : (t.curated === false ? 'imported' : 'verified'),
+      provenanceLabel
+    );
     const newBadge = isNew ? productBadge('new', window.t('badge.new')) : '';
     const riskBadge = productBadge(t.safetyLevel, trailSafetyLabel(t));
     const heatBadge = productBadge(`heat-${t.heatRisk || 'unknown'}`, `Heat ${heat.l}`);

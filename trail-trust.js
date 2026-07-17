@@ -10,6 +10,56 @@
   'use strict';
 
   const imported = trail => !!trail && trail.curated === false;
+  // The three public tiers a trail can sit in. See VERIFICATION.md ("Trail
+  // tiers"). "under-review" is shown but not yet audited; "route-audited"
+  // cleared the desk mechanism; "dolopaws-walked" means a human walked it.
+  const TIERS = Object.freeze(['under-review', 'route-audited', 'dolopaws-walked']);
+
+  // Single source of truth for a trail's tier. An explicit `trail.tier`
+  // (or a `walked` flag) wins; otherwise the tier is derived so it can never
+  // contradict the graduation/curation data:
+  //   - a fully graduated trail (10/10 checks) is route-audited;
+  //   - a hand-curated real listing is route-audited (published, not walked);
+  //   - anything imported or still in progress is under-review.
+  // No data migration is required — legacy `curated`-only trails resolve
+  // correctly, and a trail publishes at whatever tier this returns.
+  const hasRoute = trail => !!trail && Array.isArray(trail.path) && trail.path.length >= 2;
+
+  function tierOf(trail) {
+    if (!trail) return 'under-review';
+    let tier;
+    if (TIERS.includes(trail.tier)) tier = trail.tier;
+    else if (trail.walked === true) tier = 'dolopaws-walked';
+    else {
+      const graduation = graduationProgress(trail);
+      if (graduation && graduation.verified) tier = 'route-audited';
+      else tier = trail.curated === false ? 'under-review' : 'route-audited';
+    }
+    // Invariant: the published DoloPaws tiers claim the *route* was audited or
+    // walked, so they require a mapped route. A trail with no `path` (a
+    // viewpoint or place listing) has no route to audit — cap it at
+    // under-review no matter what its flags say.
+    if ((tier === 'route-audited' || tier === 'dolopaws-walked') && !hasRoute(trail)) {
+      return 'under-review';
+    }
+    return tier;
+  }
+
+  // Short tier badge text — the headline label a visitor sees on a card or
+  // trail page. The fuller `provenanceLabel` (below) adds progress/date detail.
+  function tierLabel(trail) {
+    const tier = tierOf(trail);
+    if (tier === 'dolopaws-walked') return translate('tier.walked', null, 'DoloPaws walked');
+    if (tier === 'route-audited') return translate('tier.routeAudited', null, 'DoloPaws route-audited');
+    return translate('tier.underReview', null, 'Under DoloPaws review');
+  }
+
+  // Badge visual style per tier, reusing the existing pill styles: under-review
+  // keeps the muted "imported" look, the two DoloPaws tiers use the "verified" look.
+  function tierBadgeStyle(trail) {
+    return tierOf(trail) === 'under-review' ? 'imported' : 'verified';
+  }
+
   const REVIEW_CATEGORIES = Object.freeze(['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access']);
   const GRADUATION_CATEGORIES = Object.freeze(['photo', 'route', 'mapPoints', 'elevation', ...REVIEW_CATEGORIES]);
   const hasSourceReview = trail => !!(trail && trail.verified && Array.isArray(trail.verified.categories));
@@ -76,9 +126,9 @@
     if (trail && trail.routeAudit && trail.reviewedAt) {
       return `DoloPaws route audit · ${formatReviewDate(trail.reviewedAt)}`;
     }
-    return imported(trail)
-      ? translate('trust.imported', null, 'Imported · not field reviewed')
-      : translate('trust.reviewed', null, 'DoloPaws curated · date unavailable');
+    // Base case: no progress/graduation/route-audit detail to add — the tier
+    // label is the whole provenance line.
+    return tierLabel(trail);
   }
 
   function waterPointLabel(trail, label) {
@@ -188,6 +238,10 @@
 
   root.DoloPawsTrailTrust = Object.freeze({
     imported,
+    TIERS,
+    tierOf,
+    tierLabel,
+    tierBadgeStyle,
     categoryVerified,
     reviewProgress,
     graduationProgress,

@@ -29,16 +29,16 @@
     return (out && out !== key) ? out : fallback;
   };
 
-  /* ---- Verified / Imported seal in the hero ---------------------- */
+  /* ---- Tier seal in the hero ------------------------------------- */
   (function seal() {
     const el = $('verifiedSeal');
     if (!el) return;
-    if (t.curated === false) {
-      el.innerHTML = dpIcon('imported') + '<span>' + esc(trust ? trust.provenanceLabel(t) : tt('badge.importedS', null, 'Imported')) + '</span>';
+    const style = trust && trust.tierBadgeStyle ? trust.tierBadgeStyle(t) : (t.curated === false ? 'imported' : 'verified');
+    const label = trust ? trust.provenanceLabel(t) : (t.curated === false ? tt('badge.importedS', null, 'Under DoloPaws review') : tt('trail.verifiedShort', null, 'DoloPaws route-audited'));
+    el.innerHTML = dpIcon(style) + '<span>' + esc(label) + '</span>';
+    if (style === 'imported') {
       el.style.background = '#e0f2f1';
       el.style.color = '#00695c';
-    } else {
-      el.innerHTML = dpIcon('verified') + '<span>' + esc(trust ? trust.provenanceLabel(t) : tt('trail.verifiedShort', null, 'DoloPaws reviewed')) + '</span>';
     }
     el.classList.add('dp-inline-status');
     el.hidden = false;

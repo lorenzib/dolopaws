@@ -30,27 +30,52 @@ A trail becomes verified only when all ten checks pass:
 9. Surface hazards
 10. Dog access and leash rules
 
-The first four are presentation/data checks. The final six are the safety
-categories defined in `VERIFICATION.md`. Until all ten pass, keep
-`curated: false`, keep the rating labelled estimated, and list the blockers.
-When all ten pass, set `graduation.status: 'verified'`, record all ten completed
-checks, and set `curated: true`. Preserve `source: 'osm'` as provenance.
+**A trail sits in one of three tiers, all shown to visitors: `under-review`
+(imported OSM data, audit not yet run — shown but flagged unvetted, rating
+estimated), `route-audited` (cleared this mechanism), or `dolopaws-walked`
+(a human has walked it).** "Imported" is never a public label. This guide runs
+the route-audit that promotes an under-review trail to route-audited. It verifies
+data integrity and screens for hard disqualifiers — it does **not** judge how
+dangerous the trail is; per-dog severity is the Layer-2 match %'s job
+(`SCORING.md`), which models heat × distance × shade × water and the dog's
+own profile. See "What the route-audit produces" and "Trail tiers" in
+`VERIFICATION.md` for the full model. The ten checks play four roles, not one
+flat list:
 
-Four of the six safety categories are resolvable from map and official
-difficulty data (see `VERIFICATION.md` for the full definitions):
+- **Data-integrity gates — hard blocks:** the four presentation checks
+  (photo, geometry, map points, elevation). Wrong data means the trail stays
+  a candidate.
+- **Hard disqualifiers:** dogs prohibited (national reserve / protected area)
+  → **remove** the trail; officially marked dangerous for humans (SAC
+  T3+/`alpine_hiking`, "difficile/vertigineux", via ferrata, cables/ladders,
+  or a named hazardous surface) → **block**. These are the exposure and
+  surface positive signals.
+- **Heat/shade — the one safety-data gate:** still needs a citable canopy/
+  exposure source, because `shadeCoverage` feeds the match %.
+- **Display advisories — never block:** water potability, livestock/patou
+  presence, leash rules. Water *presence* is resolved for the record (mapped
+  points at real coordinates, or a documented "no water on route") so the
+  score and advisory are accurate — not as a severity call.
 
-- **Water** passes when water points are mapped and confirmed at their real
-  coordinates (presence, not potability), or documented as "no water on
-  route." Displayed guidance still cautions against assuming potability.
-- **Exposure** is flagged only when the trail is officially marked dangerous
-  for humans (SAC T3+/`alpine_hiking`, "difficile/vertigineux", via ferrata,
-  fixed cables or ladders). An easy/family-rated trail with none of these
-  passes.
-- **Livestock** is not a hazard gate; it fails only when dogs are prohibited
-  (national reserve / protected area), which triggers removal, not a blocker.
-- **Surface hazards** are flagged only when a known hazardous surface is on
-  record (scree, loose rock, scrambling, fixed cables/ladders). Sparse or
-  absent OSM surface data passes rather than blocks.
+Alongside the gates, a fifth requirement: **content enrichment.** A
+route-audited trail must replace the auto-generated import boilerplate (desc
+"… imported from the OpenStreetMap hiking network…", tips "Imported route —
+… not yet been walked") with genuine, trail-specific content — a real
+description, dog notes, written-out terrain/shade/water detail, and key
+waypoints. Each added fact still needs a citable source; descriptive colour
+does not. This part is authored, not mechanizable: the gate checks can be
+batch-run, but a human writes the content before the trail publishes.
+
+A long or hot route with **no mapped water** passes the water gate but must
+surface as a visible warning and lower the match %, never sit behind a silent
+green check.
+
+Until all applicable gates pass **and the listing is enriched**, keep
+`tier: 'under-review'` (still shown, flagged unvetted), keep the rating
+labelled estimated, and list the blockers. When the gates pass and the
+content is written, set `tier: 'route-audited'`, record the completed checks,
+and preserve `source: 'osm'` as provenance. `dolopaws-walked` is a separate,
+stronger step requiring a human to walk the trail.
 
 ## Detailed checks for every trail
 

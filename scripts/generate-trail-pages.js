@@ -302,8 +302,8 @@ function trailPage(t, slug, all) {
   const badge = reviewLabel
     ? `<span class="dp-badge dp-badge--${graduation ? (graduation.verified ? 'verified' : 'imported') : progress ? 'verified' : 'imported'}"><span data-dp-icon="${graduation ? (graduation.verified ? 'verified' : 'imported') : progress ? 'verified' : 'imported'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${escapeHtml(reviewLabel)}</span></span>`
     : verified
-    ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>DoloPaws curated · date unavailable</span></span>'
-    : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported · not field reviewed</span></span>';
+    ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>DoloPaws route-audited</span></span>'
+    : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Under DoloPaws review</span></span>';
 
   const ogImage = t.imageIcon ? `${BASE_URL}/${t.imageIcon}` : `${BASE_URL}/icon-512.png`;
 

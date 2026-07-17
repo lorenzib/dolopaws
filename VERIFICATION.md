@@ -1,52 +1,122 @@
 # DoloPaws trail verification — internal reference
 
-How a trail earns `curated: true`, and what "checked" means per hazard.
-Companion to `SCORING.md` (how the trail is scored once verified) and
-`trail-trust.js` (how the unverified/verified distinction is worded to the
-owner). Keep this in sync with `scripts/promote-osm-trails.js` and the
-`PROMOTED_RELATIONS` comments in that file — this doc is the process,
-that file's comments are the audit trail.
+How a trail moves through the review tiers, and what "checked" means per
+hazard. Companion to `SCORING.md` (how the trail is scored) and
+`trail-trust.js` (how the tier is worded to the owner). Keep this in sync
+with `scripts/promote-osm-trails.js` and the `PROMOTED_RELATIONS` comments in
+that file — this doc is the process, that file's comments are the audit trail.
 
-## The graduation rule
+## Trail tiers
 
-**An imported trail graduates to verified only after all ten checks pass:**
-photo/licensing, route geometry, map-point coordinates, elevation, and every
-one of the six hazard categories below. At graduation set `curated: true`,
-retain the original `source: 'osm'` provenance, set
-`graduation.status: 'verified'`, and record all ten completed checks.
+All three tiers are shown to visitors — the word "imported" is never a public
+label. The tier tells the visitor how far a trail has been through DoloPaws'
+review, from "we haven't vetted this yet" to "a human has walked it."
 
-**Each safety category resolves against the best evidence its revised
-definition allows — map data, official difficulty rating, or a citable
-source, per the checklist below.** Four categories were deliberately
-redefined so they can be settled from map and official-difficulty data
-rather than only a field visit:
+| Tier | Meaning |
+|---|---|
+| **Under review** | Shown, but the DoloPaws route-audit has not yet run. Freshly imported OSM data: usable, but its rating is estimated and its facts are unvetted. The honest default for anything the mechanism hasn't reached. |
+| **DoloPaws route-audited** | Cleared the desk mechanism *and* been enriched into a real listing: data integrity verified, no hard disqualifiers, shade sourced, and genuine trail-specific content written (real description, dog notes, terrain/shade/water detail, key waypoints) in place of import boilerplate. The gate checks are largely mechanizable, but enrichment is authored content, so this tier moves at human-writing speed. **Not** a claim that a human walked it. |
+| **DoloPaws walked** | A human has walked the trail. The strong tier — field-verified, not just a data check. |
 
-- **Water** resolves on mapped *presence* at real coordinates, not on
-  confirmed potability.
-- **Exposure** is flagged only when the trail is officially *marked
-  dangerous for humans* (high SAC scale, "difficile/vertigineux", via
-  ferrata, cables/ladders) — not from a bespoke drop-off assessment.
-- **Livestock** is no longer a hazard gate; it fails only when dogs are
-  *prohibited* (national reserve / protected area), which is a removal.
-- **Surface hazards** are flagged only when a *known hazardous surface* is on
-  record (scree, loose rock, scrambling, fixed cables/ladders); sparse or
-  absent OSM surface data passes rather than blocks.
+The tier is a field on the trail (e.g. `tier: 'under-review' |
+'route-audited' | 'dolopaws-walked'`), not the old `curated` boolean — a
+boolean can't carry three states, and the badge logic in `trail-trust.js`
+keys off the tier. A hard disqualifier (dogs prohibited) still **removes** a
+trail entirely rather than showing it under review.
 
-The remaining categories — heat/shade and dog access/leash rules — still
-want a citable source, and **mapped absence of a hazard is never, by itself,
-evidence the hazard is absent.** OSM data (via `promote-osm-trails.js`) is
-what makes a trail importable and walkable on the map at all — distance,
-elevation, computed terrain rank, matched water points — and for the four
-redefined categories it can now carry the check; for the remaining two it is
-a starting point, not proof.
+"Route-audited" is what the desk process in this doc produces: it promotes an
+under-review trail one tier. Everything below describes that mechanism.
 
-A trail can also stay `curated: false` and still be *enriched* with cited
-facts (see `osm-14987412` / "Sentier du Four" in `trails-data.js` — leash
-and livestock facts sourced from Decathlon Outdoor and the Haute-Savoie
-department fiche, but no citable source for dog access, so it stays
-imported). Enrichment and full curation are different bars: enrichment
-needs one citable source per fact you add; curation needs every hazard
-category below resolved.
+## What the route-audit produces
+
+The route-audit answers a narrow question: **is this under-review trail's data
+real, and are there any hard disqualifiers?** It is *not* a verdict on how
+dangerous the trail is for a given dog — that is the job of the Layer-2
+match % in `SCORING.md`, which already models the interactions that actually
+hurt dogs (heat × distance × shade × water, terrain vs. the dog's tolerance,
+fragility and health modifiers) far better than any binary check could. The
+route-audit and the match % are two different systems: the audit establishes
+*trust in the facts*; the match % turns those facts into *per-dog risk*. The
+audit must not try to re-litigate severity — if it did, it would duplicate
+the scoring engine badly and hide the interactions the score captures well.
+
+So the ten checks sort into four roles, not one flat pass/fail list — and a
+fifth requirement, content enrichment, sits alongside them before a trail
+can publish as route-audited.
+
+### 1. Data-integrity gates — hard blocks (the four presentation checks)
+
+Photo/licensing, route geometry, map-point coordinates, elevation. These
+must be correct to publish, because they decide whether the listing can be
+trusted at all. They carry no dog-safety content themselves; they are about
+honesty of the record.
+
+### 2. Hard disqualifiers — block or remove
+
+- **Dogs prohibited** (national reserve, RNCFS, other protected area where
+  dogs are banned even leashed): the trail is **removed**, not blocked — add
+  its relation to `PROMOTED_RELATIONS` with a `BANNED`/`REMOVED` comment.
+- **Officially marked dangerous for humans** (SAC T3 / `alpine_hiking`+,
+  "difficile/vertigineux", via ferrata, fixed cables/ladders, or a named
+  hazardous surface like scree or scrambling): **blocks** the audit — the
+  trail stays a candidate. This is the exposure/surface positive signal, and
+  such a trail should not be published as a route-audited dog walk.
+
+### 3. Heat/shade — the one safety-*data* gate
+
+Still needs a citable source describing canopy/exposure, because
+`shadeCoverage` feeds the match %. This gate exists to keep that input real,
+not to pronounce the trail hot or cool — the score does that per dog.
+
+### 4. Display advisories — never block
+
+Water **potability**, **livestock/patou presence**, **leash rules**, and the
+"no official danger marking" nuance for exposure. These stay visible to the
+owner and, where they are quantitative (water presence, shade), flow into the
+match %, but they never gate the audit. Water **presence** is resolved for
+the record (mapped points at real coordinates, or a documented "no water on
+route") but only so the score and the advisory are accurate — not as a
+severity judgment.
+
+**One thing to strengthen, not loosen:** a long or hot route with no mapped
+water is the single interaction that most often harms dogs. It passes the
+water gate by default, so it must surface as a **visible warning** and must
+lower the match % — never sit silently behind a green check. `mapped absence
+of a hazard is never, by itself, evidence the hazard is absent` still holds.
+
+### 5. Content enrichment — required to publish as route-audited
+
+The gate checks above establish that the data is *trustworthy*; enrichment
+establishes that the listing is *useful*. A raw import ships with robotic
+auto-text — desc "An X km route near Y, imported from the OpenStreetMap
+hiking network…", tips "Imported route — … not yet been walked." A
+route-audited trail must **replace that boilerplate with genuine,
+trail-specific content**:
+
+- a real **description** of the route (character, scenery, what to expect);
+- **dog notes** — leash/access as known, plus any advisory (livestock/patou,
+  no-water warning) the audit surfaced;
+- **terrain, shade, and water** detail written out, not left as generic
+  labels;
+- **key waypoints / decision points** where the route needs them.
+
+Each added *fact* still needs a citable source (the "Sentier du Four" pattern
+in `trails-data.js` — leash and livestock facts sourced from Decathlon
+Outdoor and the Haute-Savoie department fiche); descriptive colour does not,
+but must not assert facts it can't support. Because enrichment is authored,
+this is the part of the route-audit that is **not** mechanizable — the gate
+checks can be batch-run, but a human writes the content before the trail
+publishes as route-audited. Deeper enrichment (a licensed photo, richer
+tips) can keep accruing afterward, and is expected at the `dolopaws-walked`
+tier.
+
+When every gate passes **and** the listing is enriched, set
+`tier: 'route-audited'`, retain the original `source: 'osm'` provenance, and
+record the completed checks. Reaching `tier: 'dolopaws-walked'` is a
+separate, stronger step that requires a human to walk it. A trail that fails
+the audit — or is data-clean but not yet enriched — stays
+`tier: 'under-review'` (still shown, still flagged unvetted) until finished,
+or is removed on a hard disqualifier.
 
 ## Source hierarchy — what counts as citable
 

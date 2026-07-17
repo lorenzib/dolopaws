@@ -19,13 +19,13 @@ function loadScoring(){
 
 describe('trail data trust states', () => {
   const imported = { curated:false, safetyLevel:'low-risk', waterSources:[] };
-  const reviewed = { safetyLevel:'low-risk', waterSources:[{ km:1, label:'Fountain' }], heatRisk:'low', shadeCoverage:60, exposure:false };
+  const reviewed = { path:[[46.5,11.6],[46.51,11.61]], safetyLevel:'low-risk', waterSources:[{ km:1, label:'Fountain' }], heatRisk:'low', shadeCoverage:60, exposure:false };
 
   test('imported risk labels are explicitly estimates', () => {
     const trust = loadTrust();
     expect(trust.riskLabel(imported, 'Low-risk terrain')).toBe('Estimated: Low-risk terrain');
-    expect(trust.provenanceLabel(imported)).toMatch(/not field reviewed/i);
-    expect(trust.provenanceLabel(reviewed)).toMatch(/curated.*date unavailable/i);
+    expect(trust.provenanceLabel(imported)).toMatch(/under dolopaws review/i);
+    expect(trust.provenanceLabel(reviewed)).toMatch(/route-audited/i);
   });
 
   test('missing imported observations render as unknown, not safe', () => {
@@ -108,6 +108,44 @@ describe('trail data trust states', () => {
     })).toBe(80);
   });
 
+  test('tierOf resolves the three public tiers without a data migration', () => {
+    const trust = loadTrust();
+    const route = [[46.5, 11.6], [46.51, 11.61]];
+    // Legacy data: derived from curated with no explicit tier.
+    expect(trust.tierOf({ curated: false, path: route })).toBe('under-review');
+    expect(trust.tierOf({ path: route })).toBe('route-audited');
+    expect(trust.tierOf(undefined)).toBe('under-review');
+    // An in-progress graduation is still under review.
+    expect(trust.tierOf({ curated: false, path: route, graduation: {
+      status: 'in-progress', required: ['photo', 'route'], completed: ['photo'],
+    } })).toBe('under-review');
+    // A fully graduated imported trail is route-audited.
+    expect(trust.tierOf({ curated: false, path: route, graduation: {
+      status: 'verified', required: ['photo', 'route'], completed: ['photo', 'route'],
+    } })).toBe('route-audited');
+    // Explicit fields win over derivation (when there is a route).
+    expect(trust.tierOf({ curated: false, path: route, tier: 'route-audited' })).toBe('route-audited');
+    expect(trust.tierOf({ curated: false, path: route, walked: true })).toBe('dolopaws-walked');
+    expect(trust.tierOf({ tier: 'dolopaws-walked', path: route })).toBe('dolopaws-walked');
+    // A garbage tier value falls back to derivation, never trusted verbatim.
+    expect(trust.tierOf({ curated: false, path: route, tier: 'nonsense' })).toBe('under-review');
+  });
+
+  test('a trail with no route cannot be route-audited or walked', () => {
+    const trust = loadTrust();
+    // Curated viewpoint/place listings with no path (e.g. Seceda Ridge) may
+    // not claim the route was audited — there is no route.
+    expect(trust.tierOf({ name: 'Seceda Ridge Trail' })).toBe('under-review');
+    expect(trust.tierOf({ curated: true })).toBe('under-review');
+    expect(trust.tierOf({ path: [[46.5, 11.6]] })).toBe('under-review'); // single point is not a route
+    // Explicit tiers and flags cannot override the missing route.
+    expect(trust.tierOf({ tier: 'route-audited' })).toBe('under-review');
+    expect(trust.tierOf({ walked: true })).toBe('under-review');
+    expect(trust.tierOf({ graduation: {
+      status: 'verified', required: ['route'], completed: ['route'],
+    } })).toBe('under-review');
+  });
+
   test('catalog and detail templates include trust explanations', () => {
     const browse = fs.readFileSync(path.join(__dirname, 'browse-trails.html'), 'utf8');
     const detail = fs.readFileSync(path.join(__dirname, 'trail-blueprint.js'), 'utf8');
@@ -122,10 +160,10 @@ describe('trail data trust states', () => {
 
     const importedPage = fs.readFileSync(path.join(__dirname, 'trails/planetenweg-sentiero-dei-pianeti.html'), 'utf8');
     const reviewedPage = fs.readFileSync(path.join(__dirname, 'trails/lago-di-braies-loop.html'), 'utf8');
-    expect(importedPage).toContain('Imported · not field reviewed');
+    expect(importedPage).toContain('Under DoloPaws review');
     expect(importedPage).toContain('Estimated: Low-risk');
     expect(importedPage).not.toContain('verified map data');
-    expect(reviewedPage).toContain('DoloPaws curated · date unavailable');
+    expect(reviewedPage).toContain('DoloPaws route-audited');
     expect(reviewedPage).toContain('A dated source record is not yet available');
   });
 });

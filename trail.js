@@ -764,10 +764,11 @@ function renderTrail(t){
     const box = document.createElement('div');
     box.id = 'osmProvenance';
     box.className = 'trail-provenance';
-    const provenanceIcon = window.DoloPawsIcons
-      ? window.DoloPawsIcons.renderIconSvg(t.curated === false ? 'imported' : 'verified', { mode:'inline', color:'currentColor', size:16 })
-      : '';
     const trust = window.DoloPawsTrailTrust;
+    const provStyle = trust && trust.tierBadgeStyle ? trust.tierBadgeStyle(t) : (t.curated === false ? 'imported' : 'verified');
+    const provenanceIcon = window.DoloPawsIcons
+      ? window.DoloPawsIcons.renderIconSvg(provStyle, { mode:'inline', color:'currentColor', size:16 })
+      : '';
     const graduation = trust && trust.graduationProgress ? trust.graduationProgress(t) : null;
     const reviewProgress = trust && trust.reviewProgress ? trust.reviewProgress(t) : null;
     if (graduation) {
