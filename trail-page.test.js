@@ -64,13 +64,13 @@ function loadTrailScript(overrides = {}){
 }
 
 describe('trail page map legend', () => {
-  test('docked map key is open by default so the legend is visible on load', () => {
+  test('docked map key starts collapsed so it does not cover the route', () => {
     const html = fs.readFileSync(path.join(__dirname, 'trail.html'), 'utf8');
     document.body.innerHTML = html;
     const legendDock = document.querySelector('.map-key--dock');
 
     expect(legendDock).not.toBeNull();
-    expect(legendDock.hasAttribute('open')).toBe(true);
+    expect(legendDock.hasAttribute('open')).toBe(false);
     expect(document.getElementById('legendChips')).not.toBeNull();
   });
 
@@ -80,10 +80,28 @@ describe('trail page map legend', () => {
 
     const nearbyWrap = document.getElementById('nearbyTrails');
     expect(nearbyWrap).not.toBeNull();
-    expect(nearbyWrap.querySelector('h2').textContent).toMatch(/Nearby trails/i);
+    expect(nearbyWrap.querySelector('h3').textContent).toMatch(/Similar trails/i);
 
     expect(document.getElementById('decisionBar')).toBeNull();
     expect(html).not.toContain('Gentler nearby');
+  });
+
+  test('match, safety, risk, and live conditions each have one clear owner', () => {
+    const html = fs.readFileSync(path.join(__dirname, 'trail.html'), 'utf8');
+    const blueprint = fs.readFileSync(path.join(__dirname, 'trail-blueprint.js'), 'utf8');
+    const trail = fs.readFileSync(path.join(__dirname, 'trail.js'), 'utf8');
+    document.body.innerHTML = html;
+
+    expect(document.getElementById('tdRiskLine')).not.toBeNull();
+    expect(document.querySelectorAll('#sideForecast')).toHaveLength(1);
+    expect(document.getElementById('sideConditions')).toBeNull();
+    expect(document.getElementById('matchAdvice')).toBeNull();
+    expect(document.querySelector('.td-safety-intro').textContent).toMatch(/Permanent trail conditions/i);
+
+    expect(blueprint).toContain("['route', 'Route effort'");
+    expect(blueprint).toContain("('Heat & shade', detail)");
+    expect((blueprint.match(/api\.open-meteo\.com/g) || [])).toHaveLength(1);
+    expect(trail).not.toContain('api.open-meteo.com');
   });
 
   test('renderLegendChips populates trail legend entries', () => {

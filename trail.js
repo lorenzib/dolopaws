@@ -810,8 +810,7 @@ function renderTrail(t){
       facts.splice(2, 0, [`${Math.max(...t.elevationProfile.map(p => p.elev))} m`, window.t('trail.fact.high')]);
     }
     factsEl.innerHTML = facts.map(([val, label]) =>
-      `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('')
-      + `<span class="f safe"><b>${safetyLabel(t.safetyLevel)}</b><span>${window.t('trail.fact.terrain')}</span></span>`;
+      `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('');
 
     // Personal match — needs a logged-in profile. Guests see the facts
     // plus an honest invitation: the score exists, it just isn't theirs yet.
@@ -863,43 +862,6 @@ function renderTrail(t){
     `<span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:12px;background:var(--sage-dim);color:var(--ink);">${tag}</span>`
   ).join('');
 
-  // Live weather at the trailhead — real forecast via Open-Meteo, a free
-  // API that requires no key and permits non-commercial client-side use
-  // (worth re-checking their terms if DoloPaws ever becomes a paid product).
-  if(typeof coordSource.lat === 'number'){
-    const weatherEl = document.getElementById('weatherWidget');
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordSource.lat}&longitude=${coordSource.lng}&current=temperature_2m,weathercode,windspeed_10m,precipitation&timezone=auto`)
-      .then(r => r.json())
-      .then(data => {
-        if(!data.current) return;
-        const c = data.current;
-        const isIt = (window.DoloPawsI18n && window.DoloPawsI18n.lang) === 'it';
-        const codeText = (isIt ? {
-          0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Coperto',
-          45:'Nebbia',48:'Nebbia',51:'Pioviggine',61:'Pioggia debole',63:'Pioggia',
-          65:'Pioggia forte',71:'Neve debole',73:'Neve',75:'Neve forte',
-          80:'Rovesci',95:'Temporale',
-        } : {
-          0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
-          45:'Fog',48:'Fog',51:'Light drizzle',61:'Light rain',63:'Rain',
-          65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
-          80:'Rain showers',95:'Thunderstorm',
-        })[c.weathercode] || (isIt ? 'Variabile' : 'Mixed conditions');
-        const chip = document.getElementById('weatherChip');
-        if(chip){
-          chip.textContent = `${c.temperature_2m}°C · ${codeText} · ${window.t('trail.weatherWind')} ${c.windspeed_10m} km/h`;
-          chip.hidden = false;
-        }
-        weatherEl.innerHTML = `<b>${window.t('trail.weatherNow')}</b> ${c.temperature_2m}°C, ${codeText}, ${window.t('trail.weatherWind')} ${c.windspeed_10m} km/h` +
-          (c.precipitation > 0 ? `, ${c.precipitation}mm precipitation` : '') +
-          `<div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">${window.t('trail.weatherVia')}</div>`;
-        weatherEl.hidden = false;
-      })
-      .catch(() => {
-        weatherEl.innerHTML = `<span style="color:var(--ink-soft);">${window.t('trail.weatherUnavail')}</span>`;
-        weatherEl.hidden = false;
-      });
-  }
   document.getElementById('trailDetailContent').innerHTML = renderTrailDetailContent(t);
 
   // "Good to know" — curated insights (history, geology, best practice)

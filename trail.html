@@ -84,7 +84,7 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
 .td-whyfits .head{display:flex;align-items:center;gap:9px;margin-bottom:16px;}
 .td-whyfits .paw{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#c9d6bf,#7f9a6c);display:grid;place-items:center;font-size:15px;}
 .td-whyfits .title{font:500 18px 'Source Serif 4',serif;color:#2f5138;}
-.match-signals{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.match-signals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
 .match-signal{display:flex;gap:11px;}
 .match-signal .mark{flex:0 0 auto;color:#4a7c59;font-size:13px;margin-top:2px;}
 .match-signal b{display:block;font:600 13.5px 'Inter',sans-serif;color:#2f5138;}
@@ -99,6 +99,9 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
 
 /* Dog safety */
 .dog-safety-rows{display:flex;flex-direction:column;gap:12px;}
+.td-safety-intro{margin:0 0 14px;padding:14px 16px;border-left:3px solid #7f9a6c;background:#eef3ec;border-radius:0 12px 12px 0;}
+.td-safety-intro b{display:block;font:600 13.5px 'Inter',sans-serif;color:#2f5138;}
+.td-safety-intro span{display:block;margin-top:3px;font-size:12.5px;line-height:1.5;color:#5c6055;}
 .safety-row{display:flex;align-items:flex-start;gap:14px;background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:14px;padding:16px 18px;}
 .safety-row .pill{flex:0 0 auto;font:600 11px 'Inter',sans-serif;padding:4px 10px;border-radius:999px;margin-top:1px;}
 .safety-row.is-good .pill{background:#e5efe7;color:#2f5138;}
@@ -120,21 +123,15 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
 .community-actions{display:flex;gap:8px;margin:14px 0 22px;}
 .add-photo-btn,.add-review-btn{font:500 12.5px 'Inter',sans-serif;background:none;border:1px solid rgba(27,31,25,.16);border-radius:8px;padding:7px 12px;cursor:pointer;color:#4a4d43;}
 
-/* Sidebar cards */
-.td-cond{background:#f6ecdb;border:1px solid #e6d3b4;border-radius:18px;padding:18px;}
-.td-cond .head{display:flex;align-items:center;justify-content:space-between;}
-.td-cond .k{font:700 11px 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a5a26;}
-.td-cond .temp{font-size:11px;color:#a07b45;}
-.td-cond .meter{display:flex;align-items:center;gap:9px;margin-top:12px;}
-.td-cond .meter .lbl{font-size:12px;color:#6e5a3c;width:64px;}
-.td-cond .meter .bars{flex:1;display:flex;gap:4px;}
-.td-cond .meter .bars span{flex:1;height:7px;border-radius:4px;background:#e6d3b4;}
-.td-cond .meter .rd{font-size:11.5px;font-weight:600;color:#2f5138;}
-.td-cond p{margin:12px 0 0;font-size:12.5px;line-height:1.5;color:#6e5a3c;}
+/* Live conditions have one owner: this combined forecast card. */
 .td-fc{background:#fbfaf4;border:1px solid rgba(27,31,25,.09);border-radius:18px;padding:18px;}
 .td-fc .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;}
 .td-fc .head .t{font:500 15px 'Source Serif 4',serif;}
 .td-fc .head .v{font-size:11.5px;color:#8a8d80;}
+.td-fc-now{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;padding:13px 14px;background:#f6ecdb;border:1px solid #e6d3b4;border-radius:12px;}
+.td-fc-now .copy{font-size:12.5px;line-height:1.5;color:#6e5a3c;}
+.td-fc-now .copy b{display:block;color:#8a5a26;font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.td-fc-now .temp{flex:0 0 auto;font:500 25px 'Source Serif 4',serif;color:#1b1f19;}
 .fc-strip{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:66px;}
 .fc-strip .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;}
 .fc-strip .bar{width:100%;border-radius:4px;}
@@ -163,7 +160,7 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
 @media (max-width:960px){
   .td-grid{grid-template-columns:1fr;}
   .td-side{position:static;flex-direction:row;flex-wrap:wrap;}
-  .td-cond,.td-fc{flex:1 1 280px;}
+  .td-fc{flex:1 1 280px;}
   .td-hero-in{flex-direction:column;}
   .near-grid,.trail-photos-list{grid-template-columns:1fr 1fr;}
   #trailName{font-size:32px;}
@@ -219,6 +216,7 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
   .td-btn-dark{padding:10px;font-size:13px;}
   .td-btn-half{padding:9px 6px;font-size:12px;}
   .td-log-link{padding-top:3px;font-size:11.5px;}
+  .match-signals{grid-template-columns:1fr;gap:12px;}
   .trail-map-box{height:62vh;min-height:390px;}
   .map-expand-btn{width:38px;padding:0;justify-content:center;}
   .map-expand-btn span{display:none;}
@@ -358,6 +356,7 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
 
       <!-- DOG SAFETY -->
       <div id="tabSafety" role="tabpanel" hidden>
+        <p class="td-safety-intro"><b>Permanent trail conditions</b><span>These describe the route itself. Check the live walking forecast separately before you leave.</span></p>
         <div id="dogSafetyRows" class="dog-safety-rows"></div>
 
         <div class="td-hz-head">
@@ -376,7 +375,6 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
           </div>
         </div>
 
-        <div id="matchAdvice" class="match-advice" hidden style="margin-top:22px;"></div>
         <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
       </div>
 
@@ -395,24 +393,15 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
     </div>
 
     <!-- ============ SIDEBAR ============ -->
-    <aside class="td-side" aria-label="Conditions and forecast">
-      <div class="td-cond" id="sideConditions" hidden>
-        <div class="head">
-          <span class="k" id="sideCondTitle">Today</span>
-          <span class="temp" id="sideCondTemp"></span>
-        </div>
-        <div class="meter">
-          <span class="lbl">Heat load</span>
-          <div class="bars" id="sideHeatBars"><span></span><span></span><span></span></div>
-          <span class="rd" id="sideHeatReading"></span>
-        </div>
-        <p id="sideCondWindow"></p>
-      </div>
-
+    <aside class="td-side" aria-label="Live walking forecast">
       <div class="td-fc" id="sideForecast" hidden>
         <div class="head">
           <span class="t">Walking forecast</span>
           <span class="v" id="sideFcValley"></span>
+        </div>
+        <div class="td-fc-now">
+          <div class="copy"><b id="sideCondTitle">Today</b><span id="sideCondWindow"></span></div>
+          <span class="temp" id="sideCondTemp"></span>
         </div>
         <div id="sideForecastToday"></div>
         <div class="fc-legend"><i style="background:#5c8a52;"></i>Cool <i style="background:#c98a3e;margin-left:6px;"></i>Warm <i style="background:#b2542e;margin-left:6px;"></i>Hot</div>
@@ -450,7 +439,7 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
 <script src="hike-mode.js" defer></script>
 <script src="detail-pois.js" defer></script>
 <script src="trail-reports.js" defer></script>
-<script src="trail.js?v=20260717" defer></script>
-<script src="trail-blueprint.js?v=20260717" defer></script>
+<script src="trail.js?v=20260717-2" defer></script>
+<script src="trail-blueprint.js?v=20260717-2" defer></script>
 </body>
 </html>

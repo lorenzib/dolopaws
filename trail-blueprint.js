@@ -89,27 +89,6 @@
   }
   paintDogCard();
 
-  // Card 2 — Today. Mirrors the weather chip trail.js fills (no second
-  // API call); adds an early-start hint only when the data justifies it.
-  (function paintTodayCard() {
-    const card = $('qaToday'), title = $('qaTodayTitle'), sub = $('qaTodaySub');
-    const chip = $('weatherChip');
-    if (!card || !chip) return;
-    function sync() {
-      const txt = chip.textContent.trim();
-      if (!txt) return;
-      title.textContent = tt('qa.todayTitle', null, 'Today at the trailhead');
-      let hint = '';
-      if (t.heatRisk === 'high') hint = ' · ' + tt('qa.todayHeatHint', null, 'exposed route, start early');
-      else if (t.heatRisk === 'moderate') hint = ' · ' + tt('qa.todayShadeHint', null, 'some exposed stretches');
-      sub.textContent = txt + hint;
-      card.hidden = false;
-      chip.hidden = true; // the card replaces the floating chip
-    }
-    new MutationObserver(sync).observe(chip, { childList: true, characterData: true, subtree: true });
-    if (chip.textContent.trim()) sync();
-  })();
-
   // Card 3 — Getting there. Start point label + directions link.
   (function paintAccessCard() {
     const card = $('qaAccess'), title = $('qaAccessTitle'), sub = $('qaAccessSub');
@@ -224,14 +203,12 @@
     }
 
     const easyTerrain = Number(t.terrainRank) === 0;
-    const goodShade = Number(t.shadeCoverage) >= 40;
-    const hasWater = Array.isArray(t.waterSources) && t.waterSources.length > 0;
     const lowRisk = t.safetyLevel === 'low-risk';
     const verdict = lowRisk && easyTerrain
-      ? 'A gentle, low-risk choice for most dogs, with the usual checks for heat and crowds.'
+      ? 'A gentle, low-risk choice for most dogs.'
       : t.safetyLevel === 'caution'
         ? 'A more demanding trail: check the hazards and your dog’s confidence before committing.'
-        : 'A manageable trail for prepared dogs; review the terrain and conditions before setting off.';
+        : 'A manageable trail for prepared dogs; review the route constraints before committing.';
     const heroVerdict = $('heroVerdict');
     if (heroVerdict) heroVerdict.textContent = verdict;
 
@@ -251,23 +228,14 @@
     };
     const signalEl = $('matchSignals');
     const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
-    const maxAltitude = Math.max(...(t.elevationProfile || []).map(p => p.elev || 0));
-    const signalData = [];
-    signalData.push(['paw', 'Easy paws', easyTerrain ? 'Flat, packed surface' : (t.terrainType || 'Mixed trail')]);
-    if (typeof t.shadeCoverage === 'number' && t.shadeCoverage > 0) {
-      signalData.push(['shade', 'Good shade', `${Number(t.shadeCoverage)}% of the route`]);
-    }
-    signalData.push(['water', hasWater ? 'Water available' : 'Carry water', hasWater ? 'At the trailhead' : 'No source mapped']);
-    signalData.push(['heat', `${t.heatRisk === 'low' ? 'Low' : t.heatRisk === 'high' ? 'High' : 'Moderate'} heat risk`, t.heatRisk === 'low' ? 'Start before midday' : 'Check the forecast']);
-    if (isLoop) {
-      signalData.push(['loop', 'Loop route', `${t.distance} km back to parking`]);
-    }
-    if (maxAltitude > 0) {
-      signalData.push(['mountain', `${maxAltitude} m altitude`, 'Weather can change quickly']);
-    }
+    const climb = Number(t.elevation) || 0;
+    const signalData = [
+      ['paw', easyTerrain ? 'Gentle paw surface' : 'Mixed paw surface', easyTerrain ? 'Flat or packed underfoot' : (t.terrainType || 'Check pads at breaks')],
+      ['route', 'Route effort', `${t.distance} km${climb ? ` · +${climb} m` : ''}`],
+      ['loop', isLoop ? 'Loop route' : 'One-way route', isLoop ? 'Returns to the starting point' : 'Plan the return journey']
+    ];
     if (signalEl) {
-      // Reference: 2x2 grid of ✦ rationale items inside the green card.
-      signalEl.innerHTML = signalData.slice(0, 4).map(([icon, title, sub]) =>
+      signalEl.innerHTML = signalData.map(([icon, title, sub]) =>
         `<div class="match-signal"><span class="mark" aria-hidden="true">✦</span><span><b>${esc(title)}</b><small>${esc(sub)}</small></span></div>`).join('');
     }
     // "Why this fits {name}" heading follows the profile when one exists.
@@ -284,21 +252,6 @@
     const assessmentNote = $('assessmentNote');
     if (assessmentNote) {
       assessmentNote.innerHTML = `<strong style="color: var(--ink);">Our assessment of this trail, based on the DoloPaws method:</strong> we weigh verified terrain, water availability, elevation and shade against your dog's profile to produce the personalised match above.`;
-    }
-
-    const advice = $('matchAdvice');
-    if (advice && t.tips) {
-      const sentences = String(t.tips).replace(/^Tip:\s*/i, '').match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
-      const cleaned = sentences.map(sentence => sentence.trim());
-      const dogNotes = Array.from(new Set([
-        /dog|leash|livestock|patou|swim/i,
-        /water|fountain|drink/i,
-        /heat|hot|shade|rain|road|traffic|crowd|slippery/i,
-      ].map(pattern => cleaned.find(sentence => pattern.test(sentence))).filter(Boolean)));
-      const notes = dogNotes.length ? dogNotes : sentences.slice(0, 2).map(sentence => sentence.trim());
-      const concise = note => note.length > 155 ? `${note.slice(0, 152).trimEnd()}…` : note;
-      advice.innerHTML = `${svg('crowd')}<span><b>Best advice for your dog</b><ul>${notes.map(note => `<li>${esc(concise(note))}</li>`).join('')}</ul></span>`;
-      advice.hidden = false;
     }
 
     const sp = t.startPoint || {};
@@ -565,19 +518,20 @@
     hasWater
       ? good('Water', 'A water source is mapped on this route. Bring a bowl.')
       : caution('Water', 'No water source is mapped. Carry enough for the dog, roughly 0.5 l per 10 kg on a warm day.');
-    if (shade !== null) {
-      shade >= 40
-        ? good('Shade', `About ${shade}% of the route has meaningful shade.`)
-        : caution('Shade', `Only about ${shade}% of the route is shaded. Start early on warm days.`);
+    if (shade !== null || t.heatRisk) {
+      const shadeText = shade === null ? '' : `${shade}% shade`;
+      const highHeat = t.heatRisk === 'high' || (shade !== null && shade < 25);
+      const lowHeat = t.heatRisk === 'low' && (shade === null || shade >= 40);
+      const detail = highHeat
+        ? `${shadeText ? shadeText + '. ' : ''}The route is heat-exposed; use the live forecast to choose an early, cool window.`
+        : lowHeat
+          ? `${shadeText ? shadeText + '. ' : ''}The route has relatively favourable heat exposure.`
+          : `${shadeText ? shadeText + '. ' : ''}Plan rests and use the live forecast to choose a cooler window.`;
+      (highHeat ? caution : good)('Heat & shade', detail);
     }
-    if (t.heatRisk) {
-      t.heatRisk === 'low'
-        ? good('Heat', 'Low heat risk for the area and aspect.')
-        : caution('Heat', t.heatRisk === 'high' ? 'High heat risk: exposed or south-facing. Early start strongly advised.' : 'Moderate heat risk: plan water and rest stops.');
+    if (Number(t.terrainRank) !== 0) {
+      caution('Surface hazards', (t.terrainType || 'Gravel and mixed rock') + '. Check pads at breaks; consider booties for tender paws.');
     }
-    Number(t.terrainRank) === 0
-      ? good('Paw surface', 'Paved or packed surfaces, easy on pads.')
-      : caution('Paw surface', (t.terrainType || 'Gravel and mixed rock') + '. Check pads at breaks; consider booties for tender paws.');
     if (t.exposure) caution('Exposure', 'Narrow ledges or unprotected drop-offs on parts of the route. Keep the dog leashed and on the inside.');
     if (/livestock|patou|guardian|cattle|herd|pasture|alpage|graz/.test(text)) {
       caution('Livestock & leash', 'Grazing animals (possibly with guardian dogs) reported on or near this route. Leash through pastures, give herds a wide berth.');
@@ -600,7 +554,6 @@
     const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
     const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
     const fcCard = $('sideForecast'), fcToday = $('sideForecastToday'), fcDays = $('sideForecastDays');
-    const condCard = $('sideConditions');
     if (typeof lat !== 'number') return;
 
     const valleyEl = $('sideFcValley');
@@ -630,22 +583,17 @@
           return { from: day[best].h, to: day[best + 2].h + 1 };
         };
 
-        // Today's conditions card (warm), real current weather.
-        if (condCard && d.current) {
+        // Current conditions and the recommended window sit in the same
+        // forecast card, so the live decision is stated only once.
+        if (d.current) {
           const cur = Math.round(d.current.temperature_2m);
           const sky = WMO(d.current.weathercode).toLowerCase();
           $('sideCondTitle').textContent = 'Today · ' + sky;
           $('sideCondTemp').textContent = cur + '°C';
-          const level = cur < 15 ? 1 : cur < 22 ? 2 : 3;
-          const reading = ['Low', 'Moderate', 'High'][level - 1];
-          $('sideHeatBars').innerHTML = [1, 2, 3].map(i =>
-            `<span style="${i <= level ? 'background:' + heatColor(cur) + ';' : ''}"></span>`).join('');
-          $('sideHeatReading').textContent = reading;
           const win = coolestWindow(todayKey);
           $('sideCondWindow').innerHTML = win
-            ? `Best window: <strong style="font-weight:600;">${win.from}:00 to ${win.to}:00</strong>, the coolest stretch of daylight at this trailhead.`
+            ? `Best walking window: <strong style="font-weight:600;">${win.from}:00–${win.to}:00</strong>, the coolest daylight stretch.`
             : 'Mountain weather turns quickly; recheck before you set off.';
-          condCard.hidden = false;
         }
 
         // Today's hourly heat strip, 06:00 to 20:00.
