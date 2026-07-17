@@ -30,6 +30,7 @@ const ROCKY_SHARE_THRESHOLD = 0.3;
 // The six hazard categories VERIFICATION.md asks every curated trail to have
 // a non-OSM citable source for. Order here is the order they're reported in.
 const HAZARD_CATEGORIES = ['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access'];
+const GRADUATION_CATEGORIES = ['photo', 'route', 'mapPoints', 'elevation', ...HAZARD_CATEGORIES];
 
 function loadTrails() {
   const src = TRAIL_FILES.map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
@@ -99,6 +100,13 @@ function verificationProgress(trail) {
   return { checked, missing };
 }
 
+function graduationProgress(trail) {
+  if (!trail.graduation || !Array.isArray(trail.graduation.completed)) return null;
+  const required = Array.isArray(trail.graduation.required) ? trail.graduation.required : GRADUATION_CATEGORIES;
+  const completed = required.filter(check => trail.graduation.completed.includes(check));
+  return { completed, missing: required.filter(check => !completed.includes(check)) };
+}
+
 function main() {
   const args = process.argv.slice(2);
   const idIdx = args.indexOf('--id');
@@ -133,12 +141,17 @@ function main() {
     const osmProps = osmByRelation.get(trail.osmRelation);
     const { flags, links } = checkTrail(trail, osmProps);
     const { checked, missing } = verificationProgress(trail);
+    const graduation = graduationProgress(trail);
     if (flags.length === 0 && links.length === 0 && checked.length === 0) continue;
     flaggedCount += 1;
 
     console.log(`\n${trail.name}  (${trail.id}, curated: ${trail.curated !== false})`);
     console.log(`  Verified: ${checked.length}/${HAZARD_CATEGORIES.length} (${checked.length ? checked.join(', ') : 'none yet'})`);
     if (missing.length > 0) console.log(`  Still needed: ${missing.join(', ')}`);
+    if (graduation) {
+      console.log(`  Graduation: ${graduation.completed.length}/${GRADUATION_CATEGORIES.length} (${trail.graduation.status})`);
+      if (graduation.missing.length) console.log(`  Graduation blockers: ${graduation.missing.join(', ')}`);
+    }
     for (const source of trail.sourceLinks || []) {
       console.log(`  Review source: ${source.label} — ${source.url}`);
     }

@@ -82,6 +82,23 @@ describe('trail data trust states', () => {
     expect(trust.reviewProgress(audited)).toBeNull();
   });
 
+  test('graduation progress keeps ratings estimated until every check passes', () => {
+    const trust = loadTrust();
+    const graduating = {
+      curated:false,
+      reviewedAt:'2026-07-17',
+      graduation:{
+        status:'in-progress',
+        required:['photo','route','mapPoints','elevation','water','heat','exposure','livestock','surfaceHazards','access'],
+        completed:['photo','route','mapPoints','elevation','heat','access'],
+        blockers:{water:'unknown',exposure:'unknown',livestock:'unknown',surfaceHazards:'unknown'},
+      },
+    };
+    expect(trust.provenanceLabel(graduating)).toBe('Verification in progress · 17 Jul 2026 · 6/10 checks');
+    expect(trust.graduationProgress(graduating).verified).toBe(false);
+    expect(trust.riskLabel(graduating, 'Moderate terrain')).toBe('Estimated: Moderate terrain');
+  });
+
   test('partial source reviews also cap match confidence at 80 percent', () => {
     const score = loadScoring();
     expect(score({

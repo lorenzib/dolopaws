@@ -38,17 +38,50 @@
       ],
       imagePlaceholder: true,
       reviewedAt: '2026-07-17',
-      reviewedBy: 'DoloPaws route audit',
+      reviewedBy: 'DoloPaws verification review',
       routeAudit: {
         photo: 'No licensed trail photo is currently used; no credit is due.',
         route: 'Full route geometry present and matched to Les Karellis route 09.',
         mapPoints: 'Mapped water points checked at their source GPS coordinates.',
         elevation: 'Profile present; headline ascent corrected to the official 249 m figure.'
       },
+      graduation: {
+        status: 'in-progress',
+        required: ['photo', 'route', 'mapPoints', 'elevation', 'water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access'],
+        completed: ['photo', 'route', 'mapPoints', 'elevation', 'heat', 'access'],
+        blockers: {
+          water: 'Six locations are mapped, but no current source confirms flow, potability or seasonal availability.',
+          exposure: 'Available route descriptions do not explicitly assess narrow sections or unprotected drop-offs.',
+          livestock: 'The route crosses alpage, but no sufficiently current route-specific source confirms present livestock or guardian-dog conditions.',
+          surfaceHazards: 'The official description does not provide enough footing detail to validate the sparse OSM surface estimate.'
+        }
+      },
+      verified: {
+        categories: ['heat', 'access'],
+        sources: [
+          'Les Karellis — Randonnée vers Albanne',
+          'AllTrails — Les Karellis–Albanne',
+          'Service Public France — dogs in forests'
+        ],
+        date: '2026-07-17'
+      },
+      shadeDescription: 'The official route description alternates forest shade with open alpine pasture.',
+      dogNotes: 'Dogs are reported on this route. Keep the dog controlled and follow French seasonal forest-leash rules; local signs and livestock conditions take priority.',
       sourceLinks: [
         {
           label: 'Les Karellis — Randonnée vers Albanne (official route 09)',
-          url: 'https://www.karellis.com/activites-hiver/randonnee-vers-albanne/'
+          url: 'https://www.karellis.com/activites-hiver/randonnee-vers-albanne/',
+          categories: ['heat']
+        },
+        {
+          label: 'AllTrails — Les Karellis–Albanne',
+          url: 'https://www.alltrails.com/trail/france/savoie/les-karellis-albanne',
+          categories: ['access']
+        },
+        {
+          label: 'Service Public France — seasonal forest leash rule',
+          url: 'https://www.service-public.gouv.fr/particuliers/actualites/A17343',
+          categories: ['access']
         },
         {
           label: 'Waymarked Trails — Albanne, OSM relation 14381570',

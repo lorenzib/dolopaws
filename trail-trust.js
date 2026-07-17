@@ -11,6 +11,7 @@
 
   const imported = trail => !!trail && trail.curated === false;
   const REVIEW_CATEGORIES = Object.freeze(['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access']);
+  const GRADUATION_CATEGORIES = Object.freeze(['photo', 'route', 'mapPoints', 'elevation', ...REVIEW_CATEGORIES]);
   const hasSourceReview = trail => !!(trail && trail.verified && Array.isArray(trail.verified.categories));
   const categoryVerified = (trail, category) => !hasSourceReview(trail) || trail.verified.categories.includes(category);
 
@@ -18,6 +19,21 @@
     if (!hasSourceReview(trail)) return null;
     const checked = REVIEW_CATEGORIES.filter(category => trail.verified.categories.includes(category));
     return { checked: checked.length, total: REVIEW_CATEGORIES.length, categories: checked };
+  }
+
+  function graduationProgress(trail) {
+    if (!trail || !trail.graduation || !Array.isArray(trail.graduation.completed)) return null;
+    const required = Array.isArray(trail.graduation.required) && trail.graduation.required.length
+      ? trail.graduation.required
+      : GRADUATION_CATEGORIES;
+    const completed = required.filter(check => trail.graduation.completed.includes(check));
+    return {
+      completed: completed.length,
+      total: required.length,
+      checks: completed,
+      blockers: trail.graduation.blockers || {},
+      verified: trail.graduation.status === 'verified' && completed.length === required.length,
+    };
   }
 
   function formatReviewDate(value) {
@@ -37,12 +53,21 @@
   }
 
   function riskLabel(trail, baseLabel) {
+    const graduation = graduationProgress(trail);
+    if (graduation && graduation.verified) return baseLabel;
     const progress = reviewProgress(trail);
     if (!imported(trail) && (!progress || progress.checked === progress.total)) return baseLabel;
     return translate('trust.estimatedRisk', { rating: baseLabel }, `Estimated: ${baseLabel}`);
   }
 
   function provenanceLabel(trail) {
+    const graduation = graduationProgress(trail);
+    if (graduation) {
+      const date = formatReviewDate(trail.reviewedAt || (trail.verified && trail.verified.date));
+      return graduation.verified
+        ? `DoloPaws verified · ${date} · ${graduation.completed}/${graduation.total} checks`
+        : `Verification in progress · ${date} · ${graduation.completed}/${graduation.total} checks`;
+    }
     const progress = reviewProgress(trail);
     if (progress) {
       const date = formatReviewDate(trail.reviewedAt || trail.verified.date);
@@ -94,6 +119,9 @@
     const shade = typeof trail.shadeCoverage === 'number' ? trail.shadeCoverage : null;
     if (!categoryVerified(trail, 'heat')) {
       return { ok: false, title: 'Heat & shade unverified', detail: 'The stored shade and heat estimate has not yet been checked against a route-specific source. Use the live forecast and plan as if shade may be limited.' };
+    }
+    if (imported(trail) && shade === null && !trail.heatRisk && trail.shadeDescription) {
+      return { ok: false, title: 'Mixed shade', detail: `${trail.shadeDescription} Use the live forecast and plan exposed sections for a cool window.` };
     }
     if (imported(trail) && shade === null && !trail.heatRisk) {
       return { ok: false, title: 'Heat & shade unknown', detail: 'Shade and heat exposure have not been field reviewed. Check the forecast and plan as if shade may be limited.' };
@@ -162,6 +190,7 @@
     imported,
     categoryVerified,
     reviewProgress,
+    graduationProgress,
     formatReviewDate,
     riskLabel,
     provenanceLabel,

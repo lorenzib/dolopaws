@@ -49,8 +49,12 @@
     const meta = $('trailReviewMeta');
     const links = $('trailSourceLinks');
     if (!meta || !links) return;
+    const graduation = trust && trust.graduationProgress ? trust.graduationProgress(t) : null;
     const progress = trust && trust.reviewProgress ? trust.reviewProgress(t) : null;
-    if (progress) {
+    if (graduation) {
+      const date = trust.formatReviewDate(t.reviewedAt || (t.verified && t.verified.date));
+      meta.textContent = `${graduation.verified ? 'Last verification review' : 'Verification in progress'}: ${date} · ${graduation.completed}/${graduation.total} graduation checks complete`;
+    } else if (progress) {
       const date = trust.formatReviewDate(t.reviewedAt || (t.verified && t.verified.date));
       meta.textContent = `Last desk review: ${date} · ${t.reviewedBy || 'DoloPaws'} · ${progress.checked}/${progress.total} safety checks complete`;
     } else if (t.routeAudit && t.reviewedAt) {

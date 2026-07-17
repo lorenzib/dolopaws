@@ -768,8 +768,18 @@ function renderTrail(t){
       ? window.DoloPawsIcons.renderIconSvg(t.curated === false ? 'imported' : 'verified', { mode:'inline', color:'currentColor', size:16 })
       : '';
     const trust = window.DoloPawsTrailTrust;
+    const graduation = trust && trust.graduationProgress ? trust.graduationProgress(t) : null;
     const reviewProgress = trust && trust.reviewProgress ? trust.reviewProgress(t) : null;
-    if (reviewProgress) {
+    if (graduation) {
+      box.style.cssText = graduation.verified
+        ? 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #2E4034;background:#eef3ef;border-radius:6px;font-size:13px;line-height:1.5;'
+        : 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #b7791f;background:#fff8e6;border-radius:6px;font-size:13px;line-height:1.5;';
+      const remaining = Object.keys(graduation.blockers || {});
+      box.innerHTML = provenanceIcon + '<strong>' + itinEsc(trust.provenanceLabel(t)) + '.</strong> '
+        + (graduation.verified
+          ? 'Route presentation and all dog-safety categories passed the graduation standard.'
+          : `${graduation.total - graduation.completed} checks still need evidence${remaining.length ? `: ${remaining.join(', ')}` : ''}. The safety rating remains estimated.`);
+    } else if (reviewProgress) {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #b7791f;background:#fff8e6;border-radius:6px;font-size:13px;line-height:1.5;';
       box.innerHTML = provenanceIcon + '<strong>' + itinEsc(trust.provenanceLabel(t)) + '.</strong> Unchecked safety categories remain explicitly unverified below.';
     } else if (t.routeAudit && t.reviewedAt) {

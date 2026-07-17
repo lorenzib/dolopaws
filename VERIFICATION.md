@@ -7,10 +7,16 @@ owner). Keep this in sync with `scripts/promote-osm-trails.js` and the
 `PROMOTED_RELATIONS` comments in that file — this doc is the process,
 that file's comments are the audit trail.
 
-## The rule
+## The graduation rule
 
-**`curated: true` means a human checked every hazard category below against
-at least one citable source that isn't OSM.** OSM data (via
+**An imported trail graduates to verified only after all ten checks pass:**
+photo/licensing, route geometry, map-point coordinates, elevation, and every
+one of the six hazard categories below. At graduation set `curated: true`,
+retain the original `source: 'osm'` provenance, set
+`graduation.status: 'verified'`, and record all ten completed checks.
+
+**Every safety category must be checked against at least one citable source
+that is not merely an absence of OSM tags.** OSM data (via
 `promote-osm-trails.js`) is what makes a trail importable and walkable on
 the map at all — distance, elevation, computed terrain rank, matched water
 points. It is never, by itself, what makes a trail *verified*, because OSM
@@ -93,17 +99,40 @@ The six canonical category names (match the checklist above and the keys
 - Absent `verified` field = no category-by-category source review is recorded.
 - `categories` only ever grows via real verification work — never add a
   category you didn't actually check against a listed source.
-- `curated` records how the trail entered the catalogue (hand-authored versus
-  imported). It is not a substitute for review completeness. Only a record
-  with all six categories may be described to visitors as fully source
-  reviewed; partial records show their progress and keep unchecked facts
-  visibly unverified.
+- `source` records how the trail entered the catalogue. `curated: false` means
+  it has not graduated; `curated: true` means it passed the full standard.
+  Only a record with all six safety categories and all four presentation/data
+  checks may be described to visitors as verified.
 - Add `reviewedAt`, `reviewedBy`, and route-specific `sourceLinks` so the
   visitor can inspect the dated review record rather than seeing a generic
   list of data providers.
 - The prose comment and the `verified` field should agree — write both in
   the same edit, the comment for a human skimming the file, the field for
   the script.
+
+## Tracking graduation: the `graduation` field
+
+`verified.categories` records the six safety checks. `graduation` combines
+those with the four presentation/data checks required before an imported trail
+can become verified:
+
+```js
+graduation: {
+  status: 'in-progress',
+  required: ['photo','route','mapPoints','elevation','water','heat','exposure','livestock','surfaceHazards','access'],
+  completed: ['photo','route','mapPoints','elevation'],
+  blockers: {
+    water: 'Mapped locations exist, but current flow is not confirmed.'
+  }
+}
+```
+
+- A check enters `completed` only when its evidence and source are recorded.
+- `blockers` must explain why each unresolved check cannot yet pass.
+- `status: 'verified'` is valid only when all ten required checks are complete.
+- Until then the trail remains `curated: false` and its rating remains an
+  estimate, even if its route line and headline facts are correct.
+- No-source-found is a blocker, not a successful check.
 
 ## Procedure
 
@@ -117,13 +146,15 @@ The six canonical category names (match the checklist above and the keys
    actually says (or doesn't).
 3. Fill in only what a source supports. Leave the rest unknown — an
    unverified field beats a guessed one.
-4. Add the newly-resolved category names to `verified.categories`, the
+4. Validate photo rights, geometry, exact waypoint coordinates and elevation;
+   record those four checks in `graduation.completed` only when they pass.
+5. Add newly-resolved safety category names to `verified.categories`, the
    source(s) to `verified.sources`, and today's date — plus the matching
    dated prose comment above the entry.
-5. If every hazard category is now in `verified.categories`, the trail can be
-   labelled fully source reviewed. Otherwise its page must show the partial
-   count and mark the remaining categories unverified.
-6. If a source rules the route out for dogs (protected area, mandatory
+6. Mirror every supported safety category in `graduation.completed`. If all
+   ten checks pass, set `graduation.status: 'verified'` and `curated: true`.
+   Otherwise keep the trail imported and list the blockers.
+7. If a source rules the route out for dogs (protected area, mandatory
    off-leash zone, alpine-grade terrain), remove it from `trails-data.js`
    and add its relation ID to `PROMOTED_RELATIONS` with a `BANNED`/`REMOVED`
    comment so the importer never re-adds it.

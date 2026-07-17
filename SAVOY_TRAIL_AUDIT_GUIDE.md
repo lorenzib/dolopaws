@@ -2,16 +2,41 @@
 
 ## Assignment
 
-Review every Savoy trail individually in alphabetical order. Complete one trail
-fully before moving to the next. The first trail, **Albanne**
-(`osm-14381570`), has already been audited and is the reference implementation.
-Continue with **Albannette petite boucle** (`osm-14379937`).
+Review every Savoy trail individually in alphabetical order and use this process
+as the trail's formal graduation from **imported** to **verified**. Complete one
+trail fully before moving to the next.
 
-The purpose of this work is to verify the trail presentation and underlying map
-data. It is not automatically a field-safety review. Never describe a desk or
-data audit as field verification.
+Start with **Albanne** (`osm-14381570`). Its route presentation has been audited,
+but it has not graduated: unresolved safety evidence keeps its rating estimated.
+Do not move to **Albannette petite boucle** (`osm-14379937`) until Albanne either
+passes all ten checks or has clearly documented evidence blockers.
 
-## Required checks for every trail
+Never describe desk research as a field visit. A trail may still graduate from
+a thorough desk review, but every check must be supported by named, appropriate,
+current sources. An unsuccessful source search is a blocker, not verification.
+
+## The ten graduation checks
+
+A trail becomes verified only when all ten checks pass:
+
+1. Photo/licensing
+2. Route geometry
+3. Exact map-point coordinates
+4. Elevation profile and headline ascent
+5. Water
+6. Heat and shade
+7. Exposure
+8. Livestock and guardian dogs
+9. Surface hazards
+10. Dog access and leash rules
+
+The first four are presentation/data checks. The final six are the safety
+categories defined in `VERIFICATION.md`. Until all ten pass, keep
+`curated: false`, keep the rating labelled estimated, and list the blockers.
+When all ten pass, set `graduation.status: 'verified'`, record all ten completed
+checks, and set `curated: true`. Preserve `source: 'osm'` as provenance.
+
+## Detailed checks for every trail
 
 For each trail, verify all five areas below.
 
@@ -96,8 +121,10 @@ For each trail, verify all five areas below.
 - Keep route-audit status separate from the six dog-safety checks in
   `verified.categories`. Do not add a safety category unless a route-specific
   source actually supports that category under `VERIFICATION.md`.
-- A route can therefore be fully audited for presentation while still showing
-  dog-safety conditions as unverified.
+- Add a `graduation` record containing the ten required checks, completed
+  checks, status, and a specific explanation for every blocker.
+- A presentation audit is progress toward graduation, not a verified trail.
+- The trail only graduates when every presentation and safety check passes.
 
 ## Where audited data belongs
 
@@ -117,6 +144,14 @@ generated OSM trails. Add one object keyed by trail ID:
     route: 'Full route geometry present and checked against the official map.',
     mapPoints: 'Mapped points checked at their source GPS coordinates.',
     elevation: 'Profile present; headline ascent checked against the official figure.'
+  },
+  graduation: {
+    status: 'in-progress',
+    required: ['photo','route','mapPoints','elevation','water','heat','exposure','livestock','surfaceHazards','access'],
+    completed: ['photo','route','mapPoints','elevation'],
+    blockers: {
+      water: 'Mapped points exist, but current flow and potability are not confirmed.'
+    }
   },
   sourceLinks: [
     { label: 'Official route page', url: 'https://…' },
@@ -152,9 +187,9 @@ For technical implementation questions, use project code and tests as the
 source of truth. For current trail facts, use live authoritative sources and
 record their URLs.
 
-## Albanne reference findings
+## Albanne current graduation status
 
-The completed Albanne audit demonstrates the intended standard:
+Albanne demonstrates the difference between corrected data and verification:
 
 - Official source: Les Karellis route 09.
 - Official figures: 7.7 km, 249 m ascent, about 3.5 hours.
@@ -169,8 +204,12 @@ The completed Albanne audit demonstrates the intended standard:
   duplicate markers.
 - No licensed trail photograph is used, so Albanne displays a placeholder and
   no photographer credit.
-- The page shows `DoloPaws route audit · 17 Jul 2026` without claiming that the
-  six dog-safety categories have been verified.
+- Existing sources support the heat/shade pattern and dog access with seasonal
+  forest-leash qualification.
+- Albanne remains imported because current evidence does not yet resolve water
+  availability, exposure, livestock/guardian dogs, or surface hazards.
+- The page must show verification progress and retain an estimated rating until
+  those blockers are resolved.
 
 Reference files:
 
@@ -203,8 +242,10 @@ Reference files:
 11. Open the live local detail page and visually confirm the header, map line,
     markers/clusters, elevation chart, sources, and review date.
 12. Run all required tests.
-13. Report what was corrected, what remains unverified, and name the next trail
-    alphabetically.
+13. Graduate the trail only if all ten checks pass. Otherwise keep it imported
+    and record exact evidence blockers.
+14. Report what was corrected, whether the trail graduated, what remains
+    blocked, and name the next trail alphabetically.
 
 ## Required validation
 
@@ -251,4 +292,3 @@ For each trail, report:
   for dogs, following `VERIFICATION.md`.
 - Preserve unrelated working-tree changes.
 - Do not commit or push unless explicitly requested.
-

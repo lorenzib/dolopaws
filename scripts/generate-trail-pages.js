@@ -121,10 +121,24 @@ function displayStartLabel(t, label) {
 
 const REGION_LABEL = { dolomites: 'Dolomites, Italy', savoy: 'Savoy, France' };
 const REVIEW_CATEGORIES = ['water', 'heat', 'exposure', 'livestock', 'surfaceHazards', 'access'];
+const GRADUATION_CATEGORIES = ['photo', 'route', 'mapPoints', 'elevation', ...REVIEW_CATEGORIES];
 
 function reviewProgress(t) {
   if (!t.verified || !Array.isArray(t.verified.categories)) return null;
   return REVIEW_CATEGORIES.filter(category => t.verified.categories.includes(category));
+}
+
+function graduationProgress(t) {
+  if (!t.graduation || !Array.isArray(t.graduation.completed)) return null;
+  const required = Array.isArray(t.graduation.required) && t.graduation.required.length
+    ? t.graduation.required
+    : GRADUATION_CATEGORIES;
+  const completed = required.filter(check => t.graduation.completed.includes(check));
+  return {
+    completed: completed.length,
+    total: required.length,
+    verified: t.graduation.status === 'verified' && completed.length === required.length,
+  };
 }
 
 function categoryVerified(t, category) {
@@ -275,15 +289,18 @@ function trailPage(t, slug, all) {
   const canonical = `${BASE_URL}/trails/${slug}.html`;
   const regionLabel = REGION_LABEL[t.region] || 'Dolomites, Italy';
   const verified = t.curated !== false; // curated file entries have no `curated` flag
+  const graduation = graduationProgress(t);
   const progress = reviewProgress(t);
-  const reviewLabel = progress
+  const reviewLabel = graduation
+    ? `${graduation.verified ? 'DoloPaws verified' : 'Verification in progress'} · ${formatReviewDate(t.reviewedAt || (t.verified && t.verified.date))} · ${graduation.completed}/${graduation.total} checks`
+    : progress
     ? `DoloPaws source review · ${formatReviewDate(t.reviewedAt || t.verified.date)} · ${progress.length}/${REVIEW_CATEGORIES.length} checks`
     : t.routeAudit && t.reviewedAt
       ? `DoloPaws route audit · ${formatReviewDate(t.reviewedAt)}`
       : null;
 
   const badge = reviewLabel
-    ? `<span class="dp-badge dp-badge--${progress ? 'verified' : 'imported'}"><span data-dp-icon="${progress ? 'verified' : 'imported'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${escapeHtml(reviewLabel)}</span></span>`
+    ? `<span class="dp-badge dp-badge--${graduation ? (graduation.verified ? 'verified' : 'imported') : progress ? 'verified' : 'imported'}"><span data-dp-icon="${graduation ? (graduation.verified ? 'verified' : 'imported') : progress ? 'verified' : 'imported'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${escapeHtml(reviewLabel)}</span></span>`
     : verified
     ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>DoloPaws curated · date unavailable</span></span>'
     : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported · not field reviewed</span></span>';
@@ -361,11 +378,13 @@ function trailPage(t, slug, all) {
 
   const sourceRecord = Array.isArray(t.sourceLinks) && t.sourceLinks.length
     ? `<h2>Review record and sources</h2>
-    <p class="sp-src">${t.routeAudit && !progress ? 'Last route audit' : 'Last desk review'}: ${escapeHtml(formatReviewDate(t.reviewedAt || (t.verified && t.verified.date)))} · ${escapeHtml(t.reviewedBy || 'DoloPaws')} · ${progress ? `${progress.length}/${REVIEW_CATEGORIES.length} safety checks complete` : t.routeAudit ? 'route line, map points, elevation and photo attribution checked' : 'review status unavailable'}</p>
+    <p class="sp-src">${graduation ? graduation.verified ? 'Last verification review' : 'Verification in progress' : t.routeAudit && !progress ? 'Last route audit' : 'Last desk review'}: ${escapeHtml(formatReviewDate(t.reviewedAt || (t.verified && t.verified.date)))} · ${escapeHtml(t.reviewedBy || 'DoloPaws')} · ${graduation ? `${graduation.completed}/${graduation.total} graduation checks complete` : progress ? `${progress.length}/${REVIEW_CATEGORIES.length} safety checks complete` : t.routeAudit ? 'route line, map points, elevation and photo attribution checked' : 'review status unavailable'}</p>
     <ul>${t.sourceLinks.map(source => `<li><a href="${escapeHtml(source.url)}" rel="noopener">${escapeHtml(source.label)}</a>${Array.isArray(source.categories) ? ` <span class="sp-src">· supports ${escapeHtml(source.categories.join(', '))}</span>` : ''}</li>`).join('')}</ul>`
     : '';
 
-  const osmCredit = progress
+  const osmCredit = graduation
+    ? `<p class="sp-src" style="margin-top:20px;">${graduation.verified ? 'This trail passed all route-presentation and dog-safety graduation checks.' : `Verification is in progress. ${graduation.completed} of ${graduation.total} graduation checks have evidence; the safety rating remains estimated.`}</p>`
+    : progress
     ? `<p class="sp-src" style="margin-top:20px;">DoloPaws source review is in progress. ${progress.length} of ${REVIEW_CATEGORIES.length} safety categories have route-specific support; unchecked categories remain unverified.</p>`
     : !verified
     ? `<p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). The safety rating is an automated estimate, not a field assessment.</p>`

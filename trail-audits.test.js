@@ -21,6 +21,15 @@ describe('trail presentation audits', () => {
       mapPoints: expect.any(String),
       elevation: expect.any(String),
     }));
+    expect(albanne.curated).toBe(false);
+    expect(albanne.graduation.status).toBe('in-progress');
+    expect(albanne.graduation.required).toHaveLength(10);
+    expect(albanne.graduation.completed).toEqual(expect.arrayContaining([
+      'photo', 'route', 'mapPoints', 'elevation', 'heat', 'access'
+    ]));
+    expect(Object.keys(albanne.graduation.blockers)).toEqual(expect.arrayContaining([
+      'water', 'exposure', 'livestock', 'surfaceHazards'
+    ]));
     expect(albanne.sourceLinks.length).toBeGreaterThanOrEqual(2);
     expect(albanne.path.length).toBeGreaterThan(100);
     expect(albanne.elevation).toBe(249);
