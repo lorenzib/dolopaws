@@ -168,10 +168,17 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
   #trailName{font-size:32px;}
 }
 @media (max-width:520px){
+  .td-actions{width:100%;box-sizing:border-box;padding:18px;}
+  .td-btn-col{width:100%;}
   .trail-map-box{height:62vh;min-height:390px;}
   .map-expand-btn{width:38px;padding:0;justify-content:center;}
   .map-expand-btn span{display:none;}
   .trail-map-box .map-btn--terrain{right:16px;bottom:98px;max-width:120px;padding:0 11px;}
+  .trail-map-box.hike-status-visible .map-expand-btn{bottom:104px;}
+  .trail-map-box.hike-status-visible .map-btn--terrain{bottom:150px;}
+  .trail-map-box.hike-status-visible .map-key--dock{bottom:104px;}
+  #mapHikeStatus{bottom:max(10px,env(safe-area-inset-bottom)) !important;}
+  #mapHikeOffRoute{top:58px !important;max-width:calc(100% - 24px);white-space:normal !important;text-align:center;}
   .map-key--dock{max-width:calc(100% - 78px);}
   .map-key--dock[open]{right:70px;max-width:none;}
 }

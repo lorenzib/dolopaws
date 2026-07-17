@@ -55,10 +55,12 @@ function initHikeMode(map, trail){
   container.appendChild(startBtn);
 
   const panel = document.createElement('div');
+  panel.id = 'mapHikeStatus';
   panel.style.cssText = 'position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:6;max-width:92%;padding:10px 16px;border-radius:12px;background:rgba(46,64,52,.94);color:#fff;font-size:12.5px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.35);display:none;text-align:center;line-height:1.5;';
   container.appendChild(panel);
 
   const banner = document.createElement('div');
+  banner.id = 'mapHikeOffRoute';
   banner.textContent = window.t ? window.t('hike.offRoute') : '⚠️ Off route';
   banner.style.cssText = 'position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:7;padding:9px 16px;border-radius:12px;background:#9C3A25;color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,.35);display:none;white-space:nowrap;';
   container.appendChild(banner);
@@ -230,6 +232,7 @@ function initHikeMode(map, trail){
     startBtn.textContent = hikeLabel('hike.end', 'End hike');
     startBtn.style.background = '#9C3A25';
     panel.style.display = 'block';
+    container.classList.add('hike-status-visible');
     panel.innerHTML = window.t('hike.getting');
     acquireWakeLock();
     watchId = navigator.geolocation.watchPosition(onFix, onError, {
@@ -246,7 +249,12 @@ function initHikeMode(map, trail){
     if (wakeLock){ try { wakeLock.release(); } catch (e) {} wakeLock = null; }
     startBtn.innerHTML = hikeButtonHtml(hikeLabel('hike.start', 'Start hike'));
     startBtn.style.background = 'var(--ink)';
-    if (!keepPanel) panel.style.display = 'none';
+    if (!keepPanel){
+      panel.style.display = 'none';
+      container.classList.remove('hike-status-visible');
+    } else {
+      container.classList.add('hike-status-visible');
+    }
     banner.style.display = 'none';
   }
 
