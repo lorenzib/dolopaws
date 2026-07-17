@@ -37,11 +37,27 @@
   .jn-overlay[hidden]{display:none;}
   .jn-modal{background:var(--card);border-radius:20px;max-width:480px;width:100%;padding:24px;max-height:90vh;overflow:auto;}
   .jn-modal label{display:block;font:600 12px 'Inter',sans-serif;color:var(--ink-soft);margin:14px 0 5px;}
-  .jn-modal input,.jn-modal select,.jn-modal textarea{width:100%;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:var(--bg);box-sizing:border-box;}
+  .jn-modal input,.jn-modal textarea{width:100%;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:var(--bg);box-sizing:border-box;}
+  .jn-trail-picker{position:relative;}
+  .jn-trail-search-wrap{position:relative;}
+  .jn-trail-search{padding-right:70px !important;}
+  .jn-trail-search[aria-expanded="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,124,89,.12);}
+  .jn-trail-search[aria-invalid="true"]{border-color:#9C3A25;}
+  .jn-trail-change{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:var(--sage-dim);color:var(--ink);border-radius:8px;padding:6px 9px;font:700 11px 'Inter',sans-serif;cursor:pointer;}
+  .jn-trail-results{margin-top:7px;border:1px solid var(--paper-line);background:var(--card);border-radius:12px;box-shadow:0 12px 28px rgba(31,40,33,.12);max-height:250px;overflow:auto;padding:6px;}
+  .jn-trail-results[hidden]{display:none;}
+  .jn-trail-group{padding:7px 9px 4px;color:var(--ink-soft);font:700 10px 'Inter',sans-serif;text-transform:uppercase;letter-spacing:.08em;}
+  .jn-trail-option{display:block;width:100%;border:0;background:transparent;border-radius:8px;padding:9px 10px;text-align:left;color:var(--ink);font:600 13px 'Inter',sans-serif;cursor:pointer;}
+  .jn-trail-option:hover,.jn-trail-option:focus{outline:none;background:var(--sage-dim);}
+  .jn-trail-option[aria-selected="true"]{background:var(--sage-dim);color:var(--success);}
+  .jn-trail-option small{display:block;margin-top:2px;color:var(--ink-soft);font-size:11px;font-weight:500;}
+  .jn-trail-empty{margin:0;padding:13px 10px;color:var(--ink-soft);font-size:12px;line-height:1.4;}
+  .jn-trail-help{margin:6px 2px 0;color:var(--ink-soft);font-size:11px;line-height:1.4;}
   @media(max-width:520px){
     .jn-overlay{align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));overflow-y:auto;}
     .jn-modal{box-sizing:border-box;max-height:calc(100dvh - 24px);padding:20px 18px;border-radius:16px;}
-    .jn-modal input,.jn-modal select,.jn-modal textarea{font-size:16px;}
+    .jn-modal input,.jn-modal textarea{font-size:16px;}
+    .jn-trail-results{max-height:220px;}
   }
   @media(max-width:390px){.jn-metrics{grid-template-columns:1fr !important;gap:0 !important;}}
   .jn-star-row button{background:none;border:none;font-size:24px;cursor:pointer;color:var(--paper-line);padding:2px;}
@@ -101,8 +117,16 @@
       <h2 id="jnModalTitle" style="margin:0;font-size:20px;">Log a walk</h2>
       <button type="button" id="jnClose" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink-soft);" aria-label="Close">&times;</button>
     </div>
-    <label for="jnTrail">Trail</label>
-    <select id="jnTrail"></select>
+    <label for="jnTrailSearch">Trail</label>
+    <div class="jn-trail-picker" id="jnTrailPicker">
+      <input type="hidden" id="jnTrail">
+      <div class="jn-trail-search-wrap">
+        <input type="search" id="jnTrailSearch" class="jn-trail-search" placeholder="Search by trail or valley" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="jnTrailResults" aria-describedby="jnTrailHelp" aria-required="true">
+        <button type="button" id="jnTrailChange" class="jn-trail-change" hidden>Change</button>
+      </div>
+      <div id="jnTrailResults" class="jn-trail-results" role="listbox" aria-label="Trail suggestions" hidden></div>
+      <p id="jnTrailHelp" class="jn-trail-help">Choose from recent or saved trails, or search all trails.</p>
+    </div>
     <div class="jn-metrics" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div><label for="jnDist">Distance (km)</label><input type="number" id="jnDist" min="0" step="0.1" placeholder="4.0"></div>
       <div><label for="jnDur">Duration (min)</label><input type="number" id="jnDur" min="0" step="5" placeholder="60"></div>
@@ -133,7 +157,7 @@
 // TODO: move journal entries to a backend API (Firestore) so they sync
 // across devices; the render layer below is storage-agnostic.
 document.addEventListener('DOMContentLoaded', function(){
-  var state = { filter: 'all', rating: 5, entries: [] };
+  var state = { filter: 'all', rating: 5, entries: [], favorites: {} };
   var uid = null;
   var journalParams = new URLSearchParams(window.location.search);
   var pendingTrailId = journalParams.get('trail');
@@ -229,27 +253,134 @@ document.addEventListener('DOMContentLoaded', function(){
   // --- Modal ---
   var overlay = document.getElementById('jnOverlay');
   var journalReturnFocus = null;
-  var journalFocusable = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
-  function fillTrailSelect(){
-    var sel = document.getElementById('jnTrail');
-    var opts = '<option value="">Somewhere else (type it in the notes)</option>';
-    if(typeof trails !== 'undefined'){
-      opts += trails.slice().sort(function(a, b){ return a.name.localeCompare(b.name); })
-        .map(function(t){ return '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>'; }).join('');
+  var journalFocusable = 'button:not([disabled]),a[href],input:not([disabled]):not([type="hidden"]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  var trailInput = document.getElementById('jnTrail');
+  var trailSearch = document.getElementById('jnTrailSearch');
+  var trailResults = document.getElementById('jnTrailResults');
+  var trailChange = document.getElementById('jnTrailChange');
+  var trailHelp = document.getElementById('jnTrailHelp');
+  var trailChoiceMade = false;
+  var autoTrailDist = '';
+  var autoTrailDur = '';
+
+  function allTrails(){ return typeof trails !== 'undefined' ? trails : []; }
+  function trailById(id){ return allTrails().find(function(t){ return t.id === id; }) || null; }
+  function trailMeta(t){ return [t.valley || t.area || '', t.distance ? t.distance + ' km' : ''].filter(Boolean).join(' · '); }
+  function estimatedMinutes(t){
+    var hours = parseFloat(String(t.hours || '').replace(',', '.'));
+    return Number.isFinite(hours) ? String(Math.round(hours * 60)) : '';
+  }
+  function recentTrails(){
+    var seen = {};
+    return state.entries.map(function(e){ return e.trailId; }).filter(function(id){
+      if(!id || seen[id] || !trailById(id)) return false;
+      seen[id] = true;
+      return true;
+    }).slice(0, 4).map(trailById);
+  }
+  function savedTrails(){
+    return allTrails().filter(function(t){ return !!state.favorites[t.id]; })
+      .sort(function(a, b){ return a.name.localeCompare(b.name); }).slice(0, 6);
+  }
+  function optionMarkup(t){
+    return '<button type="button" class="jn-trail-option" role="option" data-trail-id="' + esc(t.id) + '" aria-selected="' + (trailInput.value === t.id ? 'true' : 'false') + '">' +
+      esc(t.name) + (trailMeta(t) ? '<small>' + esc(trailMeta(t)) + '</small>' : '') + '</button>';
+  }
+  function groupMarkup(label, items){
+    if(!items.length) return '';
+    return '<div class="jn-trail-group">' + esc(label) + '</div>' + items.map(optionMarkup).join('');
+  }
+  function renderTrailResults(query){
+    query = String(query || '').trim().toLowerCase();
+    var html = '<button type="button" class="jn-trail-option" role="option" data-trail-id="" aria-selected="' + (trailChoiceMade && !trailInput.value ? 'true' : 'false') + '">Somewhere else<small>Log a walk that is not in the trail guide</small></button>';
+    if(query){
+      var matches = allTrails().filter(function(t){
+        return [t.name, t.valley, t.area].filter(Boolean).join(' ').toLowerCase().indexOf(query) !== -1;
+      }).sort(function(a, b){ return a.name.localeCompare(b.name); }).slice(0, 12);
+      html += matches.length ? groupMarkup('Search results', matches) : '<p class="jn-trail-empty">No matching trail. Choose “Somewhere else” to log it anyway.</p>';
+    } else {
+      var recent = recentTrails();
+      var recentIds = {};
+      recent.forEach(function(t){ recentIds[t.id] = true; });
+      var saved = savedTrails().filter(function(t){ return !recentIds[t.id]; });
+      html += groupMarkup('Recent trails', recent);
+      html += groupMarkup('Saved trails', saved);
+      if(!recent.length && !saved.length) html += groupMarkup('Suggested trails', allTrails().slice().sort(function(a, b){ return a.name.localeCompare(b.name); }).slice(0, 6));
     }
-    sel.innerHTML = opts;
-    if(pendingTrailId && Array.from(sel.options).some(function(o){ return o.value === pendingTrailId; })){
-      sel.value = pendingTrailId;
-      var selectedTrail = trails.find(function(t){ return t.id === pendingTrailId; });
-      if(selectedTrail){
-        var dist = document.getElementById('jnDist');
-        var dur = document.getElementById('jnDur');
-        if(!dist.value && selectedTrail.distance) dist.value = selectedTrail.distance;
-        if(!dur.value && pendingDuration) dur.value = pendingDuration;
-        else if(!dur.value && selectedTrail.hours) dur.value = Math.round(Number(selectedTrail.hours) * 60);
-      }
+    trailResults.innerHTML = html;
+  }
+  function openTrailResults(){
+    if(trailSearch.readOnly) return;
+    renderTrailResults(trailSearch.value);
+    trailResults.hidden = false;
+    trailSearch.setAttribute('aria-expanded', 'true');
+  }
+  function closeTrailResults(){
+    trailResults.hidden = true;
+    trailSearch.setAttribute('aria-expanded', 'false');
+  }
+  function selectTrail(id, markDirty){
+    var selectedTrail = trailById(id);
+    var dist = document.getElementById('jnDist');
+    var dur = document.getElementById('jnDur');
+    var canUpdateDist = !dist.value || dist.value === autoTrailDist;
+    var canUpdateDur = !dur.value || dur.value === autoTrailDur;
+    trailInput.value = selectedTrail ? selectedTrail.id : '';
+    trailChoiceMade = true;
+    trailSearch.value = selectedTrail ? selectedTrail.name : 'Somewhere else';
+    trailSearch.readOnly = true;
+    trailSearch.removeAttribute('aria-invalid');
+    trailHelp.textContent = 'Choose from recent or saved trails, or search all trails.';
+    trailChange.hidden = false;
+    closeTrailResults();
+    if(markDirty) journalDirty = true;
+    if(selectedTrail){
+      var nextDist = selectedTrail.distance ? String(selectedTrail.distance) : '';
+      var nextDur = selectedTrail.id === pendingTrailId && pendingDuration ? String(pendingDuration) : estimatedMinutes(selectedTrail);
+      if(canUpdateDist) dist.value = nextDist;
+      if(canUpdateDur) dur.value = nextDur;
+      autoTrailDist = canUpdateDist ? nextDist : '';
+      autoTrailDur = canUpdateDur ? nextDur : '';
+    } else {
+      if(canUpdateDist) dist.value = '';
+      if(canUpdateDur) dur.value = '';
+      autoTrailDist = '';
+      autoTrailDur = '';
     }
   }
+  function resetTrailPicker(){
+    trailInput.value = '';
+    trailChoiceMade = false;
+    trailSearch.value = '';
+    trailSearch.readOnly = false;
+    trailSearch.removeAttribute('aria-invalid');
+    trailHelp.textContent = 'Choose from recent or saved trails, or search all trails.';
+    trailChange.hidden = true;
+    closeTrailResults();
+  }
+  function fillTrailPicker(){
+    resetTrailPicker();
+    if(pendingTrailId && trailById(pendingTrailId)) selectTrail(pendingTrailId, false);
+  }
+  trailSearch.addEventListener('focus', openTrailResults);
+  trailSearch.addEventListener('input', openTrailResults);
+  trailSearch.addEventListener('keydown', function(event){
+    if(event.key === 'ArrowDown'){
+      event.preventDefault();
+      openTrailResults();
+      var first = trailResults.querySelector('.jn-trail-option');
+      if(first) first.focus();
+    }
+  });
+  trailChange.addEventListener('click', function(){
+    resetTrailPicker();
+    trailSearch.focus();
+    openTrailResults();
+  });
+  trailResults.addEventListener('click', function(event){
+    var option = event.target.closest('[data-trail-id]');
+    if(option) selectTrail(option.dataset.trailId, true);
+  });
   function renderStarInput(){
     var row = document.getElementById('jnStars');
     row.innerHTML = '';
@@ -277,13 +408,13 @@ document.addEventListener('DOMContentLoaded', function(){
     journalDirty = false;
     overlay.hidden = false;
     renderStarInput();
-    setTimeout(function(){ document.getElementById('jnTrail').focus(); }, 0);
+    setTimeout(function(){ trailSearch.focus(); }, 0);
   });
   document.getElementById('jnLoginBtn').addEventListener('click', function(){
     var accountBtn = document.getElementById('accountBtn');
     if(accountBtn) accountBtn.click();
   });
-  overlay.addEventListener('input', function(){ journalDirty = true; });
+  overlay.addEventListener('input', function(event){ if(event.target !== trailSearch) journalDirty = true; });
   overlay.addEventListener('change', function(){ journalDirty = true; });
   window.addEventListener('beforeunload', function(event){
     if(!journalDirty) return;
@@ -292,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
   function discardJournalDraft(){
     ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
+    resetTrailPicker();
     state.rating = 5;
     journalDirty = false;
   }
@@ -310,6 +442,12 @@ document.addEventListener('DOMContentLoaded', function(){
   overlay.addEventListener('keydown', function(event){
     if(overlay.hidden) return;
     if(event.key === 'Escape'){
+      if(!trailResults.hidden){
+        event.preventDefault();
+        closeTrailResults();
+        trailSearch.focus();
+        return;
+      }
       event.preventDefault();
       closeLog();
       return;
@@ -323,6 +461,13 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   document.getElementById('jnSave').addEventListener('click', function(){
+    if(!trailChoiceMade){
+      trailSearch.setAttribute('aria-invalid', 'true');
+      trailHelp.textContent = 'Choose a trail or “Somewhere else” before saving.';
+      trailSearch.focus();
+      openTrailResults();
+      return;
+    }
     var sel = document.getElementById('jnTrail');
     var tr = (typeof trails !== 'undefined') ? trails.find(function(t){ return t.id === sel.value; }) : null;
     var entry = {
@@ -341,6 +486,9 @@ document.addEventListener('DOMContentLoaded', function(){
     persist();
     overlay.hidden = true;
     ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
+    resetTrailPicker();
+    autoTrailDist = '';
+    autoTrailDur = '';
     state.rating = 5;
     journalDirty = false;
     pendingTrailId = null;
@@ -382,13 +530,17 @@ document.addEventListener('DOMContentLoaded', function(){
     uid = window.DoloPawsAuth.currentUser.uid;
     if(window.DoloPawsRegions && typeof trails !== 'undefined') window.DoloPawsRegions.assign(trails);
     state.entries = load();
-    fillTrailSelect();
+    fillTrailPicker();
     renderStarInput();
     renderAll();
+    window.DoloPawsAuth.getFavorites().then(function(favorites){
+      state.favorites = favorites || {};
+      if(!trailResults.hidden) renderTrailResults(trailSearch.value);
+    }).catch(function(){ state.favorites = {}; });
     if(pendingTrailId && !openedPendingTrail){
       openedPendingTrail = true;
       overlay.hidden = false;
-      setTimeout(function(){ document.getElementById('jnTrail').focus(); }, 0);
+      setTimeout(function(){ trailSearch.focus(); }, 0);
     }
     document.getElementById('jnStorageNote').hidden = false;
     window.DoloPawsAuth.getDogProfile().then(function(p){
