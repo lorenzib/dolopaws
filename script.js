@@ -5,6 +5,10 @@ function safetyLabel(level){
   if(level === 'moderate') return t('safety.moderate');
   return t('safety.caution');
 }
+function trailSafetyLabel(trail){
+  const base = safetyLabel(trail.safetyLevel);
+  return window.DoloPawsTrailTrust ? window.DoloPawsTrailTrust.riskLabel(trail, base) : base;
+}
 function safetyClass(level){
   if(level === 'low-risk') return 'safety-low';
   if(level === 'moderate') return 'safety-moderate';
@@ -153,21 +157,22 @@ function filterTrailsForReturningView(list){
 // scoreTrail() already used. No invented copy per trail.
 function matchReason(t, overrides){
   const heatSensitive = !!(overrides && overrides.heatSensitive);
+  const isImported = t.curated === false;
   const bits = [];
   if(t.shadeCoverage >= 60) bits.push(heatSensitive ? 'well shaded, low heat load' : 'shaded route');
   else if(t.heatRisk === 'low') bits.push('low heat risk');
   else if(heatSensitive && (t.heatRisk === 'high' || t.heatRisk === 'moderate')) bits.push('exposed, go early');
 
   if(t.exposure) bits.push('some exposure');
-  else if(t.terrainRank === 0) bits.push('flat, easy underfoot');
+  else if(t.terrainRank === 0) bits.push(isImported ? 'mapped as flat and easy underfoot' : 'flat, easy underfoot');
 
   if(overrides && typeof overrides.distance === 'number' || overrides && !isNaN(parseFloat(overrides.distance))){
     const cap = parseFloat(overrides.distance);
     if(!isNaN(cap) && t.distance <= cap * 0.6) bits.push('comfortably short');
   }
-  if(t.waterSources && t.waterSources.length > 0 && !bits.some(b => b.includes('shad'))) bits.push('water on route');
+  if(t.waterSources && t.waterSources.length > 0 && !bits.some(b => b.includes('shad'))) bits.push(isImported ? 'mapped water point' : 'water on route');
 
-  if(bits.length === 0) return 'Matches your dog\'s fitness and terrain tolerance';
+  if(bits.length === 0) return isImported ? 'Estimated from mapped route data' : 'Matches your dog\'s fitness and terrain tolerance';
   // Cap at two clauses so the pill stays a pill, not a paragraph.
   const chosen = bits.slice(0, 2).join(', ');
   return chosen.charAt(0).toUpperCase() + chosen.slice(1);
@@ -1265,12 +1270,16 @@ async function renderReturningHomepage(profile){
     const ringColor = SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)';
     const heat = t.heatRisk === 'high' ? { l: 'High', bg: '#FBEAE6', fg: '#9C3A25' }
       : t.heatRisk === 'moderate' ? { l: 'Med', bg: '#F5E4C6', fg: '#8A5A16' }
-      : { l: 'Low', bg: '#DCEBDD', fg: '#2C5C34' };
+      : t.heatRisk === 'low' ? { l: 'Low', bg: '#DCEBDD', fg: '#2C5C34' }
+      : { l: 'Unknown', bg: '#ECE8DD', fg: '#59695D' };
     const selected = t.id === selectedTrailId;
-    const provenanceBadge = productBadge(t.curated === false ? 'imported' : 'verified', t.curated === false ? window.t('badge.imported') : window.t('badge.verified'));
+    const provenanceLabel = window.DoloPawsTrailTrust
+      ? window.DoloPawsTrailTrust.provenanceLabel(t)
+      : (t.curated === false ? window.t('badge.imported') : window.t('badge.verified'));
+    const provenanceBadge = productBadge(t.curated === false ? 'imported' : 'verified', provenanceLabel);
     const newBadge = isNew ? productBadge('new', window.t('badge.new')) : '';
-    const riskBadge = productBadge(t.safetyLevel, safetyLabel(t.safetyLevel));
-    const heatBadge = productBadge(`heat-${t.heatRisk || 'low'}`, `Heat ${heat.l}`);
+    const riskBadge = productBadge(t.safetyLevel, trailSafetyLabel(t));
+    const heatBadge = productBadge(`heat-${t.heatRisk || 'unknown'}`, `Heat ${heat.l}`);
     return `
     <div class="trail-card${selected ? ' tc-selected' : ''}" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
       ${thumb}

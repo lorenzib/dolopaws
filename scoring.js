@@ -59,11 +59,12 @@ function scoreTrail(t, overrides){
   // Imported (OSM) trails carry no exposure/heat/shade measurements, so
   // without this they'd all sit at 100% and make the ranking meaningless.
   // Estimate conservatively from what the import DOES know, and cap the
-  // score so an estimate can never outrank a verified measurement.
+  // score so a route with unknown exposure, shade, heat and livestock cannot
+  // be presented as a high-confidence match alongside reviewed measurements.
   if(t.curated === false){
     if(t.exposure === undefined && t.safetyLevel === 'caution') score -= 15;
     if(t.heatRisk === undefined) score -= overrides.heatSensitive ? 10 : 4;
-    score = Math.min(score, 92);
+    score = Math.min(score, 80);
   }
 
   return Math.max(5, Math.round(score));
@@ -219,4 +220,3 @@ function effectiveOverrides(profile, adjustOverride){
     exposureExtra: (fragile || conds.includes('vision')) ? 10 : 0,
   };
 }
-

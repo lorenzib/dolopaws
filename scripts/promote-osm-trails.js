@@ -527,7 +527,7 @@ async function main() {
       rifugi,
       startPoint: { lat: pts[0][0], lng: pts[0][1], label: startLabel },
       desc: `${isLoop ? 'A' : 'An'} ${totalKm} km ${isLoop ? 'loop' : 'route'} near ${nearestLocality(pts[0][0], pts[0][1])}, imported from the OpenStreetMap hiking network${p.ref ? ` (trail ${p.ref})` : ''}. Passed automated dog-suitability screening: no via ferrata, ladders, or alpine-grade (T3+) sections on record.${directionNote ? ' ' + directionNote : ''}`,
-      tips: 'Imported route — elevation, distance, fountains and rifugi are computed from verified map data, but this trail has not yet been walked and reviewed by DoloPaws. Check conditions locally.',
+      tips: 'Imported route — elevation, distance, mapped fountains and rifugi come from OpenStreetMap data. This trail has not been field reviewed by DoloPaws; exposure, shade, livestock and current conditions remain unknown. Check conditions locally.',
       ...(segments > 1 ? { osmGeometryGaps: segments - 1 } : {})
     };
     if (p.leash) entry.leash = p.leash;

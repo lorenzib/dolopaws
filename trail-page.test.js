@@ -99,7 +99,7 @@ describe('trail page map legend', () => {
     expect(document.querySelector('.td-safety-intro').textContent).toMatch(/Permanent trail conditions/i);
 
     expect(blueprint).toContain("['route', 'Route effort'");
-    expect(blueprint).toContain("('Heat & shade', detail)");
+    expect(blueprint).toContain('trust.heatAssessment(t)');
     expect((blueprint.match(/api\.open-meteo\.com/g) || [])).toHaveLength(1);
     expect(trail).not.toContain('api.open-meteo.com');
   });

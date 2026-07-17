@@ -95,6 +95,28 @@ function safetyLabel(level) {
   return 'Caution';
 }
 
+function displaySafetyLabel(t) {
+  const label = safetyLabel(t.safetyLevel);
+  return t.curated === false ? `Estimated: ${label}` : label;
+}
+
+function displayWaterLabel(t, label) {
+  if (t.curated !== false) return label;
+  return String(label || 'Water point')
+    .replace(/Drinking water\s*\(OSM-verified location\)/i, 'Water point mapped in OpenStreetMap')
+    .replace(/OSM-verified/gi, 'mapped in OpenStreetMap');
+}
+
+function displayStartLabel(t, label) {
+  if (t.curated !== false) return label;
+  const cleaned = String(label || 'Route start')
+    .replace(/^Start here\s*[—-]\s*/i, '')
+    .replace(/^Route start per OpenStreetMap\s*[—-]\s*/i, '')
+    .replace(/\s*\(OSM-verified access point\)/gi, '')
+    .replace(/OSM-verified/gi, 'mapped in OpenStreetMap');
+  return `Mapped start suggestion — ${cleaned}. Access suitability is not field reviewed.`;
+}
+
 const REGION_LABEL = { dolomites: 'Dolomites, Italy', savoy: 'Savoy, France' };
 
 // Valley hub guides (add here as new area guides are published)
@@ -208,7 +230,7 @@ function nearbySection(t, slug, all) {
   const items = picks.map((o) =>
     `<a class="sp-near" href="../trail.html?id=${encodeURIComponent(o.id)}">
         <span class="sp-near-name">${escapeHtml(o.name)}</span>
-        <span class="sp-near-meta"><span class="dp-badge dp-badge--${o.safetyLevel}"><span data-dp-icon="${o.safetyLevel === 'low-risk' ? 'verified' : 'warning'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${safetyLabel(o.safetyLevel)}</span></span> ${o.distance} km</span>
+        <span class="sp-near-meta"><span class="dp-badge dp-badge--${o.safetyLevel}"><span data-dp-icon="${o.safetyLevel === 'low-risk' ? 'verified' : 'warning'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${displaySafetyLabel(o)}</span></span> ${o.distance} km</span>
       </a>`
   ).join('\n      ');
   const hub = VALLEY_GUIDES[t.valley];
@@ -235,8 +257,8 @@ function trailPage(t, slug, all) {
   const verified = t.curated !== false; // curated file entries have no `curated` flag
 
   const badge = verified
-    ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>Verified by DoloPaws</span></span>'
-    : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported from OpenStreetMap</span></span>';
+    ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>DoloPaws curated · date unavailable</span></span>'
+    : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported · not field reviewed</span></span>';
 
   const ogImage = t.imageIcon ? `${BASE_URL}/${t.imageIcon}` : `${BASE_URL}/icon-512.png`;
 
@@ -252,7 +274,7 @@ function trailPage(t, slug, all) {
     ['Highest point', highest !== null ? `${highest} m` : null],
     ['Duration', t.hours != null ? `${t.hours} h` : null],
     ['Terrain', terrain],
-    ['Trail rating', safetyLabel(t.safetyLevel)],
+    ['Trail rating', displaySafetyLabel(t)],
     ['Area', `${t.area} · ${regionLabel}`],
   ]
     .filter(([, v]) => v != null && v !== '')
@@ -264,10 +286,10 @@ function trailPage(t, slug, all) {
 
   const waterHtml =
     Array.isArray(t.waterSources) && t.waterSources.length
-      ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> Water on trail</h2>
+      ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M12 3c3 3.6 4.8 6.3 4.8 8.8a4.8 4.8 0 11-9.6 0C7.2 9.3 9 6.6 12 3z" fill="#378ADD"></path></svg> ${verified ? 'Water on trail' : 'Mapped water points'}</h2>
     <ul>${t.waterSources
-          .map((w) => `<li>km ${escapeHtml(w.km)} · ${escapeHtml(w.label || 'Water source')}</li>`)
-          .join('')}</ul>`
+          .map((w) => `<li>km ${escapeHtml(w.km)} · ${escapeHtml(displayWaterLabel(t, w.label))}</li>`)
+          .join('')}</ul>${verified ? '' : '<p class="sp-src">Mapped locations only — current flow, potability and seasonal availability are not verified. Carry a full supply.</p>'}`
       : '';
 
   const rifugiHtml =
@@ -278,15 +300,15 @@ function trailPage(t, slug, all) {
           .join('')}</ul>`
       : '';
 
-  const tipsHtml = t.tips
+  const tipsHtml = t.tips || !verified
     ? `<h2>Good to know</h2>
-    <p>${escapeHtml(t.tips)}</p>`
+    <p>${verified ? escapeHtml(t.tips) : 'This route is an automated interpretation of OpenStreetMap data and has not been field reviewed by DoloPaws. Exposure, shade, livestock, seasonal access and current conditions remain unknown. Verify locally before setting out.'}</p>`
     : '';
 
   const startHtml =
     t.startPoint && t.startPoint.label
       ? `<h2><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;vertical-align:-2.5px;margin-right:2px;"><path d="M7 21V4" stroke="#2E4034" stroke-width="2" stroke-linecap="round"></path><path d="M7 5h10l-2.4 3.5L17 12H7z" fill="#E24B4A"></path></svg> Where to start</h2>
-    <p>${escapeHtml(t.startPoint.label)}</p>`
+    <p>${escapeHtml(displayStartLabel(t, t.startPoint.label))}</p>`
       : '';
 
   const insightsHtml =
@@ -306,8 +328,8 @@ function trailPage(t, slug, all) {
       : '';
 
   const osmCredit = !verified
-    ? `<p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). This trail has not yet been walked and reviewed by DoloPaws.</p>`
-    : '';
+    ? `<p class="sp-src" style="margin-top:20px;">Route data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap contributors</a> (ODbL). The safety rating is an automated estimate, not a field assessment.</p>`
+    : '<p class="sp-src" style="margin-top:20px;">Manually curated by DoloPaws. A dated source record is not yet available; confirm current conditions locally.</p>';
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -403,7 +425,7 @@ ${JSON.stringify(breadcrumbLd, null, 1)}
   <div class="sp-breadcrumb"><a href="../browse-trails.html">All trails</a> › ${escapeHtml(regionLabel)} › ${escapeHtml(t.valley || t.area)}</div>
   <h1>${escapeHtml(t.name)}</h1>
   <div class="sp-badges">
-    <span class="dp-badge dp-badge--${t.safetyLevel}"><span data-dp-icon="${t.safetyLevel === 'low-risk' ? 'verified' : 'warning'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${safetyLabel(t.safetyLevel)}</span></span>
+    <span class="dp-badge dp-badge--${t.safetyLevel}"><span data-dp-icon="${t.safetyLevel === 'low-risk' ? 'verified' : 'warning'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${displaySafetyLabel(t)}</span></span>
     ${badge}
     ${t.paid ? '<span class="dp-badge dp-badge--neutral"><span>Paid access</span></span>' : ''}
   </div>

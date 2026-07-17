@@ -19,6 +19,7 @@
   if (!t) return;
 
   const $ = (id) => document.getElementById(id);
+  const trust = window.DoloPawsTrailTrust;
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const dpIcon = (key, size = 14) => window.DoloPawsIcons
     ? window.DoloPawsIcons.renderIconSvg(key, { mode:'inline', color:'currentColor', size })
@@ -33,11 +34,11 @@
     const el = $('verifiedSeal');
     if (!el) return;
     if (t.curated === false) {
-      el.innerHTML = dpIcon('imported') + '<span>' + esc(tt('badge.importedS', null, 'Imported')) + '</span>';
+      el.innerHTML = dpIcon('imported') + '<span>' + esc(trust ? trust.provenanceLabel(t) : tt('badge.importedS', null, 'Imported')) + '</span>';
       el.style.background = '#e0f2f1';
       el.style.color = '#00695c';
     } else {
-      el.innerHTML = dpIcon('verified') + '<span>' + esc(tt('trail.verifiedShort', null, 'Verified by DoloPaws')) + '</span>';
+      el.innerHTML = dpIcon('verified') + '<span>' + esc(trust ? trust.provenanceLabel(t) : tt('trail.verifiedShort', null, 'DoloPaws reviewed')) + '</span>';
     }
     el.classList.add('dp-inline-status');
     el.hidden = false;
@@ -55,7 +56,10 @@
     if (!title || !sub) return;
 
     const factBits = [];
-    if (t.safetyLevel) factBits.push(safetyLabel(t.safetyLevel).toLowerCase() + ' terrain');
+    if (t.safetyLevel) {
+      const baseRisk = safetyLabel(t.safetyLevel);
+      factBits.push((trust ? trust.riskLabel(t, baseRisk) : baseRisk).toLowerCase());
+    }
     if (typeof t.distance === 'number') factBits.push(t.distance <= 6 ? 'easy distance' : `${t.distance} km`);
     if (typeof t.shadeCoverage === 'number') factBits.push(t.shadeCoverage >= 40 ? 'good shade' : 'little shade');
     const factLine = factBits.join(' · ');
@@ -98,7 +102,8 @@
     const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
     if (typeof lat !== 'number') return;
     title.textContent = tt('qa.accessTitle', null, 'Getting there');
-    const label = sp.label ? esc(sp.label) : tt('trail.itinParkFallback', null, 'Trailhead');
+    const rawLabel = sp.label || tt('trail.itinParkFallback', null, 'Trailhead');
+    const label = esc(trust ? trust.startPointLabel(t, rawLabel) : rawLabel);
     sub.innerHTML = label +
       ` · <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener">` +
       tt('trail.openMaps', null, 'get directions') + ' →</a>';
@@ -121,7 +126,7 @@
         <div class="ph"${o.imageIcon ? ` style="background-image:url('${esc(o.imageIcon)}');"` : ''}><span class="pct near-pct" hidden></span></div>
         <div class="bd">
           <div class="nm">${esc(o.name)}</div>
-          <div class="mt">${esc(o.valley || o.area || '')} · ${o.distance} km · ${safetyLabel(o.safetyLevel)}</div>
+          <div class="mt">${esc(o.valley || o.area || '')} · ${o.distance} km · ${esc(trust ? trust.riskLabel(o, safetyLabel(o.safetyLevel)) : safetyLabel(o.safetyLevel))}</div>
         </div>
       </a>`).join('');
     wrapEl.hidden = false;
@@ -173,7 +178,8 @@
       const dotColors = { 'low-risk': '#4a7c59', 'moderate': '#c98a3e', 'caution': '#b2542e' };
       const labels = { 'low-risk': 'Low-risk terrain', 'moderate': 'Moderate terrain', 'caution': 'Caution terrain' };
       $('tdRiskDot').style.background = dotColors[t.safetyLevel] || '#8a8d80';
-      $('tdRiskLabel').textContent = labels[t.safetyLevel] || '';
+      const baseRisk = labels[t.safetyLevel] || '';
+      $('tdRiskLabel').textContent = trust ? trust.riskLabel(t, baseRisk) : baseRisk;
       riskLine.hidden = false;
     }
 
@@ -204,7 +210,9 @@
 
     const easyTerrain = Number(t.terrainRank) === 0;
     const lowRisk = t.safetyLevel === 'low-risk';
-    const verdict = lowRisk && easyTerrain
+    const verdict = t.curated === false
+      ? 'Automated estimate from mapped route data. Exposure, shade, livestock and current conditions are not field verified.'
+      : lowRisk && easyTerrain
       ? 'A gentle, low-risk choice for most dogs.'
       : t.safetyLevel === 'caution'
         ? 'A more demanding trail: check the hazards and your dog’s confidence before committing.'
@@ -230,7 +238,7 @@
     const isLoop = Array.isArray(t.path) && t.path.length > 1 && distMeters(t.path[0], t.path[t.path.length-1]) < 200;
     const climb = Number(t.elevation) || 0;
     const signalData = [
-      ['paw', easyTerrain ? 'Gentle paw surface' : 'Mixed paw surface', easyTerrain ? 'Flat or packed underfoot' : (t.terrainType || 'Check pads at breaks')],
+      ['paw', easyTerrain ? (t.curated === false ? 'Mapped paw surface' : 'Gentle paw surface') : 'Mixed paw surface', easyTerrain ? (t.curated === false ? 'Mapped as flat or packed; not field reviewed' : 'Flat or packed underfoot') : (t.terrainType || 'Check pads at breaks')],
       ['route', 'Route effort', `${t.distance} km${climb ? ` · +${climb} m` : ''}`],
       ['loop', isLoop ? 'Loop route' : 'One-way route', isLoop ? 'Returns to the starting point' : 'Plan the return journey']
     ];
@@ -251,7 +259,7 @@
     // Assessment note ABOVE the box, below the heading
     const assessmentNote = $('assessmentNote');
     if (assessmentNote) {
-      assessmentNote.innerHTML = `<strong style="color: var(--ink);">Our assessment of this trail, based on the DoloPaws method:</strong> we weigh verified terrain, water availability, elevation and shade against your dog's profile to produce the personalised match above.`;
+      assessmentNote.innerHTML = trust ? trust.assessmentNote(t) : `<strong style="color: var(--ink);">Our assessment of this trail:</strong> route facts are weighed against your dog's profile. Current conditions can still change.`;
     }
 
     const sp = t.startPoint || {};
@@ -514,30 +522,22 @@
     const rows = [];
     const good = (title, sub) => rows.push({ ok: true, title, sub });
     const caution = (title, sub) => rows.push({ ok: false, title, sub });
+    const addAssessment = item => {
+      if (!item) return;
+      (item.ok ? good : caution)(item.title, item.detail);
+    };
 
-    hasWater
-      ? good('Water', 'A water source is mapped on this route. Bring a bowl.')
-      : caution('Water', 'No water source is mapped. Carry enough for the dog, roughly 0.5 l per 10 kg on a warm day.');
-    if (shade !== null || t.heatRisk) {
-      const shadeText = shade === null ? '' : `${shade}% shade`;
-      const highHeat = t.heatRisk === 'high' || (shade !== null && shade < 25);
-      const lowHeat = t.heatRisk === 'low' && (shade === null || shade >= 40);
-      const detail = highHeat
-        ? `${shadeText ? shadeText + '. ' : ''}The route is heat-exposed; use the live forecast to choose an early, cool window.`
-        : lowHeat
-          ? `${shadeText ? shadeText + '. ' : ''}The route has relatively favourable heat exposure.`
-          : `${shadeText ? shadeText + '. ' : ''}Plan rests and use the live forecast to choose a cooler window.`;
-      (highHeat ? caution : good)('Heat & shade', detail);
-    }
+    addAssessment(trust ? trust.waterAssessment(t) : (hasWater
+      ? { ok: true, title: 'Water', detail: 'A water source is mapped on this route. Bring a bowl.' }
+      : { ok: false, title: 'Water', detail: 'No water source is mapped. Carry enough for the dog.' }));
+    addAssessment(trust ? trust.heatAssessment(t) : null);
     if (Number(t.terrainRank) !== 0) {
-      caution('Surface hazards', (t.terrainType || 'Gravel and mixed rock') + '. Check pads at breaks; consider booties for tender paws.');
+      caution('Surface hazards', (t.terrainType || 'Gravel and mixed rock') + (t.curated === false ? '. This surface description is mapped, not field reviewed.' : '.') + ' Check pads at breaks; consider booties for tender paws.');
     }
-    if (t.exposure) caution('Exposure', 'Narrow ledges or unprotected drop-offs on parts of the route. Keep the dog leashed and on the inside.');
-    if (/livestock|patou|guardian|cattle|herd|pasture|alpage|graz/.test(text)) {
-      caution('Livestock & leash', 'Grazing animals (possibly with guardian dogs) reported on or near this route. Leash through pastures, give herds a wide berth.');
-    } else {
-      good('Leash', 'No livestock noted in our field data for this route. Local leash rules still apply.');
-    }
+    addAssessment(trust ? trust.exposureAssessment(t) : (t.exposure
+      ? { ok: false, title: 'Exposure', detail: 'Narrow ledges or unprotected drop-offs occur on parts of the route.' }
+      : null));
+    addAssessment(trust ? trust.livestockAssessment(t, text) : null);
     if (maxAlt >= 1800) caution('Season & altitude', `Tops out around ${maxAlt} m. Snow lingers into early summer and weather turns quickly.`);
 
     box.innerHTML = rows.map(r => `

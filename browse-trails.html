@@ -24,6 +24,7 @@
   .browse-tools{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(3,minmax(140px,1fr));gap:10px;margin-bottom:12px;}
   .browse-tools input,.browse-tools select{width:100%;min-height:44px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;background:var(--card);color:var(--ink);font:500 13px 'Inter',sans-serif;}
   .browse-tools input:focus,.browse-tools select:focus{outline:none;border-color:var(--accent);}
+  .trail-trust-note{margin:0 0 14px;padding:11px 13px;border-left:3px solid #8a5a16;background:#f6ecdb;border-radius:0 10px 10px 0;color:#5f4a2c;font-size:12.5px;line-height:1.55;}
   .browse-results-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px;color:var(--ink-soft);font-size:12.5px;}
   .browse-clear{border:0;background:none;color:var(--accent);font:700 12.5px 'Inter',sans-serif;cursor:pointer;padding:4px 0;}
   .browse-empty{grid-column:1/-1;}
@@ -96,6 +97,7 @@
       <option value="20">Up to 20 km</option>
     </select>
   </div>
+  <p class="trail-trust-note" data-i18n="browse.trustNote"><strong>How to read safety labels:</strong> DoloPaws-curated trails contain manually prepared details, but review dates are not yet recorded. Imported trail ratings are automated estimates and do not confirm exposure, shade, livestock or current conditions.</p>
   <div class="browse-results-meta">
     <span id="browseResultCount" aria-live="polite"></span>
     <button type="button" id="browseClear" class="browse-clear" hidden>Clear filters</button>
@@ -283,6 +285,7 @@
 
 <script src="mobile-nav.js"></script>
 <script src="i18n.js"></script>
+<script src="trail-trust.js?v=20260717"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="icon-system.js?v=20260717" defer></script>
 <script src="trail-card-visual.js?v=20260717" defer></script>
@@ -383,12 +386,15 @@
           : `<div class="trail-visual trail-visual--placeholder photo" role="img" aria-label="${t.name}: photo coming soon"><span class="trail-visual-placeholder-label">Photo coming soon</span></div>`;
         const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
         const icons = window.DoloPawsIcons;
+        const trust = window.DoloPawsTrailTrust;
+        const provenanceLabel = trust ? trust.provenanceLabel(t) : window.t(t.curated === false ? 'badge.importedS' : 'badge.verifiedS');
+        const ratingLabel = trust ? trust.riskLabel(t, s[0]) : s[0];
         const provenance = icons
-          ? icons.badgeHtml(t.curated === false ? 'imported' : 'verified', window.t(t.curated === false ? 'badge.importedS' : 'badge.verifiedS'))
-          : `<span class="badge-pill ${t.curated === false ? 'badge-imported' : 'badge-verified'}">${window.t(t.curated === false ? 'badge.importedS' : 'badge.verifiedS')}</span>`;
+          ? icons.badgeHtml(t.curated === false ? 'imported' : 'verified', provenanceLabel)
+          : `<span class="badge-pill ${t.curated === false ? 'badge-imported' : 'badge-verified'}">${provenanceLabel}</span>`;
         const ratingBadge = icons
-          ? icons.badgeHtml(t.safetyLevel, s[0])
-          : `<span class="safety-badge ${t.safetyLevel === 'low-risk' ? 'safety-low' : t.safetyLevel === 'moderate' ? 'safety-moderate' : 'safety-caution'}">${s[0]}</span>`;
+          ? icons.badgeHtml(t.safetyLevel, ratingLabel)
+          : `<span class="safety-badge ${t.safetyLevel === 'low-risk' ? 'safety-low' : t.safetyLevel === 'moderate' ? 'safety-moderate' : 'safety-caution'}">${ratingLabel}</span>`;
         const meta = [t.area, t.distance ? `${t.distance} km` : null, t.hours ? `${t.hours} h` : null]
           .filter(Boolean).join(' · ');
         const openAttr = `href="trail.html?id=${encodeURIComponent(t.id)}&from=${encodeURIComponent(browseStateTarget())}"`;

@@ -3,6 +3,10 @@ function safetyLabel(level){
   if(level === 'moderate') return t('safety.moderate');
   return t('safety.caution');
 }
+function trailSafetyLabel(trail){
+  const base = safetyLabel(trail.safetyLevel);
+  return window.DoloPawsTrailTrust ? window.DoloPawsTrailTrust.riskLabel(trail, base) : base;
+}
 function safetyColor(level){
   if(level === 'low-risk') return '#2C5C34';
   if(level === 'moderate') return '#8A5A16';
@@ -24,6 +28,12 @@ function trailProductIcon(type, size = 16){
 function withoutLeadingSymbol(label){
   return String(label || '').replace(/^[^\p{L}\p{N}]+/u, '');
 }
+function trustedWaterLabel(trail, label){
+  return window.DoloPawsTrailTrust ? window.DoloPawsTrailTrust.waterPointLabel(trail, label) : label;
+}
+function trustedStartLabel(trail, label){
+  return window.DoloPawsTrailTrust ? window.DoloPawsTrailTrust.startPointLabel(trail, label) : label;
+}
 
 function renderTrailDetailContent(t){
   const rifugi = Array.isArray(t.rifugi) ? t.rifugi : [];
@@ -34,7 +44,8 @@ function renderTrailDetailContent(t){
     : `<p style="margin:0 0 14px;">${window.t('trail.noRifugi')}</p>`;
 
   const waterHtml = water.length > 0
-    ? `<ul style="margin:0 0 14px;padding-left:18px;">${water.map(w => `<li>Km ${w.km} — ${w.label}</li>`).join('')}</ul>`
+    ? `<ul style="margin:0 0 8px;padding-left:18px;">${water.map(w => `<li>Km ${w.km} — ${trustedWaterLabel(t, w.label)}</li>`).join('')}</ul>` +
+      (t.curated === false ? '<p style="margin:0 0 14px;font-size:12px;color:var(--ink-soft);">Mapped location only — current flow, potability and seasonal availability are not verified.</p>' : '')
     : `<p style="margin:0 0 14px;">${window.t('trail.noWater')}</p>`;
 
   return `
@@ -507,7 +518,7 @@ function renderLegendChips(t){
   if(hasRoutePath){
     chip(itinIcon('flag'), window.t('legendTrail.start').replace('🚩 ', ''));
     chip(swatch(`border-top:3px solid ${safetyColor(t.safetyLevel)};border-radius:2px`),
-         window.t('trail.route', {label: safetyLabel(t.safetyLevel)}));
+         window.t('trail.route', {label: trailSafetyLabel(t)}));
     chip('<span style="font-size:13px;flex:none;">➤</span>', window.t('legendTrail.dir').replace('➤ ', ''));
     if(Array.isArray(t.decisionPoints) && t.decisionPoints.length){
       chip(itinIcon('switch'), window.t('legendTrail.switch').replace('🔀 ', ''));
@@ -542,7 +553,7 @@ function buildItinerary(t){
   const mapsUrl = isApple
     ? `https://maps.apple.com/?daddr=${sp.lat},${sp.lng}`
     : `https://www.google.com/maps/dir/?api=1&destination=${sp.lat},${sp.lng}`;
-  const parkLabel = sp.label ? itinEsc(trLabel(sp.label)) : window.t('trail.itinParkFallback');
+  const parkLabel = sp.label ? itinEsc(trLabel(trustedStartLabel(t, sp.label))) : window.t('trail.itinParkFallback');
   itinAdd('park', -2, `${parkLabel} · <a href="${mapsUrl}" target="_blank" rel="noopener">${window.t('trail.openMaps')}</a>`);
 
   // 2. The start flag.
@@ -553,7 +564,7 @@ function buildItinerary(t){
     if(r.km > 0) itinAdd('hut', r.km, `${itinKmLabel(r.km)} — ${itinEsc(r.name)}`);
   });
   (Array.isArray(t.waterSources) ? t.waterSources : []).forEach(w => {
-    if(w.km > 0) itinAdd('water', w.km, `${itinKmLabel(w.km)} — ${itinEsc(trLabel(w.label))}`);
+    if(w.km > 0) itinAdd('water', w.km, `${itinKmLabel(w.km)} — ${itinEsc(trLabel(trustedWaterLabel(t, w.label)))}`);
   });
 
   // 4. Decision points — where the route switches numbered trails.
@@ -709,10 +720,10 @@ function renderTrail(t){
   document.getElementById('trailMeta').textContent =
     `${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h · ${t.terrainType}`;
   document.getElementById('trailBadges').innerHTML =
-    trailProductBadge(t.safetyLevel, safetyLabel(t.safetyLevel)) +
+    trailProductBadge(t.safetyLevel, trailSafetyLabel(t)) +
     (t.paid ? trailProductBadge('neutral', window.t('card.paid')) : '');
   document.getElementById('routeSwatch').style.background = safetyColor(t.safetyLevel);
-  document.getElementById('routeSwatchLabel').textContent = window.t('trail.route', {label: safetyLabel(t.safetyLevel)});
+  document.getElementById('routeSwatchLabel').textContent = window.t('trail.route', {label: trailSafetyLabel(t)});
   const rawDescription = trField(t, 'desc');
   const descriptionSentences = String(rawDescription).match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [rawDescription];
   let conciseDescription = '';
@@ -911,7 +922,7 @@ function renderTrail(t){
   if(Array.isArray(t.path) && ((Array.isArray(t.decisionPoints) && t.decisionPoints.length > 0) || t.startPoint)){
     const totalKm = t.distance;
     const firstStep = t.startPoint
-      ? window.t('trail.dirStart', {label: trLabel(t.startPoint.label)})
+      ? window.t('trail.dirStart', {label: trLabel(trustedStartLabel(t, t.startPoint.label))})
       : window.t('trail.dirStartAt', {name: (t.rifugi || []).find(r => r.km === 0)?.name || t.area});
     const steps = [firstStep];
 
@@ -1099,7 +1110,7 @@ function renderTrail(t){
           };
           (t.rifugi || []).forEach(r => { if(r.km > 0) addWaypoint(r.km, 'hut', trLabel(r.name)); });
           (t.waterSources || []).forEach(w => {
-            if(typeof w.km === 'number' && w.km >= 0) addWaypoint(w.km, 'water', trLabel(w.label));
+            if(typeof w.km === 'number' && w.km >= 0) addWaypoint(w.km, 'water', trLabel(trustedWaterLabel(t, w.label)));
           });
         }
 
@@ -1110,7 +1121,7 @@ function renderTrail(t){
         if(t.startPoint){
           new maplibregl.Marker({ element: makeIconEl('start', '#2E4034'), offset: [-14, -14] })
             .setLngLat([t.startPoint.lng, t.startPoint.lat])
-            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${trLabel(t.startPoint.label)}</b>`))
+            .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(`<b>${trLabel(trustedStartLabel(t, t.startPoint.label))}</b>`))
             .addTo(map);
         }
       } else {
