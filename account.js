@@ -191,7 +191,12 @@
   populateBreedOptions();
 
   dogBreed.addEventListener('change', () => {
-    dogBreedOtherField.hidden = dogBreed.value !== OTHER_VALUE;
+    const usesCustomBreed = dogBreed.value === OTHER_VALUE;
+    dogBreedOtherField.hidden = !usesCustomBreed;
+    // Password managers sometimes treat an unrelated text field on an
+    // account page as the username field. Never carry that autofill value
+    // into a custom breed the user has just chosen.
+    dogBreedOther.value = '';
   });
 
   // ---------- Date of birth / age band ----------
@@ -365,6 +370,7 @@
         } else {
           dogBreed.value = savedBreed;
           dogBreedOtherField.hidden = true;
+          dogBreedOther.value = '';
         }
 
         // Age: prefer stored DOB, then stored band, then migrate the old

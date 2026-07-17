@@ -335,6 +335,7 @@ img,svg{max-width:100%;height:auto;}
   background:var(--bg);
 }
 .field-label input:focus, .field-label select:focus{outline:none;border-color:var(--accent);}
+#dogBreedOtherField[hidden]{display:none !important;}
 #nbBreedOtherField[hidden]{display:none;}
 
 .auth-submit, .google-btn{
