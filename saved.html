@@ -39,21 +39,25 @@
 
   <div id="savedList" style="display:flex;flex-direction:column;gap:13px;margin-top:24px;"></div>
 
-  <div id="savedEmpty" hidden style="margin-top:24px;border:2px dashed var(--paper-line);border-radius:20px;padding:48px 24px;text-align:center;">
-    <div style="font-size:30px;" aria-hidden="true">&#9825;</div>
-    <p style="font-family:'Source Serif 4',serif;font-weight:700;font-size:19px;margin:10px 0 6px;color:var(--ink);">Nothing saved yet</p>
-    <p style="color:var(--ink-soft);font-size:13.5px;margin:0 0 18px;">Tap the heart on any trail and it will wait for you here.</p>
-    <a href="browse-trails.html" class="auth-submit" style="display:inline-block;width:auto;padding:11px 24px;text-decoration:none;">Browse trails</a>
+  <div id="savedEmpty" class="empty-state" hidden>
+    <div class="empty-state__icon" aria-hidden="true"><span data-dp-icon="routes" data-dp-icon-size="21"></span></div>
+    <p class="empty-state__title">Build your trail shortlist</p>
+    <p class="empty-state__copy">Save promising trails while you browse. They will appear here, ranked for your dog.</p>
+    <div class="empty-state__actions"><a href="browse-trails.html" class="empty-state__action">Find a trail to save</a></div>
   </div>
 
-  <div id="savedLoggedOut" hidden style="margin-top:24px;text-align:center;padding:40px 20px;">
-    <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">Log in to see your saved trails.</p>
-    <button type="button" id="savedLoginBtn" class="auth-submit" style="width:auto;padding:11px 24px;">Log in</button>
+  <div id="savedLoggedOut" class="empty-state" hidden>
+    <div class="empty-state__icon" aria-hidden="true"><span data-dp-icon="routes" data-dp-icon-size="21"></span></div>
+    <p class="empty-state__title">Your shortlist travels with you</p>
+    <p class="empty-state__copy">Log in to view saved trails and keep them available across devices.</p>
+    <div class="empty-state__actions"><button type="button" id="savedLoginBtn" class="empty-state__action">Log in</button></div>
   </div>
 
-  <div id="savedLoadError" hidden style="margin-top:24px;text-align:center;padding:40px 20px;">
-    <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">We couldn’t load your saved trails right now.</p>
-    <button type="button" id="savedRetryBtn" class="auth-submit" style="width:auto;padding:11px 24px;">Try again</button>
+  <div id="savedLoadError" class="empty-state" hidden>
+    <div class="empty-state__icon" aria-hidden="true"><span data-dp-icon="warning" data-dp-icon-size="21"></span></div>
+    <p class="empty-state__title">Saved trails did not load</p>
+    <p class="empty-state__copy">Your shortlist is still safe. Check your connection and try again.</p>
+    <div class="empty-state__actions"><button type="button" id="savedRetryBtn" class="empty-state__action">Try again</button></div>
   </div>
 </div>
 

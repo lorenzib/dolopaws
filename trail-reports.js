@@ -105,7 +105,13 @@ function initTrailReports(map, trail){
 
     if (!reviewListEl) return;
     if (!visible.length){
-      reviewListEl.innerHTML = '';
+      reviewListEl.innerHTML = `<div class="empty-state empty-state--compact">
+        <p class="empty-state__title">No reviews yet</p>
+        <p class="empty-state__copy">Share how the route felt for your dog and what another owner should know.</p>
+        <div class="empty-state__actions"><button type="button" class="empty-state__action" data-empty-review>Leave the first review</button></div>
+      </div>`;
+      const emptyReview = reviewListEl.querySelector('[data-empty-review]');
+      if (emptyReview) emptyReview.addEventListener('click', openReviewModal);
       return;
     }
 
@@ -130,6 +136,16 @@ function initTrailReports(map, trail){
         const aDate = reviewDate(a), bDate = reviewDate(b);
         return (bDate ? bDate.getTime() : 0) - (aDate ? aDate.getTime() : 0);
       });
+    if (!visible.length){
+      photosListEl.innerHTML = `<div class="empty-state empty-state--compact">
+        <p class="empty-state__title">No trail photos yet</p>
+        <p class="empty-state__copy">Add a recent, useful view so others can recognise the route and conditions.</p>
+        <div class="empty-state__actions"><button type="button" class="empty-state__action" data-empty-photo>Add the first photo</button></div>
+      </div>`;
+      const emptyPhoto = photosListEl.querySelector('[data-empty-photo]');
+      if (emptyPhoto) emptyPhoto.addEventListener('click', openPhotoModal);
+      return;
+    }
     photosListEl.innerHTML = visible.slice(0, 6).map(photo => {
       const dog = photo.dogContext && photo.dogContext.name;
       const caption = photo.caption ? trEsc(photo.caption) : (dog ? `Shared by ${trEsc(dog)}’s human` : 'Shared by the DoloPaws community');
@@ -162,7 +178,10 @@ function initTrailReports(map, trail){
       ? window.DoloPawsAuth.currentUser.uid : null;
 
     if (flags.length === 0){
-      listEl.innerHTML = `<p style="font-size:13.5px;color:var(--ink-soft);margin:0;">${window.t('reports.empty')}</p>`;
+      listEl.innerHTML = `<div class="empty-state empty-state--compact">
+        <p class="empty-state__title">No recent hazard reports</p>
+        <p class="empty-state__copy">The community has not reported a current issue here. Conditions can still change, so report anything useful after your walk.</p>
+      </div>`;
     } else {
       listEl.innerHTML = flags.map(f => {
         const t = FLAG_TYPES[f.type] || FLAG_TYPES.other;

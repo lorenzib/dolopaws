@@ -62,7 +62,6 @@
   @media(max-width:390px){.jn-metrics{grid-template-columns:1fr !important;gap:0 !important;}}
   .jn-star-row button{background:none;border:none;font-size:24px;cursor:pointer;color:var(--paper-line);padding:2px;}
   .jn-star-row button.on{color:#C99038;}
-  .jn-empty{border:2px dashed var(--paper-line);border-radius:20px;padding:44px 24px;text-align:center;margin-top:18px;}
 </style>
 </head>
 <body>
@@ -98,14 +97,17 @@
   </div>
 
   <div id="jnTimeline" style="display:flex;flex-direction:column;gap:12px;"></div>
-  <div id="jnEmpty" class="jn-empty" hidden>
-    <div style="display:flex;justify-content:center;color:var(--success);" aria-hidden="true"><span data-dp-icon="dog" data-dp-icon-size="28"></span></div>
-    <p style="font-family:'Source Serif 4',serif;font-weight:700;font-size:19px;margin:10px 0 6px;color:var(--ink);">No walks logged yet</p>
-    <p style="color:var(--ink-soft);font-size:13.5px;margin:0;">Log your dog's next outing to start the story.</p>
+  <div id="jnEmpty" class="empty-state" hidden>
+    <div class="empty-state__icon" aria-hidden="true"><span data-dp-icon="dog" data-dp-icon-size="22"></span></div>
+    <p class="empty-state__title">Start your walking story</p>
+    <p class="empty-state__copy">Log a first outing to remember the route, conditions, and how the walk felt for your dog.</p>
+    <div class="empty-state__actions"><button type="button" id="jnEmptyLogBtn" class="empty-state__action">Log your first walk</button></div>
   </div>
-  <div id="jnLoggedOut" hidden style="text-align:center;padding:40px 20px;">
-    <p style="font-size:15px;color:var(--ink-soft);margin-bottom:16px;">Log in to keep a walking journal.</p>
-    <button type="button" id="jnLoginBtn" class="auth-submit" style="width:auto;padding:11px 24px;">Log in</button>
+  <div id="jnLoggedOut" class="empty-state" hidden>
+    <div class="empty-state__icon" aria-hidden="true"><span data-dp-icon="dog" data-dp-icon-size="22"></span></div>
+    <p class="empty-state__title">Keep your walks together</p>
+    <p class="empty-state__copy">Log in to build a private journal of the trails you and your dog have walked.</p>
+    <div class="empty-state__actions"><button type="button" id="jnLoginBtn" class="empty-state__action">Log in</button></div>
   </div>
   <p id="jnStorageNote" style="margin-top:18px;font-size:11.5px;color:var(--ink-soft);" hidden>Journal entries are stored in this browser for your account.</p>
 </div>
@@ -410,6 +412,9 @@ document.addEventListener('DOMContentLoaded', function(){
     overlay.hidden = false;
     renderStarInput();
     setTimeout(function(){ trailSearch.focus(); }, 0);
+  });
+  document.getElementById('jnEmptyLogBtn').addEventListener('click', function(){
+    document.getElementById('jnLogBtn').click();
   });
   document.getElementById('jnLoginBtn').addEventListener('click', function(){
     var accountBtn = document.getElementById('accountBtn');

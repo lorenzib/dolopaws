@@ -26,7 +26,7 @@
   .browse-tools input:focus,.browse-tools select:focus{outline:none;border-color:var(--accent);}
   .browse-results-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px;color:var(--ink-soft);font-size:12.5px;}
   .browse-clear{border:0;background:none;color:var(--accent);font:700 12.5px 'Inter',sans-serif;cursor:pointer;padding:4px 0;}
-  .browse-empty{grid-column:1/-1;padding:44px 20px;text-align:center;border:2px dashed var(--paper-line);border-radius:18px;color:var(--ink-soft);}
+  .browse-empty{grid-column:1/-1;}
   @media(max-width:760px){.browse-tools{grid-template-columns:1fr 1fr}.browse-tools .browse-search{grid-column:1/-1}}
   @media(max-width:460px){.browse-tools{grid-template-columns:1fr}.browse-tools .browse-search{grid-column:auto}}
 </style>
@@ -368,12 +368,15 @@
       const pool = filteredTrails();
       const hasFilters = search.value.trim() || region.value !== 'all' || risk.value !== 'all' || distance.value !== 'all';
       resultCount.textContent = `${pool.length} trail${pool.length === 1 ? '' : 's'} found`;
-      clear.hidden = !hasFilters;
+      clear.hidden = !hasFilters || pool.length === 0;
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
       if(historyMode) syncBrowseUrl(historyMode);
       const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
+      const emptyIcon = window.DoloPawsIcons
+        ? window.DoloPawsIcons.renderIconSvg('routes', { mode:'inline', color:'currentColor', size:21 })
+        : '';
       list.innerHTML = pageTrails.length ? pageTrails.map(t => {
         const thumb = window.DoloPawsTrailVisual
           ? window.DoloPawsTrailVisual.render(t, { className:'photo' })
@@ -403,7 +406,15 @@
             ${cta}
           </div>
         </a>`;
-      }).join('') : '<div class="browse-empty"><b>No trails match these filters.</b><br>Try a different region, rating, distance, or search.</div>';
+      }).join('') : '<div class="browse-empty empty-state">' +
+        '<div class="empty-state__icon" aria-hidden="true">' + emptyIcon + '</div>' +
+        '<p class="empty-state__title">No trails match this combination</p>' +
+        '<p class="empty-state__copy">Widen the distance or rating, try another region, or clear everything and start again.</p>' +
+        '<div class="empty-state__actions"><button type="button" class="empty-state__action" data-clear-empty>Clear all filters</button></div>' +
+      '</div>';
+
+      const emptyClear = list.querySelector('[data-clear-empty]');
+      if(emptyClear) emptyClear.addEventListener('click', () => clear.click());
 
       if(totalPages > 1){
         const nav = document.createElement('div');
