@@ -840,6 +840,16 @@ function renderTrail(t){
     if(Array.isArray(t.elevationProfile) && t.elevationProfile.length > 1){
       facts.splice(2, 0, [`${Math.max(...t.elevationProfile.map(p => p.elev))} m`, window.t('trail.fact.high')]);
     }
+    // Difficulty cell — mirrors the homepage's derivation from real fields so
+    // the hero stat strip matches the design's five-cell layout.
+    (function(){
+      const asc = Number(t.elevation) || 0;
+      const rank = Number(t.terrainRank) || 0;
+      const km = Number(t.distance) || 0;
+      const diff = (asc >= 400 || (rank >= 2 && asc >= 250)) ? 'Hard'
+        : (asc >= 180 || km >= 6 || rank >= 2) ? 'Moderate' : 'Easy';
+      facts.push([diff, window.t('trail.fact.difficulty')]);
+    })();
     factsEl.innerHTML = facts.map(([val, label]) =>
       `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('');
 

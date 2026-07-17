@@ -422,6 +422,38 @@ body{background:#EFECE2;}
 
 /* Hazards / read-before-you-go chips spacing */
 .td2 #trailGuideLinks{margin-top:14px;}
+
+/* ---- Hero actions, tidied (Save + Start prominent) ---- */
+.td2-hero-actions{flex-direction:column;align-items:flex-end;max-width:none;gap:8px;}
+.td2-actrow{display:flex;gap:10px;align-items:center;}
+.td2-actrow-sub{gap:8px;}
+.td2-btn-sm{padding:8px 14px;font-size:12.5px;}
+.td2-hero-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right;margin-top:2px;}
+.td2-hero-meta .td-log-link{padding:0;}
+.td2 #tdMatchLabel .k{color:#9FC7D6;font-size:10px;letter-spacing:.1em;}
+.td2 #tdMatchLabel .b{color:#A9B7AB;font-size:11px;}
+
+/* ---- Today's conditions card ---- */
+.td2-cond-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#2E4034;margin-bottom:11px;}
+.td2-cond-row.td2-cond-last{margin-bottom:0;}
+.td2-cond-row .num{font-size:15px;font-weight:900;}
+.td2-cond-row #tdCondWater{font-weight:800;}
+.td2 #tdCondPaw{font-size:11px;padding:4px 10px;border-radius:999px;}
+.td2-cond-window{font-size:11.5px;color:#8A9689;line-height:1.5;margin:12px 0 0;padding-top:12px;border-top:1px solid #EDE9DD;}
+.td2-cond-window strong{font-weight:700;color:#6B7A6E;}
+
+/* ---- 6-day forecast card ---- */
+.td2-fcday{display:flex;align-items:center;gap:10px;padding:8px 0;}
+.td2-fcday.brd{border-top:1px solid #EDE9DD;}
+.td2-fcday .d{width:38px;font-size:12px;font-weight:700;color:#6B7A6E;}
+.td2-fcday .d.now{font-weight:800;color:#2E4034;}
+.td2-fcday .ic{display:grid;place-items:center;width:20px;flex:none;}
+.td2-fcday .tp{font-size:12.5px;color:#2E4034;flex:1;}
+.td2-fcday .tp .num{font-weight:900;}
+.td2-fcday .tp .lo{color:#8A9689;}
+.td2-fcday .bd{margin-left:auto;}
+.td2-fcday .bd .td2-badge{font-size:9.5px;padding:3px 8px;border-radius:999px;font-weight:700;}
+.td2-fc6-note{font-size:11px;color:#8A9689;line-height:1.5;margin:10px 0 0;}
 </style>
 </head>
 <body>
@@ -456,22 +488,28 @@ body{background:#EFECE2;}
 
         <!-- match + actions (classes kept so trail.js guest/match logic still works) -->
         <div class="td-actions td2-hero-actions">
-          <button id="detailSaveBtn" class="td2-btn-g" type="button">♥ Save</button>
-          <button id="heroStartHike" class="td2-btn-p" type="button" hidden>▶ Start the hike</button>
-          <a id="getDirectionsBtn" class="td2-btn-g" href="#">Get directions</a>
-          <button id="detailShareBtn" class="td2-btn-g" type="button" aria-haspopup="true" aria-expanded="false"><span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"></path><path d="M12 3v12"></path><path d="M8 7l4-4 4 4"></path></svg>Share</span></button>
-          <div class="td-share-pop" id="tdSharePop" hidden>
-            <button type="button" id="tdCopyLink">Copy link</button>
-            <a id="tdShareSms" href="#">Message a walking buddy</a>
-            <a id="tdShareMail" href="#">Email this trail</a>
+          <div class="td2-actrow">
+            <button id="detailSaveBtn" class="td2-btn-g" type="button">♥ Save</button>
+            <button id="heroStartHike" class="td2-btn-p" type="button" hidden>▶ Start the hike</button>
           </div>
-          <div id="personalScore" hidden></div>
-          <div class="td-match-label" id="tdMatchLabel" hidden>
-            <div class="k" id="tdMatchName">MATCH FOR YOUR DOG</div>
-            <div class="b" id="tdMatchBreed"></div>
+          <div class="td2-actrow td2-actrow-sub">
+            <a id="getDirectionsBtn" class="td2-btn-g td2-btn-sm" href="#">Get directions</a>
+            <button id="detailShareBtn" class="td2-btn-g td2-btn-sm" type="button" aria-haspopup="true" aria-expanded="false"><span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"></path><path d="M12 3v12"></path><path d="M8 7l4-4 4 4"></path></svg>Share</span></button>
+            <div class="td-share-pop" id="tdSharePop" hidden>
+              <button type="button" id="tdCopyLink">Copy link</button>
+              <a id="tdShareSms" href="#">Message a walking buddy</a>
+              <a id="tdShareMail" href="#">Email this trail</a>
+            </div>
           </div>
-          <span id="trailMatch" hidden></span>
-          <a id="logWalkBtn" class="td-log-link" href="journal.html" hidden>Log this walk</a>
+          <div class="td2-hero-meta">
+            <div id="personalScore" hidden></div>
+            <div class="td-match-label" id="tdMatchLabel" hidden>
+              <div class="k" id="tdMatchName">MATCH FOR YOUR DOG</div>
+              <div class="b" id="tdMatchBreed"></div>
+            </div>
+            <span id="trailMatch" hidden></span>
+            <a id="logWalkBtn" class="td-log-link" href="journal.html" hidden>Log this walk</a>
+          </div>
         </div>
       </div>
 
@@ -585,19 +623,20 @@ body{background:#EFECE2;}
           <div class="td2-dog"><span class="av" id="td2DogAv">🐾</span><div><div class="nm" id="td2DogName">Your dog</div><div class="mt" id="td2DogMeta"></div></div></div>
           <div class="td2-dog-verdict" id="td2DogVerdict" hidden><span class="n" id="td2DogPct"></span><span class="c" id="td2DogWord"></span></div>
         </div>
-        <div class="td-fc" id="sideForecast" hidden>
-          <div class="head">
-            <span class="t">Walking forecast</span>
-            <span class="v" id="sideFcValley"></span>
-          </div>
-          <div class="td-fc-now">
-            <div class="copy"><b id="sideCondTitle">Today</b><span id="sideCondWindow"></span></div>
-            <span class="temp" id="sideCondTemp"></span>
-          </div>
-          <div id="sideForecastToday"></div>
-          <div class="fc-legend"><i style="background:#5c8a52;"></i>Cool <i style="background:#c98a3e;margin-left:6px;"></i>Warm <i style="background:#b2542e;margin-left:6px;"></i>Hot</div>
-          <div class="rule"></div>
-          <div id="sideForecastDays"></div>
+        <!-- Today's conditions -->
+        <div class="td2-card td2-section td2-cond" id="tdConditions" hidden>
+          <div class="td2-kick" style="margin-bottom:14px;">Today's conditions <span id="sideFcValley" style="text-transform:none;letter-spacing:0;color:#8A9689;font-weight:600;"></span></div>
+          <div class="td2-cond-row"><span>Temperature</span><b class="num" id="tdCondTemp">—</b></div>
+          <div class="td2-cond-row"><span>Paw comfort</span><span class="td2-badge" id="tdCondPaw">—</span></div>
+          <div class="td2-cond-row td2-cond-last"><span>Water sources</span><b id="tdCondWater">—</b></div>
+          <p class="td2-cond-window" id="sideCondWindow"></p>
+        </div>
+
+        <!-- 6-day forecast -->
+        <div class="td2-card td2-section td2-fc6" id="sideForecast" hidden>
+          <div class="td2-kick" style="margin-bottom:8px;">6-day forecast</div>
+          <div id="tdForecastDays"></div>
+          <p class="td2-fc6-note" id="tdForecastNote" hidden></p>
         </div>
       </aside>
     </div>

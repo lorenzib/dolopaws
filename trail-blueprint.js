@@ -587,25 +587,30 @@
     const sp = t.startPoint || {};
     const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
     const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
-    const fcCard = $('sideForecast'), fcToday = $('sideForecastToday'), fcDays = $('sideForecastDays');
+    const condCard = $('tdConditions'), fcCard = $('sideForecast'), fcDays = $('tdForecastDays');
     if (typeof lat !== 'number') return;
 
     const valleyEl = $('sideFcValley');
-    if (valleyEl) valleyEl.textContent = t.valley || t.area || '';
+    if (valleyEl) valleyEl.textContent = (t.valley || t.area) ? '· ' + (t.valley || t.area) : '';
 
     const WMO = (c) => c === 0 ? 'Clear' : c <= 2 ? 'Mostly clear' : c === 3 ? 'Overcast'
       : c <= 48 ? 'Fog' : c <= 57 ? 'Drizzle' : c <= 67 ? 'Rain' : c <= 77 ? 'Snow'
       : c <= 82 ? 'Showers' : c <= 86 ? 'Snow showers' : 'Thunderstorms';
-    const heatColor = (v) => v < 15 ? '#5c8a52' : v < 22 ? '#c98a3e' : '#b2542e';
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,precipitation_probability_max&hourly=temperature_2m&forecast_days=5&timezone=auto`)
+    // Prototype weather glyphs: a sun for clear/mostly-clear, a cloud otherwise.
+    const SUN = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E8A93A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" fill="#F7C96B" stroke="none"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg>';
+    const CLOUD = '<svg width="18" height="16" viewBox="0 0 24 24" fill="#B7C6C9"><path d="M7 18h10a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 6.5 9 4 4 0 0 0 7 18z"></path></svg>';
+    const iconFor = (code) => code <= 2 ? SUN : CLOUD;
+    // Paw-safety badge from the day's high (same thresholds as the score's heat rules).
+    const dayBadge = (hi) => hi >= 22 ? { t: 'Heat', bg: '#F5E4C6', fg: '#8A5A16' } : { t: 'Good', bg: '#E4EADF', fg: '#2C5C34' };
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m&forecast_days=6&timezone=auto`)
       .then(r => r.json())
       .then(d => {
-        if (!d || !d.daily || !d.hourly) return;
-        const hrs = d.hourly.time.map((iso, i) => ({ h: new Date(iso).getHours(), day: iso.slice(0, 10), temp: d.hourly.temperature_2m[i] }));
+        if (!d || !d.daily) return;
+        const hrs = (d.hourly ? d.hourly.time : []).map((iso, i) => ({ h: new Date(iso).getHours(), day: iso.slice(0, 10), temp: d.hourly.temperature_2m[i] }));
         const todayKey = d.daily.time[0];
 
-        // Coolest 3-hour daylight window for a day, from the hourly series.
         const coolestWindow = (dayKey) => {
           const day = hrs.filter(x => x.day === dayKey && x.h >= 6 && x.h <= 20);
           if (day.length < 3) return null;
@@ -617,43 +622,48 @@
           return { from: day[best].h, to: day[best + 2].h + 1 };
         };
 
-        // Current conditions and the recommended window sit in the same
-        // forecast card, so the live decision is stated only once.
+        // ---- Today's conditions card ----
         if (d.current) {
           const cur = Math.round(d.current.temperature_2m);
-          const sky = WMO(d.current.weathercode).toLowerCase();
-          $('sideCondTitle').textContent = 'Today · ' + sky;
-          $('sideCondTemp').textContent = cur + '°C';
+          const tempEl = $('tdCondTemp');
+          if (tempEl) tempEl.textContent = cur + '°C';
+          const paw = cur >= 28 ? { t: 'Caution', bg: '#F3D9D2', fg: '#9C3A25' }
+            : cur >= 22 ? { t: 'Warm', bg: '#F5E4C6', fg: '#8A5A16' }
+            : { t: 'Good', bg: '#E4EADF', fg: '#2C5C34' };
+          const pawEl = $('tdCondPaw');
+          if (pawEl) { pawEl.textContent = paw.t; pawEl.style.background = paw.bg; pawEl.style.color = paw.fg; }
           const win = coolestWindow(todayKey);
-          $('sideCondWindow').innerHTML = win
-            ? `Best walking window: <strong style="font-weight:600;">${win.from}:00–${win.to}:00</strong>, the coolest daylight stretch.`
+          const winEl = $('sideCondWindow');
+          if (winEl) winEl.innerHTML = win
+            ? `Best walking window: <strong>${win.from}:00–${win.to}:00</strong>, the coolest daylight stretch.`
             : 'Mountain weather turns quickly; recheck before you set off.';
         }
+        const hasWater = Array.isArray(t.waterSources) && t.waterSources.length > 0;
+        const waterEl = $('tdCondWater');
+        if (waterEl) { waterEl.textContent = hasWater ? 'On route' : 'Carry own'; waterEl.style.color = hasWater ? '#2C5C34' : '#8A9689'; }
+        if (condCard) condCard.hidden = false;
 
-        // Today's hourly heat strip, 06:00 to 20:00.
-        const strip = hrs.filter(x => x.day === todayKey && x.h >= 6 && x.h <= 20 && x.h % 2 === 0);
-        if (fcToday && strip.length) {
-          fcToday.innerHTML = '<div class="fc-strip">' + strip.map(x =>
-            `<div class="col"><div class="bar" title="${x.h}:00 · ${Math.round(x.temp)}°C" style="background:${heatColor(x.temp)};height:${Math.max(14, Math.min(100, Math.round((x.temp / 30) * 100)))}%;"></div><span class="hl">${x.h < 12 ? x.h + 'a' : (x.h === 12 ? '12p' : (x.h - 12) + 'p')}</span></div>`).join('') +
-            '</div>';
-        }
-
-        // 5-day outlook with per-day coolest-window pill.
+        // ---- 6-day forecast card ----
         if (fcDays) {
+          let heatDay = null;
           fcDays.innerHTML = d.daily.time.map((iso, i) => {
             const label = i === 0 ? 'Today' : new Date(iso).toLocaleDateString(undefined, { weekday: 'short' });
             const hi = Math.round(d.daily.temperature_2m_max[i]);
-            const win = coolestWindow(iso);
-            const pillBg = hi < 15 ? '#e5efe7' : hi < 22 ? '#f6ecdb' : '#f3e2d6';
-            const pillFg = heatColor(hi);
-            const rain = d.daily.precipitation_probability_max[i];
-            return `<div class="fc-day">
-              <span class="d">${label}</span>
-              <span class="s">${WMO(d.daily.weathercode[i])}${rain >= 30 ? ' · ' + rain + '% rain' : ''}</span>
-              <span class="hi">${hi}°</span>
-              ${win ? `<span class="w" style="background:${pillBg};color:${pillFg};">${win.from}:00 to ${win.to}:00</span>` : ''}
-            </div>`;
+            const lo = Math.round(d.daily.temperature_2m_min[i]);
+            const b = dayBadge(hi);
+            if (b.t === 'Heat' && !heatDay) heatDay = i === 0 ? 'Today' : new Date(iso).toLocaleDateString(undefined, { weekday: 'long' });
+            return `<div class="td2-fcday${i ? ' brd' : ''}">`
+              + `<span class="d${i ? '' : ' now'}">${label}</span>`
+              + `<span class="ic">${iconFor(d.daily.weathercode[i])}</span>`
+              + `<span class="tp"><b class="num">${hi}°</b> <span class="lo">${lo}°</span></span>`
+              + `<span class="bd"><span class="td2-badge" style="background:${b.bg};color:${b.fg};">${b.t}</span></span>`
+              + `</div>`;
           }).join('');
+          const noteEl = $('tdForecastNote');
+          if (noteEl && heatDay) {
+            noteEl.innerHTML = `<b style="color:#8A5A16">${heatDay}</b> is warm — walk early and carry extra water.`;
+            noteEl.hidden = false;
+          }
         }
         if (fcCard) fcCard.hidden = false;
       })
