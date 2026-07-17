@@ -53,6 +53,9 @@
     if (progress) {
       const date = trust.formatReviewDate(t.reviewedAt || (t.verified && t.verified.date));
       meta.textContent = `Last desk review: ${date} · ${t.reviewedBy || 'DoloPaws'} · ${progress.checked}/${progress.total} safety checks complete`;
+    } else if (t.routeAudit && t.reviewedAt) {
+      const date = trust ? trust.formatReviewDate(t.reviewedAt) : t.reviewedAt;
+      meta.textContent = `Last route audit: ${date} · route line, map points, elevation and photo attribution checked`;
     } else {
       meta.textContent = t.curated === false
         ? 'No route-specific DoloPaws source review is recorded yet.'

@@ -276,7 +276,13 @@ function matchAlongPath(pts, cumKm, index, maxMeters, labelFn) {
         const id = `${poi.lat.toFixed(5)},${poi.lng.toFixed(5)}`;
         const km = Math.round(cumKm[i] * 10) / 10;
         if (!found.has(id) || found.get(id).km > km) {
-          found.set(id, { km, ...labelFn(poi) });
+          found.set(id, {
+            km,
+            lat: poi.lat,
+            lng: poi.lng,
+            ...(poi.props['@id'] ? { osmId: poi.props['@id'] } : {}),
+            ...labelFn(poi)
+          });
         }
       }
     }

@@ -772,6 +772,9 @@ function renderTrail(t){
     if (reviewProgress) {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #b7791f;background:#fff8e6;border-radius:6px;font-size:13px;line-height:1.5;';
       box.innerHTML = provenanceIcon + '<strong>' + itinEsc(trust.provenanceLabel(t)) + '.</strong> Unchecked safety categories remain explicitly unverified below.';
+    } else if (t.routeAudit && t.reviewedAt) {
+      box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #00897b;background:#e0f2f1;border-radius:6px;font-size:13px;line-height:1.5;';
+      box.innerHTML = provenanceIcon + '<strong>' + itinEsc(trust.provenanceLabel(t)) + '.</strong> Route presentation has been checked; dog-safety conditions are still not field verified.';
     } else if (t.curated === false) {
       box.style.cssText = 'margin:10px 0 14px;padding:10px 14px;border-left:4px solid #00897b;background:#e0f2f1;border-radius:6px;font-size:13px;line-height:1.5;';
       box.innerHTML = provenanceIcon + window.t('trail.importedBox')
@@ -1103,20 +1106,22 @@ function renderTrail(t){
             .addTo(map);
         });
 
-        // Curated rifugi and water stops — every step in the itinerary must
-        // be findable on the map, in the same icon language (white bubble,
-        // colorful glyph), placed at its true km along the route.
-        if(Array.isArray(t.path) && t.path.length > 1 && t.distance > 0){
-          const addWaypoint = (km, icon, label) => {
-            const [wLat, wLng] = pointAtFraction(t.path, Math.max(0, Math.min(1, km / t.distance)));
+        // Only draw a trail-owned waypoint when it has verified GPS
+        // coordinates. Interpolating from a rounded kilometre can put an icon
+        // on the wrong bend or side of a loop. OSM-backed points already render
+        // at their source coordinates through detail-pois.js, so do not draw a
+        // duplicate marker on top of them here.
+        if(Array.isArray(t.path) && t.path.length > 1){
+          const addWaypoint = (waypoint, icon, label) => {
+            if(!waypoint || waypoint.osmId || typeof waypoint.lat !== 'number' || typeof waypoint.lng !== 'number') return;
             new maplibregl.Marker({ element: makeIconEl(icon), offset: [0, -6] })
-              .setLngLat([wLng, wLat])
-              .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${itinEsc(label)}</b><br>Km ${km}`))
+              .setLngLat([waypoint.lng, waypoint.lat])
+              .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${itinEsc(label)}</b>${typeof waypoint.km === 'number' ? `<br>Km ${waypoint.km}` : ''}`))
               .addTo(map);
           };
-          (t.rifugi || []).forEach(r => { if(r.km > 0) addWaypoint(r.km, 'hut', trLabel(r.name)); });
+          (t.rifugi || []).forEach(r => addWaypoint(r, 'hut', trLabel(r.name)));
           (t.waterSources || []).forEach(w => {
-            if(typeof w.km === 'number' && w.km >= 0) addWaypoint(w.km, 'water', trLabel(trustedWaterLabel(t, w.label)));
+            addWaypoint(w, 'water', trLabel(trustedWaterLabel(t, w.label)));
           });
         }
 

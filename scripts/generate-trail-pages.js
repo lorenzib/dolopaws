@@ -2,8 +2,8 @@
 /**
  * generate-trail-pages.js — DoloPaws static trail page generator.
  *
- * Reads the three trail datasets (trails-data.js, osm-trails-data.js,
- * osm-trails-savoy-data.js), assigns regions via regions-config.js, and emits:
+ * Reads the three trail datasets plus trail-audits.js, assigns regions via
+ * regions-config.js, and emits:
  *
  *   trails/<slug>.html   one crawlable, pre-rendered page per trail
  *   sitemap.xml          all public pages + every trail page
@@ -33,6 +33,7 @@ function loadTrails() {
     'trails-data.js',
     'osm-trails-data.js',
     'osm-trails-savoy-data.js',
+    'trail-audits.js',
     'regions-config.js',
   ];
   const src = files
@@ -277,10 +278,12 @@ function trailPage(t, slug, all) {
   const progress = reviewProgress(t);
   const reviewLabel = progress
     ? `DoloPaws source review · ${formatReviewDate(t.reviewedAt || t.verified.date)} · ${progress.length}/${REVIEW_CATEGORIES.length} checks`
-    : null;
+    : t.routeAudit && t.reviewedAt
+      ? `DoloPaws route audit · ${formatReviewDate(t.reviewedAt)}`
+      : null;
 
   const badge = reviewLabel
-    ? `<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>${escapeHtml(reviewLabel)}</span></span>`
+    ? `<span class="dp-badge dp-badge--${progress ? 'verified' : 'imported'}"><span data-dp-icon="${progress ? 'verified' : 'imported'}" data-dp-icon-size="13" aria-hidden="true"></span><span>${escapeHtml(reviewLabel)}</span></span>`
     : verified
     ? '<span class="dp-badge dp-badge--verified"><span data-dp-icon="verified" data-dp-icon-size="13" aria-hidden="true"></span><span>DoloPaws curated · date unavailable</span></span>'
     : '<span class="dp-badge dp-badge--imported"><span data-dp-icon="imported" data-dp-icon-size="13" aria-hidden="true"></span><span>Imported · not field reviewed</span></span>';
@@ -358,7 +361,7 @@ function trailPage(t, slug, all) {
 
   const sourceRecord = Array.isArray(t.sourceLinks) && t.sourceLinks.length
     ? `<h2>Review record and sources</h2>
-    <p class="sp-src">Last desk review: ${escapeHtml(formatReviewDate(t.reviewedAt || (t.verified && t.verified.date)))} · ${escapeHtml(t.reviewedBy || 'DoloPaws')} · ${progress ? `${progress.length}/${REVIEW_CATEGORIES.length} safety checks complete` : 'review status unavailable'}</p>
+    <p class="sp-src">${t.routeAudit && !progress ? 'Last route audit' : 'Last desk review'}: ${escapeHtml(formatReviewDate(t.reviewedAt || (t.verified && t.verified.date)))} · ${escapeHtml(t.reviewedBy || 'DoloPaws')} · ${progress ? `${progress.length}/${REVIEW_CATEGORIES.length} safety checks complete` : t.routeAudit ? 'route line, map points, elevation and photo attribution checked' : 'review status unavailable'}</p>
     <ul>${t.sourceLinks.map(source => `<li><a href="${escapeHtml(source.url)}" rel="noopener">${escapeHtml(source.label)}</a>${Array.isArray(source.categories) ? ` <span class="sp-src">· supports ${escapeHtml(source.categories.join(', '))}</span>` : ''}</li>`).join('')}</ul>`
     : '';
 
@@ -534,7 +537,7 @@ ${sourceRecord ? `    ${sourceRecord}\n` : ''}    <div id="dogFit">
 function sitemap(urls) {
   // Date pages by when the trail data actually changed, not by build time.
   let latest = 0;
-  for (const f of ['trails-data.js', 'osm-trails-data.js', 'osm-trails-savoy-data.js']) {
+  for (const f of ['trails-data.js', 'osm-trails-data.js', 'osm-trails-savoy-data.js', 'trail-audits.js']) {
     try { latest = Math.max(latest, fs.statSync(path.join(ROOT, f)).mtimeMs); } catch {}
   }
   const lastmod = new Date(latest || Date.now()).toISOString().slice(0, 10);

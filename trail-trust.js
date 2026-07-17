@@ -48,6 +48,9 @@
       const date = formatReviewDate(trail.reviewedAt || trail.verified.date);
       return `DoloPaws source review · ${date} · ${progress.checked}/${progress.total} checks`;
     }
+    if (trail && trail.routeAudit && trail.reviewedAt) {
+      return `DoloPaws route audit · ${formatReviewDate(trail.reviewedAt)}`;
+    }
     return imported(trail)
       ? translate('trust.imported', null, 'Imported · not field reviewed')
       : translate('trust.reviewed', null, 'DoloPaws curated · date unavailable');

@@ -75,6 +75,13 @@ describe('trail data trust states', () => {
     })).toBe(80);
   });
 
+  test('route audits show a date without pretending safety checks are complete', () => {
+    const trust = loadTrust();
+    const audited = { curated:false, reviewedAt:'2026-07-17', routeAudit:{ route:'checked' } };
+    expect(trust.provenanceLabel(audited)).toBe('DoloPaws route audit · 17 Jul 2026');
+    expect(trust.reviewProgress(audited)).toBeNull();
+  });
+
   test('partial source reviews also cap match confidence at 80 percent', () => {
     const score = loadScoring();
     expect(score({
