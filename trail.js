@@ -799,6 +799,8 @@ function renderTrail(t){
     function paintMatchTeaser(){
       const el = document.getElementById('trailMatch');
       if(!el) return;
+      const actions = document.querySelector('.td-actions');
+      if(actions) actions.classList.add('guest-actions');
       el.innerHTML = `<a href="index.html?profile=1" style="color:#9FE1CB;text-decoration:underline;font-size:12.5px;font-weight:600;white-space:normal;">${window.t('trail.matchTeaser')}</a>`;
       el.hidden = false;
     }
@@ -813,6 +815,8 @@ function renderTrail(t){
         const n = scoreTrail(t, effectiveOverrides(profile, null));
         const el = document.getElementById('trailMatch');
         if(!el) return;
+        const actions = document.querySelector('.td-actions');
+        if(actions) actions.classList.remove('guest-actions');
         el.textContent = (t.curated === false ? '≈' : '') + n + '% ' +
           window.t('trail.matchFor', {name: profile.name || window.t('trail.yourDog')});
         el.hidden = false;

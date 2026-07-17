@@ -169,8 +169,56 @@ h1,h2,h3{font-family:'Source Serif 4',serif;}
   #trailName{font-size:32px;}
 }
 @media (max-width:520px){
-  .td-actions{width:100%;box-sizing:border-box;padding:18px;}
+  .td-wrap{padding:14px 16px 56px;}
+  .td-crumb{margin-bottom:12px;font-size:12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .td-hero{padding:18px 16px;border-radius:17px;}
+  .td-hero-in{gap:14px;}
+  .td-tags{gap:7px;margin-bottom:8px;}
+  .verified-seal{font-size:9px;padding:4px 7px;}
+  .td-risk{font-size:11.5px;}
+  #trailName{font-size:29px;line-height:1.02;}
+  .trail-hero-verdict{
+    margin-top:8px;
+    font-size:13px;
+    line-height:1.4;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+  }
+  .th-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 10px;margin-top:15px;}
+  .th-facts .f b{font-size:16px;line-height:1.05;}
+  .th-facts .f span{font-size:9px;letter-spacing:.055em;margin-top:3px;}
+  .th-facts .f.safe{grid-column:span 2;}
+  .td-actions{
+    width:100%;
+    box-sizing:border-box;
+    padding:13px;
+    display:grid;
+    grid-template-columns:74px minmax(0,1fr);
+    grid-template-areas:
+      "score buttons"
+      "label buttons"
+      "teaser buttons";
+    align-items:center;
+    gap:4px 13px;
+    border-radius:15px;
+  }
+  #personalScore{grid-area:score;justify-self:center;}
+  .td-ring{width:66px;height:66px;}
+  .td-ring-in{width:50px;height:50px;font-size:18px;}
+  .td-match-label{grid-area:label;}
+  .td-match-label .k{font-size:8px;letter-spacing:.07em;line-height:1.2;}
+  .td-match-label .b{font-size:10px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #trailMatch{grid-area:teaser;font-size:10.5px !important;line-height:1.3;}
   .td-btn-col{width:100%;}
+  .td-actions .td-btn-col{grid-area:buttons;gap:6px;}
+  .td-actions.guest-actions{grid-template-columns:1fr;grid-template-areas:"buttons" "teaser";}
+  .td-actions.guest-actions #trailMatch{max-width:none !important;text-align:center !important;}
+  .td-actions.guest-actions #trailMatch a{font-size:11.5px !important;}
+  .td-btn-dark{padding:10px;font-size:13px;}
+  .td-btn-half{padding:9px 6px;font-size:12px;}
+  .td-log-link{padding-top:3px;font-size:11.5px;}
   .trail-map-box{height:62vh;min-height:390px;}
   .map-expand-btn{width:38px;padding:0;justify-content:center;}
   .map-expand-btn span{display:none;}
