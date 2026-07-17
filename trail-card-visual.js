@@ -1,0 +1,88 @@
+(function(global){
+  function escapeHtml(value){
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(char){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char];
+    });
+  }
+
+  function safeClassName(value){
+    return String(value || '').replace(/[^a-zA-Z0-9 _-]/g, '').trim();
+  }
+
+  function usablePath(path){
+    return Array.isArray(path) && path.length > 1 && path.every(function(point){
+      return Array.isArray(point) && Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1]));
+    });
+  }
+
+  function sampledPath(path){
+    if(path.length <= 120) return path;
+    var step = Math.ceil(path.length / 119);
+    var sample = path.filter(function(_, index){ return index % step === 0; });
+    if(sample[sample.length - 1] !== path[path.length - 1]) sample.push(path[path.length - 1]);
+    return sample;
+  }
+
+  function routeSvg(path){
+    if(!usablePath(path)) return '';
+    var points = sampledPath(path);
+    var lats = points.map(function(point){ return Number(point[0]); });
+    var lngs = points.map(function(point){ return Number(point[1]); });
+    var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+    var minLng = Math.min.apply(null, lngs), maxLng = Math.max.apply(null, lngs);
+    var width = 240, height = 160, pad = 22;
+    var spanLat = (maxLat - minLat) || 0.0001;
+    var spanLng = (maxLng - minLng) || 0.0001;
+    var scale = Math.min((width - pad * 2) / spanLng, (height - pad * 2) / spanLat);
+    var offsetX = (width - pad * 2 - spanLng * scale) / 2;
+    var offsetY = (height - pad * 2 - spanLat * scale) / 2;
+    var projected = points.map(function(point){
+      return [
+        pad + (Number(point[1]) - minLng) * scale + offsetX,
+        pad + (maxLat - Number(point[0])) * scale + offsetY,
+      ];
+    });
+    var line = projected.map(function(point){ return point[0].toFixed(1) + ',' + point[1].toFixed(1); }).join(' ');
+    var start = projected[0], end = projected[projected.length - 1];
+    return '<svg class="trail-visual-route" viewBox="0 0 240 160" aria-hidden="true" focusable="false">' +
+      '<path d="M18 45c42-22 76-19 111-3s61 14 93-5M13 116c44-18 79-16 116 1s65 15 99-3" fill="none" stroke="currentColor" stroke-width="1" opacity=".12"/>' +
+      '<polyline points="' + line + '" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' +
+      '<circle cx="' + start[0].toFixed(1) + '" cy="' + start[1].toFixed(1) + '" r="5" fill="#D6A038" stroke="#fff" stroke-width="2"/>' +
+      '<circle cx="' + end[0].toFixed(1) + '" cy="' + end[1].toFixed(1) + '" r="4" fill="currentColor" stroke="#fff" stroke-width="2"/>' +
+    '</svg>';
+  }
+
+  function fallbackIcon(){
+    if(global.DoloPawsIcons){
+      return global.DoloPawsIcons.renderIconSvg('mountain', { mode:'inline', color:'currentColor', size:30 });
+    }
+    return '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true"><path d="m4 18 5.2-8 2.2 3.1L14.6 7 20 18z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+  }
+
+  function render(trail, options){
+    options = options || {};
+    trail = trail || {};
+    var name = String(trail.name || 'Trail');
+    var className = safeClassName(options.className || '');
+    var classes = ['trail-visual'];
+    if(className) classes.push(className);
+    var attrs = '';
+    if(options.dataTrailId != null) attrs += ' data-trail-id="' + escapeHtml(options.dataTrailId) + '"';
+    if(options.clickable) classes.push('trail-visual--clickable');
+
+    if(typeof trail.imageIcon === 'string' && trail.imageIcon.trim()){
+      classes.push('trail-visual--photo');
+      return '<div class="' + classes.join(' ') + '"' + attrs + '><img src="' + escapeHtml(trail.imageIcon) + '" alt="' + escapeHtml(name) + '" loading="lazy"></div>';
+    }
+    if(usablePath(trail.path)){
+      classes.push('trail-visual--route');
+      return '<div class="' + classes.join(' ') + '" role="img" aria-label="' + escapeHtml(name + ': route preview') + '"' + attrs + '>' + routeSvg(trail.path) + '</div>';
+    }
+    classes.push('trail-visual--placeholder');
+    return '<div class="' + classes.join(' ') + '" role="img" aria-label="' + escapeHtml(name + ': photo coming soon') + '"' + attrs + '><span class="trail-visual-placeholder-icon" aria-hidden="true">' + fallbackIcon() + '</span><span class="trail-visual-placeholder-label">Photo coming soon</span></div>';
+  }
+
+  var api = { render:render, routeSvg:routeSvg, usablePath:usablePath };
+  global.DoloPawsTrailVisual = api;
+  if(typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);

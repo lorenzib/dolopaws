@@ -19,7 +19,7 @@
   .simple-card{background:var(--card);border:1px solid var(--paper-line);border-radius:var(--radius-md);overflow:hidden;}
   .simple-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 10px 24px rgba(27,31,25,.08);}
   .simple-card{transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease;}
-  .simple-card .photo{height:140px;background:repeating-linear-gradient(135deg,#EFE7D8,#EFE7D8 8px,#E4D9C4 8px,#E4D9C4 16px);}
+  .simple-card .photo{height:140px;background:#E7ECE3;}
   .simple-card .name{padding:12px 14px;font-family:'Source Serif 4',serif;font-weight:700;font-size:14.5px;color:var(--ink);}
   .browse-tools{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(3,minmax(140px,1fr));gap:10px;margin-bottom:12px;}
   .browse-tools input,.browse-tools select{width:100%;min-height:44px;padding:10px 12px;border:1.5px solid var(--paper-line);border-radius:10px;background:var(--card);color:var(--ink);font:500 13px 'Inter',sans-serif;}
@@ -285,6 +285,7 @@
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="icon-system.js?v=20260717" defer></script>
+<script src="trail-card-visual.js?v=20260717" defer></script>
 <script src="trails-data.js" defer></script>
 <script src="osm-trails-data.js" defer></script>
 <script src="osm-trails-savoy-data.js" defer></script>
@@ -301,19 +302,6 @@
     const distance = document.getElementById('browseDistance');
     const resultCount = document.getElementById('browseResultCount');
     const clear = document.getElementById('browseClear');
-
-    function miniPathSvg(path){
-      if(!Array.isArray(path) || path.length < 2) return '';
-      const lats = path.map(p => p[0]), lngs = path.map(p => p[1]);
-      const minLat = Math.min(...lats), maxLat = Math.max(...lats);
-      const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
-      const W = 220, H = 140, pad = 16;
-      const spanLat = (maxLat - minLat) || 1e-4, spanLng = (maxLng - minLng) || 1e-4;
-      const s = Math.min((W - pad*2)/spanLng, (H - pad*2)/spanLat);
-      const pts = path.map(([lat,lng]) =>
-        `${(pad + (lng-minLng)*s + (W-pad*2-spanLng*s)/2).toFixed(1)},${(pad + (maxLat-lat)*s + (H-pad*2-spanLat*s)/2).toFixed(1)}`).join(' ');
-      return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;display:block;background:var(--sage-dim);"><polyline points="${pts}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
-    }
 
     const SAFETY = {
       'low-risk': [window.t('legend.low'), '#E4EADF', '#2C5C34'],
@@ -387,9 +375,9 @@
       const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
       list.innerHTML = pageTrails.length ? pageTrails.map(t => {
-        const thumb = t.imageIcon
-          ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
-          : miniPathSvg(t.path);
+        const thumb = window.DoloPawsTrailVisual
+          ? window.DoloPawsTrailVisual.render(t, { className:'photo' })
+          : `<div class="trail-visual trail-visual--placeholder photo" role="img" aria-label="${t.name}: photo coming soon"><span class="trail-visual-placeholder-label">Photo coming soon</span></div>`;
         const s = SAFETY[t.safetyLevel] || SAFETY['moderate'];
         const icons = window.DoloPawsIcons;
         const provenance = icons
@@ -404,7 +392,7 @@
         const cta = `<div style="font-size:11.5px;font-weight:700;color:var(--accent);margin-top:8px;">${window.t('card.details')}</div>`;
         return `
         <a ${openAttr} class="simple-card" style="text-decoration:none;display:block;color:inherit;">
-          <div class="photo">${thumb}</div>
+          ${thumb}
           <div style="padding:12px 14px;">
             <div class="name" style="padding:0;">${t.name}</div>
             <div style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;">${meta}</div>

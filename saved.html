@@ -63,6 +63,7 @@
 <script src="i18n.js"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="icon-system.js?v=20260717" defer></script>
+<script src="trail-card-visual.js?v=20260717" defer></script>
 <script src="auth-ui.js" defer></script>
 <script src="breeds-data.js" defer></script>
 <script src="scoring.js" defer></script>
@@ -148,8 +149,11 @@ document.addEventListener('DOMContentLoaded', function(){
         : (isEst ? '<span class="badge-pill badge-imported">IMPORTED</span>' : '<span class="badge-pill badge-verified">VERIFIED</span>');
       var riskBadge = icons ? icons.badgeHtml(tr.safetyLevel, s[0]) : '<span class="safety-badge ' + (tr.safetyLevel === 'low-risk' ? 'safety-low' : tr.safetyLevel === 'moderate' ? 'safety-moderate' : 'safety-caution') + '">' + esc(s[0]) + '</span>';
       var heatBadge = icons ? icons.badgeHtml('heat-' + (tr.heatRisk || 'low'), 'Heat ' + heat[0]) : '<span class="tc-heat-pill" style="background:' + heat[1] + ';color:' + heat[2] + ';">Heat ' + heat[0] + '</span>';
+      var thumb = window.DoloPawsTrailVisual
+        ? window.DoloPawsTrailVisual.render(tr, { className:'photo tc-thumb' })
+        : '<div class="trail-visual trail-visual--placeholder photo tc-thumb" role="img" aria-label="' + esc(tr.name) + ': photo coming soon"><span class="trail-visual-placeholder-label">Photo coming soon</span></div>';
       return '<div class="trail-card" data-id="' + esc(tr.id) + '">' +
-        '<div class="photo tc-thumb">' + (tr.imageIcon ? '<img src="' + esc(tr.imageIcon) + '" alt="' + esc(tr.name) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">' : '') + '</div>' +
+        thumb +
         '<div class="body">' +
           '<div class="tc-meta-row">' +
             provenanceBadge + riskBadge + heatBadge +

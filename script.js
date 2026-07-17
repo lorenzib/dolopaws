@@ -17,6 +17,13 @@ function productBadge(type, label){
 function productIcon(icon, size = 14){
   return window.DoloPawsIcons ? window.DoloPawsIcons.renderIconSvg(icon, { mode:'inline', color:'currentColor', size }) : '';
 }
+function trailCardVisual(trail, options = {}){
+  if(window.DoloPawsTrailVisual) return window.DoloPawsTrailVisual.render(trail, options);
+  const className = options.className || 'photo';
+  const data = options.dataTrailId ? ` data-trail-id="${options.dataTrailId}"` : '';
+  const fallback = trail.imageIcon ? `<img src="${trail.imageIcon}" alt="${trail.name}" loading="lazy">` : (pathThumbnailSvg(trail.path) || '');
+  return `<div class="${className}"${data}>${fallback}</div>`;
+}
 
 // ============================================================
 // GUEST TEASER — generic default profile, illustrative blurred scores
@@ -32,9 +39,7 @@ function renderTeaser(){
 
   grid.innerHTML = picks.map(t => `
     <div class="teaser-card">
-      <div class="photo">${t.imageIcon
-        ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
-        : (pathThumbnailSvg(t.path) || '')}</div>
+      ${trailCardVisual(t, { className:'photo' })}
       <div class="row">
         <div class="name">${t.name}</div>
         <div class="match">${scoreTrail(t, generic)}%<span class="match-note">${window.t('teaser.example')}</span></div>
@@ -1256,7 +1261,7 @@ async function renderReturningHomepage(profile){
     const isNew = newIds.has(t.id);
     const isEst = t.curated === false;
     const dim = adjustActive && t.score < 60;
-    const thumb = t.imageIcon ? `<img src="${t.imageIcon}" alt="${t.name}" loading="lazy">` : pathThumbnailSvg(t.path);
+    const thumb = trailCardVisual(t, { className:'photo tc-thumb', dataTrailId:t.id, clickable:true });
     const ringColor = SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)';
     const heat = t.heatRisk === 'high' ? { l: 'High', bg: '#FBEAE6', fg: '#9C3A25' }
       : t.heatRisk === 'moderate' ? { l: 'Med', bg: '#F5E4C6', fg: '#8A5A16' }
@@ -1268,7 +1273,7 @@ async function renderReturningHomepage(profile){
     const heatBadge = productBadge(`heat-${t.heatRisk || 'low'}`, `Heat ${heat.l}`);
     return `
     <div class="trail-card${selected ? ' tc-selected' : ''}" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
-      <div class="photo tc-thumb" data-trail-id="${t.id}" style="${thumb ? 'cursor:pointer;' : ''}">${thumb || ''}</div>
+      ${thumb}
       <div class="body">
         <div class="tc-meta-row">
           ${provenanceBadge}
@@ -1279,7 +1284,6 @@ async function renderReturningHomepage(profile){
         <a href="trail.html?id=${t.id}" class="name" style="margin-top:2px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
         <div class="tc-reason"><span class="mark">✦</span><span class="txt">${matchReason(t, overrides)}</span></div>
         <div class="tc-stats">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h · ${t.terrainType}</div>
-        ${thumb && !t.imageIcon ? `<div style="font-size:10.5px;color:var(--ink-soft);margin-top:4px;">${window.t('card.routeShape')}</div>` : ''}
         <div class="tc-actions">
           <a href="trail.html?id=${t.id}">${window.t('card.details')}</a>
           <button type="button" class="locate-btn" data-id="${t.id}">${window.t('card.locate')}</button>

@@ -262,11 +262,8 @@ img,svg{max-width:100%;height:auto;}
 }
 .trail-card .photo{
   width:120px;height:90px;flex:none;border-radius:8px;
-  background:repeating-linear-gradient(135deg,#EFE7D8,#EFE7D8 8px,#E4D9C4 8px,#E4D9C4 16px);
+  background:#E7ECE3;
 }
-.trail-card:nth-child(3n+1) .photo{background:repeating-linear-gradient(135deg,#E9EEE4,#E9EEE4 8px,#DCE4D3 8px,#DCE4D3 16px);}
-.trail-card:nth-child(3n+2) .photo{background:repeating-linear-gradient(135deg,#EFE7D8,#EFE7D8 8px,#E4D9C4 8px,#E4D9C4 16px);}
-.trail-card:nth-child(3n+3) .photo{background:repeating-linear-gradient(135deg,#F1E9DE,#F1E9DE 8px,#E8DCC8 8px,#E8DCC8 16px);}
 .trail-card .body{flex:1;min-width:0;}
 .trail-card .top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
 .trail-card .name{font-family:'Source Serif 4', serif;font-weight:700;font-size:17px;}
@@ -590,6 +587,20 @@ img,svg{max-width:100%;height:auto;}
 .dp-inline-status{display:inline-flex;align-items:center;gap:6px;}
 .dp-inline-status .dp-icon-svg,.trail-provenance>.dp-icon-svg{display:inline-block;vertical-align:-3px;flex:none;}
 .trail-provenance>.dp-icon-svg{margin-right:6px;}
+
+/* Trail-card visuals — one hierarchy on every list: photo, route preview,
+   then a deliberate neutral placeholder. */
+.trail-visual{position:relative;overflow:hidden;background:#E7ECE3;color:#2E4034;display:flex;align-items:center;justify-content:center;isolation:isolate;}
+.trail-card .photo.trail-visual,.simple-card .photo.trail-visual,.teaser-card .photo.trail-visual{background:#E7ECE3;}
+.trail-visual--photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.trail-visual-route{width:100%;height:100%;display:block;color:#2E4034;}
+.trail-visual--route{background:linear-gradient(145deg,#EDF1E9 0%,#DDE7DA 100%);}
+.trail-visual--placeholder{flex-direction:column;gap:7px;background:linear-gradient(145deg,#F0EEE5 0%,#E4E7DC 100%);color:#667064;}
+.trail-visual-placeholder-icon{display:flex;align-items:center;justify-content:center;}
+.trail-visual-placeholder-label{font:700 9px/1.2 'Inter',sans-serif;letter-spacing:.04em;text-transform:uppercase;text-align:center;max-width:90%;}
+.trail-visual--clickable{cursor:pointer;}
+.trail-visual--clickable::after{content:"";position:absolute;inset:0;border:2px solid transparent;border-radius:inherit;transition:border-color .15s ease;pointer-events:none;}
+.trail-visual--clickable:hover::after{border-color:rgba(46,64,52,.28);}
 
 /* Map controls — white buttons matching MapLibre's own control style */
 .map-btn{position:absolute;bottom:10px;z-index:6;height:34px;padding:0 16px;border-radius:8px;background:#fff;color:var(--ink);border:1px solid var(--paper-line);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);font-family:'Inter',sans-serif;}
