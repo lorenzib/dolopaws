@@ -357,6 +357,71 @@ body{background:#EFECE2;}
   .td2 .trail-photos-list{grid-template-columns:repeat(2,1fr);}
   .td2-hero-row{gap:14px;}
 }
+
+/* ============================================================
+   FIDELITY PASS — bring the reused inner components up to the
+   Alpenglow prototype's visual language, scoped to .td2 so the
+   shared site components are untouched elsewhere. Same token
+   family as the logged-out homepage for a cohesive experience.
+   ============================================================ */
+.td2 h1,.td2 h2,.td2 h3{font-family:'Source Serif 4',serif;}
+.td2-section h2{font-weight:700;}
+
+/* Why-this-fits → clean signal tiles */
+.td2 .match-signals{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.td2 .match-signal{gap:9px;}
+.td2 .match-signal .mark{color:#4A7856;font-size:12px;}
+.td2 .match-signal b{font:800 13px 'Inter',sans-serif;color:#2E4034;}
+.td2 .match-signal small{font-size:12.5px;color:#6B7A6E;line-height:1.5;}
+
+/* Dog-safety rows → prototype inset tiles with ✓ / ! icon marks */
+.td2 .safety-row{align-items:flex-start;gap:11px;background:#FAF8F1;border:1px solid #EDE9DD;border-radius:12px;padding:12px 14px;}
+.td2 .safety-row .pill{flex:none;width:26px;height:26px;padding:0;border-radius:8px;display:grid;place-items:center;font-size:0;line-height:1;}
+.td2 .safety-row .pill::before{font:800 13px/1 'Inter',sans-serif;}
+.td2 .safety-row.is-good .pill{background:#E4EADF;color:#2C5C34;}
+.td2 .safety-row.is-good .pill::before{content:'\2713';}
+.td2 .safety-row.is-caution .pill{background:#F5E4C6;color:#8A5A16;}
+.td2 .safety-row.is-caution .pill::before{content:'!';}
+.td2 .safety-row b{font:800 13px 'Inter',sans-serif;color:#2E4034;}
+.td2 .safety-row small{font-size:12px;color:#6B7A6E;line-height:1.5;margin-top:2px;}
+.td2 .td-safety-intro{grid-column:1/-1;margin:0 0 4px;padding:12px 14px;border-left:3px solid #7f9a6c;background:#EEF3EC;border-radius:0 12px 12px 0;}
+
+/* Community action buttons → ghost buttons (prototype .btn-g) */
+.td2 .add-report-btn,.td2 .add-photo-btn,.td2 .add-review-btn{font:700 13px 'Inter',sans-serif;background:#fff;border:1.5px solid #E4E0D3;color:#2E4034;border-radius:12px;padding:9px 15px;cursor:pointer;}
+.td2 .add-report-btn:hover,.td2 .add-photo-btn:hover,.td2 .add-review-btn:hover{border-color:#3E7A91;}
+.td2 .add-report-btn{border-color:#E4B9A8;color:#9C3A25;}
+
+/* Photos → rounded tiles */
+.td2 .trail-photos-list{gap:10px;}
+.td2 .trail-photos-list img,.td2 .trail-photos-list .trail-photo,.td2 .trail-photos-list > *{border-radius:12px;overflow:hidden;}
+
+/* Reviews list → clean rows */
+.td2 .trail-reviews-list{gap:14px;}
+.td2 .trail-reviews-list > *{border:none;border-bottom:1px solid #EDE9DD;border-radius:0;padding:0 0 14px;background:none;}
+
+/* Walking-forecast sidebar → white prototype card */
+.td2 .td-fc{background:#fff;border:1px solid #E4E0D3;border-radius:16px;padding:18px 20px;}
+.td2 .td-fc .head .t{font:700 15px 'Source Serif 4',serif;color:#2E4034;}
+.td2 .td-fc-now{background:#F5E4C6;border-color:#EAD3A6;border-radius:12px;}
+.td2 .td-fc-now .copy b{color:#8A5A16;}
+.td2 .td-fc-now .temp{font-family:'Inter',sans-serif;font-weight:900;color:#2E4034;}
+.td2 .td-fc .rule{background:#EDE9DD;}
+.td2 .fc-day .d{font-weight:700;}
+.td2 .td-fc .head .v{color:#8A9689;}
+
+/* Sidebar dog card verdict already tokenised (.td2-dog*) */
+
+/* Similar trails → white prototype photo cards with % badge */
+.td2 .near-card{background:#fff;border:1px solid #E4E0D3;border-radius:14px;transition:box-shadow .2s,transform .2s;}
+.td2 .near-card:hover{box-shadow:0 12px 30px -14px rgba(46,64,52,.4);transform:translateY(-2px);}
+.td2 .near-card .ph{height:130px;}
+.td2 .near-card .pct{background:#4A7856;color:#fff;border-radius:999px;box-shadow:none;font-weight:800;}
+.td2 .near-card .nm{font:700 15px 'Source Serif 4',serif;color:#2E4034;}
+.td2 .near-card .mt{font-size:11.5px;color:#6B7A6E;}
+.td2-nearby h3{font:700 21px 'Source Serif 4',serif;}
+
+/* Hazards / read-before-you-go chips spacing */
+.td2 #trailGuideLinks{margin-top:14px;}
 </style>
 </head>
 <body>
