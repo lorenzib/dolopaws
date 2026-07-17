@@ -76,6 +76,27 @@ function initHikeMode(map, trail){
   let hikeStartRecorded = false;
   let hikeStartedAt = null;
 
+  // Pulsing "you are here" dot + live pill, shown only while recording. The
+  // dot rides the snapped on-path position so it tracks the route like the
+  // redesign prototype rather than jittering with raw GPS noise.
+  const livePill = document.getElementById('tdLivePill');
+  let liveMarker = null;
+  function showLiveDot(){
+    if (typeof maplibregl === 'undefined') return;
+    if (!liveMarker){
+      const dot = document.createElement('div');
+      dot.className = 'hike-live-dot';
+      liveMarker = new maplibregl.Marker({ element: dot });
+    }
+    liveMarker.setLngLat([trail.path[0][1], trail.path[0][0]]).addTo(map);
+    if (livePill) livePill.hidden = false;
+  }
+  function moveLiveDot(lat, lng){ if (liveMarker) liveMarker.setLngLat([lng, lat]); }
+  function hideLiveDot(){
+    if (liveMarker){ liveMarker.remove(); }
+    if (livePill) livePill.hidden = true;
+  }
+
   // Map tile fetches fail silently when the connection drops mid-hike —
   // navigator.onLine often stays true on a weak mountain signal, so track
   // actual failed fetches too.
@@ -149,6 +170,10 @@ function initHikeMode(map, trail){
 
     const snap = snapToPath(lat, lng);
     lastIdx = snap.idx;
+    // Ride the snapped on-path point when near the route; otherwise show the
+    // real fix so a lost hiker still sees where they actually are.
+    if (snap.minDist <= 60) moveLiveDot(trail.path[snap.idx][0], trail.path[snap.idx][1]);
+    else moveLiveDot(lat, lng);
     const currentKm = (cum[snap.idx] / totalMeters) * statedKm;
 
     // Far from the trail entirely (driving there, wrong valley…)
@@ -234,6 +259,7 @@ function initHikeMode(map, trail){
     panel.style.display = 'block';
     container.classList.add('hike-status-visible');
     panel.innerHTML = window.t('hike.getting');
+    showLiveDot();
     acquireWakeLock();
     watchId = navigator.geolocation.watchPosition(onFix, onError, {
       enableHighAccuracy: true,
@@ -247,6 +273,7 @@ function initHikeMode(map, trail){
     if (window.DoloPawsMapFS) window.DoloPawsMapFS.exit();
     if (watchId !== null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
     if (wakeLock){ try { wakeLock.release(); } catch (e) {} wakeLock = null; }
+    hideLiveDot();
     startBtn.innerHTML = hikeButtonHtml(hikeLabel('hike.start', 'Start hike'));
     startBtn.style.background = 'var(--ink)';
     if (!keepPanel){

@@ -1005,12 +1005,49 @@ function renderTrail(t){
     }), 'top-right');
 
     map.on('load', async () => {
+      let poiVisible = true;           // "Points of interest" toggle state
+      const amenityMarkers = [];       // curated rifugi/water Markers (toggled with POIs)
       if(window.DoloPawsIcons) await window.DoloPawsIcons.registerMapImages(map);
       addTerrainSource(map);
       increaseLabelDensity(map);
       addTerrainToggle(map, 'trailDetailMap', 1.5, 45);
       renderAllLifts(map);
       if (typeof initDetailPois === 'function') initDetailPois(map, t);
+
+      // ---- "Points of interest" toggle -----------------------------------
+      // Nearby amenities are shown by default (see detail-pois.js), but the
+      // redesign lets a hiker mute them to read the route alone. POIs are map
+      // LAYERS (detail-pois.js) plus a few curated Marker elements (rifugi /
+      // water, collected in `amenityMarkers` below); the legend and both are
+      // toggled together so the map's amenity language stays consistent.
+      const POI_SOURCES = ['detail-huts', 'detail-bars', 'detail-water'];
+      const POI_SUFFIXES = ['-layer', '-layer-lowzoom', '-cluster', '-cluster-count'];
+      function applyPoiVisibility(){
+        const v = poiVisible ? 'visible' : 'none';
+        POI_SOURCES.forEach(s => POI_SUFFIXES.forEach(sfx => {
+          const id = s + sfx;
+          if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', v);
+        }));
+        amenityMarkers.forEach(mk => { mk.getElement().style.display = poiVisible ? '' : 'none'; });
+      }
+      const poiToggleBtn = document.getElementById('poiToggle');
+      if (poiToggleBtn){
+        poiToggleBtn.classList.add('on'); // default ON
+        poiToggleBtn.addEventListener('click', () => {
+          poiVisible = !poiVisible;
+          poiToggleBtn.classList.toggle('on', poiVisible);
+          poiToggleBtn.setAttribute('aria-pressed', poiVisible ? 'true' : 'false');
+          const legendDock = document.querySelector('.map-key--dock');
+          if (legendDock) legendDock.style.display = poiVisible ? '' : 'none';
+          applyPoiVisibility();
+        });
+      }
+      // detail-pois.js adds its layers asynchronously (after a fetch), so
+      // reapply whenever a POI source finishes loading — otherwise a muted
+      // map would show late-arriving amenity dots.
+      map.on('sourcedata', (e) => {
+        if (e.sourceId && POI_SOURCES.includes(e.sourceId) && e.isSourceLoaded) applyPoiVisibility();
+      });
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
       // data as our base map, but with their dedicated trail-route styling
@@ -1125,10 +1162,11 @@ function renderTrail(t){
         if(Array.isArray(t.path) && t.path.length > 1){
           const addWaypoint = (waypoint, icon, label) => {
             if(!waypoint || waypoint.osmId || typeof waypoint.lat !== 'number' || typeof waypoint.lng !== 'number') return;
-            new maplibregl.Marker({ element: makeIconEl(icon), offset: [0, -6] })
+            const mk = new maplibregl.Marker({ element: makeIconEl(icon), offset: [0, -6] })
               .setLngLat([waypoint.lng, waypoint.lat])
               .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`<b>${itinEsc(label)}</b>${typeof waypoint.km === 'number' ? `<br>Km ${waypoint.km}` : ''}`))
               .addTo(map);
+            amenityMarkers.push(mk); // rifugi/water are amenities — toggled with POIs
           };
           (t.rifugi || []).forEach(r => addWaypoint(r, 'hut', trLabel(r.name)));
           (t.waterSources || []).forEach(w => {

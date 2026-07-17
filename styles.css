@@ -643,6 +643,15 @@ img,svg{max-width:100%;height:auto;}
 .map-panel{position:absolute;bottom:48px;left:10px;z-index:6;background:#fff;border:1px solid var(--paper-line);border-radius:12px;padding:10px;display:none;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);min-width:170px;}
 .map-chip{padding:7px 12px;border-radius:999px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--paper-line);background:none;color:var(--ink);font-family:'Inter',sans-serif;text-align:left;}
 .map-chip.on{border-color:var(--ink);background:var(--ink);color:#fff;}
+
+/* "Points of interest" toggle + live-position dot (trail-detail redesign) */
+.td-map-toggle{position:absolute;top:52px;left:10px;z-index:6;display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:9px;border:none;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;background:rgba(255,255,255,.95);color:var(--ink);box-shadow:0 2px 8px rgba(23,42,28,.16);}
+.td-map-toggle.on{background:#243128;color:#fff;}
+.td-live-pill{position:absolute;top:92px;left:10px;z-index:6;display:inline-flex;align-items:center;gap:7px;background:rgba(36,49,40,.94);color:#fff;border-radius:999px;padding:7px 13px;font-size:11.5px;font-weight:700;box-shadow:0 2px 8px rgba(23,42,28,.16);}
+.td-live-pill[hidden]{display:none;}
+.td-live-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-light);}
+.hike-live-dot{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 0 rgba(62,122,145,.5);animation:hikePulse 1.8s infinite;}
+@keyframes hikePulse{0%{box-shadow:0 0 0 0 rgba(62,122,145,.5);}70%{box-shadow:0 0 0 16px rgba(62,122,145,0);}100%{box-shadow:0 0 0 0 rgba(62,122,145,0);}}
 .map-chip .dp-chip-label{pointer-events:none;}
 
 /* Product badges — one shape, weight and icon treatment everywhere. */
