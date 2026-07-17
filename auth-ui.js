@@ -104,6 +104,10 @@
   });
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
 
+  // "Keep browsing as a guest" — just dismiss the modal, no account needed.
+  const guestBtn = document.getElementById('authGuestBtn');
+  if(guestBtn) guestBtn.addEventListener('click', closeModal);
+
   forgotBtn.addEventListener('click', async () => {
     if(!window.DoloPawsAuth) return;
     const email = emailInput.value.trim();

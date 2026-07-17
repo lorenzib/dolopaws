@@ -12,8 +12,8 @@ route-audit mechanism defined in `VERIFICATION.md` and `TRAIL_AUDIT_GUIDE.md`:
 the gate checks (data integrity + hard disqualifiers + shade) **and** content
 enrichment. This covers **both regions — Dolomites and Savoy** — not one; the
 worklist (`npm run check:trail-sources`) already spans both. Produce the
-result as a **reviewable branch / pull request**, never a direct write to
-`main`.
+result as a **reviewable branch** (a pull request when `gh` is available,
+otherwise a local branch plus a report file), never a direct write to `main`.
 
 ## Two hard limits — do not exceed them
 
@@ -22,9 +22,13 @@ result as a **reviewable branch / pull request**, never a direct write to
    `walkCandidate: true` flag with a one-line reason when a route-audited
    trail looks worth a field visit. Never set `tier: 'dolopaws-walked'`.
 2. **Never publish to `main` and never silently edit live data.** Each run
-   works on a fresh branch (`trail-audit/<date>-<batch>`) and opens a PR whose
-   body lists every trail touched, the tier decision, and the evidence. Merge
-   is the human backstop; the run itself is autonomous up to that point.
+   works on a fresh branch (`trail-audit/<date>-<batch>`) and leaves its work
+   for human review. How it hands off degrades gracefully:
+   - If `gh` is installed and authenticated, **open a pull request** whose body
+     is the report below.
+   - Otherwise, **commit to the local branch** and write the same report to
+     `audit-reports/<YYYY-MM-DD>.md`. Do not attempt to push or install `gh`.
+   Either way, merge is the human backstop; the run never merges itself.
 
 ## Prerequisite (check first, and stop if unmet)
 
@@ -84,7 +88,10 @@ in before editing.
    disqualifier → removed.
 7. **Record** `reviewedAt` (today), `reviewedBy: 'DoloPaws route audit'`,
    `sourceLinks` (per-category), completed checks, and blockers.
-8. **Commit and open the PR** with the report below. Do not merge.
+8. **Commit and hand off** with the report below (open a PR if `gh` is
+   available and authenticated; otherwise commit locally and write the report
+   to `audit-reports/<YYYY-MM-DD>.md`). Do not merge, do not push if there is
+   no auth, do not install anything.
 
 ## Guardrails — the lines that must never be crossed
 
