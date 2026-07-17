@@ -28,7 +28,9 @@
       heroBtn.hidden = !mapBtn; // hike-mode only injects the button when GPS exists
       const rec = recording();
       heroBtn.classList.toggle('recording', rec);
-      heroBtn.innerHTML = rec ? '■ End hike' : '▶ Start the hike';
+      heroBtn.innerHTML = rec
+        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> End hike'
+        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start the hike';
     }
     if (liveBanner) liveBanner.hidden = !recording();
   }
@@ -53,18 +55,50 @@
   }, 250);
   syncHike();
 
-  // ---- 2. "Active now" hazard pill ---------------------------------------
+  // ---- 2. "Active now" hazard pill + section counts ----------------------
   const flags = document.getElementById('trailFlagsList');
   const hazardCard = document.getElementById('td2Hazards');
+  const photos = document.getElementById('trailPhotosList');
+  const reviews = document.getElementById('trailReviewsList');
+
+  // Count real items in a list (children that aren't the empty-state block).
+  function itemCount(list) {
+    if (!list) return 0;
+    if (list.querySelector('.empty-state')) return 0;
+    return list.children.length;
+  }
+  function setCount(id, n) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = n > 0 ? ' · ' + n : '';
+  }
   function syncHazards() {
-    if (!flags || !hazardCard) return;
-    const hasReports = !flags.querySelector('.empty-state') && flags.children.length > 0;
-    hazardCard.classList.toggle('has-active', hasReports);
+    if (!flags) return;
+    const n = itemCount(flags);
+    if (hazardCard) hazardCard.classList.toggle('has-active', n > 0);
+    setCount('td2HazardCount', n);
   }
-  if (flags) {
-    new MutationObserver(syncHazards).observe(flags, { childList: true, subtree: true });
-    syncHazards();
+  function syncCounts() {
+    setCount('td2PhotoCount', itemCount(photos));
+    const rc = itemCount(reviews);
+    setCount('td2ReviewCount', rc);
+    // Average rating from the rendered review ratings (aria-label "X out of 5").
+    const avgEl = document.getElementById('td2ReviewAvg');
+    if (avgEl && reviews) {
+      const rated = [].map.call(reviews.querySelectorAll('.community-review__rating[aria-label]'), function (r) {
+        const m = (r.getAttribute('aria-label') || '').match(/([\d.]+)\s*out of\s*5/i);
+        return m ? parseFloat(m[1]) : null;
+      }).filter(function (v) { return v != null; });
+      if (rated.length) {
+        const avg = rated.reduce(function (a, b) { return a + b; }, 0) / rated.length;
+        avgEl.textContent = '★ ' + (Math.round(avg * 10) / 10);
+        avgEl.hidden = false;
+      } else { avgEl.hidden = true; }
+    }
   }
+  if (flags) { new MutationObserver(syncHazards).observe(flags, { childList: true, subtree: true }); syncHazards(); }
+  if (photos) { new MutationObserver(syncCounts).observe(photos, { childList: true, subtree: true }); }
+  if (reviews) { new MutationObserver(syncCounts).observe(reviews, { childList: true, subtree: true }); }
+  syncCounts();
 
   // ---- 3. Sidebar dog card from the real profile / match teaser ----------
   const dogCard = document.getElementById('td2DogCard');
@@ -76,6 +110,12 @@
       const s = JSON.parse(localStorage.getItem('dolopaws-profile-summary') || 'null');
       if (s && s.hasProfile) name = s.name || '';
     } catch (e) { /* private mode — no summary */ }
+
+    // Personalise section headers with the dog's name where the design does.
+    const safetyDog = document.getElementById('td2SafetyDog');
+    if (safetyDog) safetyDog.textContent = name ? ' · ' + name : '';
+    const nearbyTitle = document.getElementById('nearbyTitle');
+    if (nearbyTitle && name) nearbyTitle.textContent = 'Nearby trails, ranked for ' + name;
 
     // #trailMatch reads e.g. "94% match for Rufus" for a logged-in profile.
     const txt = matchEl ? (matchEl.textContent || '') : '';

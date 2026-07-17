@@ -304,9 +304,11 @@ body{background:#EFECE2;}
 .td2 .safety-row{background:#FAF8F1;border:1px solid #EDE9DD;border-radius:12px;padding:12px 14px;gap:11px;}
 .td2 .td-safety-intro{grid-column:1/-1;}
 
-/* hazards */
-.td2-hazard{border-left:4px solid #E4B9A8;}
-.td2-hazard-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:14px;flex-wrap:wrap;}
+/* hazards (now in the sidebar, per prototype) */
+.td2-hazard.has-active{border-left:4px solid #E4B9A8;}
+.td2-hazard-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
+.td2-hazard #td2HazardCount,.td2-rev-head [id$="Count"]{text-transform:none;letter-spacing:0;color:#8A9689;}
+.td2 .td2-hazard .add-report-btn{padding:7px 12px;font-size:12px;}
 .td2-hazard-head .lhs{display:inline-flex;align-items:center;gap:9px;}
 .td2-active-pill{display:none;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;background:#F3D9D2;color:#9C3A25;}
 .td2-hazard.has-active .td2-active-pill{display:inline-flex;}
@@ -424,12 +426,14 @@ body{background:#EFECE2;}
 .td2 #trailGuideLinks{margin-top:14px;}
 
 /* ---- Hero actions, tidied (Save + Start prominent) ---- */
-.td2-hero-actions{flex-direction:column;align-items:flex-end;max-width:none;gap:8px;}
-.td2-actrow{display:flex;gap:10px;align-items:center;}
+.td2-hero-actions{flex-direction:column;align-items:flex-end;max-width:none;gap:9px;}
+.td2-actrow{display:flex;gap:10px;align-items:stretch;justify-content:flex-end;}
 .td2-actrow-sub{gap:8px;}
-.td2-btn-sm{padding:8px 14px;font-size:12.5px;}
-.td2-hero-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right;margin-top:2px;}
-.td2-hero-meta .td-log-link{padding:0;}
+.td2-hero .td2-btn-g,.td2-hero .td2-btn-p{min-height:44px;box-sizing:border-box;}
+.td2-btn-sm{padding:0 15px;min-height:38px !important;font-size:12.5px;font-weight:700;}
+.td2-hero-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;text-align:right;margin-top:4px;max-width:280px;}
+.td2-hero-meta .td-log-link{padding:0;font-size:12.5px;}
+.td2-hero-meta #trailMatch{line-height:1.4;}
 .td2 #tdMatchLabel .k{color:#9FC7D6;font-size:10px;letter-spacing:.1em;}
 .td2 #tdMatchLabel .b{color:#A9B7AB;font-size:11px;}
 
@@ -454,6 +458,16 @@ body{background:#EFECE2;}
 .td2-fcday .bd{margin-left:auto;}
 .td2-fcday .bd .td2-badge{font-size:9.5px;padding:3px 8px;border-radius:999px;font-weight:700;}
 .td2-fc6-note{font-size:11px;color:#8A9689;line-height:1.5;margin:10px 0 0;}
+
+/* ---- About tags, parking, reviews header ---- */
+.td2-tags-row{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 2px;}
+.td2-maps-link{display:inline-block;margin-top:14px;font-size:12.5px;font-weight:700;color:#3E7A91;text-decoration:none;}
+.td2-maps-link:hover{text-decoration:underline;}
+.td2-park .ic svg{display:block;}
+.td2-rev-head .td2-kick{display:inline-flex;align-items:center;}
+.td2-rev-actions{display:flex;align-items:center;gap:12px;}
+.td2-rev-avg{color:#E8A93A;font-size:14px;font-weight:900;}
+.td2 #trailTags{margin-bottom:2px;}
 </style>
 </head>
 <body>
@@ -489,11 +503,11 @@ body{background:#EFECE2;}
         <!-- match + actions (classes kept so trail.js guest/match logic still works) -->
         <div class="td-actions td2-hero-actions">
           <div class="td2-actrow">
-            <button id="detailSaveBtn" class="td2-btn-g" type="button">♥ Save</button>
-            <button id="heroStartHike" class="td2-btn-p" type="button" hidden>▶ Start the hike</button>
+            <button id="detailSaveBtn" class="td2-btn-g" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.4S4.2 14.5 4.2 9.2A4.3 4.3 0 0 1 12 6.6a4.3 4.3 0 0 1 7.8 2.6c0 5.3-7.8 11.2-7.8 11.2z"/></svg> Save</button>
+            <button id="heroStartHike" class="td2-btn-p" type="button" hidden><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start the hike</button>
           </div>
           <div class="td2-actrow td2-actrow-sub">
-            <a id="getDirectionsBtn" class="td2-btn-g td2-btn-sm" href="#">Get directions</a>
+            <a id="getDirectionsBtn" class="td2-btn-g td2-btn-sm" href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg> Get directions</a>
             <button id="detailShareBtn" class="td2-btn-g td2-btn-sm" type="button" aria-haspopup="true" aria-expanded="false"><span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"></path><path d="M12 3v12"></path><path d="M8 7l4-4 4 4"></path></svg>Share</span></button>
             <div class="td-share-pop" id="tdSharePop" hidden>
               <button type="button" id="tdCopyLink">Copy link</button>
@@ -524,13 +538,14 @@ body{background:#EFECE2;}
     <div hidden>
       <div id="qaStrip" hidden><b id="qaDogTitle"></b><span id="qaDogSub"></span><div id="qaToday" hidden><b id="qaTodayTitle"></b><span id="qaTodaySub"></span></div><div id="qaAccess" hidden><b id="qaAccessTitle"></b><span id="qaAccessSub"></span></div><div id="qaDog"></div></div>
       <div id="trailChips"><span id="weatherChip" hidden></span></div>
-      <div id="trailBadges"></div><div id="trailMeta"></div><div id="trailTags"></div>
+      <div id="trailBadges"></div><div id="trailMeta"></div>
       <div id="quickFacts"></div><div id="weatherWidget" hidden></div>
       <section id="personalMatch"><div id="matchDogAvatar"></div><h2 id="personalMatchTitle"></h2><p id="matchSummary"></p><span id="dogsChip" hidden></span><a id="startNavigationBtn" href="#trailMapBox" hidden></a></section>
       <p id="assessmentNote"></p>
       <div id="aboutFacts" hidden></div>
       <p id="trailDesc" hidden></p><div id="trailTips" hidden></div><p id="dogTipsNote" hidden></p>
       <div id="goodToKnowBox" hidden></div><div id="trailDetailContent" hidden></div>
+      <div id="matchSignals" class="match-signals"></div><span id="tdWhyTitle"></span>
       <div id="directionsWrap" hidden><ol id="trailDirections"></ol></div>
       <div id="trailItinerary" hidden></div>
       <span id="elevReadout" hidden></span><div id="elevationProfileWrap" hidden></div>
@@ -573,47 +588,42 @@ body{background:#EFECE2;}
     <div class="td2-grid">
       <div class="td2-col">
 
-        <!-- WHY THIS FITS -->
-        <div class="td2-card td2-section">
-          <h2 id="tdWhyTitle">Why this fits your dog</h2>
-          <div id="matchSignals" class="match-signals"></div>
-        </div>
-
         <!-- DOG-SAFETY BREAKDOWN -->
         <div class="td2-card td2-section">
-          <h2>Dog-safety breakdown</h2>
+          <div class="td2-kick" style="margin-bottom:14px;">Dog-safety breakdown<span id="td2SafetyDog"></span></div>
           <p class="td-safety-intro"><b>Permanent trail conditions</b><span>These describe the route itself. Check the live walking forecast separately before you leave.</span></p>
           <div id="dogSafetyRows" class="dog-safety-rows"></div>
         </div>
 
-        <!-- HAZARDS (consolidated) -->
-        <div class="td2-card td2-section td2-hazard" id="td2Hazards">
-          <div class="td2-hazard-head">
-            <span class="lhs"><span class="td2-kick">Trail hazards</span><span class="td2-active-pill">● Active now</span></span>
-            <button id="addReportBtn" type="button" class="add-report-btn" data-i18n="reports.button">⚑ Report a hazard</button>
-          </div>
-          <div id="trailFlagsList"><div class="empty-state empty-state--compact"><p class="empty-state__title">No recent hazard reports</p><p class="empty-state__copy">The community has not reported a current issue here. Conditions can still change.</p></div></div>
-          <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
-        </div>
-
         <!-- ABOUT / THE ROUTE -->
         <div class="td2-card td2-section td2-about">
-          <h2>About this trail</h2>
+          <div class="td2-kick" style="margin-bottom:12px;">About this trail</div>
           <p id="matchDescription"></p>
+          <div id="trailTags" class="td2-tags-row"></div>
           <details class="trail-data-details"><summary>Trail data and sources</summary><p id="trailCoords"></p><p id="trailReviewMeta" class="trail-review-meta"></p><div id="trailSourceLinks" class="trail-source-links"></div></details>
+        </div>
+
+        <!-- PARKING & GETTING THERE -->
+        <div class="td2-card td2-section td2-parking" id="td2ParkingCard" hidden>
+          <div class="td2-kick" style="margin-bottom:14px;">Parking &amp; getting there</div>
+          <div class="td2-parking-grid" id="td2ParkingGrid"></div>
+          <a id="td2MapsLink" class="td2-maps-link" href="#" target="_blank" rel="noopener">Open in Maps →</a>
         </div>
 
         <!-- PHOTOS -->
         <div class="td2-card td2-section">
-          <div class="td2-rev-head"><h2 style="margin:0;">Photos</h2><button id="addPhotoBtn" type="button" class="add-photo-btn">＋ Add trail photo</button></div>
+          <div class="td2-rev-head"><span class="td2-kick">Photos<span id="td2PhotoCount"></span></span><button id="addPhotoBtn" type="button" class="add-photo-btn">＋ Add a photo</button></div>
           <div id="trailPhotosList" class="trail-photos-list"><div class="empty-state empty-state--compact"><p class="empty-state__title">No trail photos yet</p><p class="empty-state__copy">Add a recent, useful view so others can recognise the route and conditions.</p></div></div>
         </div>
 
         <!-- REVIEWS -->
         <div class="td2-card td2-section">
-          <div class="td2-rev-head"><h2 style="margin:0;">Reviews</h2><button id="addReviewBtn" type="button" class="add-review-btn">☆ Leave a review</button></div>
+          <div class="td2-rev-head"><span class="td2-kick">Reviews<span id="td2ReviewCount"></span></span><span class="td2-rev-actions"><span class="td2-rev-avg" id="td2ReviewAvg" hidden></span><button id="addReviewBtn" type="button" class="add-review-btn">✎ Write a review</button></span></div>
           <div id="trailReviewsList" class="trail-reviews-list"><div class="empty-state empty-state--compact"><p class="empty-state__title">No reviews yet</p><p class="empty-state__copy">Share how the route felt for your dog and what another owner should know.</p></div></div>
         </div>
+
+        <!-- before-you-go safety guides -->
+        <div id="trailGuideLinks" class="trail-guide-links" hidden></div>
 
       </div>
 
@@ -623,6 +633,16 @@ body{background:#EFECE2;}
           <div class="td2-dog"><span class="av" id="td2DogAv">🐾</span><div><div class="nm" id="td2DogName">Your dog</div><div class="mt" id="td2DogMeta"></div></div></div>
           <div class="td2-dog-verdict" id="td2DogVerdict" hidden><span class="n" id="td2DogPct"></span><span class="c" id="td2DogWord"></span></div>
         </div>
+
+        <!-- Trail hazards (sidebar, per prototype) -->
+        <div class="td2-card td2-section td2-hazard" id="td2Hazards">
+          <div class="td2-hazard-head">
+            <span class="lhs"><span class="td2-kick">Trail hazards<span id="td2HazardCount"></span></span><span class="td2-active-pill">● Active now</span></span>
+            <button id="addReportBtn" type="button" class="add-report-btn">⚑ Flag</button>
+          </div>
+          <div id="trailFlagsList"><div class="empty-state empty-state--compact"><p class="empty-state__title">No recent hazard reports</p><p class="empty-state__copy">The community has not reported a current issue here. Conditions can still change.</p></div></div>
+        </div>
+
         <!-- Today's conditions -->
         <div class="td2-card td2-section td2-cond" id="tdConditions" hidden>
           <div class="td2-kick" style="margin-bottom:14px;">Today's conditions <span id="sideFcValley" style="text-transform:none;letter-spacing:0;color:#8A9689;font-weight:600;"></span></div>

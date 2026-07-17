@@ -1233,7 +1233,10 @@ function renderTrail(t){
     }, 4200);
   }
   function paintSaveBtn(isFav){
-    saveBtn.textContent = isFav ? '✓ Saved' : '♥ Save';
+    const heart = isFav
+      ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21S3.5 14.6 3.5 8.8A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 8.5 2.8C20.5 14.6 12 21 12 21z"/></svg>'
+      : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.4S4.2 14.5 4.2 9.2A4.3 4.3 0 0 1 12 6.6a4.3 4.3 0 0 1 7.8 2.6c0 5.3-7.8 11.2-7.8 11.2z"/></svg>';
+    saveBtn.innerHTML = heart + (isFav ? ' Saved' : ' Save');
     saveBtn.classList.toggle('saved', isFav);
   }
   async function handleSaveAuth(user){

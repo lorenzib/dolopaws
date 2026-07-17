@@ -35,12 +35,10 @@
     if (!el) return;
     const style = trust && trust.tierBadgeStyle ? trust.tierBadgeStyle(t) : (t.curated === false ? 'imported' : 'verified');
     const label = trust ? trust.provenanceLabel(t) : (t.curated === false ? tt('badge.importedS', null, 'Under DoloPaws review') : tt('trail.verifiedShort', null, 'DoloPaws route-audited'));
-    el.innerHTML = dpIcon(style) + '<span>' + esc(label) + '</span>';
-    if (style === 'imported') {
-      el.style.background = '#e0f2f1';
-      el.style.color = '#00695c';
-    }
-    el.classList.add('dp-inline-status');
+    // Render the same pill the browse-trail cards use, not a bespoke inline seal.
+    el.innerHTML = (window.DoloPawsIcons && window.DoloPawsIcons.badgeHtml)
+      ? window.DoloPawsIcons.badgeHtml(style, label)
+      : dpIcon(style) + '<span>' + esc(label) + '</span>';
     el.hidden = false;
   })();
 
@@ -206,14 +204,15 @@
       crumb.textContent = '← Trails · ' + regionName + (t.valley ? ' · ' + t.valley : '');
     }
 
-    // Risk dot line next to the verified seal.
+    // Safety rating as the same coloured pill the browse cards use.
     const riskLine = $('tdRiskLine');
     if (riskLine && t.safetyLevel) {
-      const dotColors = { 'low-risk': '#4a7c59', 'moderate': '#c98a3e', 'caution': '#b2542e' };
-      const labels = { 'low-risk': 'Low-risk terrain', 'moderate': 'Moderate terrain', 'caution': 'Caution terrain' };
-      $('tdRiskDot').style.background = dotColors[t.safetyLevel] || '#8a8d80';
+      const labels = { 'low-risk': 'Low-risk', 'moderate': 'Moderate', 'caution': 'Caution' };
       const baseRisk = labels[t.safetyLevel] || '';
-      $('tdRiskLabel').textContent = trust ? trust.riskLabel(t, baseRisk) : baseRisk;
+      const riskText = trust ? trust.riskLabel(t, baseRisk) : baseRisk;
+      riskLine.innerHTML = (window.DoloPawsIcons && window.DoloPawsIcons.badgeHtml)
+        ? window.DoloPawsIcons.badgeHtml(t.safetyLevel, riskText)
+        : esc(riskText);
       riskLine.hidden = false;
     }
 
@@ -579,6 +578,30 @@
         <span class="pill">${r.ok ? 'Good' : 'Caution'}</span>
         <span><b>${esc(r.title)}</b><small>${esc(r.sub)}</small></span>
       </div>`).join('');
+  })();
+
+  /* ---- Parking & getting there — built from the trail's real start
+     point / access data plus honest general arrival advice (no invented
+     shuttle numbers). Hides itself when there's nothing real to show. -- */
+  (function parking() {
+    const card = $('td2ParkingCard'), grid = $('td2ParkingGrid'), maps = $('td2MapsLink');
+    if (!card || !grid) return;
+    const sp = t.startPoint || {};
+    const lat = typeof sp.lat === 'number' ? sp.lat : t.lat;
+    const lng = typeof sp.lng === 'number' ? sp.lng : t.lng;
+    if (typeof lat !== 'number') return; // no geography → nothing honest to say
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const pin = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E4034" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>';
+    const clock = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E4034" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>';
+    const cards = [];
+    cards.push(sp.label
+      ? { ic: 'P', t: t.paid ? 'Trailhead car park (paid)' : 'Trailhead parking', s: esc(sp.label) }
+      : { ic: 'P', t: t.paid ? 'Paid access' : 'Trailhead parking', s: t.paid ? 'This route has paid access near the trailhead.' : 'Park at or near the marked trailhead.' });
+    cards.push({ ic: pin, t: 'Getting there', s: esc(t.valley || t.area || 'The trailhead') + ' — open the pin in your maps app for turn-by-turn driving directions.' });
+    cards.push({ ic: clock, t: 'Best arrival', s: 'Arrive early — easier parking, more shade, a calmer trail, and cooler ground for paws.' });
+    grid.innerHTML = cards.map(c => `<div class="td2-park"><span class="ic">${c.ic}</span><div><div class="t">${esc(c.t)}</div><div class="s">${c.s}</div></div></div>`).join('');
+    if (maps) maps.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    card.hidden = false;
   })();
 
   /* ---- Sticky sidebar: today's conditions + walking forecast --------

@@ -99,7 +99,7 @@ function initTrailReports(map, trail){
       } else {
         const average = visible.reduce((total, review) => total + Number(review.rating), 0) / visible.length;
         heroRatingEl.hidden = false;
-        heroRatingEl.innerHTML = `<span aria-hidden="true">★</span> ${average.toFixed(1)} <span>(${visible.length} ${visible.length === 1 ? 'review' : 'reviews'})</span>`;
+        heroRatingEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:none;"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 18l-5.9 3.1 1.3-6.6L2.5 9.4l6.6-.8z"/></svg> ${average.toFixed(1)} <span>(${visible.length} ${visible.length === 1 ? 'review' : 'reviews'})</span>`;
       }
     }
 
