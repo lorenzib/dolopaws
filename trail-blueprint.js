@@ -504,7 +504,7 @@
         tabSafety: 'safety',
         tabReviews: 'reviews'
       };
-      const activateTab = (btn, updateUrl) => {
+      const activateTab = (btn, historyMode) => {
         tabsNav.querySelectorAll('[data-tab]').forEach(b => {
           const on = b === btn;
           b.classList.toggle('active', on);
@@ -514,17 +514,21 @@
           const panel = $(id);
           if (panel) panel.hidden = id !== btn.dataset.tab;
         });
-        if (updateUrl && window.history && window.history.replaceState) {
+        if (historyMode && window.history) {
           const url = new URL(window.location.href);
           const tabName = tabNames[btn.dataset.tab];
           if (tabName === 'overview') url.searchParams.delete('tab');
           else if (tabName) url.searchParams.set('tab', tabName);
-          window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+          const target = url.pathname + url.search + url.hash;
+          if (target !== window.location.pathname + window.location.search + window.location.hash) {
+            if (historyMode === 'push') window.history.pushState({}, '', target);
+            else window.history.replaceState({}, '', target);
+          }
         }
       };
 
       tabsNav.querySelectorAll('[data-tab]').forEach(btn => {
-        btn.addEventListener('click', () => activateTab(btn, true));
+        btn.addEventListener('click', () => activateTab(btn, 'push'));
       });
 
       const requestedTab = new URLSearchParams(window.location.search).get('tab');
@@ -533,6 +537,12 @@
         ? tabsNav.querySelector('[data-tab="' + requestedPanel + '"]')
         : tabsNav.querySelector('[data-tab].active') || tabsNav.querySelector('[data-tab]');
       if (initialTab) activateTab(initialTab, false);
+      window.addEventListener('popstate', () => {
+        const tabName = new URLSearchParams(window.location.search).get('tab') || 'overview';
+        const panelId = Object.keys(tabNames).find(id => tabNames[id] === tabName) || 'tabOverview';
+        const tab = tabsNav.querySelector('[data-tab="' + panelId + '"]');
+        if (tab) activateTab(tab, false);
+      });
     }
   })();
 

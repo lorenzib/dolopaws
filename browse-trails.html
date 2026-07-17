@@ -322,15 +322,20 @@
     // What stays personal (match %, saving, reporting) prompts login on
     // the trail page itself — at the moment it's actually wanted.
     const PER_PAGE = 15;
-    const initialParams = new URLSearchParams(window.location.search);
     const allowedRegions = ['all', 'dolomites', 'savoy'];
     const allowedRisks = ['all', 'low-risk', 'moderate', 'caution'];
     const allowedDistances = ['all', '5', '10', '20'];
-    search.value = initialParams.get('search') || '';
-    region.value = allowedRegions.includes(initialParams.get('region')) ? initialParams.get('region') : 'all';
-    risk.value = allowedRisks.includes(initialParams.get('risk')) ? initialParams.get('risk') : 'all';
-    distance.value = allowedDistances.includes(initialParams.get('distance')) ? initialParams.get('distance') : 'all';
-    let page = Math.max(1, Number.parseInt(initialParams.get('page'), 10) || 1);
+    let page = 1;
+
+    function applyBrowseUrl(){
+      const urlParams = new URLSearchParams(window.location.search);
+      search.value = urlParams.get('search') || '';
+      region.value = allowedRegions.includes(urlParams.get('region')) ? urlParams.get('region') : 'all';
+      risk.value = allowedRisks.includes(urlParams.get('risk')) ? urlParams.get('risk') : 'all';
+      distance.value = allowedDistances.includes(urlParams.get('distance')) ? urlParams.get('distance') : 'all';
+      page = Math.max(1, Number.parseInt(urlParams.get('page'), 10) || 1);
+    }
+    applyBrowseUrl();
 
     function browseStateTarget(){
       const state = new URLSearchParams();
@@ -343,8 +348,12 @@
       return 'browse-trails.html' + (query ? '?' + query : '');
     }
 
-    function syncBrowseUrl(){
-      window.history.replaceState(null, '', browseStateTarget());
+    function syncBrowseUrl(mode){
+      const target = browseStateTarget();
+      const current = window.location.pathname.split('/').pop() + window.location.search;
+      if(target === current) return;
+      if(mode === 'push') window.history.pushState(null, '', target);
+      else window.history.replaceState(null, '', target);
     }
 
     function filteredTrails(){
@@ -359,7 +368,7 @@
       });
     }
 
-    function renderPage(){
+    function renderPage(historyMode){
       const h1 = document.getElementById('trailCountHeading');
       const sub = document.querySelector('.guide-hero .sub');
       if(h1) h1.innerHTML = window.t('browse.h1');
@@ -371,7 +380,7 @@
       clear.hidden = !hasFilters;
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
       if(page > totalPages) page = totalPages;
-      syncBrowseUrl();
+      if(historyMode) syncBrowseUrl(historyMode);
       const pageTrails = pool.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
       list.innerHTML = pageTrails.length ? pageTrails.map(t => {
@@ -412,7 +421,7 @@
           b.className = 'page-btn';
           if(!disabled) b.addEventListener('click', () => {
             page += delta;
-            renderPage();
+            renderPage('push');
             list.scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
           return b;
@@ -430,18 +439,23 @@
     [search, region, risk, distance].forEach(control => {
       control.addEventListener(control === search ? 'input' : 'change', () => {
         page = 1;
-        renderPage();
+        renderPage(control === search ? 'replace' : 'push');
       });
     });
     clear.addEventListener('click', () => {
       search.value = '';
       region.value = risk.value = distance.value = 'all';
       page = 1;
-      renderPage();
+      renderPage('push');
       search.focus();
     });
 
-    renderPage();
+    window.addEventListener('popstate', () => {
+      applyBrowseUrl();
+      renderPage(null);
+    });
+
+    renderPage('replace');
   });
 </script>
 </body>
