@@ -76,6 +76,27 @@ let adjustOverride = null; // session-only override, never saved to the profile
 let showFullList = false;  // homepage: top matches first, full catalog on demand
 const TOP_MATCHES = 6;
 let currentFavorites = {};
+let homeActionStatusTimer = null;
+
+function showHomeActionStatus(message){
+  let status = document.getElementById('homeActionStatus');
+  if(!status){
+    status = document.createElement('div');
+    status.id = 'homeActionStatus';
+    status.className = 'dw-toast';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    document.body.appendChild(status);
+  }
+  if(homeActionStatusTimer) clearTimeout(homeActionStatusTimer);
+  status.textContent = message;
+  status.hidden = false;
+  status.className = 'dw-toast dw-toast--in';
+  homeActionStatusTimer = setTimeout(() => {
+    status.hidden = true;
+    status.className = 'dw-toast';
+  }, 4200);
+}
 
 let guestMapInstance = null;
 let showingSavedOnly = false;
@@ -1123,10 +1144,22 @@ async function renderReturningHomepage(profile){
   listEl.querySelectorAll('.save-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
-      if(currentFavorites[id]) delete currentFavorites[id];
-      else currentFavorites[id] = true;
-      if(window.DoloPawsAuth) await window.DoloPawsAuth.setFavorites(currentFavorites);
-      renderReturningHomepage(profile);
+      const wasSaved = !!currentFavorites[id];
+      const nextFavorites = { ...currentFavorites };
+      if(wasSaved) delete nextFavorites[id];
+      else nextFavorites[id] = true;
+      btn.disabled = true;
+      const saved = window.DoloPawsAuth
+        ? await window.DoloPawsAuth.setFavorites(nextFavorites)
+        : false;
+      if(saved){
+        currentFavorites = nextFavorites;
+        renderReturningHomepage(profile);
+        showHomeActionStatus(window.t(wasSaved ? 'save.removed' : 'save.added'));
+      } else {
+        btn.disabled = false;
+        showHomeActionStatus(window.t('save.error'));
+      }
     });
   });
 

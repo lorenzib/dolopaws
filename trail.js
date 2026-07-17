@@ -1172,10 +1172,10 @@ function renderTrail(t){
     if(window.DoloPawsTrailAction && window.DoloPawsTrailAction.consume('save') && !favorites[t.id]){
       favorites[t.id] = true;
       const saved = await window.DoloPawsAuth.setFavorites(favorites);
-      if(saved) showSaveStatus('Trail saved.');
+      if(saved) showSaveStatus(window.t('save.added'));
       else {
         delete favorites[t.id];
-        showSaveStatus('Could not save this trail. Please try again.');
+        showSaveStatus(window.t('save.error'));
       }
     }
     paintSaveBtn(!!favorites[t.id]);
@@ -1187,10 +1187,10 @@ function renderTrail(t){
       const saved = await window.DoloPawsAuth.setFavorites(current);
       if(saved){
         paintSaveBtn(!wasSaved);
-        showSaveStatus(wasSaved ? 'Removed from saved trails.' : 'Trail saved.');
+        showSaveStatus(window.t(wasSaved ? 'save.removed' : 'save.added'));
       } else {
         paintSaveBtn(wasSaved);
-        showSaveStatus('Could not update saved trails. Please try again.');
+        showSaveStatus(window.t('save.error'));
       }
       saveBtn.disabled = false;
     };

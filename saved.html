@@ -175,11 +175,11 @@ document.addEventListener('DOMContentLoaded', function(){
         window.DoloPawsAuth.setFavorites(nextFavs).then(function(saved){
           if(!saved) throw new Error('save failed');
           render(nextFavs, profile);
-          showStatus('Removed from saved trails.');
+          showStatus(window.t('save.removed'));
         }).catch(function(){
           btn.disabled = false;
           btn.textContent = 'Remove';
-          showStatus('Could not remove this trail. Please try again.');
+          showStatus(window.t('save.error'));
         });
       });
     });
