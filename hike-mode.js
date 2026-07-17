@@ -72,6 +72,7 @@ function initHikeMode(map, trail){
   let offRouteStreak = 0;   // consecutive fixes far from the route
   let firstFix = true;
   let hikeStartRecorded = false;
+  let hikeStartedAt = null;
 
   // Map tile fetches fail silently when the connection drops mid-hike —
   // navigator.onLine often stays true on a weak mountain signal, so track
@@ -222,6 +223,7 @@ function initHikeMode(map, trail){
     active = true;
     firstFix = true;
     hikeStartRecorded = false;
+    hikeStartedAt = Date.now();
     offRouteStreak = 0;
     // A hiker needs a navigation screen, not an article: go fullscreen.
     if (window.DoloPawsMapFS) window.DoloPawsMapFS.enter();
@@ -248,5 +250,19 @@ function initHikeMode(map, trail){
     banner.style.display = 'none';
   }
 
-  startBtn.addEventListener('click', () => { active ? stopHike() : startHike(); });
+  function finishHike(){
+    const hadGpsFix = !firstFix;
+    const elapsedMinutes = hikeStartedAt
+      ? Math.max(1, Math.round((Date.now() - hikeStartedAt) / 60000))
+      : 1;
+    stopHike(hadGpsFix);
+    if (!hadGpsFix) return;
+
+    const returnToTrail = `trail.html?id=${encodeURIComponent(trail.id)}`;
+    const journalUrl = `journal.html?trail=${encodeURIComponent(trail.id)}&duration=${elapsedMinutes}&from=${encodeURIComponent(returnToTrail)}`;
+    panel.innerHTML = `${window.t('hike.finished')} <a href="${journalUrl}" style="color:#fff;text-decoration:underline;font-weight:700;">${window.t('hike.logWalk')}</a>`;
+    panel.style.display = 'block';
+  }
+
+  startBtn.addEventListener('click', () => { active ? finishHike() : startHike(); });
 }

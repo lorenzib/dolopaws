@@ -130,6 +130,8 @@ document.addEventListener('DOMContentLoaded', function(){
   var uid = null;
   var journalParams = new URLSearchParams(window.location.search);
   var pendingTrailId = journalParams.get('trail');
+  var pendingDuration = Number(journalParams.get('duration'));
+  if(!Number.isFinite(pendingDuration) || pendingDuration < 1 || pendingDuration > 1440) pendingDuration = 0;
   var pendingReturn = journalParams.get('from');
   if(!/^trail\.html\?id=[a-z0-9._-]+$/i.test(pendingReturn || '')) pendingReturn = '';
   var openedPendingTrail = false;
@@ -233,7 +235,8 @@ document.addEventListener('DOMContentLoaded', function(){
         var dist = document.getElementById('jnDist');
         var dur = document.getElementById('jnDur');
         if(!dist.value && selectedTrail.distance) dist.value = selectedTrail.distance;
-        if(!dur.value && selectedTrail.hours) dur.value = Math.round(Number(selectedTrail.hours) * 60);
+        if(!dur.value && pendingDuration) dur.value = pendingDuration;
+        else if(!dur.value && selectedTrail.hours) dur.value = Math.round(Number(selectedTrail.hours) * 60);
       }
     }
   }
@@ -296,6 +299,7 @@ document.addEventListener('DOMContentLoaded', function(){
     ['jnDist','jnDur','jnCond','jnNote'].forEach(function(id){ document.getElementById(id).value = ''; });
     state.rating = 5;
     pendingTrailId = null;
+    pendingDuration = 0;
     pendingReturn = '';
     if(window.history && window.history.replaceState){
       window.history.replaceState({}, '', 'journal.html');
