@@ -492,13 +492,16 @@ function renderLegendChips(t){
   const chips = [];
   const chip = (iconHtml, label) => chips.push(`<span class="sign-chip">${iconHtml}<span>${label}</span></span>`);
   const swatch = (css) => `<span style="width:16px;height:0;${css};flex:none;"></span>`;
+  const hasRoutePath = Array.isArray(t.path) && t.path.length > 1;
 
-  chip(itinIcon('flag'), window.t('legendTrail.start').replace('🚩 ', ''));
-  chip(swatch(`border-top:3px solid ${safetyColor(t.safetyLevel)};border-radius:2px`),
-       window.t('trail.route', {label: safetyLabel(t.safetyLevel)}));
-  chip('<span style="font-size:13px;flex:none;">➤</span>', window.t('legendTrail.dir').replace('➤ ', ''));
-  if(Array.isArray(t.decisionPoints) && t.decisionPoints.length){
-    chip(itinIcon('switch'), window.t('legendTrail.switch').replace('🔀 ', ''));
+  if(hasRoutePath){
+    chip(itinIcon('flag'), window.t('legendTrail.start').replace('🚩 ', ''));
+    chip(swatch(`border-top:3px solid ${safetyColor(t.safetyLevel)};border-radius:2px`),
+         window.t('trail.route', {label: safetyLabel(t.safetyLevel)}));
+    chip('<span style="font-size:13px;flex:none;">➤</span>', window.t('legendTrail.dir').replace('➤ ', ''));
+    if(Array.isArray(t.decisionPoints) && t.decisionPoints.length){
+      chip(itinIcon('switch'), window.t('legendTrail.switch').replace('🔀 ', ''));
+    }
   }
   // Lift entries only when a lift actually exists near this trail.
   const liftNear = (typeof gondolas !== 'undefined' && Array.isArray(gondolas)) && gondolas.some(g =>
@@ -662,6 +665,12 @@ function init(){
 function renderTrail(t){
   buildItinerary(t);
   renderLegendChips(t);
+  const hasRoutePath = Array.isArray(t.path) && t.path.length > 1;
+  const routeDataNotice = document.getElementById('routeDataNotice');
+  if(routeDataNotice){
+    routeDataNotice.hidden = hasRoutePath;
+    routeDataNotice.textContent = window.t('trail.routeUnavailable');
+  }
   const breadcrumb = document.getElementById('tdBreadcrumb');
   const returnTarget = safeTrailReturn(trailReturnTarget);
   if(breadcrumb && returnTarget){

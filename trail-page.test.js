@@ -109,6 +109,7 @@ describe('trail page map legend', () => {
     });
 
     context.renderLegendChips({
+      path: [[46.6, 12.1], [46.61, 12.11]],
       safetyLevel: 'moderate',
       decisionPoints: [{ km: 2.1, instruction: 'Keep left onto 104' }],
       rifugi: [],
