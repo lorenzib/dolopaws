@@ -4,6 +4,13 @@ const path = require('path');
 const read = file => fs.readFileSync(path.join(__dirname, file), 'utf8');
 
 describe('empty states and long-form navigation', () => {
+  test('shared helper text and keyboard focus meet the accessibility baseline', () => {
+    const styles = read('styles.css');
+    expect(styles).toContain('--ink-soft:#59695D');
+    expect(styles).toContain(':focus-visible');
+    expect(styles).toContain('outline:3px solid var(--accent) !important');
+  });
+
   test('saved and journal empty states explain the next action', () => {
     document.body.innerHTML = read('saved.html');
     expect(document.querySelector('#savedEmpty.empty-state')).not.toBeNull();

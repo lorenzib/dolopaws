@@ -16,6 +16,8 @@
   const toggleBtn = document.getElementById('authToggleBtn');
   const forgotBtn = document.getElementById('forgotPasswordBtn');
   const requestedNext = new URLSearchParams(window.location.search).get('next');
+  let returnFocus = null;
+  const focusableSelector = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
   function safeReturnTarget(value){
     if(!value || /^(?:[a-z]+:|\/\/|\/)/i.test(value)) return '';
@@ -44,9 +46,19 @@
     }
     errorBox.hidden = true;
     form.reset();
+    returnFocus = document.activeElement && document.activeElement !== document.body
+      ? document.activeElement : accountBtn;
     modal.hidden = false;
+    document.body.classList.add('auth-modal-open');
+    setTimeout(() => emailInput.focus(), 0);
   }
-  function closeModal(){ if(modal) modal.hidden = true; }
+  function closeModal(){
+    if(!modal) return;
+    modal.hidden = true;
+    document.body.classList.remove('auth-modal-open');
+    if(returnFocus && document.contains(returnFocus)) returnFocus.focus();
+    returnFocus = null;
+  }
 
   function setMode(newMode){
     mode = newMode;
@@ -77,6 +89,19 @@
 
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+  modal.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      e.preventDefault();
+      closeModal();
+      return;
+    }
+    if(e.key !== 'Tab') return;
+    const focusable = Array.from(modal.querySelectorAll(focusableSelector)).filter(el => !el.hidden);
+    if(!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
   toggleBtn.addEventListener('click', () => setMode(mode === 'login' ? 'signup' : 'login'));
 
   forgotBtn.addEventListener('click', async () => {

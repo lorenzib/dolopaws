@@ -30,13 +30,13 @@
 </div>
 
 <!-- Login / sign-up modal -->
-<div id="authModal" class="modal-overlay" hidden>
+<div id="authModal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="authTitle">
   <div class="modal">
     <button id="authClose" class="modal-close" aria-label="Close">&times;</button>
     <h2 id="authTitle" data-i18n="nav.login">Log in</h2>
     <p class="hint" id="authHint" data-i18n="auth.hint">Save trails to your account so they follow you across devices.</p>
 
-    <div id="authError" class="auth-error" hidden></div>
+    <div id="authError" class="auth-error" role="alert" aria-live="polite" hidden></div>
 
     <form id="authForm">
       <label class="field-label"><span data-i18n="auth.email">Email</span>
@@ -291,7 +291,7 @@
 <script src="osm-trails-data.js" defer></script>
 <script src="osm-trails-savoy-data.js" defer></script>  
 <script src="regions-config.js" defer></script>
-<script src="auth-ui.js?v=20260717" defer></script>
+<script src="auth-ui.js?v=20260717-2" defer></script>
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <script src="basemap-poi-click.js" defer></script>
 <script src="dog-routes-layer.js" defer></script>

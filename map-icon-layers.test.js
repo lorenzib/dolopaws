@@ -19,6 +19,7 @@ function loadBrowserScript(filename, overrides = {}){
       removeItem: () => {},
     },
     document: {
+      body: { classList: { toggle: jest.fn(), contains: jest.fn(() => false) } },
       getElementById: () => null,
       querySelector: () => null,
       querySelectorAll: () => [],
@@ -38,6 +39,7 @@ function loadBrowserScript(filename, overrides = {}){
     registerPoiFeatures: jest.fn(),
     t: (key) => key,
     location: { search: '' },
+    matchMedia: jest.fn(() => ({ matches: false })),
     window: null,
     globalThis: null,
     ...overrides,
