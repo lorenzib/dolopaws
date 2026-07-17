@@ -36,6 +36,22 @@ categories defined in `VERIFICATION.md`. Until all ten pass, keep
 When all ten pass, set `graduation.status: 'verified'`, record all ten completed
 checks, and set `curated: true`. Preserve `source: 'osm'` as provenance.
 
+Four of the six safety categories are resolvable from map and official
+difficulty data (see `VERIFICATION.md` for the full definitions):
+
+- **Water** passes when water points are mapped and confirmed at their real
+  coordinates (presence, not potability), or documented as "no water on
+  route." Displayed guidance still cautions against assuming potability.
+- **Exposure** is flagged only when the trail is officially marked dangerous
+  for humans (SAC T3+/`alpine_hiking`, "difficile/vertigineux", via ferrata,
+  fixed cables or ladders). An easy/family-rated trail with none of these
+  passes.
+- **Livestock** is not a hazard gate; it fails only when dogs are prohibited
+  (national reserve / protected area), which triggers removal, not a blocker.
+- **Surface hazards** are flagged only when a known hazardous surface is on
+  record (scree, loose rock, scrambling, fixed cables/ladders). Sparse or
+  absent OSM surface data passes rather than blocks.
+
 ## Detailed checks for every trail
 
 For each trail, verify all five areas below.

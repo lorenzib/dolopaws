@@ -15,16 +15,30 @@ one of the six hazard categories below. At graduation set `curated: true`,
 retain the original `source: 'osm'` provenance, set
 `graduation.status: 'verified'`, and record all ten completed checks.
 
-**Every safety category must be checked against at least one citable source
-that is not merely an absence of OSM tags.** OSM data (via
-`promote-osm-trails.js`) is what makes a trail importable and walkable on
-the map at all — distance, elevation, computed terrain rank, matched water
-points. It is never, by itself, what makes a trail *verified*, because OSM
-has no dog-specific tagging (no `leash=*`, no `sac_scale` for most of this
-region — see below) and mapped absence of a hazard is not evidence the
-hazard is absent. `trail-trust.js` already encodes this: an imported trail
-is worded as "not field reviewed" even when its OSM-derived fields are
-fully populated.
+**Each safety category resolves against the best evidence its revised
+definition allows — map data, official difficulty rating, or a citable
+source, per the checklist below.** Four categories were deliberately
+redefined so they can be settled from map and official-difficulty data
+rather than only a field visit:
+
+- **Water** resolves on mapped *presence* at real coordinates, not on
+  confirmed potability.
+- **Exposure** is flagged only when the trail is officially *marked
+  dangerous for humans* (high SAC scale, "difficile/vertigineux", via
+  ferrata, cables/ladders) — not from a bespoke drop-off assessment.
+- **Livestock** is no longer a hazard gate; it fails only when dogs are
+  *prohibited* (national reserve / protected area), which is a removal.
+- **Surface hazards** are flagged only when a *known hazardous surface* is on
+  record (scree, loose rock, scrambling, fixed cables/ladders); sparse or
+  absent OSM surface data passes rather than blocks.
+
+The remaining categories — heat/shade and dog access/leash rules — still
+want a citable source, and **mapped absence of a hazard is never, by itself,
+evidence the hazard is absent.** OSM data (via `promote-osm-trails.js`) is
+what makes a trail importable and walkable on the map at all — distance,
+elevation, computed terrain rank, matched water points — and for the four
+redefined categories it can now carry the check; for the remaining two it is
+a starting point, not proof.
 
 A trail can also stay `curated: false` and still be *enriched* with cited
 facts (see `osm-14987412` / "Sentier du Four" in `trails-data.js` — leash
@@ -54,23 +68,41 @@ Same categories `trail-trust.js` already renders (`waterAssessment`,
 `heatAssessment`, `exposureAssessment`, `livestockAssessment`), plus surface
 hazards and dog access, which aren't currently individually broken out.
 
-- **Water** — is there a mapped point, and does a portal or recent report
-  confirm it actually flows (not just appears on the map)? If not, leave
-  `waterSources` as-is but do not claim it's verified.
+- **Water** — resolves on **presence, not potability**. If one or more water
+  points are mapped and confirmed at their real coordinates (traced to
+  `water-sources-all-regions.geojson`, with `osmId` + `lat`/`lng`), the water
+  check passes. A trail with no mapped water also resolves — as a documented
+  "no water on route, carry a full supply" state. We no longer require a
+  source proving current flow or potability to graduate. **Displayed
+  guidance still warns** the owner not to assume a mapped point is flowing or
+  safe to drink — that caveat stays in `trail-trust.js` wording; it just is
+  not a graduation blocker.
 - **Heat & shade** — does a source describe canopy/exposure (forest vs open
   ridge), not just the season? `shadeCoverage` should reflect what a source
   says, not a guess from elevation.
-- **Exposure** — does a source explicitly rule out unprotected drop-offs or
-  via ferrata-style sections? Silence here defaults to `exposure: undefined`
-  (treated as unknown, per `trail-trust.js`), never to `false`.
-- **Livestock** — does a source mention grazing, guardian/patou dogs, or
-  cattle on or near the route, in-season? This is the single most common
-  reason a Haute-Savoie alpage route needs a leash warning even when the
-  terrain itself is easy.
-- **Surface hazards** — do the OSM `surfaces` percentages (rock/mud/scree
-  share) match the stored `terrainRank` and `surfaceHazards`? This one *can*
-  be partly checked from already-fetched OSM data — see the script below —
-  but a mismatch only tells you to go look, not what to write.
+- **Exposure** — flagged **only when the trail is officially marked dangerous
+  for humans**: a high SAC scale (`sac_scale` T3 / `alpine_hiking` or above),
+  an official difficulty of "difficile"/"vertigineux," via-ferrata sections,
+  or fixed cables/ladders. An easy- or family-rated trail with none of these
+  passes the exposure check. This is desk-verifiable from OSM `sac_scale` and
+  the official fiche, and the importer already screens out T3+/via-ferrata.
+  Set `exposure: true` only when such a marking exists; otherwise the check
+  is satisfied.
+- **Livestock** — **not a hazard gate.** It fails only when the trail lies in
+  a zone that prohibits dogs (national reserve, RNCFS, other protected area
+  where dogs are banned even on a leash). That case is a **removal**, not a
+  blocker — see the `BANNED`/`REMOVED` entries in `PROMOTED_RELATIONS`. For a
+  trail with no such prohibition the check passes. Grazing livestock and
+  guardian/patou dogs are no longer required evidence to graduate; where an
+  official source *does* mention them, keep an advisory leash line in the
+  displayed guidance (the enriched "Sentier du Four" pattern), but do not
+  block on it.
+- **Surface hazards** — flagged **only when a known hazardous surface is on
+  record**: scree, loose rock, scrambling sections, or fixed cables/ladders,
+  from OSM `surfaces`/`sac_scale` or an official description. Sparse or
+  absent surface data is *not* a blocker — a trail with no hazardous surface
+  on record passes. Populate `surfaceHazards` only with hazards a source
+  actually names; do not invent footing detail to fill the gap.
 - **Dog access / leash rules** — is there an explicit rule (leash required,
   seasonal restriction, banned outright)? A protected-area or no-dogs
   finding is a **removal**, not a downgrade — see the `BANNED`/`REMOVED`
