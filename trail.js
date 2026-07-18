@@ -1102,8 +1102,23 @@ function renderTrail(t){
         id: 'waymarked-hiking-layer',
         type: 'raster',
         source: 'waymarked-hiking',
+        // Hidden by default: as a 40%-opacity raster over the whole viewport
+        // it washes out and softens the vector basemap. The route itself is
+        // already drawn natively below, so the official waymark network is
+        // opt-in via the "Marked routes" toggle.
+        layout: { visibility: 'none' },
         paint: { 'raster-opacity': 0.4 },
       }, firstLabelLayer ? firstLabelLayer.id : undefined);
+      const routesToggleBtn = document.getElementById('routesToggle');
+      if (routesToggleBtn){
+        routesToggleBtn.addEventListener('click', () => {
+          const showing = routesToggleBtn.classList.toggle('on');
+          routesToggleBtn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+          if (map.getLayer('waymarked-hiking-layer')) {
+            map.setLayoutProperty('waymarked-hiking-layer', 'visibility', showing ? 'visible' : 'none');
+          }
+        });
+      }
 
       if(Array.isArray(t.path) && t.path.length > 1){
         map.addSource('single-trail-path', {
