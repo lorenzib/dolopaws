@@ -199,8 +199,6 @@ function initTrailReports(map, trail){
         const stale = isStale(f);
         const d = flagDate(f);
         const dateStr = d ? d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-        const bg = stale ? 'var(--sage-dim)' : (t.severe ? '#FBEAE6' : '#FBF3E4');
-        const border = stale ? 'var(--paper-line)' : (t.severe ? '#9C3A25' : 'var(--accent)');
         const kmChip = (typeof f.km === 'number')
           ? `<span style="font-size:11px;font-weight:700;background:rgba(0,0,0,.07);padding:2px 8px;border-radius:10px;margin-left:8px;">km ${f.km}</span>` : '';
         const staleNote = stale
@@ -209,12 +207,21 @@ function initTrailReports(map, trail){
           ? ` · <a href="#" data-remove="${trEsc(f.id)}" style="color:#9C3A25;">${window.t('reports.remove')}</a>` : '';
         const reportLink = (uid && f.uid !== uid)
           ? ` · <a href="#" data-report="${trEsc(f.id)}" style="color:var(--ink-soft);">${window.t('reports.report')}</a>` : '';
+        // Design tile: neutral inset card + a coloured flag square whose tone
+        // carries severity, replacing the mixed emoji-per-type language.
+        const tile = stale ? { bg: 'var(--sage-dim)', fg: 'var(--ink-soft)' }
+          : t.severe ? { bg: '#F3D9D2', fg: '#9C3A25' }
+          : { bg: '#F5E4C6', fg: '#8A5A16' };
+        const flagSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3v18h2v-7h5l1 2h6V6h-5l-1-2H5z"/></svg>';
         return `
-        <div style="background:${bg};border:1.5px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:10px;${stale ? 'opacity:.75;' : ''}">
-          <div style="font-weight:700;color:var(--ink);font-size:13.5px;">${t.icon} ${window.t('flag.' + f.type)}${kmChip}</div>
-          ${f.text ? `<div style="font-size:13px;color:var(--ink);margin-top:5px;">${trEsc(f.text)}</div>` : ''}
-          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:5px;">${dateStr}${dogContextLine(f)}${removeLink}${reportLink}</div>
-          ${staleNote}
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#FAF8F1;border:1px solid #EDE9DD;border-radius:12px;padding:12px 14px;margin-bottom:10px;${stale ? 'opacity:.75;' : ''}">
+          <span style="flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:${tile.bg};color:${tile.fg};">${flagSvg}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:800;color:var(--ink);font-size:13px;">${window.t('flag.' + f.type)}${kmChip}</div>
+            ${f.text ? `<div style="font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin-top:2px;">${trEsc(f.text)}</div>` : ''}
+            <div style="font-size:11.5px;color:#8A9689;margin-top:4px;">${dateStr}${dogContextLine(f)}${removeLink}${reportLink}</div>
+            ${staleNote}
+          </div>
         </div>`;
       }).join('');
     }
@@ -503,7 +510,7 @@ function initTrailReports(map, trail){
         <p class="hint">${window.t('reports.modalHint')}</p>
         <div data-types style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;">
           ${Object.entries(FLAG_TYPES).map(([key, t]) => `
-            <button type="button" aria-pressed="false" data-type="${key}" style="padding:10px 8px;border-radius:10px;border:1.5px solid var(--paper-line);background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;">${t.icon} ${window.t('flag.' + key)}</button>`).join('')}
+            <button type="button" aria-pressed="false" data-type="${key}" style="padding:10px 8px;border-radius:10px;border:1.5px solid var(--paper-line);background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;">${window.t('flag.' + key)}</button>`).join('')}
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink);margin-bottom:6px;">
           <input type="checkbox" data-haskm> ${window.t('reports.knowWhere')}

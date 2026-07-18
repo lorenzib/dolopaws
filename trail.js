@@ -519,7 +519,7 @@ function renderLegendChips(t){
     chip(itinIcon('flag'), window.t('legendTrail.start').replace('🚩 ', ''));
     chip(swatch(`border-top:3px solid ${safetyColor(t.safetyLevel)};border-radius:2px`),
          window.t('trail.route', {label: trailSafetyLabel(t)}));
-    chip('<span style="font-size:13px;flex:none;">➤</span>', window.t('legendTrail.dir').replace('➤ ', ''));
+    chip('<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex:none;" aria-hidden="true"><path d="M4 4l16 8-16 8 4.5-8z"/></svg>', window.t('legendTrail.dir').replace('➤ ', ''));
     if(Array.isArray(t.decisionPoints) && t.decisionPoints.length){
       chip(itinIcon('switch'), window.t('legendTrail.switch').replace('🔀 ', ''));
     }

@@ -445,6 +445,23 @@ body{background:#EFECE2;}
 .td2-stat .f.match span a{color:#9FC7D6;text-decoration:none;font-weight:700;}
 .td2-stat .f.match span a:hover{color:#fff;}
 
+/* ---- Map controls: fixed, collision-free slots ----
+   Top-right belongs to MapLibre's zoom/locate stack; Expand sits left of it.
+   Top-left is a vertical stack: km chip → POI toggle → live pill.
+   Bottom-left: map key, with the data notice docked above it. */
+.td2 .map-expand-btn{top:12px;right:56px;bottom:auto;height:36px;min-height:36px;}
+.td2 .trail-map-box.hike-status-visible .map-expand-btn{top:12px;bottom:auto;}
+.td2 .td-map-chip{top:16px;left:16px;}
+.td2 .td-map-toggle{top:58px;left:16px;}
+.td2 .td-live-pill{top:100px;left:16px;}
+.td2 .route-data-notice{top:auto;bottom:60px;left:16px;}
+/* The hero button drives hike mode; the map's own start button appears
+   only in fullscreen, where the hero is out of sight and an End control
+   is still needed. The km chip yields its slot to it there. */
+.td2 #mapStartHikeBtn{display:none;}
+.td2 .trail-map-box.map-fs #mapStartHikeBtn{display:block;}
+.td2 .trail-map-box.map-fs .td-map-chip{display:none;}
+
 /* ---- Today's conditions card ---- */
 .td2-cond-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#2E4034;margin-bottom:11px;}
 .td2-cond-row.td2-cond-last{margin-bottom:0;}
@@ -696,8 +713,8 @@ body{background:#EFECE2;}
 <script src="basemap-poi-click.js" defer></script>
 <script src="hike-mode.js?v=20260718" defer></script>
 <script src="detail-pois.js" defer></script>
-<script src="trail-reports.js?v=20260718" defer></script>
-<script src="trail.js?v=20260718" defer></script>
+<script src="trail-reports.js?v=20260718-2" defer></script>
+<script src="trail.js?v=20260718-2" defer></script>
 <script src="trail-blueprint.js?v=20260718" defer></script>
 <script src="trail-detail-ui.js?v=20260718" defer></script>
 </body>
