@@ -154,6 +154,9 @@
   });
 
   window.addEventListener('resize', function(){
+    // Some environments never fire MediaQueryList 'change' on viewport
+    // resize, so re-evaluate activation here as well.
+    update();
     if(!active) return;
     measure();
     setSheet(sheetPct);
