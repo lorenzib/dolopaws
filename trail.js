@@ -850,18 +850,31 @@ function renderTrail(t){
         : (asc >= 180 || km >= 6 || rank >= 2) ? 'Moderate' : 'Easy';
       facts.push([diff, window.t('trail.fact.difficulty')]);
     })();
-    factsEl.innerHTML = facts.map(([val, label]) =>
-      `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('');
+    // The design's stat strip leads with a Match cell ("94% · Match · Rufus").
+    // It's rendered here so it lives inside the same strip; paintMatch()
+    // below fills it with the real score, or an honest create-profile
+    // invitation for guests.
+    factsEl.innerHTML =
+      '<span class="f match" id="statMatch" hidden><b id="statMatchVal"></b><span id="statMatchSub"></span></span>'
+      + facts.map(([val, label]) =>
+        `<span class="f"><b>${val}</b><span>${label}</span></span>`).join('');
+    const statMatch = document.getElementById('statMatch');
+    const statMatchVal = document.getElementById('statMatchVal');
+    const statMatchSub = document.getElementById('statMatchSub');
 
     // Personal match — needs a logged-in profile. Guests see the facts
     // plus an honest invitation: the score exists, it just isn't theirs yet.
     function paintMatchTeaser(){
-      const el = document.getElementById('trailMatch');
-      if(!el) return;
       const actions = document.querySelector('.td-actions');
       if(actions) actions.classList.add('guest-actions');
-      el.innerHTML = `<a href="index.html?profile=1" style="color:#9FE1CB;text-decoration:underline;font-size:12.5px;font-weight:600;white-space:normal;">${window.t('trail.matchTeaser')}</a>`;
-      el.hidden = false;
+      if(statMatch){
+        statMatchVal.textContent = '?';
+        statMatchSub.innerHTML = `<a href="index.html?profile=1">${window.t('trail.matchCellTeaser')}</a>`;
+        statMatch.hidden = false;
+      }
+      // Legacy slot — other scripts (dog card) read this text.
+      const el = document.getElementById('trailMatch');
+      if(el){ el.innerHTML = `<a href="index.html?profile=1">${window.t('trail.matchTeaser')}</a>`; el.hidden = false; }
     }
     function paintMatch(){
       if(typeof scoreTrail !== 'function') return;
@@ -872,13 +885,20 @@ function renderTrail(t){
       window.DoloPawsAuth.getDogProfile().then(profile => {
         if(!profile){ paintMatchTeaser(); return; }
         const n = scoreTrail(t, effectiveOverrides(profile, null));
-        const el = document.getElementById('trailMatch');
-        if(!el) return;
         const actions = document.querySelector('.td-actions');
         if(actions) actions.classList.remove('guest-actions');
-        el.textContent = (t.curated === false ? '≈' : '') + n + '% ' +
-          window.t('trail.matchFor', {name: profile.name || window.t('trail.yourDog')});
-        el.hidden = false;
+        const name = profile.name || window.t('trail.yourDog');
+        if(statMatch){
+          statMatchVal.innerHTML = (t.curated === false ? '≈' : '') + n + '<span class="pct">%</span>';
+          statMatchSub.textContent = 'Match · ' + name;
+          statMatch.hidden = false;
+        }
+        const el = document.getElementById('trailMatch');
+        if(el){
+          el.textContent = (t.curated === false ? '≈' : '') + n + '% ' +
+            window.t('trail.matchFor', {name});
+          el.hidden = false;
+        }
       });
     }
     if(window.DoloPawsAuth) paintMatch();
