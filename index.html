@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20260718">
+<link rel="stylesheet" href="homepage-mobile.css?v=20260718">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"/>
 </head>
 <body>
@@ -133,149 +134,145 @@
   <div class="hp-content" id="hpContent"></div>
 </div>
 
-<!-- RETURNING-VISITOR HOMEPAGE (shown once logged in) — "Companion" layout:
-     sticky dog-profile + conditions + filters sidebar, map, sortable
-     ranked list. Same fonts/colours/components as the rest of the site. -->
+<!-- RETURNING-VISITOR HOMEPAGE (shown once logged in) — map-first app shell:
+     header (search · filters · account), full-height MapLibre map on the
+     left, ranked trail list on the right. Ported from the Claude Design
+     prototype "DoloPaws Homepage (Logged in).dc.html"; same fonts/colours
+     as the rest of the site. -->
 <div id="returningCustomerHomepage" hidden>
-  <div class="companion-wrap" style="padding-top:28px;padding-bottom:60px;">
-    <div class="companion-grid">
 
-      <button type="button" class="companion-panel-backdrop" id="companionPanelBackdrop" aria-label="Close filters and dog profile" aria-hidden="true" tabindex="-1"></button>
-
-      <!-- ================= SIDEBAR ================= -->
-      <aside class="companion-sidebar" id="companionSidebar" aria-label="Filters and dog profile">
-        <div class="companion-sidebar-mobile-head">
-          <span>Filters &amp; dog profile</span>
-          <button type="button" id="companionPanelClose" aria-label="Close filters and dog profile">&times;</button>
-        </div>
-        <!-- Dog profile card -->
-        <div class="companion-card" id="companionDogCard">
-          <div class="companion-dog-head">
-            <div class="companion-dog-avatar" id="companionDogAvatar"><span data-dp-icon="dog" data-dp-icon-size="24" aria-hidden="true"></span></div>
-            <div>
-              <div class="companion-dog-name" id="companionDogName">Your dog</div>
-              <div class="companion-dog-meta" id="companionDogMeta"></div>
-            </div>
-          </div>
-          <div class="companion-chips" id="companionDogChips"></div>
-          <a class="companion-edit-link" href="account.html?next=index.html" data-i18n="home.editProfile">Edit profile &rarr;</a>
-        </div>
-
-        <!-- Filters (region / source / valley) — populated by
-             renderAreaFilters(), same logic as before, restyled markup -->
-        <div class="companion-card" id="areaFilterRow"></div>
-
-        <!-- Saved trails toggle -->
-        <button type="button" id="savedTrailsBtn" class="companion-card companion-saved">
-          <span class="txt">♥ <span class="txt-label">Saved trails</span></span>
-          <span class="count" id="companionSavedCount">0</span>
-        </button>
-
-        <!-- Quiet entry to the real adjust-for-today tool (the design's
-             weather card is out; this keeps the tool reachable) -->
-        <button type="button" id="adjustToggle" class="companion-adjust-link" aria-expanded="false">Adjust for today's conditions &rarr;</button>
-      </aside>
-
-      <!-- ================= MAIN ================= -->
-      <main>
-        <div class="companion-greeting">
-          <span class="companion-kicker" id="companionKicker">Ranked for your dog</span>
-          <h1 id="returningHeading" class="dog-speech-cloud">“Where are we heading today?”</h1>
-        </div>
-        <p class="sub" id="returningSubline" style="font-size:13px;margin:12px 0 0;" aria-busy="true"><span class="skeleton" style="width:200px;height:12px;" aria-label="Loading your matches"></span></p>
-
-        <button type="button" class="companion-mobile-tools" id="companionPanelToggle" aria-controls="companionSidebar" aria-expanded="false">
-          <span class="companion-mobile-tools-copy">
-            <strong>Filters &amp; <span id="companionMobileDogLabel">dog profile</span></strong>
-            <small>Region, valley, source and saved trails</small>
-          </span>
-          <span aria-hidden="true">Adjust &rarr;</span>
-        </button>
-
-        <div id="breedInsightCard" class="breed-insight-card" hidden style="margin-top:20px;">
-          <span class="section-kicker" id="breedInsightKicker" style="color:var(--success);margin-bottom:12px;"></span>
-          <div id="breedInsightGrid" class="breed-insight-grid"></div>
-          <div class="breed-insight-foot">
-            <span id="breedInsightNote"></span>
-            <a id="breedInsightCta" href="#returningTrailList"></a>
-          </div>
-        </div>
-
-        <!-- TEMPORARY OVERRIDE PANEL — session-only, never touches the saved profile -->
-        <div id="adjustPanel" hidden class="adjust-panel" style="margin-top:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-            <div style="font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;">
-              <span data-dp-icon="adjust" data-dp-icon-mode="inline" aria-hidden="true"></span>
-              <span data-i18n="adjust.title">Adjusting for today only</span>
-            </div>
-            <button type="button" id="adjustCloseBtn" style="font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;" data-i18n="adjust.close">✕ Close</button>
-          </div>
-          <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;" data-i18n="adjust.note">This won't change your saved profile — just today's list.</p>
-
-          <div style="margin-bottom:14px;">
-            <div class="adj-filter-label" data-i18n="adjust.terrain">Terrain today</div>
-            <div class="adj-pill-row" data-group="terrain" style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="0" data-i18n="adjust.t0">Paved / packed dirt only</button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="1" data-i18n="adjust.t1">Gravel &amp; mixed rock OK</button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="2" data-i18n="adjust.t2">Loose rock / scree OK</button>
-            </div>
-          </div>
-          <div style="margin-bottom:14px;">
-            <div class="adj-filter-label" data-i18n="adjust.distance">Distance today</div>
-            <div class="adj-pill-row" data-group="distance" style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="5" data-i18n="adjust.d5">Up to 5 km</button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="10" data-i18n="adjust.d10">Up to 10 km</button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="99" data-i18n="adjust.dNo">No limit</button>
-            </div>
-          </div>
-          <div>
-            <div class="adj-filter-label" data-i18n="adjust.energy">Energy level today</div>
-            <div class="adj-pill-row" data-group="energy" style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="low"><span data-dp-icon="pace-low" data-dp-icon-size="15" aria-hidden="true"></span> <span data-i18n="adjust.eLow">Low</span></button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="medium"><span data-dp-icon="pace-medium" data-dp-icon-size="15" aria-hidden="true"></span> <span data-i18n="adjust.eMedium">Medium</span></button>
-              <button type="button" class="adj-pill" aria-pressed="false" data-value="high"><span data-dp-icon="pace-high" data-dp-icon-size="15" aria-hidden="true"></span> <span data-i18n="adjust.eHigh">High</span></button>
-            </div>
-          </div>
-        </div>
-
-        <div id="trailMapWrap" style="position:relative;margin-top:22px;">
-          <div id="trailMap" role="region" aria-label="Trail map. Nearby trails are grouped into clusters; use the trail list below for complete details." style="width:100%;height:320px;border-radius:20px;border:1px solid var(--paper-line);background:var(--sage-dim);overflow:hidden;"></div>
-          <div id="mapCallout" class="map-callout" hidden>
-            <span class="dot" id="mapCalloutDot"></span>
-            <span class="name" id="mapCalloutName"></span>
-            <span class="pct" id="mapCalloutPct"></span>
-            <span class="close" id="mapCalloutClose" role="button" aria-label="Clear selection">&times;</span>
-          </div>
-          <details class="companion-map-key">
-            <summary>Key</summary>
-            <div id="trailMapLegend" class="companion-map-legend"></div>
-          </details>
-        </div>
-
-        <div class="companion-list-head">
-          <div>
-            <div class="companion-list-title" id="companionListTitle">Top trails</div>
-            <div class="companion-list-sub" id="returningCount"></div>
-          </div>
-          <div class="companion-sort">
-            <span class="companion-sort-label">Sort</span>
-            <div class="companion-sort-group" id="companionSortGroup">
-              <button type="button" data-sort="match" class="active">Best</button>
-              <button type="button" data-sort="distance">Shortest</button>
-              <button type="button" data-sort="effort">Climb</button>
-              <button type="button" data-sort="today">For today</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="returningTrailList"></div>
-      </main>
+  <!-- ================= HEADER ================= -->
+  <header class="li-top">
+    <a class="li-brand" href="index.html"><img src="logo.svg" alt="">DoloPaws</a>
+    <div class="li-search">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="liSearch" type="search" placeholder="Search a valley, lake or trail…" aria-label="Search trails" autocomplete="off">
     </div>
+    <div class="li-top-spacer"></div>
+    <div class="li-top-actions">
+
+      <div class="li-menuwrap">
+        <button type="button" id="liFiltersBtn" class="li-filt" aria-haspopup="true" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+          Filters<span id="liFiltersBadge"></span> <span class="li-caret">▾</span>
+        </button>
+        <div class="li-menu li-filters-menu" id="liFiltersMenu" hidden>
+          <div class="li-fhead">
+            <span>Filter trails</span>
+            <button type="button" id="liFiltersReset">Reset all</button>
+          </div>
+          <!-- Region / source / valley — populated by renderAreaFilters() -->
+          <div id="areaFilterRow" class="li-fareas"></div>
+          <div class="li-fsec">Distance</div>
+          <div class="li-seg" id="liDistSeg"></div>
+          <div class="li-fsec">Terrain underfoot</div>
+          <div class="li-seg" id="liTerrainSeg"></div>
+          <div class="li-fsec">Shade</div>
+          <div class="li-seg" id="liShadeSeg"></div>
+          <div class="li-fsec" id="liMatchSecLabel">Minimum match</div>
+          <div class="li-seg" id="liMatchSeg"></div>
+          <div class="li-frows" id="liToggleRows"></div>
+          <button type="button" class="li-apply" id="liFiltersApply">Show trails</button>
+        </div>
+      </div>
+
+      <div class="li-menuwrap">
+        <button type="button" id="liAccountBtn" class="li-account" aria-haspopup="true" aria-expanded="false">
+          <span class="li-avatar" id="liAccountAvatar" aria-hidden="true"></span>
+          <span class="li-account-name" id="liAccountName">My account</span>
+        </button>
+        <div class="li-menu li-account-menu" id="liAccountMenu" hidden>
+          <a class="li-menu-item" id="liManageLink" href="account.html?next=index.html">Manage profile</a>
+          <button type="button" class="li-menu-item" id="liAddDogBtn">＋ Add another dog</button>
+          <button type="button" class="li-menu-item" id="savedTrailsBtn">♥ <span class="txt-label">My saved trails</span> <span class="li-menu-count" id="companionSavedCount">0</span></button>
+          <a class="li-menu-item" href="journal.html">My walk journal</a>
+          <div class="li-menu-div" role="separator"></div>
+          <a class="li-menu-item" href="browse-trails.html">Browse all trails</a>
+          <a class="li-menu-item" href="safety-guide.html">Safety guide</a>
+          <a class="li-menu-item" href="about.html">About</a>
+          <div class="li-menu-div" role="separator"></div>
+          <button type="button" class="li-menu-item li-logout" id="liLogoutBtn">Log out</button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= BODY: MAP + LIST ================= -->
+  <div class="li-body">
+
+    <div class="li-map" id="trailMapWrap">
+      <div id="trailMap" role="region" aria-label="Trail map. Nearby trails are grouped into clusters; use the trail list beside the map for complete details."></div>
+
+      <!-- Dog conditions card — real profile-derived readings, no invented weather -->
+      <div class="li-cond" id="liConditionsCard" hidden>
+        <div class="li-cond-head">
+          <span class="li-avatar li-avatar-lg" id="liCondAvatar" aria-hidden="true"></span>
+          <div>
+            <div class="li-cond-title" id="liCondTitle">Conditions</div>
+            <div class="li-cond-sub" id="liCondSub"></div>
+          </div>
+        </div>
+        <div class="li-cond-tiles" id="liCondTiles"></div>
+      </div>
+
+      <!-- Match-tier legend -->
+      <div class="li-legend">
+        <span><i class="li-dot" style="background:#4A7856;"></i>Great match</span>
+        <span><i class="li-dot" style="background:#C98A2E;"></i>Good</span>
+        <span><i class="li-dot" style="background:#9C3A25;"></i>Check first</span>
+        <span><i class="li-heartdot" aria-hidden="true">♥</i>Saved</span>
+      </div>
+
+      <div id="mapCallout" class="map-callout" hidden>
+        <span class="dot" id="mapCalloutDot"></span>
+        <span class="name" id="mapCalloutName"></span>
+        <span class="pct" id="mapCalloutPct"></span>
+        <span class="close" id="mapCalloutClose" role="button" aria-label="Clear selection">&times;</span>
+      </div>
+    </div>
+
+    <!-- ================= LIST ================= -->
+    <aside class="li-list" aria-label="Ranked trail list">
+      <div class="li-list-head">
+        <div class="li-dog-row">
+          <span class="li-dogavatar" id="companionDogAvatar"><span data-dp-icon="dog" data-dp-icon-size="24" aria-hidden="true"></span></span>
+          <div class="li-dog-copy">
+            <h1 class="li-greet" id="returningHeading">“Where are we heading today?”</h1>
+            <div class="li-chips-row">
+              <span class="li-dogname" id="companionDogName">Your dog</span>
+              <span class="li-pchip" id="companionDogMeta"></span>
+              <span class="li-chips" id="companionDogChips"></span>
+            </div>
+          </div>
+          <a class="li-edit" href="account.html?next=index.html" data-i18n="home.editProfile">Edit</a>
+        </div>
+        <p class="li-newsline" id="returningSubline" hidden></p>
+        <div class="li-list-title-row">
+          <div>
+            <div class="li-kick" id="companionKicker">Ranked for your dog</div>
+            <div class="li-list-title" id="companionListTitle">Top trails</div>
+          </div>
+          <div class="li-list-sub" id="returningCount"></div>
+        </div>
+        <div class="li-sort">
+          <span class="li-sort-label">Sort</span>
+          <div class="companion-sort-group" id="companionSortGroup">
+            <button type="button" data-sort="match" class="active">Best</button>
+            <button type="button" data-sort="distance">Shortest</button>
+            <button type="button" data-sort="effort">Climb</button>
+            <button type="button" data-sort="today">For today</button>
+          </div>
+        </div>
+      </div>
+      <div class="li-rows" id="returningTrailList"></div>
+    </aside>
+
   </div>
 </div>
 
 
-<div class="wrap" style="padding:56px 20px 40px;text-align:center;">
+<div class="wrap hp-quote" style="padding:56px 20px 40px;text-align:center;">
   <blockquote style="margin:0 auto;max-width:640px;font-family:'Source Serif 4',serif;font-weight:700;font-size:21px;line-height:1.5;color:var(--ink);" data-i18n="quote.text">“A walk is never just a walk when it's shared with a dog — it becomes an act of companionship, curiosity, and joy”</blockquote>
   <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--accent);">— DoloPaws</div>
 </div>
@@ -335,5 +332,6 @@
 <script src="script.js?v=20260717" defer></script>
 <script src="dog-wizard.js" defer></script>
 <script src="homepage-search.js?v=20260717" defer></script>
+<script src="homepage-mobile.js?v=20260718" defer></script>
 </body>
 </html>

@@ -90,7 +90,7 @@
       }).filter(function (v) { return v != null; });
       if (rated.length) {
         const avg = rated.reduce(function (a, b) { return a + b; }, 0) / rated.length;
-        avgEl.textContent = '★ ' + avg.toFixed(1);
+        avgEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:none;"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 18l-5.9 3.1 1.3-6.6L2.5 9.4l6.6-.8z"/></svg> ' + avg.toFixed(1);
         avgEl.hidden = false;
       } else { avgEl.hidden = true; }
     }

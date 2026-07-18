@@ -129,12 +129,32 @@ let activeProvenance = 'all';      // 'all' | 'verified' | 'imported'
 let sortKey = 'match';             // 'match' | 'distance' | 'effort' — Companion sort control
 let selectedTrailId = null;        // map pin / card selection (Companion layout)
 
+// Logged-in shell (map + list app layout) — header search + filter panel state.
+// These sit on top of the region/valley/provenance filters above.
+let liQuery = '';                  // header search box
+let liFilters = { dist: 99, terrain: 'any', shade: 'any', minMatch: 0, water: false };
+let liShellWired = false;          // header/menus are wired once per page load
+let liDevView = false;             // ?view=returning preview without an account
+
 function filterTrailsForReturningView(list){
   let displayList = showingSavedOnly ? list.filter(x => currentFavorites[x.id]) : list;
   displayList = displayList.filter(x => x.region === activeRegion);
   if(activeValley !== 'all') displayList = displayList.filter(x => x.valley === activeValley);
   if(activeProvenance === 'verified') displayList = displayList.filter(x => x.curated !== false);
   if(activeProvenance === 'imported') displayList = displayList.filter(x => x.curated === false);
+
+  // Logged-in shell: header search + filter-panel refinements. All of these
+  // read real trail fields; items arrive already scored (t.score).
+  const q = liQuery.trim().toLowerCase();
+  if(q) displayList = displayList.filter(x =>
+    String(x.name || '').toLowerCase().includes(q) ||
+    String(x.area || '').toLowerCase().includes(q) ||
+    String(x.valley || '').toLowerCase().includes(q));
+  if(liFilters.dist !== 99) displayList = displayList.filter(x => x.distance <= liFilters.dist);
+  if(liFilters.terrain !== 'any') displayList = displayList.filter(x => String(x.terrainRank) === liFilters.terrain);
+  if(liFilters.shade === 'shade') displayList = displayList.filter(x => (x.shadeCoverage || 0) >= 40 || x.heatRisk === 'low');
+  if(liFilters.minMatch > 0) displayList = displayList.filter(x => x.score >= liFilters.minMatch);
+  if(liFilters.water) displayList = displayList.filter(x => Array.isArray(x.waterSources) && x.waterSources.length > 0);
 
   // Sort is applied last so it always reflects the current filtered set.
   // 'match' just keeps the incoming order — the list is already sorted by
@@ -523,12 +543,14 @@ function initTrailMap(){
   const el = document.getElementById('trailMap');
   if(!el) return;
   // Note: MapLibre uses [lng, lat] order — the opposite of Leaflet's [lat, lng].
+  // Scroll zoom is fine here: in the logged-in shell the map is a fixed
+  // pane (the document doesn't scroll), so the wheel can't hijack scrolling.
   trailMapInstance = new maplibregl.Map({
     container: 'trailMap',
     style: 'https://tiles.openfreemap.org/styles/liberty',
     center: [12.05, 46.55],
     zoom: 9,
-    scrollZoom: false,
+    scrollZoom: true,
   });
   trailMapInstance.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
   trailMapInstance.addControl(new maplibregl.GeolocateControl({
@@ -616,6 +638,8 @@ function initTrailMap(){
       },
       paint: { 'text-color': '#fff' },
     });
+    // Pin colour = match tier for THIS dog (mirrors the on-map legend and
+    // the % badges in the list); a red ring marks saved trails.
     trailMapInstance.addLayer({
       id: 'trail-unclustered',
       type: 'circle',
@@ -623,15 +647,14 @@ function initTrailMap(){
       filter: ['!', ['has', 'point_count']],
       paint: {
         'circle-color': [
-          'match', ['get', 'safetyLevel'],
-          'low-risk', '#2C5C34',
-          'moderate', '#8A5A16',
-          'caution', '#9C3A25',
-          '#2E4034',
+          'step', ['coalesce', ['get', 'score'], 0],
+          '#9C3A25', 65, '#C98A2E', 85, '#4A7856',
         ],
         'circle-radius': 7,
         'circle-stroke-width': 2.5,
-        'circle-stroke-color': '#fff',
+        'circle-stroke-color': [
+          'case', ['==', ['coalesce', ['get', 'saved'], 0], 1], '#9C3A25', '#fff',
+        ],
       },
     });
     trailMapInstance.addLayer({
@@ -820,7 +843,7 @@ function makeTrailDot(){
 function selectTrail(t){
   selectedTrailId = t.id;
   setSelectedTrailPoint(t.id);
-  document.querySelectorAll('.trail-card.tc-selected').forEach(c => c.classList.remove('tc-selected'));
+  document.querySelectorAll('#returningTrailList .tc-selected').forEach(c => c.classList.remove('tc-selected'));
   const card = document.getElementById(`trail-card-${t.id}`);
   if(card) card.classList.add('tc-selected');
   if(typeof showMapCallout === 'function') showMapCallout(t);
@@ -879,7 +902,11 @@ function updateMapMarkers(list){
     }
     return {
       type: 'Feature',
-      properties: { id: t.id, name: t.name, safetyLevel: t.safetyLevel },
+      properties: {
+        id: t.id, name: t.name, safetyLevel: t.safetyLevel,
+        score: typeof t.score === 'number' ? t.score : 0,
+        saved: currentFavorites[t.id] ? 1 : 0,
+      },
       geometry: { type: 'Point', coordinates: [markerLng, markerLat] },
     };
   }).filter(Boolean);
@@ -1142,6 +1169,230 @@ function renderBreedInsight(profile){
   card.hidden = false;
 }
 
+// ============================================================
+// LOGGED-IN SHELL — header search, filter panel, account menu and
+// on-map conditions card for the map-first homepage layout.
+// ============================================================
+
+function liActiveFilterCount(){
+  return [
+    liFilters.dist !== 99,
+    liFilters.terrain !== 'any',
+    liFilters.shade !== 'any',
+    liFilters.minMatch > 0,
+    liFilters.water,
+    showingSavedOnly,
+    activeValley !== 'all',
+    activeProvenance !== 'all',
+  ].filter(Boolean).length;
+}
+
+function liResetAllFilters(){
+  liQuery = '';
+  liFilters = { dist: 99, terrain: 'any', shade: 'any', minMatch: 0, water: false };
+  showingSavedOnly = false;
+  activeValley = 'all';
+  activeProvenance = 'all';
+  const search = document.getElementById('liSearch');
+  if(search) search.value = '';
+  renderReturningHomepage(currentProfileForAdjust);
+}
+
+function liCloseMenus(){
+  ['liFiltersMenu', 'liAccountMenu'].forEach(id => {
+    const menu = document.getElementById(id);
+    if(menu) menu.hidden = true;
+  });
+  ['liFiltersBtn', 'liAccountBtn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if(btn) btn.setAttribute('aria-expanded', 'false');
+  });
+}
+
+// Dog photo resolution shared by the account pill and the conditions card:
+// account profile first, then the per-uid cache, then the legacy device key.
+function liDogPhoto(profile){
+  const isImage = v => typeof v === 'string' && v.startsWith('data:image/');
+  const uid = window.DoloPawsAuth && window.DoloPawsAuth.currentUser && window.DoloPawsAuth.currentUser.uid;
+  const candidates = [profile && profile.photo];
+  try {
+    if(uid) candidates.push(localStorage.getItem('dolopaws-dog-photo-' + uid));
+    candidates.push(localStorage.getItem('dolopaws-dog-photo'));
+  } catch(e){}
+  return candidates.find(isImage) || null;
+}
+
+function liFillAvatar(el, profile){
+  if(!el) return;
+  const photo = liDogPhoto(profile);
+  const name = (profile && profile.name) ? profile.name.trim() : '';
+  if(photo){
+    el.style.backgroundImage = `url(${photo})`;
+    el.textContent = '';
+  } else {
+    el.style.backgroundImage = 'none';
+    el.textContent = name ? name.charAt(0).toUpperCase() : '🐾';
+  }
+}
+
+// Account pill + menu labels. Called on every render so a wizard save or
+// photo upload is reflected immediately.
+function renderLiHeader(profile){
+  const nameEl = document.getElementById('liAccountName');
+  if(nameEl) nameEl.textContent = (profile && profile.name) ? profile.name : t('nav.account');
+  liFillAvatar(document.getElementById('liAccountAvatar'), profile);
+  const manage = document.getElementById('liManageLink');
+  if(manage) manage.textContent = (profile && profile.name)
+    ? `Manage ${profile.name}'s profile`
+    : "Set up your dog's profile";
+  const matchLabel = document.getElementById('liMatchSecLabel');
+  if(matchLabel) matchLabel.textContent = (profile && profile.name)
+    ? `Minimum match for ${profile.name}`
+    : 'Minimum match';
+}
+
+// Filter panel — segmented options + toggle rows. Rebuilt on every render
+// so the active states always mirror the real filter state.
+function renderLiControls(){
+  const seg = (elId, opts, cur, pick) => {
+    const el = document.getElementById(elId);
+    if(!el) return;
+    el.innerHTML = '';
+    opts.forEach(o => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'li-segbtn' + (o.v === cur ? ' on' : '');
+      b.textContent = o.label;
+      b.addEventListener('click', () => { pick(o.v); renderReturningHomepage(currentProfileForAdjust); });
+      el.appendChild(b);
+    });
+  };
+
+  seg('liDistSeg', [
+    { label: 'Any', v: 99 }, { label: '≤3 km', v: 3 }, { label: '≤6 km', v: 6 }, { label: '≤10 km', v: 10 },
+  ], liFilters.dist, v => { liFilters.dist = v; });
+  seg('liTerrainSeg', [
+    { label: 'Any', v: 'any' }, { label: 'Easy underfoot', v: '0' }, { label: 'Mixed', v: '1' }, { label: 'Rugged', v: '2' },
+  ], liFilters.terrain, v => { liFilters.terrain = v; });
+  seg('liShadeSeg', [
+    { label: 'Any', v: 'any' }, { label: 'Prefer shaded', v: 'shade' },
+  ], liFilters.shade, v => { liFilters.shade = v; });
+  seg('liMatchSeg', [
+    { label: 'Any', v: 0 }, { label: '60%+', v: 60 }, { label: '75%+', v: 75 }, { label: '85%+', v: 85 },
+  ], liFilters.minMatch, v => { liFilters.minMatch = v; });
+
+  const rows = document.getElementById('liToggleRows');
+  if(rows){
+    rows.innerHTML = '';
+    [
+      { label: 'Saved trails only', icon: '♥', iconBg: '#9C3A25', on: showingSavedOnly,
+        toggle: () => { showingSavedOnly = !showingSavedOnly; } },
+      { label: 'Has water on route', icon: '💧', iconBg: '#2C8FA6', on: liFilters.water,
+        toggle: () => { liFilters.water = !liFilters.water; } },
+    ].forEach(tg => {
+      const row = document.createElement('div');
+      row.className = 'li-frow';
+      row.innerHTML = `
+        <span class="li-frow-label"><span class="li-frow-icon" style="background:${tg.iconBg};">${tg.icon}</span>${tg.label}</span>
+        <button type="button" class="li-switch${tg.on ? ' on' : ''}" role="switch" aria-checked="${tg.on}" aria-label="${tg.label}"><span class="knob"></span></button>`;
+      row.querySelector('.li-switch').addEventListener('click', () => {
+        tg.toggle();
+        renderReturningHomepage(currentProfileForAdjust);
+      });
+      rows.appendChild(row);
+    });
+  }
+
+  const n = liActiveFilterCount();
+  const badge = document.getElementById('liFiltersBadge');
+  if(badge) badge.textContent = n > 0 ? ` · ${n}` : '';
+  const filtBtn = document.getElementById('liFiltersBtn');
+  if(filtBtn) filtBtn.classList.toggle('on', n > 0);
+}
+
+// Conditions card on the map — real profile-derived readings only (heat
+// tolerance and paw/terrain tolerance from the same overrides the scorer
+// uses, plus today's great-match count). No invented weather.
+function renderLiConditionsCard(profile, displayList){
+  const card = document.getElementById('liConditionsCard');
+  if(!card) return;
+  if(!profile){ card.hidden = true; return; }
+
+  const overrides = effectiveOverrides(profile, null);
+  const name = profile.name || 'Your dog';
+  document.getElementById('liCondTitle').textContent = `${name}'s conditions`;
+  document.getElementById('liCondSub').textContent =
+    (activeRegion === 'savoy' ? t('region.savoy') : t('region.theDolomites')) + ' · today';
+  liFillAvatar(document.getElementById('liCondAvatar'), profile);
+
+  const great = (displayList || []).filter(x => x.score >= 85).length;
+  const tiles = [
+    overrides.heatSensitive
+      ? { v: 'Watch', c: '#8A5A16', l: 'Heat' }
+      : { v: 'Good', c: '#2C5C34', l: 'Heat' },
+    overrides.terrain === '0'
+      ? { v: 'Tender', c: '#8A5A16', l: 'Paws' }
+      : { v: 'Good', c: '#2C5C34', l: 'Paws' },
+    { v: String(great), c: '#2E4034', l: great === 1 ? 'Great fit' : 'Great fits' },
+  ];
+  document.getElementById('liCondTiles').innerHTML = tiles.map(ti =>
+    `<div class="li-cond-tile"><b style="color:${ti.c};">${ti.v}</b><small>${ti.l}</small></div>`).join('');
+  card.hidden = false;
+}
+
+// One-time event wiring for the shell chrome (menus, search, logout…).
+function initLoggedInShell(){
+  if(liShellWired) return;
+  const filtersBtn = document.getElementById('liFiltersBtn');
+  if(!filtersBtn) return;
+  liShellWired = true;
+
+  const wireMenu = (btn, menu) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = menu.hidden;
+      liCloseMenus();
+      menu.hidden = !willOpen;
+      btn.setAttribute('aria-expanded', String(willOpen));
+    });
+    menu.addEventListener('click', e => e.stopPropagation());
+  };
+  wireMenu(filtersBtn, document.getElementById('liFiltersMenu'));
+  wireMenu(document.getElementById('liAccountBtn'), document.getElementById('liAccountMenu'));
+  document.addEventListener('click', liCloseMenus);
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') liCloseMenus(); });
+
+  const search = document.getElementById('liSearch');
+  let searchTimer = null;
+  if(search){
+    search.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        liQuery = search.value;
+        renderReturningHomepage(currentProfileForAdjust);
+      }, 160);
+    });
+  }
+
+  const reset = document.getElementById('liFiltersReset');
+  if(reset) reset.addEventListener('click', liResetAllFilters);
+  const apply = document.getElementById('liFiltersApply');
+  if(apply) apply.addEventListener('click', liCloseMenus);
+
+  const addDog = document.getElementById('liAddDogBtn');
+  if(addDog) addDog.addEventListener('click', () => {
+    liCloseMenus();
+    if(window.DoloPawsWizard && typeof window.DoloPawsWizard.open === 'function') window.DoloPawsWizard.open();
+  });
+
+  const logoutBtn = document.getElementById('liLogoutBtn');
+  if(logoutBtn) logoutBtn.addEventListener('click', async () => {
+    liCloseMenus();
+    if(liDevView){ window.location.href = 'index.html'; return; }
+    if(window.DoloPawsAuth) await window.DoloPawsAuth.logOut();
+  });
+}
+
 async function renderReturningHomepage(profile){
   const heading = document.getElementById('returningHeading');
   const subline = document.getElementById('returningSubline');
@@ -1151,13 +1402,16 @@ async function renderReturningHomepage(profile){
 
   renderAreaFilters(profile);
   renderDogProfileCard(profile);
-  renderConditionsCard(profile);
+  renderLiHeader(profile);
+  renderLiControls();
 
   const name = (profile && profile.name) ? profile.name : 'there';
   const overrides = profile ? effectiveOverrides(profile, adjustOverride) : { terrain:'1', distance:'10', heatSensitive:false };
 
   const kicker = document.getElementById('companionKicker');
-  if(kicker) kicker.textContent = profile && profile.name ? `Ranked for ${profile.name}` : 'Ranked for your dog';
+  if(kicker) kicker.textContent = liActiveFilterCount() > 0
+    ? 'Filtered · on the map'
+    : (profile && profile.name ? `Ranked for ${profile.name}` : 'Ranked for your dog');
 
   const scored = trails.map(t => ({...t, score: scoreTrail(t, overrides)})).sort((a,b) => b.score - a.score);
 
@@ -1201,9 +1455,15 @@ async function renderReturningHomepage(profile){
 
   const titleEl = document.getElementById('companionListTitle');
   const titleName = (profile && profile.name) ? profile.name : 'your dog';
-  if(titleEl) titleEl.textContent = showingSavedOnly ? `Saved for ${titleName}` : `Top trails for ${titleName}`;
+  if(titleEl) titleEl.textContent = showingSavedOnly ? `Saved for ${titleName}` : `Trails for ${titleName}`;
 
   let displayList = filterTrailsForReturningView(scored);
+
+  renderLiConditionsCard(profile, displayList);
+
+  // "Show N trails" — the apply button doubles as the live result count.
+  const applyBtn = document.getElementById('liFiltersApply');
+  if(applyBtn) applyBtn.textContent = `Show ${displayList.length} ${displayList.length === 1 ? 'trail' : 'trails'}`;
 
   // "6 of 112 · ranked for a heavy-coated dog" — total is the active
   // region's full count, the descriptor comes from real scored traits.
@@ -1220,7 +1480,7 @@ async function renderReturningHomepage(profile){
   updateMapMarkers(displayList);
 
   // Reset to page 1 whenever the filters change; clamp if the list shrank.
-  const filterKey = `${activeRegion}|${activeValley}|${activeProvenance}|${showingSavedOnly}`;
+  const filterKey = `${activeRegion}|${activeValley}|${activeProvenance}|${showingSavedOnly}|${liQuery}|${JSON.stringify(liFilters)}|${sortKey}`;
   if (filterKey !== lastFilterKey){ currentPage = 1; lastFilterKey = filterKey; }
   const collapsed = !showFullList && !showingSavedOnly && displayList.length > TOP_MATCHES + 2;
   const totalPages = collapsed ? 1 : Math.max(1, Math.ceil(displayList.length / TRAILS_PER_PAGE));
@@ -1250,8 +1510,17 @@ async function renderReturningHomepage(profile){
       ? t('home.noSavedValley', {label})
       : showingSavedOnly
         ? t('home.noSaved')
-        : t('home.noTrailsValley', {label});
-    listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px;">${msg}</div>`;
+        : (liQuery.trim() || liActiveFilterCount() > 0)
+          ? 'Try widening your filters.'
+          : t('home.noTrailsValley', {label});
+    listEl.innerHTML = `
+      <div class="li-empty">
+        <div class="li-empty-title">No trails match</div>
+        <p>${msg}</p>
+        <button type="button" id="liEmptyReset">Reset filters</button>
+      </div>`;
+    const emptyReset = document.getElementById('liEmptyReset');
+    if(emptyReset) emptyReset.addEventListener('click', liResetAllFilters);
     return;
   }
 
@@ -1266,51 +1535,37 @@ async function renderReturningHomepage(profile){
     const isNew = newIds.has(t.id);
     const isEst = t.curated === false;
     const dim = adjustActive && t.score < 60;
-    const thumb = trailCardVisual(t, { className:'photo tc-thumb', dataTrailId:t.id, clickable:true });
-    const ringColor = SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)';
-    const heat = t.heatRisk === 'high' ? { l: 'High', bg: '#FBEAE6', fg: '#9C3A25' }
-      : t.heatRisk === 'moderate' ? { l: 'Med', bg: '#F5E4C6', fg: '#8A5A16' }
-      : t.heatRisk === 'low' ? { l: 'Low', bg: '#DCEBDD', fg: '#2C5C34' }
-      : { l: 'Unknown', bg: '#ECE8DD', fg: '#59695D' };
+    const thumb = trailCardVisual(t, { className:'li-thumb photo', dataTrailId:t.id, clickable:true });
     const selected = t.id === selectedTrailId;
-    const trust = window.DoloPawsTrailTrust;
-    const provenanceLabel = trust
-      ? trust.tierLabel(t)
-      : (t.curated === false ? window.t('badge.imported') : window.t('badge.verified'));
-    const provenanceBadge = productBadge(
-      trust ? trust.tierBadgeStyle(t) : (t.curated === false ? 'imported' : 'verified'),
-      provenanceLabel
-    );
+    const tier = t.score >= 85 ? ['#DCEBDD', '#2C5C34']
+      : t.score >= 65 ? ['#F5E4C6', '#8A5A16']
+      : ['#F3D9D2', '#9C3A25'];
+    const dotColor = SAFETY_DOT[t.safetyLevel] || 'var(--ink-soft)';
     const newBadge = isNew ? productBadge('new', window.t('badge.new')) : '';
-    const riskBadge = productBadge(t.safetyLevel, trailSafetyLabel(t));
-    const heatBadge = productBadge(`heat-${t.heatRisk || 'unknown'}`, `Heat ${heat.l}`);
     return `
-    <div class="trail-card${selected ? ' tc-selected' : ''}" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
+    <div class="li-row${selected ? ' tc-selected' : ''}" id="trail-card-${t.id}" data-id="${t.id}"${dim ? ' style="opacity:.55;"' : ''}>
       ${thumb}
-      <div class="body">
-        <div class="tc-meta-row">
-          ${provenanceBadge}
+      <div class="li-row-body">
+        <a href="trail.html?id=${t.id}" class="li-row-name">${t.name}</a>
+        <div class="li-row-meta" title="${matchReason(t, overrides)}">${t.distance} km · +${t.elevation} m · ${t.area}</div>
+        <div class="li-row-badges">
           ${newBadge}
-          ${riskBadge}
-          ${heatBadge}
-        </div>
-        <a href="trail.html?id=${t.id}" class="name" style="margin-top:2px;display:block;text-decoration:none;color:inherit;">${t.name}</a>
-        <div class="tc-reason"><span class="mark">✦</span><span class="txt">${matchReason(t, overrides)}</span></div>
-        <div class="tc-stats">${t.ref ? window.t('card.trailRef', {ref: t.ref}) + ' · ' : ''}${t.area} · ${t.distance} km · ${t.elevation} m · ${t.hours} h · ${t.terrainType}</div>
-        <div class="tc-actions">
-          <a href="trail.html?id=${t.id}">${window.t('card.details')}</a>
-          <button type="button" class="locate-btn" data-id="${t.id}">${window.t('card.locate')}</button>
-          <button type="button" class="save save-btn ${isFav ? 'saved' : ''}" data-id="${t.id}">${isFav ? '✓ ' + window.t('card.saved') : window.t('card.save')}</button>
+          <span class="li-badge"><span class="li-dot" style="background:${dotColor};"></span>${trailSafetyLabel(t)}</span>
+          <span class="li-badge" style="background:${tier[0]};color:${tier[1]};">${isEst ? '≈' : ''}${t.score}%</span>
         </div>
       </div>
-      <div class="companion-match-col">
-        <div class="tc-ring" style="background:conic-gradient(${ringColor} ${Math.round((t.score/100)*360)}deg,var(--paper-line) 0);">
-          <div class="tc-ring-inner">${isEst ? '≈' : ''}${t.score}%</div>
-        </div>
-        <span class="tc-ring-label">${window.t('card.matchWord')}</span>
-      </div>
+      <button type="button" class="li-heart save-btn" data-id="${t.id}" aria-pressed="${isFav}" aria-label="${isFav ? 'Remove ' + t.name + ' from saved trails' : 'Save ' + t.name}">${isFav ? '♥' : '♡'}</button>
     </div>`;
   }).join('');
+
+  // Whole row opens the trail page — except clicks on the heart, links,
+  // or the thumbnail (which locates the trail on the map instead).
+  listEl.querySelectorAll('.li-row').forEach(row => {
+    row.addEventListener('click', (e) => {
+      if(e.target.closest('a, button, .photo')) return;
+      window.location.href = 'trail.html?id=' + row.dataset.id;
+    });
+  });
 
   listEl.querySelectorAll('.save-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -1434,7 +1689,7 @@ if(mapCalloutClose){
   mapCalloutClose.addEventListener('click', () => {
     selectedTrailId = null;
     hideMapCallout();
-    document.querySelectorAll('.trail-card.tc-selected').forEach(c => c.classList.remove('tc-selected'));
+    document.querySelectorAll('#returningTrailList .tc-selected').forEach(c => c.classList.remove('tc-selected'));
     setSelectedTrailPoint(null);
   });
 }
@@ -1521,6 +1776,7 @@ window.addEventListener('dolopaws-dog-profile-saved', (e) => {
 
 window.addEventListener('dolopaws-auth-changed', async (e) => {
   const user = e.detail.user;
+  const devReturning = !!(e.detail && e.detail.devView === 'returning');
   const newHome = document.getElementById('newCustomerHomepage');
   const returningHome = document.getElementById('returningCustomerHomepage');
   const browseNavLink = document.getElementById('browseNavLink');
@@ -1533,31 +1789,43 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
   }
   if(!newHome || !returningHome) return;
 
-  if(user && window.DoloPawsAuth){
+  if((user && window.DoloPawsAuth) || devReturning){
     newHome.hidden = true;
     returningHome.hidden = false;
+    document.body.dataset.homepageView = 'returning';
     adjustOverride = null;
     initTrailMap();
+    // The map pane may have been hidden (or sized differently) when the map
+    // was created — make sure MapLibre measures the now-visible container.
+    if(trailMapInstance) requestAnimationFrame(() => trailMapInstance.resize());
+    initLoggedInShell();
 
-    // Guest-wizard handoff: if they built a dog profile before signing
-    // up, persist it now — but never overwrite a profile that already
-    // exists on the account (e.g. logging into an older account).
-    try {
-      const pendingRaw = localStorage.getItem('dolopaws-pending-dog-profile');
-      if(pendingRaw){
-        const pending = JSON.parse(pendingRaw);
-        const existing = await window.DoloPawsAuth.getDogProfile();
-        if(pending && pending.name && (!existing || !existing.name)){
-          await window.DoloPawsAuth.setDogProfile(pending);
+    let profile = null;
+    if(user && window.DoloPawsAuth){
+      // Guest-wizard handoff: if they built a dog profile before signing
+      // up, persist it now — but never overwrite a profile that already
+      // exists on the account (e.g. logging into an older account).
+      try {
+        const pendingRaw = localStorage.getItem('dolopaws-pending-dog-profile');
+        if(pendingRaw){
+          const pending = JSON.parse(pendingRaw);
+          const existing = await window.DoloPawsAuth.getDogProfile();
+          if(pending && pending.name && (!existing || !existing.name)){
+            await window.DoloPawsAuth.setDogProfile(pending);
+          }
+          localStorage.removeItem('dolopaws-pending-dog-profile');
+          localStorage.removeItem('dolopaws-dog-draft'); // guest draft now redundant
         }
-        localStorage.removeItem('dolopaws-pending-dog-profile');
-        localStorage.removeItem('dolopaws-dog-draft'); // guest draft now redundant
-      }
-    } catch(err){ /* never block login on handoff */ }
+      } catch(err){ /* never block login on handoff */ }
 
-    const profile = await window.DoloPawsAuth.getDogProfile();
+      profile = await window.DoloPawsAuth.getDogProfile();
+      currentFavorites = await window.DoloPawsAuth.getFavorites();
+    } else {
+      // ?view=returning preview — use the guest wizard draft if one exists.
+      try { profile = JSON.parse(localStorage.getItem('dolopaws-pending-dog-profile') || 'null'); } catch(err){ profile = null; }
+      currentFavorites = {};
+    }
     currentProfileForAdjust = profile;
-    currentFavorites = await window.DoloPawsAuth.getFavorites();
     renderReturningHomepage(profile);
 
     // Show the dog photo bubble (with uploaded photo or fallback paw)
@@ -1600,8 +1868,10 @@ window.addEventListener('dolopaws-auth-changed', async (e) => {
       dogBubble.hidden = false;
     }
   } else {
+    if(liDevView) return; // keep the ?view=returning preview when real auth resolves logged-out
     newHome.hidden = false;
     returningHome.hidden = true;
+    document.body.dataset.homepageView = 'new';
     const dogBubble = document.getElementById('dogPhotoBubble');
     if(dogBubble) dogBubble.hidden = true;
     initGuestMap();
@@ -2142,3 +2412,19 @@ Optional color legend:
 <span><span style="width:12px;height:12px;background:#228B22;display:inline-block;border-radius:50%;margin-right:4px;"></span>Spring</span>
 <span><span style="width:12px;height:12px;background:#0077BE;display:inline-block;border-radius:50%;margin-right:4px;"></span>Water tap</span>
 */
+
+// ============================================================
+// DEV PREVIEW — index.html?view=returning shows the logged-in shell
+// without an account (profile falls back to the guest wizard draft;
+// cloud saves stay disabled). Mirrors the ?view= contract documented
+// in homepage-view.js.
+// ============================================================
+(function(){
+  try {
+    const forced = new URLSearchParams(window.location.search).get('view');
+    if(forced === 'returning'){
+      liDevView = true;
+      window.dispatchEvent(new CustomEvent('dolopaws-auth-changed', { detail: { user: null, devView: 'returning' } }));
+    }
+  } catch(e){ /* preview-only convenience — never break the real page */ }
+})();

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20260718">
+<link rel="stylesheet" href="styles.css?v=20260718-2">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"/>
 <style>
 /* ---- Companion reference tokens, trail detail (design-handoff fidelity) ---- */
@@ -383,11 +383,10 @@ body{background:#EFECE2;}
 /* Dog-safety rows → prototype inset tiles with ✓ / ! icon marks */
 .td2 .safety-row{align-items:flex-start;gap:11px;background:#FAF8F1;border:1px solid #EDE9DD;border-radius:12px;padding:12px 14px;}
 .td2 .safety-row .pill{flex:none;width:26px;height:26px;padding:0;border-radius:8px;display:grid;place-items:center;font-size:0;line-height:1;}
-.td2 .safety-row .pill::before{font:800 13px/1 'Inter',sans-serif;}
-.td2 .safety-row.is-good .pill{background:#E4EADF;color:#2C5C34;}
-.td2 .safety-row.is-good .pill::before{content:'\2713';}
-.td2 .safety-row.is-caution .pill{background:#F5E4C6;color:#8A5A16;}
-.td2 .safety-row.is-caution .pill::before{content:'!';}
+/* SVG-mask marks: crisp on every OS, no font-fallback glyphs. */
+.td2 .safety-row .pill::before{content:'';width:13px;height:13px;background:currentColor;-webkit-mask:var(--mk) center/contain no-repeat;mask:var(--mk) center/contain no-repeat;}
+.td2 .safety-row.is-good .pill{background:#E4EADF;color:#2C5C34;--mk:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round' d='M4.5 12.5l5 5L19.5 7'/%3E%3C/svg%3E");}
+.td2 .safety-row.is-caution .pill{background:#F5E4C6;color:#8A5A16;--mk:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round' d='M12 4.5v10'/%3E%3Ccircle cx='12' cy='19' r='2' fill='black'/%3E%3C/svg%3E");}
 .td2 .safety-row b{font:800 13px 'Inter',sans-serif;color:#2E4034;}
 .td2 .safety-row small{font-size:12px;color:#6B7A6E;line-height:1.5;margin-top:2px;}
 .td2 .td-safety-intro{grid-column:1/-1;margin:0 0 4px;padding:12px 14px;border-left:3px solid #7f9a6c;background:#EEF3EC;border-radius:0 12px 12px 0;}
@@ -465,7 +464,8 @@ body{background:#EFECE2;}
 
 /* ---- Consistency pass: one visual language across the page ---- */
 /* Review stars: the same gold everywhere (hero, average, review rows). */
-.td2 .community-review__rating{color:#E8A93A;}
+.td2 .community-review__rating{color:#E8A93A;display:inline-flex;align-items:center;gap:2px;}
+.td2 .td2-rev-avg{display:inline-flex;align-items:center;gap:4px;}
 .td2 .community-review{border:none;border-bottom:1px solid #EDE9DD;border-radius:0;background:none;padding:0 0 14px;}
 /* Empty-state CTAs: ghost buttons like every other section action. */
 .td2 .empty-state__action{background:#fff;color:#2E4034;border:1.5px solid #E4E0D3;border-radius:12px;font:700 13px 'Inter',sans-serif;}
@@ -729,10 +729,10 @@ body{background:#EFECE2;}
 <script src="regions-config.js"></script>
 <script src="basemap-poi-click.js" defer></script>
 <script src="hike-mode.js?v=20260718" defer></script>
-<script src="detail-pois.js" defer></script>
-<script src="trail-reports.js?v=20260718-2" defer></script>
+<script src="detail-pois.js?v=20260718" defer></script>
+<script src="trail-reports.js?v=20260718-3" defer></script>
 <script src="trail.js?v=20260718-3" defer></script>
 <script src="trail-blueprint.js?v=20260718" defer></script>
-<script src="trail-detail-ui.js?v=20260718-2" defer></script>
+<script src="trail-detail-ui.js?v=20260718-3" defer></script>
 </body>
 </html>

@@ -32,6 +32,15 @@ function trEsc(s){
     c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// One star glyph for every rating UI on the page (rows, average, picker) —
+// filled or outlined, sized per context. Replaces the mixed ★/☆ text chars.
+function starSvgIcon(filled, size){
+  const s = size || 13;
+  return filled
+    ? `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:none;display:block;"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 18l-5.9 3.1 1.3-6.6L2.5 9.4l6.6-.8z"/></svg>`
+    : `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true" style="flex:none;display:block;"><path d="M12 3.6l2.6 5.4 5.9.7-4.4 4 1.2 5.9L12 16.8l-5.3 2.8 1.2-5.9-4.4-4 5.9-.7z"/></svg>`;
+}
+
 function initTrailReports(map, trail){
   const listEl = document.getElementById('trailFlagsList');
   const addBtn = document.getElementById('addReportBtn');
@@ -90,7 +99,7 @@ function initTrailReports(map, trail){
       } else {
         const average = visible.reduce((total, review) => total + Number(review.rating), 0) / visible.length;
         ratingEl.hidden = false;
-        ratingEl.innerHTML = `<span class="community-rating__stars" aria-label="${average.toFixed(1)} out of 5 stars">★</span><strong>${average.toFixed(1)}</strong><span>${visible.length} ${visible.length === 1 ? 'review' : 'reviews'}</span>`;
+        ratingEl.innerHTML = `<span class="community-rating__stars" aria-label="${average.toFixed(1)} out of 5 stars">${starSvgIcon(true, 13)}</span><strong>${average.toFixed(1)}</strong><span>${visible.length} ${visible.length === 1 ? 'review' : 'reviews'}</span>`;
       }
     }
     if (heroRatingEl){
@@ -131,7 +140,7 @@ function initTrailReports(map, trail){
       const dateLabel = date ? date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently';
       const dogName = review.dogContext && review.dogContext.name;
       const reviewer = dogName ? `${trEsc(dogName)}’s human` : 'A DoloPaws member';
-      const stars = '★'.repeat(Number(review.rating)) + '☆'.repeat(5 - Number(review.rating));
+      const stars = [1, 2, 3, 4, 5].map(n => starSvgIcon(n <= Number(review.rating), 13)).join('');
       return `<article class="community-review">
         <div class="community-review__rating" aria-label="${review.rating} out of 5 stars">${stars}</div>
         ${review.text ? `<p>${trEsc(review.text)}</p>` : ''}
@@ -254,11 +263,11 @@ function initTrailReports(map, trail){
         const el = document.createElement('div');
         el.className = 'dp-marker';
         el.style.background = '#9C3A25';
-        el.textContent = t.icon;
+        el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" aria-hidden="true" style="display:block;margin:auto;"><path d="M5 3v18h2v-7h5l1 2h6V6h-5l-1-2H5z"/></svg>';
         const marker = new maplibregl.Marker({ element: el, offset: [0, 0] })
           .setLngLat([lng, lat])
           .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML(
-            `<b>${t.icon} ${window.t('flag.' + f.type)}</b><br>Km ${f.km}${f.text ? `<br>${trEsc(f.text)}` : ''}<br><small>${window.t('reports.community')}</small>`))
+            `<b>${window.t('flag.' + f.type)}</b><br>Km ${f.km}${f.text ? `<br>${trEsc(f.text)}` : ''}<br><small>${window.t('reports.community')}</small>`))
           .addTo(map);
         flagMarkers.push(marker);
       });
@@ -348,7 +357,7 @@ function initTrailReports(map, trail){
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `<div class="modal" style="max-width:420px;">
-      <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
+      <button type="button" class="modal-close" data-close aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <h2 style="font-size:19px;">Add a trail photo</h2>
       <p class="hint">Share a recent, useful view of this trail. Photos appear with the community reviews.</p>
       <input data-photo type="file" accept="image/*" style="font-size:13px;margin:8px 0 12px;">
@@ -415,11 +424,11 @@ function initTrailReports(map, trail){
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
       <div class="modal" style="max-width:420px;">
-        <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
+        <button type="button" class="modal-close" data-close aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         <h2 style="font-size:19px;">Rate this trail</h2>
         <p class="hint">Your review helps other dogs and their humans choose the right walk.</p>
         <div data-stars class="review-star-picker" aria-label="Choose a rating">
-          ${[1, 2, 3, 4, 5].map(value => `<button type="button" role="radio" aria-checked="false" data-rating="${value}" aria-label="${value} star${value === 1 ? '' : 's'}">☆</button>`).join('')}
+          ${[1, 2, 3, 4, 5].map(value => `<button type="button" role="radio" aria-checked="false" data-rating="${value}" aria-label="${value} star${value === 1 ? '' : 's'}">${starSvgIcon(false, 24)}</button>`).join('')}
         </div>
         <textarea data-text maxlength="1000" rows="4" placeholder="What should other dog owners know? (optional)" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--paper-line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;resize:vertical;"></textarea>
         <div data-err role="alert" style="color:#9C3A25;font-size:12.5px;margin-top:8px;" hidden></div>
@@ -442,7 +451,7 @@ function initTrailReports(map, trail){
         selectedRating = Number(button.dataset.rating);
         starButtons.forEach(star => {
           const active = Number(star.dataset.rating) <= selectedRating;
-          star.textContent = active ? '★' : '☆';
+          star.innerHTML = starSvgIcon(active, 24);
           star.classList.toggle('is-selected', active);
           star.setAttribute('aria-checked', Number(star.dataset.rating) === selectedRating ? 'true' : 'false');
         });
@@ -505,7 +514,7 @@ function initTrailReports(map, trail){
     const maxKm = trail.distance || 10;
     overlay.innerHTML = `
       <div class="modal" style="max-width:420px;">
-        <button type="button" class="modal-close" data-close aria-label="Close">&times;</button>
+        <button type="button" class="modal-close" data-close aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         <h2 style="font-size:19px;">${window.t('reports.modalTitle')}</h2>
         <p class="hint">${window.t('reports.modalHint')}</p>
         <div data-types style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;">

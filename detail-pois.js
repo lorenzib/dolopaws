@@ -50,32 +50,37 @@ function initDetailPois(map, trail){
     return v === key ? fallback : v;
   }
   function poiPopupHtml(props){
-    let placeType = '📍 ' + tt('poi.place', 'Point of interest');
-    if (props.tourism === 'alpine_hut') placeType = '🏔️ ' + tt('legend.hut', 'Mountain hut');
-    else if (props.tourism === 'wilderness_hut') placeType = '🛖 ' + tt('poi.wildhut', 'Wilderness hut');
-    else if (props.amenity === 'shelter') placeType = '⛺ ' + tt('poi.shelter', 'Shelter');
-    else if (props.amenity === 'bar') placeType = '🍺 Bar';
-    else if (props.amenity === 'pub') placeType = '🍻 Pub';
-    else if (props.amenity === 'cafe') placeType = '☕ Café';
-    else if (props.amenity === 'restaurant') placeType = '🍽️ ' + tt('poi.restaurant', 'Restaurant');
-    else if (props.amenity === 'fast_food') placeType = '🍔 ' + tt('poi.fastfood', 'Snack bar');
-    else if (props.amenity === 'drinking_water' || props.amenity === 'water_point') placeType = '🚰 ' + tt('legend.water', 'Drinking water');
-    else if (props.natural === 'spring') placeType = '💧 ' + tt('poi.spring', 'Spring');
-    else if (props.amenity === 'fountain') placeType = '⛲ ' + tt('poi.fountain', 'Fountain');
-    else if (props.amenity === 'toilets') placeType = '🚻 ' + tt('poi.toilets', 'Public toilets');
-    else if (props.man_made === 'water_tap') placeType = '🚰 ' + tt('poi.tap', 'Water tap');
-    let html = `<b>${placeType}</b>`;
+    // Place type: icon-system SVG (same visual language as the page chrome)
+    // plus a plain-text label — no emoji.
+    let typeLabel = tt('poi.place', 'Point of interest'), iconKey = null;
+    if (props.tourism === 'alpine_hut') { typeLabel = tt('legend.hut', 'Mountain hut'); iconKey = 'hut'; }
+    else if (props.tourism === 'wilderness_hut') { typeLabel = tt('poi.wildhut', 'Wilderness hut'); iconKey = 'hut'; }
+    else if (props.amenity === 'shelter') { typeLabel = tt('poi.shelter', 'Shelter'); iconKey = 'hut'; }
+    else if (props.amenity === 'bar') { typeLabel = 'Bar'; iconKey = 'food'; }
+    else if (props.amenity === 'pub') { typeLabel = 'Pub'; iconKey = 'food'; }
+    else if (props.amenity === 'cafe') { typeLabel = 'Café'; iconKey = 'food'; }
+    else if (props.amenity === 'restaurant') { typeLabel = tt('poi.restaurant', 'Restaurant'); iconKey = 'food'; }
+    else if (props.amenity === 'fast_food') { typeLabel = tt('poi.fastfood', 'Snack bar'); iconKey = 'food'; }
+    else if (props.amenity === 'drinking_water' || props.amenity === 'water_point') { typeLabel = tt('legend.water', 'Drinking water'); iconKey = 'water'; }
+    else if (props.natural === 'spring') { typeLabel = tt('poi.spring', 'Spring'); iconKey = 'water'; }
+    else if (props.amenity === 'fountain') { typeLabel = tt('poi.fountain', 'Fountain'); iconKey = 'water'; }
+    else if (props.amenity === 'toilets') { typeLabel = tt('poi.toilets', 'Public toilets'); }
+    else if (props.man_made === 'water_tap') { typeLabel = tt('poi.tap', 'Water tap'); iconKey = 'water'; }
+    const typeIcon = (iconKey && icons && icons.renderIconSvg)
+      ? `<span style="display:inline-block;vertical-align:-2px;margin-right:3px;">${icons.renderIconSvg(iconKey, { mode: 'inline', color: 'currentColor', size: 13 })}</span>`
+      : '';
+    let html = `<b>${typeIcon}${esc(typeLabel)}</b>`;
     if (props.name) html += `<br><b>${esc(props.name)}</b>`;
-    if (props.ele) html += `<br>⛰️ ${esc(props.ele)} m`;
-    if (props.opening_hours) html += `<br>🕐 ${esc(props.opening_hours)}`;
+    if (props.ele) html += `<br>${esc(props.ele)} m elevation`;
+    if (props.opening_hours) html += `<br>Hours: ${esc(props.opening_hours)}`;
     const phone = props.phone || props['contact:phone'];
-    if (phone) html += `<br>📞 ${esc(phone)}`;
+    if (phone) html += `<br>Phone: ${esc(phone)}`;
     const site = props.website || props['contact:website'];
-    if (site && /^https?:\/\//.test(site)) html += `<br>🔗 <a href="${esc(site)}" target="_blank" rel="noopener">Website</a>`;
-    if (props.dog === 'yes') html += `<br>🐕 Dogs welcome`;
-    else if (props.dog === 'leashed') html += `<br>🦮 Dogs on leash`;
-    else if (props.dog === 'no') html += `<br>🚫 No dogs`;
-    if (props.outdoor_seating && props.outdoor_seating !== 'no') html += `<br>🪑 Outdoor seating`;
+    if (site && /^https?:\/\//.test(site)) html += `<br><a href="${esc(site)}" target="_blank" rel="noopener">Website</a>`;
+    if (props.dog === 'yes') html += `<br><b>Dogs welcome</b>`;
+    else if (props.dog === 'leashed') html += `<br><b>Dogs on leash</b>`;
+    else if (props.dog === 'no') html += `<br><b>No dogs</b>`;
+    if (props.outdoor_seating && props.outdoor_seating !== 'no') html += `<br>Outdoor seating`;
     return html;
   }
 
