@@ -82,18 +82,22 @@
       var startY = e.clientY;
       var startH = list.getBoundingClientRect().height;
       var A = availH();
+      var lastH = startH;
       list.classList.add('mhome-dragging');
       try{ grab.setPointerCapture(e.pointerId); }catch(_){ }
       function move(ev){
-        var h = Math.max(A * 0.14, Math.min(A * 0.9, startH + (startY - ev.clientY)));
-        list.style.height = h + 'px';
+        lastH = Math.max(A * 0.14, Math.min(A * 0.9, startH + (startY - ev.clientY)));
+        list.style.height = lastH + 'px';
       }
       function up(){
         window.removeEventListener('pointermove', move);
         window.removeEventListener('pointerup', up);
         window.removeEventListener('pointercancel', up);
         list.classList.remove('mhome-dragging');
-        var cur = list.getBoundingClientRect().height / A;
+        // Snap from the tracked height, not a DOM measurement — if the whole
+        // gesture lands in one frame the re-enabled transition would report
+        // the pre-drag height and snap the sheet straight back.
+        var cur = lastH / A;
         var best = SNAPS[0];
         for(var i = 0; i < SNAPS.length; i++){
           if(Math.abs(SNAPS[i] - cur) < Math.abs(best - cur)) best = SNAPS[i];
@@ -150,6 +154,9 @@
   });
 
   window.addEventListener('resize', function(){
+    // Some environments never fire MediaQueryList 'change' on viewport
+    // resize, so re-evaluate activation here as well.
+    update();
     if(!active) return;
     measure();
     setSheet(sheetPct);
