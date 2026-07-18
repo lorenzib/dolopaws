@@ -102,7 +102,7 @@
 
   // ---- 3. Personalise section headers with the dog's name ----------------
   // (The sidebar dog card with its own match % is gone — the hero already
-  // shows the match for the dog, so repeating it below was redundant.)
+  // shows "N% match for <dog>", so repeating it below was redundant.)
   function syncDog() {
     let name = '';
     try {
