@@ -100,54 +100,20 @@
   if (reviews) { new MutationObserver(syncCounts).observe(reviews, { childList: true, subtree: true }); }
   syncCounts();
 
-  // ---- 3. Sidebar dog card from the real profile / match teaser ----------
-  const dogCard = document.getElementById('td2DogCard');
-  const matchEl = document.getElementById('trailMatch');
+  // ---- 3. Personalise section headers with the dog's name ----------------
+  // (The sidebar dog card with its own match % is gone — the hero already
+  // shows the match for the dog, so repeating it below was redundant.)
   function syncDog() {
-    if (!dogCard) return;
     let name = '';
     try {
       const s = JSON.parse(localStorage.getItem('dolopaws-profile-summary') || 'null');
       if (s && s.hasProfile) name = s.name || '';
     } catch (e) { /* private mode — no summary */ }
 
-    // Personalise section headers with the dog's name where the design does.
     const safetyDog = document.getElementById('td2SafetyDog');
     if (safetyDog) safetyDog.textContent = name ? ' · ' + name : '';
     const nearbyTitle = document.getElementById('nearbyTitle');
     if (nearbyTitle && name) nearbyTitle.textContent = 'Nearby trails, ranked for ' + name;
-
-    // #trailMatch reads e.g. "94% match for Rufus" for a logged-in profile.
-    const txt = matchEl ? (matchEl.textContent || '') : '';
-    const pctM = txt.match(/(\d+)%/);
-    if (!name && !pctM) { dogCard.hidden = true; return; }
-
-    dogCard.hidden = false;
-    const nm = document.getElementById('td2DogName');
-    const av = document.getElementById('td2DogAv');
-    if (name) {
-      if (nm) nm.textContent = name;
-      if (av) av.textContent = name.charAt(0).toUpperCase();
-    }
-    const verdict = document.getElementById('td2DogVerdict');
-    if (pctM && verdict) {
-      const n = parseInt(pctM[1], 10);
-      verdict.hidden = false;
-      const pct = document.getElementById('td2DogPct');
-      if (pct) pct.textContent = n + '%';
-      const who = name || 'your dog';
-      const word = document.getElementById('td2DogWord');
-      if (word) {
-        word.textContent = n >= 85 ? 'A great, safe walk for ' + who + ' today'
-          : n >= 65 ? 'A good match for ' + who
-          : 'Check the safety notes for ' + who;
-      }
-    }
-  }
-  if (matchEl) {
-    new MutationObserver(syncDog).observe(matchEl, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'],
-    });
   }
   window.addEventListener('dolopaws-auth-changed', syncDog);
   syncDog();
