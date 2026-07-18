@@ -26,24 +26,31 @@ const trails = [
       {label:'Val Gardena — ways to reach Seceda',url:'https://www.valgardena.it/en/summer-holidays-dolomites/trekking/seceda/the-way-to-the-seceda/',categories:['access']}
     ],
     verified:{categories:['livestock','access'],sources:['Seceda Cableways','Seceda official hiking map','Dolomites Val Gardena'],date:'2026-07-17'},
-    distance:8, elevation:400, hours:'2.5–4', paid:true,
+    path:[[46.59794,11.72435],[46.59779,11.72446],[46.59827,11.72526],[46.59851,11.72591],[46.59901,11.72793],[46.5997,11.73005],[46.59985,11.73482],[46.59991,11.73466],[46.60007,11.73464],[46.60059,11.73511],[46.60068,11.73499],[46.60083,11.73536],[46.60102,11.73541],[46.6011,11.7359],[46.60169,11.73498],[46.60194,11.7351],[46.60185,11.7352],[46.60207,11.73534],[46.60206,11.73555],[46.60191,11.73569],[46.60196,11.73593],[46.60209,11.73598],[46.60211,11.73589],[46.60217,11.73597],[46.60228,11.73576],[46.60235,11.73581],[46.60274,11.73562],[46.60286,11.73586],[46.60303,11.73687],[46.60322,11.73713],[46.60329,11.73701],[46.60335,11.73712],[46.60338,11.73689],[46.60355,11.73709],[46.60363,11.73674],[46.60376,11.73696],[46.60382,11.73669],[46.60394,11.73692],[46.60402,11.73658],[46.60414,11.73683],[46.60419,11.73659],[46.60431,11.73677],[46.60435,11.73658],[46.60442,11.7367],[46.60481,11.73533],[46.60531,11.73452],[46.60539,11.73458],[46.60545,11.73449],[46.60548,11.73457],[46.60553,11.73447],[46.60557,11.73457],[46.6058,11.73379],[46.60594,11.73256],[46.60588,11.73195],[46.60601,11.73125],[46.60588,11.73112],[46.60593,11.73052],[46.60627,11.72988],[46.60639,11.72937],[46.60702,11.72852],[46.60734,11.72818],[46.6078,11.72824],[46.60792,11.72741],[46.60823,11.72658],[46.60831,11.72657],[46.60829,11.72627],[46.60841,11.72602],[46.60853,11.72597],[46.60866,11.72726],[46.60894,11.7278],[46.6095,11.72795],[46.60969,11.7278],[46.60996,11.7273],[46.61033,11.72716],[46.60996,11.7273],[46.60969,11.7278],[46.6095,11.72795],[46.60894,11.7278],[46.60866,11.72726],[46.60853,11.72597],[46.60841,11.72602],[46.60829,11.72627],[46.60831,11.72657],[46.60823,11.72658],[46.60792,11.72741],[46.6078,11.72824],[46.60734,11.72818],[46.60702,11.72852],[46.60639,11.72937],[46.60627,11.72988],[46.60593,11.73052],[46.60588,11.73112],[46.60601,11.73125],[46.60588,11.73195],[46.60594,11.73256],[46.60579,11.73388],[46.60557,11.73457],[46.60553,11.73447],[46.60548,11.73457],[46.60545,11.73449],[46.60539,11.73458],[46.60531,11.73452],[46.60481,11.73533],[46.60442,11.7367],[46.60435,11.73658],[46.60431,11.73677],[46.60419,11.73659],[46.60414,11.73683],[46.60402,11.73658],[46.60394,11.73692],[46.60382,11.73669],[46.60376,11.73696],[46.60363,11.73674],[46.60355,11.73709],[46.60338,11.73689],[46.60335,11.73712],[46.60329,11.73701],[46.60322,11.73713],[46.60303,11.73687],[46.60286,11.73586],[46.60274,11.73562],[46.60235,11.73581],[46.60228,11.73576],[46.60217,11.73597],[46.60211,11.73589],[46.60209,11.73598],[46.60196,11.73593],[46.60191,11.73569],[46.60206,11.73555],[46.60207,11.73534],[46.60185,11.7352],[46.60194,11.7351],[46.60169,11.73498],[46.6011,11.7359],[46.60102,11.73541],[46.60083,11.73536],[46.60068,11.73499],[46.60059,11.73511],[46.60007,11.73464],[46.59991,11.73466],[46.59985,11.73482],[46.59973,11.73205],[46.59989,11.73506],[46.59969,11.73721],[46.59981,11.73801],[46.59971,11.73794],[46.59973,11.73828],[46.59964,11.73838],[46.59938,11.73822],[46.59915,11.7379],[46.59901,11.73796],[46.59891,11.73817],[46.59874,11.73807],[46.5984,11.73848],[46.59813,11.73926],[46.59794,11.73949],[46.59813,11.73926],[46.5984,11.73848],[46.59874,11.73807],[46.59891,11.73817],[46.59901,11.73796],[46.59915,11.7379],[46.59945,11.73829],[46.59971,11.73836],[46.59971,11.73794],[46.59981,11.73801],[46.59969,11.73721],[46.59989,11.73506],[46.5998,11.73438],[46.5997,11.73005],[46.59901,11.72793],[46.59851,11.72591],[46.59827,11.72526],[46.59779,11.72446],[46.59794,11.72435]],
+    startPoint:{lat:46.59794,lng:11.72435,label:'Start here — Seceda cable car mountain station'},
+    decisionPoints:[
+      {km:0.7,lat:46.59973,lng:11.73205,instruction:"Fork on the ridge path: continue north-east along the rim; the right-hand branch dropping toward Baita Troier is your return route"}
+    ],
+    distance:8, elevation:550, hours:'3–4', paid:true,
     terrainType:'Packed dirt with rocky steps', terrainRank:1,
-    elevationProfile:[{km:0, elev:2500}, {km:2, elev:2300}, {km:4, elev:2130}, {km:5.5, elev:2080}, {km:8, elev:2500}],
+    elevationProfile:[{km:0, elev:2426}, {km:1.6, elev:2270}, {km:3.2, elev:2040}, {km:4.8, elev:2230}, {km:5.5, elev:2420}, {km:6.5, elev:2280}, {km:8, elev:2426}],
     surfaceHazards:['Rocky steps near the ridge'], shadeCoverage:10, heatRisk:'high', safetyLevel:'moderate', exposure:false,
-    waterSources:[{km:1,label:'Gondola station fountain'},{km:4,label:'Rest-area spring'}],
-    rifugi:[{km:3,name:'Rifugio Firenze'},{km:6,name:'Baita Troier'}],
-    desc:"Sweeping ridge views over Val Gardena. The area is reached via the Ortisei–Furnes and Furnes–Seceda lifts; route-specific water, shade and exposure details are still being checked.",
+    waterSources:[{km:0,label:'Gondola station fountain',lat:46.59794,lng:11.72435}],
+    rifugi:[{km:6.5,name:'Baita Troier',lat:46.59794,lng:11.73949}],
+    desc:"Sweeping ridge views over Val Gardena. From the cable-car mountain station the route follows the panoramic rim path north-east above the Val di Funes cliffs to a quieter saddle viewpoint, then returns beneath the Fermeda towers past Baita Troier.",
     tips:"Dogs must stay on lead. Keep a safe distance from grazing herds. The Seceda lifts accept dogs for a separate ticket; check the operator's current conditions before travel."
   },
   {
-    id:'santa-maddalena', name:'Santa Maddalena Viewpoint', area:'Val di Funes', lat:46.647, lng:11.728,
-    distance:4, elevation:180, hours:'1–1.5', paid:false,
+    id:'santa-maddalena', name:'Santa Maddalena Viewpoint', area:'Val di Funes', lat:46.6423, lng:11.7174,
+    path:[[46.64082,11.71624],[46.64079,11.71616],[46.6409,11.71646],[46.64112,11.71647],[46.64171,11.71617],[46.64195,11.71623],[46.64223,11.71647],[46.64262,11.71711],[46.64292,11.71721],[46.64342,11.71835],[46.64362,11.71826],[46.64355,11.71768],[46.64364,11.71667],[46.64386,11.71645],[46.6441,11.71653],[46.64461,11.71957],[46.64468,11.71973],[46.64478,11.71974],[46.64465,11.71984],[46.64478,11.72017],[46.6447,11.72057],[46.64379,11.72054],[46.64339,11.72041],[46.64328,11.72025],[46.6429,11.71943],[46.64283,11.71867],[46.64256,11.71802],[46.64226,11.71774],[46.64191,11.717],[46.64187,11.7167],[46.64209,11.7166],[46.64213,11.71642],[46.64175,11.71616],[46.64112,11.71647],[46.64088,11.71641]],
+    startPoint:{lat:46.64082,lng:11.71624,label:'Start here — St. Magdalena village (Rundweg St. Magdalena)'},
+    distance:1.6, elevation:75, hours:'0.5–1', paid:false,
     terrainType:'Paved farm road & packed dirt', terrainRank:0,
-    elevationProfile:[{km:0, elev:1350}, {km:1.5, elev:1420}, {km:2.5, elev:1480}, {km:4, elev:1350}],
+    elevationProfile:[{km:0, elev:1259}, {km:0.4, elev:1297}, {km:0.9, elev:1331}, {km:1.2, elev:1298}, {km:1.6, elev:1260}],
     surfaceHazards:[], shadeCoverage:30, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
     waterSources:[{km:0,label:'Village fountain'}],
     rifugi:[],
-    desc:"The postcard shot of the Dolomites — a church backed by the Odle peaks. The short out-and-back suits any dog.",
+    desc:"The postcard shot of the Dolomites — a church backed by the Odle peaks. This short village loop (Rundweg St. Magdalena) suits any dog.",
     tips:"Mostly open meadow with little shade — bring water for warm days."
   },
   {
@@ -88,14 +95,19 @@ const trails = [
     tips:"This viewpoint uses the opening section of equipped trail 117. Treat it as an exposed mountain route: skip wet, icy or snowy conditions and do not take a dog that is uncertain on narrow terrain."
   },
   {
-    id:'prato-piazza', name:'Prato Piazza (Plätzwiese)', area:'Fanes-Sennes-Prags', lat:46.701, lng:12.105,
-    distance:7, elevation:220, hours:'2–3', paid:false,
+    id:'prato-piazza', name:'Prato Piazza (Plätzwiese)', area:'Fanes-Sennes-Prags', lat:46.6538, lng:12.1791,
+    path:[[46.65376,12.17907],[46.65293,12.17967],[46.65263,12.18026],[46.65259,12.18106],[46.65268,12.18134],[46.65297,12.18164],[46.65304,12.18196],[46.65266,12.18259],[46.65217,12.18267],[46.65068,12.18424],[46.65021,12.18459],[46.64948,12.18542],[46.6487,12.18663],[46.64773,12.18836],[46.64566,12.19112],[46.64493,12.19188],[46.64472,12.1925],[46.64439,12.19307],[46.64429,12.19364],[46.64309,12.19448],[46.6428,12.19504],[46.6424,12.19508],[46.64197,12.19547],[46.64297,12.19552],[46.64399,12.19487],[46.64452,12.19488],[46.64514,12.19448],[46.64558,12.19436],[46.64595,12.19393],[46.64636,12.19385],[46.64673,12.19348],[46.64701,12.19354],[46.6469,12.19422],[46.64736,12.19396],[46.6474,12.1941],[46.64726,12.19445],[46.64751,12.19445],[46.64708,12.19547],[46.64631,12.19674],[46.64623,12.19708],[46.64571,12.19714],[46.64589,12.19763],[46.64526,12.19886],[46.64444,12.19921],[46.64379,12.19983],[46.64288,12.19994],[46.64258,12.20038],[46.64245,12.20081],[46.64247,12.2009],[46.64284,12.20088],[46.6429,12.20097],[46.6425,12.20182],[46.6424,12.20265],[46.64254,12.20295],[46.64301,12.20323],[46.64354,12.20392],[46.64367,12.2043],[46.64368,12.20474],[46.64351,12.2052],[46.64362,12.20612],[46.64343,12.20672],[46.6432,12.20698],[46.64333,12.20755],[46.643,12.20828],[46.64296,12.20862],[46.64309,12.20891],[46.64343,12.20925],[46.64352,12.20986],[46.64367,12.21014],[46.64338,12.21117],[46.64337,12.21196],[46.64356,12.2122],[46.64395,12.21223],[46.64458,12.21253],[46.64459,12.21266],[46.6445,12.21268],[46.64459,12.21266],[46.64458,12.21253],[46.64395,12.21223],[46.64356,12.2122],[46.64337,12.21196],[46.64338,12.21117],[46.64367,12.21014],[46.64352,12.20986],[46.64343,12.20925],[46.64309,12.20891],[46.64296,12.20862],[46.643,12.20828],[46.64333,12.20755],[46.6432,12.20698],[46.64343,12.20672],[46.64362,12.20612],[46.64351,12.2052],[46.64368,12.20474],[46.64367,12.2043],[46.64354,12.20392],[46.64301,12.20323],[46.64254,12.20295],[46.6424,12.20265],[46.6425,12.20182],[46.6429,12.20097],[46.64284,12.20088],[46.64247,12.2009],[46.64245,12.20081],[46.64258,12.20038],[46.64288,12.19994],[46.64379,12.19983],[46.64444,12.19921],[46.64529,12.19881],[46.64589,12.19763],[46.64571,12.19714],[46.64623,12.19708],[46.64631,12.19674],[46.64708,12.19547],[46.64752,12.19452],[46.64747,12.19441],[46.64726,12.19445],[46.6474,12.1941],[46.64736,12.19396],[46.64724,12.19396],[46.64695,12.19425],[46.64688,12.19416],[46.64712,12.19303],[46.64708,12.19272],[46.64717,12.19274],[46.64724,12.19264],[46.6474,12.19216],[46.64786,12.19189],[46.64829,12.19143],[46.64884,12.19116],[46.64917,12.1907],[46.64928,12.19079],[46.64941,12.19074],[46.64963,12.19044],[46.64968,12.19028],[46.64942,12.19012],[46.64938,12.18991],[46.64954,12.18961],[46.64959,12.18908],[46.65039,12.18849],[46.65054,12.18868],[46.65176,12.1871],[46.65312,12.18556],[46.65367,12.18544],[46.65401,12.18521],[46.65431,12.18436],[46.65408,12.18394],[46.6541,12.18256],[46.65421,12.18192],[46.65357,12.18116],[46.65376,12.17907]],
+    startPoint:{lat:46.65376,lng:12.17907,label:'Start here — Prato Piazza plateau, by Hotel Prato Piazza'},
+    decisionPoints:[
+      {km:4.05,lat:46.64351,lng:12.2052,instruction:"Leave the military road at the signed fork for the final climb to Monte Specie (Strudelkopf)"}
+    ],
+    distance:8.7, elevation:330, hours:'3–3.5', paid:false,
     terrainType:'Packed dirt & grass, occasional rock', terrainRank:1,
-    elevationProfile:[{km:0, elev:2000}, {km:2, elev:2080}, {km:4, elev:2100}, {km:5.5, elev:2040}, {km:7, elev:2000}],
+    elevationProfile:[{km:0, elev:1985}, {km:2, elev:2040}, {km:3.9, elev:2210}, {km:4.8, elev:2307}, {km:5.6, elev:2210}, {km:7.1, elev:2060}, {km:8.7, elev:1985}],
     surfaceHazards:['Occasional loose rock'], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:0,label:'Trailhead fountain'},{km:3,label:'Meadow spring'}],
-    rifugi:[{km:1,name:'Rifugio Prato Piazza'},{km:4,name:'Rifugio Vallandro'}],
-    desc:"Wide alpine meadows with views to Tre Cime and Monte Cristallo, plus a WWI-era fort to explore along the way.",
+    waterSources:[{km:0,label:'Trailhead fountain'}],
+    rifugi:[{km:0,name:'Rifugio Prato Piazza',lat:46.65376,lng:12.17907},{km:2,name:'Rifugio Vallandro',lat:46.64197,lng:12.19547}],
+    desc:"A loop from the Prato Piazza meadows up the old military road past Rifugio Vallandro to the panoramic summit of Monte Specie (Strudelkopf, 2307 m), returning across the plateau on the Alta Via 3 path — views to Tre Cime, Monte Cristallo and a WWI-era fort along the way.",
     tips:"Rocky in patches but no exposure — a relaxed, scenic option away from the busiest crowds."
   },
   {
@@ -183,37 +195,17 @@ const trails = [
     tips:"Part of a much longer 35 km route; pick one section rather than attempting the whole thing."
   },
   {
-    id:'durrenstein', name:'Plätzwiese to Dürrenstein', area:'Fanes-Sennes-Prags', lat:46.71, lng:12.13,
-    distance:10, elevation:600, hours:'4–5', paid:false,
-    terrainType:'Rocky ridge, fixed rope section', terrainRank:2,
-    elevationProfile:[{km:0, elev:2000}, {km:3, elev:2250}, {km:6, elev:2450}, {km:8, elev:2600}, {km:10, elev:2000}],
-    surfaceHazards:['Fixed rope section near the summit','Exposed ridge'], shadeCoverage:5, heatRisk:'high', safetyLevel:'caution', exposure:true,
-    waterSources:[],
-    rifugi:[{km:0,name:'Rifugio Prato Piazza'}],
-    desc:"A dramatic ridge hike to a Dolomite panorama, with one short section equipped with a fixed rope near the top.",
-    tips:"Stop at the secondary summit if your dog isn't confident on exposed rock — the view is still superb from there."
-  },
-  {
-    id:'piancavallo', name:'Piancavallo Malghe Loop', area:'Friulian Dolomites, Pordenone', lat:46.093, lng:12.43,
-    distance:8.2, elevation:210, hours:'2–2.5', paid:false,
+    id:'piancavallo', name:'Piancavallo Malghe Loop', area:'Friulian Dolomites, Pordenone', lat:46.1118, lng:12.5305,
+    path:[[46.11185,12.53045],[46.11197,12.53054],[46.11211,12.53102],[46.11237,12.53129],[46.11257,12.53188],[46.11293,12.53225],[46.11299,12.53244],[46.11297,12.53326],[46.11276,12.53372],[46.11273,12.53556],[46.11327,12.53647],[46.11361,12.53671],[46.11366,12.53688],[46.11361,12.53722],[46.1138,12.53867],[46.11374,12.53913],[46.11363,12.53948],[46.11323,12.53983],[46.11319,12.54015],[46.11324,12.54058],[46.11343,12.54078],[46.11349,12.5414],[46.11387,12.54238],[46.11392,12.54276],[46.1139,12.54285],[46.11349,12.54217],[46.11303,12.54188],[46.11321,12.54263],[46.11323,12.54338],[46.11298,12.5436],[46.11265,12.54433],[46.11227,12.54472],[46.11208,12.54549],[46.11203,12.5463],[46.11211,12.54665],[46.11307,12.54797],[46.11335,12.54866],[46.11331,12.54874],[46.1131,12.54868],[46.11297,12.54875],[46.11244,12.54926],[46.11216,12.54917],[46.11193,12.5493],[46.1102,12.55081],[46.1093,12.55183],[46.10871,12.55185],[46.10853,12.55169],[46.10839,12.55091],[46.10797,12.55069],[46.10762,12.55092],[46.10748,12.5505],[46.10676,12.54978],[46.10659,12.54949],[46.10657,12.54925],[46.10677,12.54879],[46.10629,12.54829],[46.10602,12.54776],[46.10592,12.54695],[46.10546,12.54644],[46.10522,12.54651],[46.10509,12.54692],[46.10496,12.54699],[46.10441,12.54635],[46.10404,12.54568],[46.10368,12.54544],[46.10348,12.54556],[46.10306,12.54618],[46.10282,12.54624],[46.10274,12.54618],[46.10265,12.54566],[46.10293,12.54538],[46.10307,12.5447],[46.10299,12.54355],[46.10249,12.54345],[46.10174,12.54261],[46.10051,12.54172],[46.1002,12.54129],[46.09971,12.54133],[46.0994,12.54122],[46.09866,12.54041],[46.09829,12.53955],[46.09826,12.53767],[46.09769,12.5363],[46.09732,12.53591],[46.09722,12.53532],[46.09684,12.53489],[46.09682,12.53465],[46.09694,12.53446],[46.09687,12.53408],[46.09654,12.5341],[46.09642,12.53338],[46.09548,12.53278],[46.09531,12.53211],[46.09556,12.53194],[46.09619,12.5311],[46.09669,12.53076],[46.09757,12.53043],[46.09843,12.53025],[46.09947,12.53031],[46.10033,12.52997],[46.10066,12.52996],[46.1014,12.52941],[46.10209,12.52909],[46.10289,12.52848],[46.10344,12.52841],[46.10444,12.52793],[46.10581,12.52768],[46.10732,12.5271],[46.10734,12.52655],[46.10744,12.52639],[46.10864,12.52602],[46.10891,12.52582],[46.10962,12.52491],[46.10992,12.52392],[46.11009,12.52367]],
+    startPoint:{lat:46.11185,lng:12.53045,label:'Start here — Piancavallo, Passeggiata delle Malghe trailhead'},
+    distance:7, elevation:180, hours:'2–2.5', paid:false,
     terrainType:'Packed dirt & gravel pasture track', terrainRank:1,
-    elevationProfile:[{km:0, elev:1290}, {km:2.5, elev:1380}, {km:5, elev:1470}, {km:6.5, elev:1400}, {km:8.2, elev:1290}],
+    elevationProfile:[{km:0, elev:1340}, {km:1, elev:1358}, {km:2.8, elev:1215}, {km:3.8, elev:1175}, {km:5.2, elev:1246}, {km:7, elev:1291}],
     surfaceHazards:[], shadeCoverage:40, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:2,label:'Waterfall stream'},{km:5,label:'Malga fountain'}],
-    rifugi:[{km:5,name:'Malga di Piancavallo'}],
+    waterSources:[{km:2,label:'Waterfall stream'},{km:4.3,label:'Malga fountain'}],
+    rifugi:[{km:4.3,name:'Malga di Piancavallo'}],
     desc:"Rolling mountain pastures in the quieter Friulian Dolomites, passing a waterfall along the way.",
     tips:"A good pick if you want real mountain scenery without the Val Gardena / Cortina crowds."
-  },
-  {
-    id:'lago-barcis', name:'Lake Barcis Loop', area:'Friulian Dolomites, Pordenone', lat:46.25, lng:12.57,
-    distance:5, elevation:60, hours:'1.5', paid:false,
-    terrainType:'Paved / packed gravel, flat', terrainRank:0,
-    elevationProfile:[{km:0, elev:400}, {km:1.5, elev:420}, {km:3, elev:440}, {km:4, elev:410}, {km:5, elev:400}],
-    surfaceHazards:[], shadeCoverage:30, heatRisk:'moderate', safetyLevel:'low-risk', exposure:false,
-    waterSources:[{km:0,label:'Lakeside fountain'}],
-    rifugi:[],
-    desc:"An easy loop around an emerald-green lake with mountain views — relaxed and dog-friendly start to finish.",
-    tips:"The nearby Dint Skywalk viewing platform may not allow dogs — plan to skip it if hiking with yours."
   },
   {
     id:'geotrail-bulla', name:'Geotrail Bula / Pufels / Bulla', area:'Val Gardena', lat:46.5789, lng:11.6031,

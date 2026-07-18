@@ -1488,7 +1488,11 @@ async function renderReturningHomepage(profile){
   const pageList = collapsed
     ? displayList.slice(0, TOP_MATCHES)
     : displayList.slice((currentPage - 1) * TRAILS_PER_PAGE, currentPage * TRAILS_PER_PAGE);
-  if(collapsed) countEl.textContent = t('home.topOf', {a: Math.min(TOP_MATCHES, displayList.length), b: displayList.length}) + (rankedFor ? ' · ' + rankedFor : '');
+  // home.topOf already ends in "ranked for your dog" — when we have a more
+  // specific descriptor, swap it in rather than stacking both phrases.
+  if(collapsed) countEl.textContent = rankedFor
+    ? `Top ${Math.min(TOP_MATCHES, displayList.length)} of ${displayList.length} trails · ${rankedFor}`
+    : t('home.topOf', {a: Math.min(TOP_MATCHES, displayList.length), b: displayList.length});
 
   if(savedTrailsBtn){
     const savedLabel = savedTrailsBtn.querySelector('.txt-label');
@@ -1547,7 +1551,7 @@ async function renderReturningHomepage(profile){
       ${thumb}
       <div class="li-row-body">
         <a href="trail.html?id=${t.id}" class="li-row-name">${t.name}</a>
-        <div class="li-row-meta" title="${matchReason(t, overrides)}">${t.distance} km · +${t.elevation} m · ${t.area}</div>
+        <div class="li-row-meta" title="${matchReason(t, overrides)}">${t.distance} km${Number.isFinite(t.elevation) ? ` · +${t.elevation} m` : ''} · ${t.area}</div>
         <div class="li-row-badges">
           ${newBadge}
           <span class="li-badge"><span class="li-dot" style="background:${dotColor};"></span>${trailSafetyLabel(t)}</span>

@@ -155,7 +155,11 @@ describe('trail data trust states', () => {
     expect(browse).toContain('trust.riskLabel(t, s[0])');
     expect(detail).toContain('trust.exposureAssessment(t)');
     expect(detail).toContain('trust.livestockAssessment(t, text)');
-    expect(home).toContain("{ l: 'Unknown'");
+    // The logged-in homepage rows no longer show a heat badge; honesty about
+    // data confidence now lives in the ≈ prefix on estimated (imported)
+    // trails' match scores and the shared trailSafetyLabel() wording.
+    expect(home).toContain("isEst ? '≈' : ''");
+    expect(home).toContain('trailSafetyLabel(t)');
     expect(detail).not.toContain('No livestock noted in our field data');
 
     const importedPage = fs.readFileSync(path.join(__dirname, 'trails/planetenweg-sentiero-dei-pianeti.html'), 'utf8');

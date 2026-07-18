@@ -89,9 +89,9 @@
         list.style.height = h + 'px';
       }
       function up(){
-        grab.removeEventListener('pointermove', move);
-        grab.removeEventListener('pointerup', up);
-        grab.removeEventListener('pointercancel', up);
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', up);
         list.classList.remove('mhome-dragging');
         var cur = list.getBoundingClientRect().height / A;
         var best = SNAPS[0];
@@ -100,9 +100,11 @@
         }
         setSheet(best);
       }
-      grab.addEventListener('pointermove', move);
-      grab.addEventListener('pointerup', up);
-      grab.addEventListener('pointercancel', up);
+      // Window-level listeners so the drag keeps tracking even where
+      // setPointerCapture isn't honoured (the handle is small; fingers stray).
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
     });
   }
 
@@ -112,11 +114,15 @@
     ensureUi();
     document.body.classList.add('mhome-active');
     window.scrollTo(0, 0);
-    // Measure after the mobile layout has applied.
-    requestAnimationFrame(function(){
+    // classList.add applies synchronously, so measuring right away is safe;
+    // the delayed pass catches font loading / safe-area settling.
+    measure();
+    setSheet(sheetPct);
+    setTimeout(function(){
+      if(!active) return;
       measure();
       setSheet(sheetPct);
-    });
+    }, 120);
   }
 
   function deactivate(){
