@@ -90,7 +90,7 @@
       }).filter(function (v) { return v != null; });
       if (rated.length) {
         const avg = rated.reduce(function (a, b) { return a + b; }, 0) / rated.length;
-        avgEl.textContent = '★ ' + (Math.round(avg * 10) / 10);
+        avgEl.textContent = '★ ' + avg.toFixed(1);
         avgEl.hidden = false;
       } else { avgEl.hidden = true; }
     }
