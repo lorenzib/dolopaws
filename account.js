@@ -1,91 +1,256 @@
+/**
+ * account.js — tabbed edit-profile screen (Dog / Human / Vet / Settings).
+ *
+ * The whole dog profile lives in one Firestore object (users/{uid} → dog),
+ * loaded once into `state` and written back on Save. New design fields
+ * (size, neuter, coat, sens, vet, owner) ride along in the same object;
+ * the fields the trail scorer reads (breed, fitness, dob, ageBand,
+ * weightBand, conditions, healthNotes — see SCORING.md) are kept filled,
+ * with sens heat/joints mirrored into conditions so scoring keeps working.
+ */
 (function(){
-  const subline = document.getElementById('accountSubline');
-  const loggedOutState = document.getElementById('loggedOutState');
-  const loggedInState = document.getElementById('loggedInState');
-  const userEmail = document.getElementById('userEmail');
-  const userProvider = document.getElementById('userProvider');
-  const passwordSection = document.getElementById('passwordSection');
-  const sendResetBtn = document.getElementById('sendResetBtn');
-  const resetStatus = document.getElementById('resetStatus');
-  const logOutBtn = document.getElementById('logOutBtn');
+  const $ = id => document.getElementById(id);
 
-  const dogName = document.getElementById('dogName');
-  const dogBreed = document.getElementById('dogBreed');
-  const dogBreedOtherField = document.getElementById('dogBreedOtherField');
-  const dogBreedOther = document.getElementById('dogBreedOther');
-  const dogFitness = document.getElementById('dogFitness');
-  const dogDob = document.getElementById('dogDob');
-  const dogAgeBand = document.getElementById('dogAgeBand');
-  const dogWeightBand = document.getElementById('dogWeightBand');
-  const dogCondBox = document.getElementById('dogCondBox');
-  const dogCondSummary = document.getElementById('dogCondSummary');
-  const dogHealthNotes = document.getElementById('dogHealthNotes');
-  const saveDogBtn = document.getElementById('saveDogBtn');
-  const dogStatus = document.getElementById('dogStatus');
+  const subline = $('accountSubline');
+  const loggedOutState = $('loggedOutState');
+  const loggedInState = $('loggedInState');
+
+  // ---------- Return target ----------
   const requestedNext = new URLSearchParams(window.location.search).get('next');
-
   function safeReturnTarget(value){
     if(!value || /^(?:[a-z]+:|\/\/|\/)/i.test(value)) return '';
     return /^[a-z0-9][a-z0-9._/-]*\.html(?:\?[^#]*)?(?:#.*)?$/i.test(value) ? value : '';
   }
-
   const returnTarget = safeReturnTarget(requestedNext);
-  const accountLoginLink = document.getElementById('accountLoginLink');
+  const backHref = returnTarget || 'index.html';
+  $('backLink').href = backHref;
+  $('backLink').textContent = returnTarget ? '← Back' : '← Back to trails';
+  const mobileBackLink = $('mobileBackLink');
+  if(mobileBackLink) mobileBackLink.href = backHref;
+
+  const accountLoginLink = $('accountLoginLink');
   if(accountLoginLink){
     const accountReturn = 'account.html' + (returnTarget ? '?next=' + encodeURIComponent(returnTarget) : '');
     accountLoginLink.href = 'index.html?login=1&next=' + encodeURIComponent(accountReturn);
   }
 
-  // ---------- Dog photo — synced to the account ----------
-  // The photo is downscaled in the browser to a small thumbnail and saved
-  // into the user's own Firestore document (users/{uid} → dog.photo), so it
-  // follows the account to any device they log in from. localStorage is
-  // only a fast local cache, keyed by uid so two accounts sharing one
-  // browser never see each other's dog. A Firestore document caps at 1 MB;
-  // the ~300 px JPEG thumbnail (~20–40 KB) stays far below that.
-  const LEGACY_PHOTO_KEY = 'dolopaws-dog-photo';   // pre-sync, device-only key
-  const PHOTO_INPUT_MAX_BYTES = 8 * 1024 * 1024;   // cap BEFORE downscaling
-  const PHOTO_MAX_PX = 300;
-  const dogPhotoInput = document.getElementById('dogPhotoInput');
-  const dogPhotoImg = document.getElementById('dogPhotoImg');
-  const dogPhotoFallback = document.getElementById('dogPhotoFallback');
-  const dogPhotoRemoveBtn = document.getElementById('dogPhotoRemoveBtn');
-  const dogPhotoStatus = document.getElementById('dogPhotoStatus');
-
-  function photoCacheKey(){
-    const u = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-    return u ? 'dolopaws-dog-photo-' + u.uid : null;
-  }
-
-  function showDogPhoto(dataUrl){
-    if(!dogPhotoImg) return;
-    dogPhotoImg.src = dataUrl;
-    dogPhotoImg.hidden = false;
-    if(dogPhotoFallback) dogPhotoFallback.style.display = 'none';
-    if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = false;
-  }
-  function clearDogPhoto(){
-    if(!dogPhotoImg) return;
-    dogPhotoImg.src = '';
-    dogPhotoImg.hidden = true;
-    if(dogPhotoFallback) dogPhotoFallback.style.display = '';
-    if(dogPhotoRemoveBtn) dogPhotoRemoveBtn.hidden = true;
-    if(dogPhotoInput) dogPhotoInput.value = '';
-  }
-  function photoStatus(text, ok){
-    if(!dogPhotoStatus) return;
-    dogPhotoStatus.hidden = false;
-    dogPhotoStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
-    dogPhotoStatus.textContent = text;
-  }
   function tKey(key, fallback){
     if(!window.t) return fallback;
     const s = window.t(key);
     return s === key ? fallback : s;
   }
 
-  // Shrink to a thumbnail in the browser: the profile circle only shows
-  // ~150 px, and small thumbnails are what make account sync possible.
+  // ---------- Profile state ----------
+  // `base` is the profile exactly as loaded, so saving preserves fields this
+  // screen doesn't edit (fitness, legacy ageBand, …). `state` is what the
+  // form shows.
+  let base = {};
+  const state = {
+    name:'', breed:'', dob:'', weight:20, size:'Large',
+    neuter:'Unknown', coat:'Short', sens:[], photo:null,
+    vetName:'', vetPhone:'', chip:'', insurer:'', policy:'', medical:'',
+    ownerName:'', ownerPhone:'', ownerEmail:'', emName:'', emPhone:'',
+  };
+
+  // ---------- Tabs ----------
+  const railBtns = Array.from(document.querySelectorAll('.railbtn'));
+  function pickTab(id){
+    railBtns.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === id)));
+    ['dog','human','health','account'].forEach(t => { $('tab-' + t).hidden = t !== id; });
+  }
+  railBtns.forEach(b => b.addEventListener('click', () => pickTab(b.dataset.tab)));
+
+  // ---------- Simple two-way field bindings ----------
+  const FIELD_BINDINGS = [
+    ['dogName','name'], ['dogDob','dob'],
+    ['vetName','vetName'], ['vetPhone','vetPhone'], ['dogChip','chip'],
+    ['insurer','insurer'], ['policy','policy'], ['medicalNotes','medical'],
+    ['ownerName','ownerName'], ['ownerEmail','ownerEmail'], ['ownerPhone','ownerPhone'],
+    ['emName','emName'], ['emPhone','emPhone'],
+  ];
+  FIELD_BINDINGS.forEach(([id, key]) => {
+    $(id).addEventListener('input', e => { state[key] = e.target.value; renderDerived(); });
+  });
+  $('dogDob').max = new Date().toISOString().slice(0, 10);
+
+  // ---------- Option groups ----------
+  const SIZES = [
+    ['Small','Under 10 kg'], ['Medium','10–25 kg'],
+    ['Large','25–40 kg'], ['Extra large','Over 40 kg'],
+  ];
+  const NEUTER = ['Neutered','Not neutered','Unknown'];
+  const COATS = ['Short','Medium','Long','Double','Curly','Hairless'];
+  const SENS = [
+    { id:'heat', icon:'☀️', label:'Heat-sensitive', sub:'Struggles in warm weather' },
+    { id:'paws', icon:'🐾', label:'Sensitive paws', sub:'Avoid rocky or hot ground' },
+    { id:'reactive', icon:'🦴', label:'Reactive to dogs', sub:'Prefers quieter trails' },
+    { id:'joints', icon:'🦳', label:'Senior / joints', sub:'Gentler climbs and distance' },
+    { id:'water', icon:'💧', label:'Loves water', sub:'Prioritize lakes & streams' },
+  ];
+
+  function renderOptions(){
+    $('sizeGrid').innerHTML = '';
+    SIZES.forEach(([label, sub]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'optbtn' + (state.size === label ? ' on' : '');
+      b.innerHTML = '<div class="t"></div><div class="s"></div>';
+      b.querySelector('.t').textContent = label;
+      b.querySelector('.s').textContent = sub;
+      b.addEventListener('click', () => { state.size = label; renderOptions(); });
+      $('sizeGrid').appendChild(b);
+    });
+    $('neuterRow').innerHTML = '';
+    NEUTER.forEach(label => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'segbtn' + (state.neuter === label ? ' on' : '');
+      b.textContent = label;
+      b.addEventListener('click', () => { state.neuter = label; renderOptions(); });
+      $('neuterRow').appendChild(b);
+    });
+    $('coatRow').innerHTML = '';
+    COATS.forEach(label => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chipbtn' + (state.coat === label ? ' on' : '');
+      b.textContent = label;
+      b.addEventListener('click', () => { state.coat = label; renderOptions(); });
+      $('coatRow').appendChild(b);
+    });
+    $('sensGrid').innerHTML = '';
+    SENS.forEach(o => {
+      const on = state.sens.includes(o.id);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sensbtn' + (on ? ' on' : '');
+      b.setAttribute('aria-pressed', String(on));
+      b.innerHTML = '<span class="ico"></span><div style="flex:1;"><div style="font-size:13px;font-weight:800;color:var(--ink);" class="t"></div><div style="font-size:11px;color:#8A9689;margin-top:1px;" class="s"></div></div><span class="chk"></span>';
+      b.querySelector('.ico').textContent = o.icon;
+      b.querySelector('.t').textContent = o.label;
+      b.querySelector('.s').textContent = o.sub;
+      b.querySelector('.chk').textContent = on ? '✓' : '';
+      b.addEventListener('click', () => {
+        state.sens = on ? state.sens.filter(x => x !== o.id) : state.sens.concat(o.id);
+        renderOptions();
+      });
+      $('sensGrid').appendChild(b);
+    });
+  }
+
+  // ---------- Weight slider ----------
+  $('dogWeight').addEventListener('input', e => { state.weight = +e.target.value; renderDerived(); });
+
+  // ---------- Breed autocomplete ----------
+  const breedInput = $('dogBreed');
+  const breedList = $('breedList');
+  function allBreeds(){ return (typeof DOG_BREEDS !== 'undefined') ? DOG_BREEDS : []; }
+  function renderBreedList(){
+    const ALL = allBreeds();
+    $('breedHint').textContent = 'Search ' + ALL.length + ' breeds — or type your own';
+    const q = state.breed.trim().toLowerCase();
+    const exact = ALL.some(b => b.toLowerCase() === q);
+    let matches = [];
+    if(q.length >= 1 && !exact){
+      const starts = ALL.filter(b => b.toLowerCase().startsWith(q));
+      const contains = ALL.filter(b => !b.toLowerCase().startsWith(q) && b.toLowerCase().includes(q));
+      matches = starts.concat(contains).slice(0, 8);
+    }
+    breedList.innerHTML = '';
+    matches.forEach(name => {
+      const d = document.createElement('div');
+      d.style.cssText = 'padding:9px 12px;border-radius:8px;font-size:14px;color:var(--ink);cursor:pointer;';
+      d.textContent = name;
+      d.addEventListener('mouseenter', () => d.style.background = '#F0EDE1');
+      d.addEventListener('mouseleave', () => d.style.background = '');
+      // mousedown fires before the input's blur, so the pick isn't lost
+      d.addEventListener('mousedown', () => {
+        state.breed = name;
+        breedInput.value = name;
+        breedList.hidden = true;
+        renderDerived();
+      });
+      breedList.appendChild(d);
+    });
+    breedList.hidden = matches.length === 0 || document.activeElement !== breedInput;
+  }
+  breedInput.addEventListener('input', e => { state.breed = e.target.value; renderBreedList(); renderDerived(); });
+  breedInput.addEventListener('focus', renderBreedList);
+  breedInput.addEventListener('blur', () => { window.setTimeout(() => { breedList.hidden = true; }, 120); });
+
+  // ---------- Derived text: headings, age, weight, emergency card ----------
+  function ageMonthsFrom(dob){
+    if(!dob) return null;
+    const b = new Date(dob), n = new Date();
+    if(isNaN(b)) return null;
+    let m = (n.getFullYear() - b.getFullYear()) * 12 + (n.getMonth() - b.getMonth());
+    if(n.getDate() < b.getDate()) m--;
+    return Math.max(0, m);
+  }
+  function joinBits(bits, empty){ const s = bits.filter(Boolean).join(' · '); return s || empty; }
+
+  function renderDerived(){
+    const nm = state.name.trim();
+    const displayName = nm || 'Your dog';
+    $('dogDisplayName').textContent = displayName;
+    document.querySelectorAll('.removeDogName').forEach(el => { el.textContent = nm || 'this dog'; });
+
+    const m = ageMonthsFrom(state.dob);
+    $('ageHint').textContent = m == null ? 'Add a birthday to estimate age'
+      : m < 12 ? m + ' month' + (m === 1 ? '' : 's') + ' old'
+      : Math.floor(m / 12) + ' year' + (Math.floor(m / 12) === 1 ? '' : 's') + ' old';
+    $('weightLabel').textContent = state.weight + ' kg';
+
+    // Photo circle + card avatar: photo wins, else the name's initial.
+    const initial = (nm || 'D').charAt(0).toUpperCase();
+    [$('dogPhotoBtn'), $('cardPhoto')].forEach(el => {
+      el.style.backgroundImage = state.photo ? 'url(' + state.photo + ')' : 'none';
+      el.textContent = state.photo ? '' : initial;
+    });
+
+    // Emergency card preview
+    $('cardName').textContent = displayName;
+    $('cardBreed').textContent = state.breed.trim() || '—';
+    $('cardChip').textContent = state.chip.trim() || 'Not recorded';
+    $('cardMedical').textContent = state.medical.trim() || 'None noted';
+    $('cardVet').textContent = joinBits([state.vetName.trim(), state.vetPhone.trim()], 'Not recorded');
+    $('cardOwner').textContent = joinBits([state.ownerName.trim(), state.ownerPhone.trim(), state.ownerEmail.trim()], '—');
+    $('cardEmergency').textContent = joinBits([state.emName.trim(), state.emPhone.trim()], 'Not set');
+
+    // Required-field styling + save gating (name + owner name/email, as on
+    // the setup wizard).
+    $('ownerName').style.borderColor = state.ownerName.trim() ? '' : '#E4B9A8';
+    $('ownerEmail').style.borderColor = state.ownerEmail.trim() ? '' : '#E4B9A8';
+    const missingDog = nm.length === 0;
+    const missingOwner = !state.ownerName.trim() || !state.ownerEmail.trim();
+    const disabled = missingDog || missingOwner;
+    document.querySelectorAll('.saveBtn').forEach(b => { b.disabled = disabled; });
+    document.querySelectorAll('.saveHint').forEach(h => {
+      h.hidden = !disabled;
+      h.textContent = missingDog ? "Add your dog's name first."
+        : "Add your name and email in the Human tab first.";
+    });
+  }
+
+  // ---------- Photo upload (downscaled thumbnail, synced to the account) ----
+  // Same approach as before this redesign: shrink to ~300 px JPEG in the
+  // browser so it fits comfortably in the user's Firestore doc, cache it in
+  // localStorage per uid for instant paint.
+  const LEGACY_PHOTO_KEY = 'dolopaws-dog-photo';
+  const PHOTO_INPUT_MAX_BYTES = 8 * 1024 * 1024;
+  const PHOTO_MAX_PX = 300;
+  const dogPhotoInput = $('dogPhotoInput');
+  const dogPhotoStatus = $('dogPhotoStatus');
+
+  function photoCacheKey(){
+    const u = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    return u ? 'dolopaws-dog-photo-' + u.uid : null;
+  }
+  function photoStatus(text, ok){
+    dogPhotoStatus.hidden = false;
+    dogPhotoStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
+    dogPhotoStatus.textContent = text;
+  }
   function downscalePhoto(file){
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -108,140 +273,44 @@
     });
   }
 
-  if(dogPhotoInput){
-    dogPhotoInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if(!file) return;
-
-      if(!file.type.startsWith('image/')){
-        photoStatus(tKey('account.photo.typeError', 'Please select an image file.'), false);
-        dogPhotoInput.value = '';
-        return;
-      }
-      if(file.size > PHOTO_INPUT_MAX_BYTES){
-        photoStatus(tKey('account.photo.sizeError', 'Photo must be smaller than 8 MB.'), false);
-        dogPhotoInput.value = '';
-        return;
-      }
-      if(dogPhotoStatus) dogPhotoStatus.hidden = true;
-
-      downscalePhoto(file).then((dataUrl) => {
-        showDogPhoto(dataUrl);
-        const key = photoCacheKey();
-        try { if(key) localStorage.setItem(key, dataUrl); } catch (err) { /* cache only */ }
-
-        if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
-          window.DoloPawsAuth.setDogProfile({ photo: dataUrl }).then((ok) => {
-            photoStatus(ok
-              ? tKey('account.photo.synced', 'Photo saved to your account — it will show on any device you log in from.')
-              : tKey('account.photo.localOnly', "Photo saved on this device — couldn't reach your account just now."), ok);
-          });
-        }
-      }).catch(() => {
-        photoStatus(tKey('account.photo.typeError', 'Please select an image file.'), false);
-        dogPhotoInput.value = '';
-      });
-    });
-  }
-  if(dogPhotoRemoveBtn){
-    dogPhotoRemoveBtn.addEventListener('click', () => {
+  $('dogPhotoBtn').addEventListener('click', () => dogPhotoInput.click());
+  dogPhotoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    if(!file.type.startsWith('image/')){
+      photoStatus(tKey('account.photo.typeError', 'Please select an image file.'), false);
+      dogPhotoInput.value = '';
+      return;
+    }
+    if(file.size > PHOTO_INPUT_MAX_BYTES){
+      photoStatus(tKey('account.photo.sizeError', 'Photo must be smaller than 8 MB.'), false);
+      dogPhotoInput.value = '';
+      return;
+    }
+    dogPhotoStatus.hidden = true;
+    downscalePhoto(file).then((dataUrl) => {
+      state.photo = dataUrl;
+      renderDerived();
       const key = photoCacheKey();
-      try {
-        if(key) localStorage.removeItem(key);
-        localStorage.removeItem(LEGACY_PHOTO_KEY);
-      } catch(e){}
-      clearDogPhoto();
-      if(dogPhotoStatus) dogPhotoStatus.hidden = true;
+      try { if(key) localStorage.setItem(key, dataUrl); } catch (err) { /* cache only */ }
       if(window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
-        window.DoloPawsAuth.setDogProfile({ photo: null });
+        window.DoloPawsAuth.setDogProfile({ photo: dataUrl }).then((ok) => {
+          photoStatus(ok
+            ? tKey('account.photo.synced', 'Photo saved to your account — it will show on any device you log in from.')
+            : tKey('account.photo.localOnly', "Photo saved on this device — couldn't reach your account just now."), ok);
+        });
       }
+    }).catch(() => {
+      photoStatus(tKey('account.photo.typeError', 'Please select an image file.'), false);
+      dogPhotoInput.value = '';
     });
-  }
-
-  const showDeleteBtn = document.getElementById('showDeleteBtn');
-  const deleteConfirmBox = document.getElementById('deleteConfirmBox');
-  const deletePasswordField = document.getElementById('deletePasswordField');
-  const deletePassword = document.getElementById('deletePassword');
-  const deleteGoogleNote = document.getElementById('deleteGoogleNote');
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-  const deleteStatus = document.getElementById('deleteStatus');
-
-  function providerLabel(user){
-    const pid = user.providerData[0] && user.providerData[0].providerId;
-    if(pid === 'google.com') return 'Google';
-    if(pid === 'password') return 'Email & password';
-    return 'Unknown';
-  }
-
-  // ---------- Breed dropdown: full FCI nomenclature, grouped ----------
-  const OTHER_VALUE = '__other__';
-  function populateBreedOptions(){
-    const groups = (typeof FCI_BREED_GROUPS !== 'undefined') ? FCI_BREED_GROUPS : [];
-    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-    let html = `<option value="">Select a breed…</option>`;
-    groups.forEach(g => {
-      html += `<optgroup label="${esc(g.label)}">`
-        + g.breeds.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('')
-        + `</optgroup>`;
-    });
-    html += `<optgroup label="Something else"><option value="${OTHER_VALUE}">Other (type it in)</option></optgroup>`;
-    dogBreed.innerHTML = html;
-  }
-  populateBreedOptions();
-
-  dogBreed.addEventListener('change', () => {
-    const usesCustomBreed = dogBreed.value === OTHER_VALUE;
-    dogBreedOtherField.hidden = !usesCustomBreed;
-    // Password managers sometimes treat an unrelated text field on an
-    // account page as the username field. Never carry that autofill value
-    // into a custom breed the user has just chosen.
-    dogBreedOther.value = '';
   });
 
-  // ---------- Date of birth / age band ----------
-  if (dogDob) dogDob.max = new Date().toISOString().slice(0, 10);
+  // ---------- Save / cancel / remove ----------
+  const saveStatus = $('saveStatus');
 
-  // ---------- Health conditions dropdown ----------
-  function condInputs(){
-    return Array.from(document.querySelectorAll('input[name="dogCond"]'));
-  }
-  function selectedConditions(){
-    return condInputs().filter(i => i.checked).map(i => i.value);
-  }
-  function updateCondSummary(){
-    const n = selectedConditions().length;
-    dogCondSummary.textContent = n === 0
-      ? 'None selected — tap to choose'
-      : (n === 1 ? '1 condition selected' : `${n} conditions selected`);
-  }
-  condInputs().forEach(i => i.addEventListener('change', updateCondSummary));
-
-  // ---------- Derivations kept in sync with script.js / SCORING.md ----------
-  const AGE_BAND_MID = { 'u1':0.5, '1-2':1.5, '3-4':3.5, '5-6':5.5, '7-8':7.5, '9-10':9.5, '11-12':11.5, '13plus':14 };
-  const WEIGHT_BAND_MID = { 'u5':4, '5-10':7.5, '10-15':12.5, '15-20':17.5, '20-30':25, '30-40':35, '40-55':47.5, '55plus':60 };
-
-  function ageYearsFrom(dobStr, band){
-    if(dobStr){
-      const d = new Date(dobStr);
-      if(!isNaN(d)) return Math.max(0, Math.round(((Date.now() - d.getTime()) / 31557600000) * 10) / 10);
-    }
-    if(band && AGE_BAND_MID[band] != null) return AGE_BAND_MID[band];
-    return null;
-  }
-  function ageBandFromYears(y){
-    if(y == null) return '';
-    if(y < 1) return 'u1';
-    if(y < 3) return '1-2';
-    if(y < 5) return '3-4';
-    if(y < 7) return '5-6';
-    if(y < 9) return '7-8';
-    if(y < 11) return '9-10';
-    if(y < 13) return '11-12';
-    return '13plus';
-  }
   function weightBandFromKg(kg){
-    if(kg == null) return '';
+    if(kg == null) return null;
     if(kg < 5) return 'u5';
     if(kg < 10) return '5-10';
     if(kg < 15) return '10-15';
@@ -252,47 +321,271 @@
     return '55plus';
   }
 
-  // ---------- Save ----------
-  saveDogBtn.addEventListener('click', async () => {
-    if(!window.DoloPawsAuth) return;
-    const finalBreed = dogBreed.value === OTHER_VALUE
-      ? dogBreedOther.value.trim()
-      : dogBreed.value;
-    const conditions = selectedConditions();
-    const ageYears = ageYearsFrom(dogDob.value, dogAgeBand.value);
-    const weightKg = WEIGHT_BAND_MID[dogWeightBand.value] != null
-      ? WEIGHT_BAND_MID[dogWeightBand.value] : null;
-
-    saveDogBtn.disabled = true;
-    saveDogBtn.textContent = 'Saving…';
-    const ok = await window.DoloPawsAuth.setDogProfile({
-      name: dogName.value.trim(),
-      breed: finalBreed,
-      fitness: dogFitness.value,
-      dob: dogDob.value || null,
-      ageBand: dogAgeBand.value || null,
-      weightBand: dogWeightBand.value || null,
+  function buildProfile(){
+    const m = ageMonthsFrom(state.dob);
+    // Scoring reads `conditions`; the design's sensitivities cover heat and
+    // joints, so mirror those two in and keep any other declared conditions
+    // (back, cardiac, …) a user saved before this redesign.
+    const kept = (Array.isArray(base.conditions) ? base.conditions : [])
+      .filter(c => c !== 'heat' && c !== 'joints');
+    const conditions = kept
+      .concat(state.sens.includes('heat') ? ['heat'] : [])
+      .concat(state.sens.includes('joints') ? ['joints'] : []);
+    return Object.assign({}, base, {
+      name: state.name.trim(),
+      breed: state.breed.trim(),
+      fitness: base.fitness || 'moderate',
+      dob: state.dob || null,
+      ageBand: state.dob ? null : (base.ageBand || null),
+      weight: state.weight,
+      weightBand: weightBandFromKg(state.weight),
+      size: state.size,
+      neuter: state.neuter,
+      coat: state.coat,
+      sens: state.sens,
+      photo: state.photo || null,
       conditions: conditions,
-      healthNotes: dogHealthNotes.value.trim(),
+      healthNotes: state.medical.trim(),
+      vet: { name: state.vetName.trim(), phone: state.vetPhone.trim(), chip: state.chip.trim(), insurer: state.insurer.trim(), policy: state.policy.trim() },
+      owner: { name: state.ownerName.trim(), phone: state.ownerPhone.trim(), email: state.ownerEmail.trim(), emName: state.emName.trim(), emPhone: state.emPhone.trim() },
       // Legacy mirrors so any cached older script keeps working.
-      age: ageYears,
-      weight: weightKg,
+      age: m == null ? null : Math.round((m / 12) * 10) / 10,
       jointIssues: conditions.includes('joints'),
       heatIssues: conditions.includes('heat'),
     });
-    saveDogBtn.disabled = false;
-    saveDogBtn.textContent = 'Save dog profile';
-    dogStatus.hidden = false;
-    dogStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
-    if(ok && returnTarget){
-      dogStatus.textContent = 'Saved. Returning you to where you were…';
-      window.setTimeout(() => window.location.assign(returnTarget), 500);
-    } else if(ok) {
-      dogStatus.innerHTML = 'Saved. <a href="index.html" style="font-weight:700;">View your personalised trails →</a>';
+  }
+
+  document.querySelectorAll('.saveBtn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!window.DoloPawsAuth || btn.disabled) return;
+      const label = btn.textContent; // "Save changes", or "Save" on the phone app bar
+      btn.textContent = 'Saving…';
+      const ok = await window.DoloPawsAuth.setDogProfile(buildProfile());
+      btn.textContent = label;
+      saveStatus.hidden = false;
+      saveStatus.style.color = ok ? '#2C5C34' : '#9C3A25';
+      if(ok && returnTarget){
+        saveStatus.textContent = 'Saved. Returning you to where you were…';
+        window.setTimeout(() => window.location.assign(returnTarget), 500);
+      } else if(ok){
+        saveStatus.innerHTML = 'Saved. <a href="index.html" style="font-weight:700;">View your personalised trails →</a>';
+        base = buildProfile();
+      } else {
+        saveStatus.textContent = 'Something went wrong — please try again.';
+      }
+    });
+  });
+
+  document.querySelectorAll('.cancelBtn').forEach(btn => {
+    btn.addEventListener('click', () => window.location.assign(backHref));
+  });
+
+  $('removeDogBtn').addEventListener('click', async () => {
+    const nm = state.name.trim() || 'this dog';
+    if(!window.confirm('Remove ' + nm + "? This permanently deletes the profile and all its data — photo, health, vet and emergency details.")) return;
+    if(!window.DoloPawsAuth) return;
+    const ok = await window.DoloPawsAuth.setDogProfile(null);
+    const key = photoCacheKey();
+    try {
+      if(key) localStorage.removeItem(key);
+      localStorage.removeItem(LEGACY_PHOTO_KEY);
+    } catch(e){}
+    if(ok){
+      window.location.assign(backHref);
     } else {
-      dogStatus.textContent = 'Something went wrong — please try again.';
+      saveStatus.hidden = false;
+      saveStatus.style.color = '#9C3A25';
+      saveStatus.textContent = 'Something went wrong — please try again.';
     }
   });
+
+  // ---------- Share card ----------
+  $('shareCardBtn').addEventListener('click', async () => {
+    const nm = state.name.trim() || 'This dog';
+    const text = nm + ' — DoloPaws emergency card'
+      + '\nBreed: ' + (state.breed.trim() || '—')
+      + '\nMicrochip: ' + (state.chip.trim() || '—')
+      + '\nMedical: ' + (state.medical.trim() || 'None')
+      + '\nOwner: ' + [state.ownerName.trim() || '—', state.ownerPhone.trim(), state.ownerEmail.trim()].filter(Boolean).join(' ')
+      + '\nEmergency: ' + [state.emName.trim() || '—', state.emPhone.trim()].filter(Boolean).join(' ')
+      + '\nVet: ' + [state.vetName.trim() || '—', state.vetPhone.trim()].filter(Boolean).join(' ');
+    const status = $('shareStatus');
+    try {
+      if(navigator.share){
+        await navigator.share({ title: nm + ' — emergency card', text: text });
+      } else if(navigator.clipboard){
+        await navigator.clipboard.writeText(text);
+        status.hidden = false;
+        status.textContent = 'Copied to clipboard.';
+        window.setTimeout(() => { status.hidden = true; }, 2500);
+      }
+    } catch(e){ /* user dismissed the share sheet */ }
+  });
+
+  // ---------- Settings: notifications (device-level preferences) ----------
+  const NOTIF_KEY = 'dolopaws-notif-prefs';
+  const NOTIF_OPTIONS = [
+    ['hazards', 'Hazard alerts', 'New hazards flagged on trails you follow', true],
+    ['weather', 'Heat & weather warnings', 'When conditions turn risky for your dog', true],
+    ['recs', 'Trail recommendations', 'Fresh walks matched to your dog', true],
+    ['community', 'Community replies', 'Replies to your reviews and reports', false],
+    ['news', 'Product news', 'Occasional updates and tips by email', false],
+  ];
+  function loadNotifPrefs(){
+    const defaults = {};
+    NOTIF_OPTIONS.forEach(([id,,,on]) => { defaults[id] = on; });
+    try {
+      const saved = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
+      return Object.assign(defaults, saved);
+    } catch(e){ return defaults; }
+  }
+  let notifPrefs = loadNotifPrefs();
+  function renderNotifs(){
+    const list = $('notifList');
+    list.innerHTML = '';
+    NOTIF_OPTIONS.forEach(([id, label, sub]) => {
+      const on = !!notifPrefs[id];
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.setAttribute('role', 'switch');
+      row.setAttribute('aria-checked', String(on));
+      row.style.cssText = 'display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 0;border:none;border-bottom:1px solid #F2EFE5;background:none;cursor:pointer;font-family:\'Inter\',sans-serif;';
+      row.innerHTML = '<div style="flex:1;"><div style="font-size:13.5px;font-weight:700;color:var(--ink);" class="t"></div><div style="font-size:11.5px;color:#8A9689;margin-top:1px;" class="s"></div></div><span class="toggle-track' + (on ? ' on' : '') + '"><span class="knob"></span></span>';
+      row.querySelector('.t').textContent = label;
+      row.querySelector('.s').textContent = sub;
+      row.addEventListener('click', () => {
+        notifPrefs[id] = !on;
+        try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifPrefs)); } catch(e){}
+        renderNotifs();
+      });
+      list.appendChild(row);
+    });
+  }
+  renderNotifs();
+
+  // ---------- Settings: language ----------
+  const langSelect = $('langSelect');
+  if(window.DoloPawsI18n) langSelect.value = window.DoloPawsI18n.lang === 'it' ? 'it' : 'en';
+  langSelect.addEventListener('change', () => {
+    if(window.DoloPawsI18n && langSelect.value !== window.DoloPawsI18n.lang){
+      window.DoloPawsI18n.setLang(langSelect.value); // saves + reloads the page
+    }
+  });
+
+  // ---------- Settings: login email ----------
+  const acctEmailInput = $('acctEmailInput');
+  const acctEmailBtn = $('acctEmailBtn');
+  const acctEmailHint = $('acctEmailHint');
+  let savedEmail = '';
+  function refreshEmailBtn(){
+    const changed = acctEmailInput.value.trim() && acctEmailInput.value.trim() !== savedEmail;
+    acctEmailBtn.disabled = !changed;
+    acctEmailBtn.style.background = changed ? 'var(--accent)' : '#C6D0CB';
+  }
+  acctEmailInput.addEventListener('input', refreshEmailBtn);
+  acctEmailBtn.addEventListener('click', async () => {
+    const next = acctEmailInput.value.trim();
+    if(!next || next === savedEmail || !window.DoloPawsAuth || !window.DoloPawsAuth.updateEmail) return;
+    acctEmailBtn.textContent = 'Sending…';
+    const result = await window.DoloPawsAuth.updateEmail(next);
+    acctEmailBtn.textContent = 'Update';
+    acctEmailHint.style.color = result.ok ? '#2C5C34' : '#9C3A25';
+    acctEmailHint.textContent = result.ok
+      ? 'Confirmation link sent to ' + next + ' — the change applies once you click it.'
+      : result.message;
+  });
+
+  // ---------- Settings: password reset ----------
+  const sendResetBtn = $('sendResetBtn');
+  const resetStatus = $('resetStatus');
+  sendResetBtn.addEventListener('click', async () => {
+    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
+    if(!user || !user.email) return;
+    sendResetBtn.disabled = true;
+    sendResetBtn.textContent = 'Sending…';
+    const result = await window.DoloPawsAuth.resetPassword(user.email);
+    sendResetBtn.disabled = false;
+    sendResetBtn.textContent = 'Send password reset link';
+    resetStatus.hidden = false;
+    resetStatus.style.color = result.ok ? '#2C5C34' : '#9C3A25';
+    resetStatus.textContent = result.ok
+      ? 'Reset link sent to ' + user.email + ' — check your inbox.'
+      : result.message;
+  });
+
+  // ---------- Settings: log out ----------
+  $('logOutBtn').addEventListener('click', async () => {
+    if(!window.DoloPawsAuth) return;
+    await window.DoloPawsAuth.logOut();
+    window.location.href = 'index.html';
+  });
+
+  // ---------- Cancel-account modal ----------
+  const cancelOverlay = $('cancelOverlay');
+  const confirmDeleteText = $('confirmDeleteText');
+  const confirmDeleteBtn = $('confirmDeleteBtn');
+  const deletePassword = $('deletePassword');
+  const deleteStatus = $('deleteStatus');
+
+  function openCancelModal(){
+    confirmDeleteText.value = '';
+    deletePassword.value = '';
+    deleteStatus.hidden = true;
+    refreshDeleteBtn();
+    cancelOverlay.hidden = false;
+    confirmDeleteText.focus();
+  }
+  function closeCancelModal(){ cancelOverlay.hidden = true; }
+  function refreshDeleteBtn(){
+    const ready = confirmDeleteText.value.trim().toUpperCase() === 'DELETE';
+    confirmDeleteBtn.disabled = !ready;
+    confirmDeleteBtn.style.background = ready ? '#9C3A25' : '#D9B7AD';
+  }
+  $('openCancelBtn').addEventListener('click', openCancelModal);
+  $('closeCancelBtn').addEventListener('click', closeCancelModal);
+  cancelOverlay.addEventListener('click', e => { if(e.target === cancelOverlay) closeCancelModal(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && !cancelOverlay.hidden) closeCancelModal(); });
+  confirmDeleteText.addEventListener('input', refreshDeleteBtn);
+
+  confirmDeleteBtn.addEventListener('click', async () => {
+    if(confirmDeleteBtn.disabled || !window.DoloPawsAuth) return;
+    confirmDeleteBtn.disabled = true;
+    confirmDeleteBtn.textContent = 'Deleting…';
+    const result = await window.DoloPawsAuth.deleteAccount(deletePassword.value);
+    confirmDeleteBtn.textContent = 'Delete my account';
+    refreshDeleteBtn();
+    if(result.ok){
+      const key = photoCacheKey();
+      try {
+        if(key) localStorage.removeItem(key);
+        localStorage.removeItem(LEGACY_PHOTO_KEY);
+        localStorage.removeItem(NOTIF_KEY);
+      } catch(e){}
+      window.location.href = 'index.html';
+    } else {
+      deleteStatus.hidden = false;
+      deleteStatus.textContent = result.message;
+    }
+  });
+
+  // ---------- Load profile once signed in ----------
+  function providerLabel(user){
+    const pid = user.providerData[0] && user.providerData[0].providerId;
+    if(pid === 'google.com') return 'Google';
+    if(pid === 'password') return 'Email & password';
+    return 'Unknown';
+  }
+
+  function kgFromProfile(p){
+    if(typeof p.weight === 'number') return Math.min(60, Math.max(2, Math.round(p.weight)));
+    const MID = { 'u5':4, '5-10':7.5, '10-15':12.5, '15-20':17.5, '20-30':25, '30-40':35, '40-55':47.5, '55plus':60 };
+    if(p.weightBand && MID[p.weightBand] != null) return Math.round(MID[p.weightBand]);
+    return null;
+  }
+  function sizeFromKg(kg){
+    if(kg == null) return 'Large';
+    return kg < 10 ? 'Small' : kg <= 25 ? 'Medium' : kg <= 40 ? 'Large' : 'Extra large';
+  }
 
   function waitForAuth(cb){
     if(window.DoloPawsAuth){ cb(); return; }
@@ -303,153 +596,98 @@
     window.DoloPawsAuth.onChange(async (user) => {
       if(!user){
         subline.textContent = "You're not logged in.";
+        subline.removeAttribute('aria-busy');
         loggedOutState.hidden = false;
         loggedInState.hidden = true;
+        document.body.classList.remove('ep-app');
         return;
       }
 
-      subline.textContent = `Signed in as ${user.email || 'your Google account'}.`;
+      subline.hidden = true;
+      subline.removeAttribute('aria-busy');
       loggedOutState.hidden = true;
       loggedInState.hidden = false;
+      // Phone layout swaps the site chrome for the app bar + footer.
+      document.body.classList.add('ep-app');
 
-      userEmail.textContent = user.email || '(no email on file)';
-      userProvider.textContent = providerLabel(user);
+      // Settings header
+      savedEmail = user.email || '';
+      $('acctEmailLabel').textContent = user.email || '(no email on file)';
+      $('acctProvider').textContent = providerLabel(user);
+      $('acctAvatar').textContent = ((user.displayName || user.email || '?').charAt(0)).toUpperCase();
+      acctEmailInput.value = savedEmail;
+      refreshEmailBtn();
+      const isGoogle = providerLabel(user) === 'Google';
+      $('emailChangeBox').hidden = isGoogle;
+      $('googleEmailNote').hidden = !isGoogle;
+      $('passwordSection').hidden = isGoogle;
+      $('deletePasswordField').hidden = isGoogle;
+      $('deleteGoogleNote').hidden = !isGoogle;
 
-      if(providerLabel(user) === 'Google'){
-        passwordSection.style.display = 'none';
-        deletePasswordField.hidden = true;
-        deleteGoogleNote.hidden = false;
-      } else {
-        passwordSection.style.display = '';
-        deletePasswordField.hidden = false;
-        deleteGoogleNote.hidden = true;
-      }
+      const profile = (await window.DoloPawsAuth.getDogProfile()) || {};
+      base = profile;
 
-      const profile = await window.DoloPawsAuth.getDogProfile();
-
-      // Photo: the account copy always wins. A photo saved on this device
-      // before sync existed (old device-only key) gets migrated up to the
-      // account once, then the old key is removed.
+      // Photo: the account copy wins; migrate a pre-sync device-only photo up.
       const pKey = 'dolopaws-dog-photo-' + user.uid;
       const isImage = v => typeof v === 'string' && v.startsWith('data:image/');
-      if(profile && isImage(profile.photo)){
-        showDogPhoto(profile.photo);
+      if(isImage(profile.photo)){
+        state.photo = profile.photo;
         try { localStorage.setItem(pKey, profile.photo); } catch(e){}
       } else {
         let local = null;
         try { local = localStorage.getItem(pKey) || localStorage.getItem(LEGACY_PHOTO_KEY); } catch(e){}
-        if(local && !isImage(local)){
-          try { localStorage.removeItem(pKey); localStorage.removeItem(LEGACY_PHOTO_KEY); } catch(e){}
-          local = null;
-        }
-        if(local){
-          showDogPhoto(local);
+        if(local && isImage(local)){
+          state.photo = local;
           window.DoloPawsAuth.setDogProfile({ photo: local }).then((ok) => {
-            if(ok){
-              try {
-                localStorage.setItem(pKey, local);
-                localStorage.removeItem(LEGACY_PHOTO_KEY);
-              } catch(e){}
-            }
+            if(ok){ try { localStorage.setItem(pKey, local); localStorage.removeItem(LEGACY_PHOTO_KEY); } catch(e){} }
           });
         } else {
-          clearDogPhoto();
+          state.photo = null;
         }
       }
 
-      if(profile){
-        dogName.value = profile.name || '';
-        dogFitness.value = profile.fitness || 'moderate';
+      state.name = profile.name || '';
+      state.breed = profile.breed || '';
+      state.dob = profile.dob || '';
+      const kg = kgFromProfile(profile);
+      state.weight = kg == null ? 20 : kg;
+      state.size = profile.size || sizeFromKg(kg);
+      state.neuter = profile.neuter || 'Unknown';
+      state.coat = profile.coat || 'Short';
+      const conds = Array.isArray(profile.conditions)
+        ? profile.conditions
+        : [profile.jointIssues && 'joints', profile.heatIssues && 'heat'].filter(Boolean);
+      state.sens = Array.isArray(profile.sens)
+        ? profile.sens
+        : ['heat', 'joints'].filter(c => conds.includes(c));
+      state.medical = profile.healthNotes || (profile.vet && profile.vet.medical) || '';
 
-        const savedBreed = profile.breed || '';
-        const isKnownBreed = (typeof DOG_BREEDS !== 'undefined') && DOG_BREEDS.includes(savedBreed);
-        if(savedBreed && !isKnownBreed){
-          dogBreed.value = OTHER_VALUE;
-          dogBreedOtherField.hidden = false;
-          dogBreedOther.value = savedBreed;
-        } else {
-          dogBreed.value = savedBreed;
-          dogBreedOtherField.hidden = true;
-          dogBreedOther.value = '';
-        }
+      const vet = profile.vet || {};
+      state.vetName = vet.name || '';
+      state.vetPhone = vet.phone || '';
+      state.chip = vet.chip || '';
+      state.insurer = vet.insurer || '';
+      state.policy = vet.policy || '';
 
-        // Age: prefer stored DOB, then stored band, then migrate the old
-        // plain-number age into the nearest band.
-        dogDob.value = profile.dob || '';
-        dogAgeBand.value = profile.ageBand
-          || (profile.dob ? '' : ageBandFromYears(typeof profile.age === 'number' ? profile.age : null));
+      // Owner details prefill from the login when the profile has none yet.
+      const owner = profile.owner || {};
+      state.ownerName = owner.name || user.displayName || '';
+      state.ownerPhone = owner.phone || '';
+      state.ownerEmail = owner.email || user.email || '';
+      state.emName = owner.emName || '';
+      state.emPhone = owner.emPhone || '';
 
-        // Weight: stored band, else migrate old plain-number kg.
-        dogWeightBand.value = profile.weightBand
-          || weightBandFromKg(typeof profile.weight === 'number' ? profile.weight : null);
-
-        // Conditions: stored list, else migrate the two old booleans.
-        const conds = Array.isArray(profile.conditions)
-          ? profile.conditions
-          : [profile.jointIssues && 'joints', profile.heatIssues && 'heat'].filter(Boolean);
-        condInputs().forEach(i => { i.checked = conds.includes(i.value); });
-        updateCondSummary();
-
-        // Notes: keep old free-text detail fields visible after migration.
-        let notes = profile.healthNotes || '';
-        if(!Array.isArray(profile.conditions)){
-          const legacyBits = [profile.jointDetail, profile.heatDetail].filter(Boolean).join('. ');
-          if(legacyBits && !notes.includes(legacyBits)) notes = notes ? `${notes}. ${legacyBits}` : legacyBits;
-        }
-        dogHealthNotes.value = notes;
-      }
+      // Push state into the form fields
+      FIELD_BINDINGS.forEach(([id, key]) => { $(id).value = state[key]; });
+      $('dogWeight').value = state.weight;
+      renderOptions();
+      renderBreedList();
+      breedInput.value = state.breed;
+      renderDerived();
     });
   });
 
-  sendResetBtn.addEventListener('click', async () => {
-    const user = window.DoloPawsAuth && window.DoloPawsAuth.currentUser;
-    if(!user || !user.email) return;
-    sendResetBtn.disabled = true;
-    sendResetBtn.textContent = 'Sending…';
-    const result = await window.DoloPawsAuth.resetPassword(user.email);
-    sendResetBtn.disabled = false;
-    sendResetBtn.textContent = 'Send password reset link';
-    resetStatus.hidden = false;
-    if(result.ok){
-      resetStatus.style.color = '#2C5C34';
-      resetStatus.textContent = `Reset link sent to ${user.email} — check your inbox.`;
-    } else {
-      resetStatus.style.color = '#9C3A25';
-      resetStatus.textContent = result.message;
-    }
-  });
-
-  logOutBtn.addEventListener('click', async () => {
-    if(!window.DoloPawsAuth) return;
-    await window.DoloPawsAuth.logOut();
-    window.location.href = 'index.html';
-  });
-
-  showDeleteBtn.addEventListener('click', () => {
-    deleteConfirmBox.hidden = false;
-    showDeleteBtn.hidden = true;
-  });
-
-  cancelDeleteBtn.addEventListener('click', () => {
-    deleteConfirmBox.hidden = true;
-    showDeleteBtn.hidden = false;
-    deletePassword.value = '';
-    deleteStatus.hidden = true;
-  });
-
-  confirmDeleteBtn.addEventListener('click', async () => {
-    if(!window.DoloPawsAuth) return;
-    confirmDeleteBtn.disabled = true;
-    confirmDeleteBtn.textContent = 'Deleting…';
-    const result = await window.DoloPawsAuth.deleteAccount(deletePassword.value);
-    confirmDeleteBtn.disabled = false;
-    confirmDeleteBtn.textContent = 'Permanently delete account';
-    if(result.ok){
-      window.location.href = 'index.html';
-    } else {
-      deleteStatus.hidden = false;
-      deleteStatus.style.color = '#9C3A25';
-      deleteStatus.textContent = result.message;
-    }
-  });
+  // First paint (before auth resolves) so the panel never looks broken.
+  renderOptions();
+  renderDerived();
 })();

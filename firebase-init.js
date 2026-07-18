@@ -13,7 +13,7 @@ import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut as fbSignOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup,
   sendPasswordResetEmail, deleteUser, reauthenticateWithCredential,
-  EmailAuthProvider, reauthenticateWithPopup
+  EmailAuthProvider, reauthenticateWithPopup, verifyBeforeUpdateEmail
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, deleteDoc,
@@ -199,6 +199,17 @@ window.DoloPawsAuth = {
   async resetPassword(email) {
     try {
       await sendPasswordResetEmail(auth, email);
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, message: friendlyError(e.code) };
+    }
+  },
+  // Sends a confirmation link to the NEW address; the login email only
+  // changes once that link is clicked, so a typo can't lock anyone out.
+  async updateEmail(newEmail) {
+    if (!currentUser) return { ok: false, message: "Not logged in." };
+    try {
+      await verifyBeforeUpdateEmail(currentUser, newEmail);
       return { ok: true };
     } catch (e) {
       return { ok: false, message: friendlyError(e.code) };
