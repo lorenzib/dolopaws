@@ -605,6 +605,16 @@ function initTrailMap(){
         'line-width': 3,
       },
     });
+    // Wide, near-invisible twin of the route line so a fingertip (or a
+    // slightly-off cursor) still hits the trail — 3px is too thin a target.
+    trailMapInstance.addLayer({
+      id: 'trail-paths-hit',
+      type: 'line',
+      source: 'trail-paths',
+      minzoom: 10,
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#000', 'line-width': 18, 'line-opacity': 0.01 },
+    });
 
     // Cluster trailheads at wider zooms so the map communicates density
     // without becoming a field of indistinguishable dots.
@@ -683,9 +693,26 @@ function initTrailMap(){
       const feature = e.features && e.features[0];
       if(!feature) return;
       const selected = currentMapTrails.find(t => t.id === feature.properties.id);
-      if(selected){ selectTrail(selected); jumpToCard(selected.id); }
+      if(selected){
+        selectTrail(selected);
+        jumpToCard(selected.id);
+        showTrailMapPopup(selected, e.lngLat);
+      }
     });
-    ['trail-clusters','trail-unclustered'].forEach(layerId => {
+    // The route line itself is a click target too — no need to hunt for
+    // the trailhead dot. Clicking anywhere on a trail pops up its card
+    // with a direct link to the trail page.
+    trailMapInstance.on('click', 'trail-paths-hit', (e) => {
+      const feature = e.features && e.features[0];
+      if(!feature) return;
+      const selected = currentMapTrails.find(t => t.id === feature.properties.id);
+      if(selected){
+        selectTrail(selected);
+        jumpToCard(selected.id);
+        showTrailMapPopup(selected, e.lngLat);
+      }
+    });
+    ['trail-clusters','trail-unclustered','trail-paths-hit'].forEach(layerId => {
       trailMapInstance.on('mouseenter', layerId, () => { trailMapInstance.getCanvas().style.cursor = 'pointer'; });
       trailMapInstance.on('mouseleave', layerId, () => { trailMapInstance.getCanvas().style.cursor = ''; });
     });
@@ -871,7 +898,10 @@ function updatePathLayer(list){
     .filter(t => Array.isArray(t.path) && t.path.length > 1)
     .map(t => ({
       type: 'Feature',
-      properties: { id: t.id, name: t.name, safetyLevel: t.safetyLevel },
+      properties: {
+        id: t.id, name: t.name, safetyLevel: t.safetyLevel,
+        score: typeof t.score === 'number' ? t.score : 0,
+      },
       geometry: { type: 'LineString', coordinates: t.path.map(([lat, lng]) => [lng, lat]) },
     }));
   trailMapInstance.getSource('trail-paths').setData({ type: 'FeatureCollection', features });
@@ -1697,6 +1727,31 @@ if(mapCalloutClose){
     setSelectedTrailPoint(null);
   });
 }
+// Popup shown when a trail is clicked ON the map (route line or trailhead
+// dot) — name, real score, and a direct link to the trail page, so the map
+// alone is enough to jump into a trail.
+let trailMapPopup = null;
+function showTrailMapPopup(t, lngLat){
+  if(!trailMapInstance || typeof maplibregl === 'undefined') return;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const dot = SAFETY_DOT[t.safetyLevel] || '#2E4034';
+  const score = typeof t.score === 'number'
+    ? `${t.curated === false ? '≈' : ''}${t.score}% match`
+    : '';
+  if(trailMapPopup) trailMapPopup.remove();
+  trailMapPopup = new maplibregl.Popup({ offset: 12, maxWidth: '260px', className: 'trail-map-popup' })
+    .setLngLat(lngLat)
+    .setHTML(
+      `<div style="font:700 14px 'Source Serif 4',serif;color:#2E4034;">${esc(t.name)}</div>` +
+      `<div style="display:flex;align-items:center;gap:6px;margin-top:4px;font:600 11.5px 'Inter',sans-serif;color:#6B7A6E;">` +
+        `<span style="width:8px;height:8px;border-radius:50%;background:${dot};flex:none;"></span>` +
+        `${esc(`${t.distance} km`)}${score ? ` · ${esc(score)}` : ''}` +
+      `</div>` +
+      `<a href="trail.html?id=${encodeURIComponent(t.id)}" style="display:inline-block;margin-top:9px;font:700 12.5px 'Inter',sans-serif;color:#fff;background:#2E4034;padding:8px 14px;border-radius:9px;text-decoration:none;">Open trail →</a>`
+    )
+    .addTo(trailMapInstance);
+}
+
 function showMapCallout(t){
   const callout = document.getElementById('mapCallout');
   if(!callout) return;
