@@ -244,8 +244,12 @@ body{background:#EFECE2;}
 .td2-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;}
 
 /* --- dark hero --- */
-.td2-hero{background:#243128;color:#EAF1E8;}
-.td2-hero-in{max-width:1160px;margin:0 auto;padding:22px 34px 0;}
+.td2-hero{background:#243128;color:#EAF1E8;position:relative;overflow:hidden;}
+.td2-hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.td2-hero-photo[hidden]{display:none;}
+.td2-hero-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,42,28,.74) 0%,rgba(23,42,28,.5) 42%,rgba(23,42,28,.9) 100%);}
+.td2-hero-veil[hidden]{display:none;}
+.td2-hero-in{max-width:1160px;margin:0 auto;padding:22px 34px 0;position:relative;}
 .td2-back{font-size:13px;font-weight:700;color:#9FC7D6;text-decoration:none;}
 .td2-hero-row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:14px;}
 .td2-hero .td2-tags{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
@@ -285,7 +289,28 @@ body{background:#EFECE2;}
 .td2-live .l{display:flex;align-items:center;gap:12px;}
 .td2-live .rd{width:11px;height:11px;border-radius:50%;background:#FC5D3A;animation:rec 1.1s infinite;}
 .td2-live .r{display:flex;gap:26px;align-items:center;}
+.td2-live .r .num{font-size:22px;}
+.td2-live .r .lbl{font-size:10px;color:#9FC7B0;text-transform:uppercase;letter-spacing:.05em;}
 .td2-live[hidden]{display:none;}
+
+/* Dog match card (sidebar, per prototype) */
+.td2-dogcard{padding:18px 20px;}
+.td2-dog-row{display:flex;align-items:center;gap:12px;}
+.td2-dog-avatar{width:46px;height:46px;border-radius:50%;background:var(--accent,#3E7A91);color:#fff;display:grid;place-items:center;font-weight:800;font-size:17px;flex:none;}
+.td2-dog-name{font-family:'Source Serif 4',serif;font-weight:700;font-size:16px;color:var(--ink);}
+.td2-dog-sub{font-size:11.5px;color:#6B7A6E;}
+.td2-dog-verdict{margin-top:14px;display:flex;align-items:center;gap:10px;background:#EAF3EC;border-radius:10px;padding:11px 13px;}
+.td2-dog-verdict .num{font-size:22px;color:#2C5C34;}
+.td2-dog-verdict .txt{font-size:12px;color:#2C5C34;font-weight:600;line-height:1.35;}
+.td2-dog-verdict.tier-good{background:#F5E4C6;}
+.td2-dog-verdict.tier-good .num,.td2-dog-verdict.tier-good .txt{color:#8A5A16;}
+.td2-dog-verdict.tier-caution{background:#F3D9D2;}
+.td2-dog-verdict.tier-caution .num,.td2-dog-verdict.tier-caution .txt{color:#9C3A25;}
+
+/* Terrain / Satellite layer switch (map, bottom-left per prototype) */
+.td-layer-switch{position:absolute;bottom:14px;left:14px;z-index:6;display:flex;gap:8px;}
+.td-layer-switch button{padding:7px 13px;border-radius:9px;border:none;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;background:rgba(255,255,255,.94);color:var(--ink);box-shadow:0 2px 8px rgba(23,42,28,.12);}
+.td-layer-switch button.on{background:var(--ink);color:#fff;}
 
 /* --- map card --- */
 .td2-mapcard{overflow:hidden;margin-top:18px;padding:0;}
@@ -521,6 +546,8 @@ body{background:#EFECE2;}
 
   <!-- ============ DARK HERO + STAT STRIP ============ -->
   <div class="td2-hero">
+    <img id="tdHeroPhoto" class="td2-hero-photo" alt="" hidden>
+    <div id="tdHeroVeil" class="td2-hero-veil" hidden></div>
     <div class="td2-hero-in">
       <a class="td2-back" id="tdBreadcrumb" href="browse-trails.html">← All trails</a>
       <div class="td2-hero-row">
@@ -585,7 +612,11 @@ body{background:#EFECE2;}
 
     <!-- ============ LIVE RECORDING BANNER ============ -->
     <div class="td2-live" id="td2LiveBanner" hidden>
-      <div class="l"><span class="rd"></span><div><div style="font-size:14px;font-weight:800;">Recording your walk</div><div style="font-size:12px;color:#9FC7B0;margin-top:1px;">Live GPS · stay on marked paths</div></div></div>
+      <div class="l"><span class="rd"></span><div><div style="font-size:14px;font-weight:800;" id="tdLiveTitle">Recording your walk</div><div style="font-size:12px;color:#9FC7B0;margin-top:1px;">Live GPS · stay on marked paths</div></div></div>
+      <div class="r">
+        <div><div class="num" id="tdLiveElapsed">0:00</div><div class="lbl">Elapsed</div></div>
+        <div><div class="num" id="tdLiveDist">0.0 km</div><div class="lbl">Distance</div></div>
+      </div>
     </div>
 
     <!-- ============ DOMINANT MAP CARD + ELEVATION ============ -->
@@ -598,6 +629,10 @@ body{background:#EFECE2;}
         <button id="routesToggle" type="button" class="td-map-toggle" aria-pressed="false"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20c3-6 5-6 8-3s5 3 6-3"/><circle cx="5" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="14" r="1.6" fill="currentColor" stroke="none"/></svg> <span>Marked routes</span></button>
         <span id="tdLivePill" class="td-live-pill" hidden><span class="dot"></span>You are here · live</span>
         <button id="mapExpandBtn" type="button" class="map-expand-btn" aria-label="Expand map"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> <span>Expand map</span></button>
+        <div class="td-layer-switch" id="tdLayerSwitch" role="group" aria-label="Map style">
+          <button type="button" data-maplayer="terrain" class="on" aria-pressed="true">Terrain</button>
+          <button type="button" data-maplayer="satellite" aria-pressed="false">Satellite</button>
+        </div>
         <details class="map-key map-key--dock"><summary data-i18n="trail.mapKey">Map key</summary>
           <div id="mapLegend">
             <span id="routeSwatch" style="display:none;"></span><span id="routeSwatchLabel" style="display:none;"></span>
@@ -661,6 +696,17 @@ body{background:#EFECE2;}
 
       <!-- ============ SIDEBAR ============ -->
       <aside class="td2-side" aria-label="Trail sidebar">
+        <!-- Dog match card (per prototype: avatar · name · breed line, match verdict) -->
+        <div class="td2-card td2-section td2-dogcard" id="td2DogCard" hidden>
+          <div class="td2-dog-row">
+            <span class="td2-dog-avatar" id="td2DogAvatar">🐾</span>
+            <div><div class="td2-dog-name" id="td2DogName"></div><div class="td2-dog-sub" id="td2DogSub"></div></div>
+          </div>
+          <div class="td2-dog-verdict" id="td2DogVerdict">
+            <span class="num" id="td2DogPct"></span><span class="txt" id="td2DogVerdictTxt"></span>
+          </div>
+        </div>
+
         <!-- Trail hazards (sidebar, per prototype) -->
         <div class="td2-card td2-section td2-hazard" id="td2Hazards">
           <div class="td2-hazard-head">
@@ -703,7 +749,7 @@ body{background:#EFECE2;}
 
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <script src="mobile-nav.js"></script>
-<script src="i18n.js?v=20260718"></script>
+<script src="i18n.js?v=20260722-2"></script>
 <script type="module" src="firebase-init.js"></script>
 <script src="icon-system.js?v=20260717" defer></script>
 <script src="auth-ui.js?v=20260717-2" defer></script>
@@ -716,12 +762,12 @@ body{background:#EFECE2;}
 <script src="trail-audits.js?v=20260717" defer></script>
 <script src="regions-config.js"></script>
 <script src="basemap-poi-click.js" defer></script>
-<script src="hike-mode.js?v=20260718" defer></script>
+<script src="hike-mode.js?v=20260722-2" defer></script>
 <script src="detail-pois.js?v=20260718" defer></script>
 <script src="trail-reports.js?v=20260718-3" defer></script>
-<script src="trail.js?v=20260722" defer></script>
+<script src="trail.js?v=20260722-4" defer></script>
 <script src="trail-blueprint.js?v=20260718" defer></script>
-<script src="trail-detail-ui.js?v=20260718-3" defer></script>
+<script src="trail-detail-ui.js?v=20260722-2" defer></script>
 <script src="trail-mobile.js?v=20260722" defer></script>
 </body>
 </html>

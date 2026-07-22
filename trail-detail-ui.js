@@ -22,17 +22,46 @@
   function recording() {
     return !!(mapBox && mapBox.classList.contains('hike-status-visible'));
   }
+
+  // Live progress mirrored from hike-mode (elapsed clock + km walked), shown
+  // in the banner and in the hero End button ("End · 12:34", per prototype).
+  let hikeStartedAt = null;
+  let elapsedTimer = null;
+  function fmtElapsed() {
+    if (!hikeStartedAt) return '0:00';
+    const s = Math.max(0, Math.floor((Date.now() - hikeStartedAt) / 1000));
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+    return h ? h + ':' + String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0')
+             : m + ':' + String(s % 60).padStart(2, '0');
+  }
+  function tickElapsed() {
+    const el = document.getElementById('tdLiveElapsed');
+    if (el) el.textContent = fmtElapsed();
+    if (heroBtn && heroBtn.classList.contains('recording')) {
+      const t = heroBtn.querySelector('.hike-elapsed');
+      if (t) t.textContent = fmtElapsed();
+    }
+  }
+  window.addEventListener('dolopaws-hike-progress', function (e) {
+    hikeStartedAt = (e.detail && e.detail.startedAt) || hikeStartedAt;
+    const dist = document.getElementById('tdLiveDist');
+    if (dist && e.detail && typeof e.detail.km === 'number') dist.textContent = e.detail.km.toFixed(1) + ' km';
+    if (!elapsedTimer) elapsedTimer = setInterval(tickElapsed, 1000);
+    tickElapsed();
+  });
+
   function syncHike() {
     const mapBtn = document.getElementById('mapStartHikeBtn');
+    const rec = recording();
     if (heroBtn) {
       heroBtn.hidden = !mapBtn; // hike-mode only injects the button when GPS exists
-      const rec = recording();
       heroBtn.classList.toggle('recording', rec);
       heroBtn.innerHTML = rec
-        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> End hike'
+        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> End · <span class="hike-elapsed">' + fmtElapsed() + '</span>'
         : '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Start the hike';
     }
-    if (liveBanner) liveBanner.hidden = !recording();
+    if (liveBanner) liveBanner.hidden = !rec;
+    if (!rec && elapsedTimer) { clearInterval(elapsedTimer); elapsedTimer = null; hikeStartedAt = null; }
   }
   if (heroBtn) {
     heroBtn.addEventListener('click', function () {
@@ -114,6 +143,8 @@
     if (safetyDog) safetyDog.textContent = name ? ' · ' + name : '';
     const nearbyTitle = document.getElementById('nearbyTitle');
     if (nearbyTitle && name) nearbyTitle.textContent = 'Nearby trails, ranked for ' + name;
+    const liveTitle = document.getElementById('tdLiveTitle');
+    if (liveTitle && name) liveTitle.textContent = 'Recording ' + name + '’s walk';
   }
   window.addEventListener('dolopaws-auth-changed', syncDog);
   syncDog();

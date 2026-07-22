@@ -210,6 +210,11 @@ function initHikeMode(map, trail){
     if (typeof window._dolopawsElevHighlight === 'function'){
       try { window._dolopawsElevHighlight(Math.min(currentKm, statedKm)); } catch (e) {}
     }
+
+    // Let page chrome (the live recording banner) mirror our progress.
+    window.dispatchEvent(new CustomEvent('dolopaws-hike-progress', {
+      detail: { km: Math.min(currentKm, statedKm), startedAt: hikeStartedAt },
+    }));
   }
 
   function onError(err){
@@ -256,6 +261,9 @@ function initHikeMode(map, trail){
     if (window.DoloPawsMapFS) window.DoloPawsMapFS.enter();
     startBtn.textContent = hikeLabel('hike.end', 'End hike');
     startBtn.style.background = '#9C3A25';
+    window.dispatchEvent(new CustomEvent('dolopaws-hike-progress', {
+      detail: { km: 0, startedAt: hikeStartedAt },
+    }));
     panel.style.display = 'block';
     container.classList.add('hike-status-visible');
     panel.innerHTML = window.t('hike.getting');
