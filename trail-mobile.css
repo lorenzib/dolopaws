@@ -1,0 +1,157 @@
+/* ============================================================
+   TRAIL DETAIL — mobile app layout (≤700px, signed in)
+   Ported from "DoloPaws Trail Detail (Logged in) - Mobile".
+   Chrome (top bar, progress, sticky actions, tab nav) is injected
+   by trail-mobile.js; everything here is scoped to body.mtrail-active
+   so guests and desktop keep the standard responsive page.
+============================================================= */
+
+.mtrail-top,.mtrail-actions,.mtrail-tabs{display:none;}
+
+@media (max-width:700px){
+
+  /* ---------- app chrome ---------- */
+  body.mtrail-active .topnav{display:none;}
+  body.mtrail-active .site-footer{display:none;}
+
+  body.mtrail-active .mtrail-top{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:60;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:calc(10px + env(safe-area-inset-top)) 16px 10px;
+    background:rgba(247,244,235,.94);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(27,31,25,.08);
+  }
+  body.mtrail-active .mtrail-top .back{
+    display:inline-flex;align-items:center;gap:5px;
+    text-decoration:none;color:#4a4d43;
+    font:700 14px 'Inter',sans-serif;
+  }
+  body.mtrail-active .mtrail-top .back span{color:#8A9689;font-weight:600;}
+  body.mtrail-active .mtrail-top .brand{
+    display:inline-flex;align-items:center;gap:8px;
+    font:600 18px 'Source Serif 4',serif;color:#1b1f19;text-decoration:none;
+  }
+  body.mtrail-active .mtrail-top .brand img{width:24px;height:24px;border-radius:7px;}
+  body.mtrail-active .mtrail-top .avlink{text-decoration:none;flex:none;}
+  body.mtrail-active .mtrail-top .av{
+    width:30px;height:30px;border-radius:50%;
+    background-color:#3E7A91;background-size:cover;background-position:center;
+    color:#fff;display:grid;place-items:center;
+    font:800 14px 'Inter',sans-serif;
+  }
+  body.mtrail-active .mtrail-progress{
+    position:absolute;left:0;right:0;bottom:-3px;height:3px;
+    background:rgba(27,31,25,.06);
+  }
+  body.mtrail-active .mtrail-progress span{
+    display:block;height:100%;width:0;background:#3E7A91;
+    transition:width .08s linear;
+  }
+
+  /* clear the fixed top bar; leave room for the fixed bottom bars */
+  body.mtrail-active .td2{padding-top:calc(var(--mtrail-top,58px) + 3px);}
+  body.mtrail-active .td2-wrap{
+    padding-bottom:calc(var(--mtrail-actions,66px) + var(--mtrail-tabs,72px) + 28px);
+  }
+
+  /* ---------- sticky action bar + tab nav ---------- */
+  body.mtrail-active .mtrail-actions{
+    position:fixed;left:0;right:0;
+    bottom:var(--mtrail-tabs,72px);
+    z-index:50;
+    display:flex;gap:10px;align-items:center;
+    padding:11px 16px;
+    background:rgba(247,244,235,.96);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border-top:1px solid rgba(27,31,25,.08);
+  }
+  /* the page's real buttons, re-dressed for the bar */
+  /* Save stretches alone; yields to the primary button when GPS exists */
+  body.mtrail-active .mtrail-actions #detailSaveBtn{
+    flex:1;min-height:48px;padding:12px 18px;justify-content:center;
+    background:#fff;border:1.5px solid #E4E0D3;color:#2E4034;
+    border-radius:12px;font:700 13.5px 'Inter',sans-serif;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  body.mtrail-active .mtrail-actions #detailSaveBtn.saved{
+    background:#EAF3EC;border-color:#9FC4B0;color:#2C5C34;
+  }
+  body.mtrail-active .mtrail-actions #heroStartHike:not([hidden]) ~ #detailSaveBtn,
+  body.mtrail-active .mtrail-actions #detailSaveBtn:has(~ #heroStartHike:not([hidden])){
+    flex:none;
+  }
+  body.mtrail-active .mtrail-actions #heroStartHike{
+    flex:2;min-height:48px;
+    border-radius:12px;font:800 15px 'Inter',sans-serif;
+  }
+  body.mtrail-active .mtrail-actions #heroStartHike[hidden]{display:none;}
+  body.mtrail-active .mtrail-actions #heroStartHike.recording{background:#9C3A25;}
+
+  body.mtrail-active .mtrail-tabs{
+    position:fixed;left:0;right:0;bottom:0;z-index:55;
+    display:flex;align-items:stretch;
+    background:#fff;
+    border-top:1px solid rgba(27,31,25,.08);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  }
+  body.mtrail-active .mtrail-tabs a{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:#8A9689;text-decoration:none;
+    font:600 10.5px 'Inter',sans-serif;padding:4px 0;
+  }
+  body.mtrail-active .mtrail-tabs a.on{color:#2E4034;font-weight:800;}
+
+  /* ---------- hero, per the mobile design ---------- */
+  body.mtrail-active .td2-back{display:none;}          /* top bar has back */
+  body.mtrail-active .td2-actrow{display:none;}        /* buttons moved to the bar */
+  body.mtrail-active .td2-hero-in{padding:16px 16px 0;}
+  body.mtrail-active .td2-hero-row{margin-top:2px;gap:10px;}
+  body.mtrail-active .td2-hero #trailName{font:700 30px/1.06 'Source Serif 4',serif;}
+  body.mtrail-active .td2-hero-actions{
+    flex-direction:row;align-items:center;align-self:auto;
+    padding-bottom:0;width:100%;
+  }
+  body.mtrail-active .td2-linkrow{flex-wrap:wrap;}
+
+  /* stat strip → the design's 3-column hairline grid */
+  body.mtrail-active .td2-stat{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-top:1px solid rgba(255,255,255,.12);
+    margin-top:16px;
+  }
+  body.mtrail-active .td2-stat .f{
+    flex:none;padding:13px 4px 12px 0;border-left:none;
+  }
+  body.mtrail-active .td2-stat .f:nth-child(3n+2),
+  body.mtrail-active .td2-stat .f:nth-child(3n){
+    border-left:1px solid rgba(255,255,255,.12);padding-left:14px;
+  }
+
+  /* ---------- content cards ---------- */
+  body.mtrail-active .td2-wrap{padding-left:16px;padding-right:16px;}
+  body.mtrail-active .td2-mapcard .trail-map-box{height:340px;min-height:300px;}
+  body.mtrail-active .td2 .trail-photos-list{grid-template-columns:repeat(3,1fr);}
+
+  /* nearby trails → horizontal snap row (design) */
+  body.mtrail-active .near-grid{
+    display:flex;gap:12px;
+    overflow-x:auto;
+    margin:0 -16px;padding:0 16px 6px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  body.mtrail-active .near-grid::-webkit-scrollbar{display:none;}
+  body.mtrail-active .near-grid > *{
+    flex:none;width:200px;scroll-snap-align:start;
+  }
+  body.mtrail-active .td2 .near-card .ph{height:118px;}
+}
