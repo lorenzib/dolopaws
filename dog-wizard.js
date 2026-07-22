@@ -156,9 +156,24 @@
   }
 
   function renderStepper() {
+    // Mobile app chrome (Dog Profile Setup design): thin progress bar +
+    // "Step X of Y" label. The elements only display at phone widths.
+    var progressEl = document.getElementById('dwProgress');
+    var stepCountEl = document.getElementById('dwStepCount');
     if (phase !== 'form') {
       stepperEl.hidden = true;
+      if (progressEl) progressEl.hidden = true;
+      if (stepCountEl) stepCountEl.hidden = true;
       return;
+    }
+    if (progressEl) {
+      progressEl.hidden = false;
+      var fill = progressEl.firstElementChild;
+      if (fill) fill.style.width = Math.round(((stepIndex + 1) / STEPS.length) * 100) + '%';
+    }
+    if (stepCountEl) {
+      stepCountEl.hidden = false;
+      stepCountEl.textContent = 'Step ' + (stepIndex + 1) + ' of ' + STEPS.length;
     }
     stepperEl.hidden = false;
     stepperEl.innerHTML = STEPS.map(function (s, i) {
@@ -181,7 +196,10 @@
       return;
     }
     footerEl.hidden = false;
+    // Desktop keeps the invisible-but-present Back so "Next" stays pinned
+    // right; the phone layout collapses it entirely (see .dw-back-none).
     backBtn.style.visibility = stepIndex === 0 ? 'hidden' : 'visible';
+    backBtn.classList.toggle('dw-back-none', stepIndex === 0);
     var isLast = stepIndex === STEPS.length - 1;
     var isGuest = !(window.DoloPawsAuth && window.DoloPawsAuth.currentUser);
     if (isLast) {

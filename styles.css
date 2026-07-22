@@ -889,6 +889,7 @@ body.map-fs-open{overflow:hidden;}
 .dw-option:hover{border-color:var(--accent);}
 .dw-option.selected{background:var(--sage-dim);border-color:var(--success);color:var(--ink);}
 .dw-field-error{display:block;font-size:12px;font-weight:600;color:#9C3A25;margin-top:6px;}
+.dw-field-error[hidden]{display:none;}
 .dw-step-hint{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;line-height:1.5;}
 .dw-cond-list{display:flex;flex-direction:column;gap:9px;}
 .dw-cond-item{display:flex;gap:9px;align-items:flex-start;font-size:13px;font-weight:400;color:var(--ink);line-height:1.45;cursor:pointer;}
@@ -1991,4 +1992,115 @@ body[data-homepage-view="returning"] .site-footer{display:none;}
   .li-list{border-left:none;border-top:1px solid var(--paper-line);overflow:visible;}
   .li-list-head{position:static;}
   .li-filters-menu{position:fixed;top:auto;right:8px;left:8px;width:auto;max-height:70vh;}
+}
+
+/* ============================================================
+   DOG WIZARD — mobile app chrome (≤700px)
+   Ported from "DoloPaws Dog Profile Setup": full-screen sheet,
+   thin progress bar + "Step X of Y" under the title, card-style
+   option rows, sticky blurred footer. All four production steps
+   and their data stay exactly as they are — this is presentation
+   only. Desktop keeps the centred modal with the dot stepper.
+============================================================= */
+
+/* Selected options everywhere pick up the design's accent treatment */
+.dw-option.selected{background:#EAF3EC;border-color:var(--accent);color:var(--ink);}
+
+.dw-progress{display:none;}
+.dw-stepcount{display:none;}
+
+@media (max-width:700px){
+  .dw-overlay{padding:0;align-items:stretch;}
+  .dw-modal{
+    max-width:none;
+    max-height:none;
+    height:100%;
+    border-radius:0;
+    box-shadow:none;
+    padding:calc(14px + env(safe-area-inset-top)) 0 0;
+  }
+  .dw-close{
+    top:calc(10px + env(safe-area-inset-top));
+    right:12px;
+    width:34px;height:34px;
+    border:1.5px solid var(--paper-line);
+    border-radius:10px;
+    background:#fff;
+    font-size:18px;
+    display:grid;place-items:center;
+    padding:0;
+  }
+  .dw-title{
+    font-size:17px;
+    padding:0 54px 0 18px;
+  }
+  .dw-stepcount[hidden]{display:none;}
+  .dw-stepcount{
+    display:block;
+    font:600 11px 'Inter',sans-serif;
+    color:#8A9689;
+    margin:2px 0 0;
+    padding:0 18px;
+  }
+  .dw-subtitle{padding:0 18px;}
+  .dw-stepper{display:none;}
+  .dw-progress[hidden]{display:none;}
+  .dw-progress{
+    display:block;
+    height:4px;
+    background:rgba(27,31,25,.06);
+    margin-top:12px;
+  }
+  .dw-progress span{
+    display:block;
+    height:100%;
+    width:0;
+    background:var(--accent);
+    transition:width .25s ease;
+  }
+  .dw-body{padding:20px 18px 24px;}
+  .dw-label{font-size:12.5px;font-weight:800;}
+  .dw-input,.dw-select,.dw-textarea{
+    padding:14px 15px;
+    border-radius:12px;
+    font-size:15px;
+    background:#fff;
+  }
+  .dw-option{
+    padding:14px 15px;
+    border-radius:14px;
+    font-size:13.5px;
+    font-weight:800;
+    color:var(--ink);
+  }
+  .dw-cond-item{
+    border:1.5px solid var(--paper-line);
+    border-radius:13px;
+    padding:13px 14px;
+    background:#fff;
+  }
+  .dw-footer{
+    margin:0;
+    padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+    background:rgba(247,244,235,.96);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border-top:1px solid rgba(27,31,25,.08);
+  }
+  .dw-btn-primary{
+    flex:1;
+    padding:14px 18px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:800;
+  }
+  .dw-btn-ghost{
+    padding:14px 18px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:700;
+    background:#fff;
+    color:var(--ink);
+  }
+  .dw-footer .dw-back-none{display:none;}
 }
