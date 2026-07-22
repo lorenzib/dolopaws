@@ -64,6 +64,51 @@ function distMeters(a, b){
   return Math.hypot(a[0]-b[0], a[1]-b[1]) * 111000;
 }
 
+function mapDistanceKm(a, b){
+  const rad = Math.PI / 180;
+  const dLat = (b[0] - a[0]) * rad;
+  const dLng = (b[1] - a[1]) * rad;
+  const lat1 = a[0] * rad;
+  const lat2 = b[0] * rad;
+  const h = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 6371 * 2 * Math.asin(Math.sqrt(h));
+}
+
+function sampledTrailPath(trail, maxPoints = 30){
+  const path = Array.isArray(trail && trail.path) && trail.path.length
+    ? trail.path
+    : (trail && typeof trail.lat === 'number' && typeof trail.lng === 'number' ? [[trail.lat, trail.lng]] : []);
+  if(path.length <= maxPoints) return path;
+  const step = Math.ceil(path.length / maxPoints);
+  const sampled = path.filter((_, index) => index % step === 0);
+  if(sampled[sampled.length - 1] !== path[path.length - 1]) sampled.push(path[path.length - 1]);
+  return sampled;
+}
+
+function nearbyTrailCandidates(currentTrail, allTrails, radiusKm = 25, limit = 5){
+  const currentPath = sampledTrailPath(currentTrail);
+  if(!currentPath.length) return [];
+  return (allTrails || [])
+    .filter(trail => trail && trail.id !== currentTrail.id && Array.isArray(trail.path) && trail.path.length > 1)
+    .map(trail => {
+      const candidatePath = sampledTrailPath(trail);
+      let distanceKm = Infinity;
+      let mapPoint = candidatePath[0];
+      currentPath.forEach(currentPoint => candidatePath.forEach(candidatePoint => {
+        const distance = mapDistanceKm(currentPoint, candidatePoint);
+        if(distance < distanceKm){
+          distanceKm = distance;
+          mapPoint = candidatePoint;
+        }
+      }));
+      return { trail, distanceKm, mapPoint };
+    })
+    .filter(item => item.distanceKm <= radiusKm)
+    .sort((a, b) => a.distanceKm - b.distanceKm)
+    .slice(0, limit);
+}
+
 // Finds the real point along an actual GPS path at a given fraction of its
 // total length (0 = start, 1 = end). Used to place rifugi/water icons at
 // their true position on the map, rather than guessing coordinates.
@@ -1199,8 +1244,16 @@ function renderTrail(t){
       // clicking one pops up its name and a link straight to its page. Added
       // BEFORE the main route's layers so the current trail always draws on
       // top of its neighbours.
-      const otherTrails = (typeof trails !== 'undefined' ? trails : [])
-        .filter(x => x.id !== t.id && Array.isArray(x.path) && x.path.length > 1);
+      const nearbyTrails = nearbyTrailCandidates(t, typeof trails !== 'undefined' ? trails : []);
+      const otherTrails = nearbyTrails.map(item => item.trail);
+      const nearbyToggleBtn = document.getElementById('nearbyToggle');
+      if(nearbyToggleBtn){
+        nearbyToggleBtn.hidden = nearbyTrails.length === 0;
+        if(nearbyTrails.length){
+          const label = nearbyToggleBtn.querySelector('span');
+          if(label) label.textContent = `Nearby trails (${nearbyTrails.length})`;
+        }
+      }
       if(otherTrails.length){
         map.addSource('other-trails', {
           type: 'geojson',
@@ -1227,8 +1280,9 @@ function renderTrail(t){
               'caution', '#9C3A25',
               '#2E4034',
             ],
-            'line-width': 3,
-            'line-opacity': 0.45,
+            'line-width': 3.5,
+            'line-opacity': 0.68,
+            'line-dasharray': [1.5, 1.25],
           },
         });
         // Wide invisible twin so the thin neighbour lines are easy to hit.
@@ -1240,11 +1294,57 @@ function renderTrail(t){
           layout: { 'line-join': 'round', 'line-cap': 'round' },
           paint: { 'line-color': '#000', 'line-width': 16, 'line-opacity': 0.01 },
         });
+        map.addSource('nearby-trail-points', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: nearbyTrails.map(item => ({
+              type: 'Feature',
+              properties: {
+                id: item.trail.id,
+                name: item.trail.name,
+                safetyLevel: item.trail.safetyLevel,
+                distance: item.trail.distance,
+                awayKm: Math.round(item.distanceKm * 10) / 10,
+              },
+              geometry: { type: 'Point', coordinates: [item.mapPoint[1], item.mapPoint[0]] },
+            })),
+          },
+        });
+        map.addLayer({
+          id: 'nearby-trail-points-circle',
+          type: 'circle',
+          source: 'nearby-trail-points',
+          paint: {
+            'circle-radius': 6,
+            'circle-color': '#78AFC5',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+          },
+        });
+        map.addLayer({
+          id: 'nearby-trail-points-label',
+          type: 'symbol',
+          source: 'nearby-trail-points',
+          minzoom: 8,
+          layout: {
+            'text-field': ['get', 'name'],
+            'text-size': 11,
+            'text-font': ['Noto Sans Regular'],
+            'text-offset': [0, 1.25],
+            'text-anchor': 'top',
+          },
+          paint: {
+            'text-color': '#243128',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 2,
+          },
+        });
         const escName = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-        map.on('click', 'other-trails-hit', (e) => {
+        const openNearbyPopup = (e) => {
           // If this click also lands on the current trail's own route,
           // let the main route win — no neighbour popup on top of it.
-          if(map.getLayer('single-trail-path-line')){
+          if(e.type === 'click' && e.features && e.features[0] && e.features[0].geometry.type === 'LineString' && map.getLayer('single-trail-path-line')){
             const onMain = map.queryRenderedFeatures(e.point, { layers: ['single-trail-path-line'] });
             if(onMain.length) return;
           }
@@ -1255,13 +1355,37 @@ function renderTrail(t){
             .setLngLat(e.lngLat)
             .setHTML(
               `<div style="font:700 14px 'Source Serif 4',serif;color:#2E4034;">${escName(p.name)}</div>` +
-              `<div style="font:600 11.5px 'Inter',sans-serif;color:#6B7A6E;margin-top:3px;">${escName(String(p.distance))} km · nearby trail</div>` +
+              `<div style="font:600 11.5px 'Inter',sans-serif;color:#6B7A6E;margin-top:3px;">${escName(String(p.distance))} km trail${p.awayKm != null ? ` · ${escName(String(p.awayKm))} km away` : ''}</div>` +
               `<a href="trail.html?id=${encodeURIComponent(p.id)}" style="display:inline-block;margin-top:9px;font:700 12.5px 'Inter',sans-serif;color:#fff;background:#2E4034;padding:8px 14px;border-radius:9px;text-decoration:none;">Open this trail →</a>`
             )
             .addTo(map);
-        });
+        };
+        map.on('click', 'other-trails-hit', openNearbyPopup);
+        map.on('click', 'nearby-trail-points-circle', openNearbyPopup);
         map.on('mouseenter', 'other-trails-hit', () => { map.getCanvas().style.cursor = 'pointer'; });
         map.on('mouseleave', 'other-trails-hit', () => { map.getCanvas().style.cursor = ''; });
+        map.on('mouseenter', 'nearby-trail-points-circle', () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', 'nearby-trail-points-circle', () => { map.getCanvas().style.cursor = ''; });
+
+        if(nearbyToggleBtn){
+          let showingNearbyOverview = false;
+          nearbyToggleBtn.addEventListener('click', () => {
+            showingNearbyOverview = !showingNearbyOverview;
+            nearbyToggleBtn.classList.toggle('on', showingNearbyOverview);
+            nearbyToggleBtn.setAttribute('aria-pressed', showingNearbyOverview ? 'true' : 'false');
+            const label = nearbyToggleBtn.querySelector('span');
+            const bounds = new maplibregl.LngLatBounds();
+            t.path.forEach(([lat, lng]) => bounds.extend([lng, lat]));
+            if(showingNearbyOverview){
+              otherTrails.forEach(trail => trail.path.forEach(([lat, lng]) => bounds.extend([lng, lat])));
+              if(label) label.textContent = 'Focus this trail';
+              map.fitBounds(bounds, { padding: 54, maxZoom: 13 });
+            } else {
+              if(label) label.textContent = `Nearby trails (${nearbyTrails.length})`;
+              map.fitBounds(bounds, { padding: 60, maxZoom: 17 });
+            }
+          });
+        }
       }
 
       if(Array.isArray(t.path) && t.path.length > 1){
