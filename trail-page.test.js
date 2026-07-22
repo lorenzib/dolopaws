@@ -81,9 +81,24 @@ describe('trail page map legend', () => {
     const nearbyWrap = document.getElementById('nearbyTrails');
     expect(nearbyWrap).not.toBeNull();
     expect(nearbyWrap.querySelector('h3').textContent).toMatch(/Similar trails/i);
+    expect(document.getElementById('nearbyToggle')).not.toBeNull();
 
     expect(document.getElementById('decisionBar')).toBeNull();
     expect(html).not.toContain('Gentler nearby');
+  });
+
+  test('nearby trail candidates are distance-ranked and exclude the current trail', () => {
+    const context = loadTrailScript();
+    const current = { id:'current', path:[[46.64, 11.72], [46.65, 11.73]] };
+    const nearby = { id:'nearby', path:[[46.66, 11.74], [46.67, 11.75]] };
+    const farther = { id:'farther', path:[[46.75, 11.80], [46.76, 11.81]] };
+    const outside = { id:'outside', path:[[47.5, 13.0], [47.51, 13.01]] };
+
+    const result = context.nearbyTrailCandidates(current, [outside, farther, current, nearby], 25, 5);
+
+    expect(result.map(item => item.trail.id)).toEqual(['nearby', 'farther']);
+    expect(result[0].distanceKm).toBeLessThan(result[1].distanceKm);
+    expect(result[0].mapPoint).toEqual(nearby.path[0]);
   });
 
   test('match, safety, risk, and live conditions each have one clear owner', () => {

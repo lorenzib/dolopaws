@@ -149,8 +149,8 @@
     const pool = trails.filter(o => o.id !== t.id);
     const sameValley = pool.filter(o => o.valley && o.valley === t.valley);
     const sameRegion = pool.filter(o => o.region === t.region && o.valley !== t.valley);
-    const picks = sameValley.slice(0, 3);
-    for (const o of sameRegion) { if (picks.length >= 3) break; picks.push(o); }
+    const picks = sameValley.slice(0, 4);
+    for (const o of sameRegion) { if (picks.length >= 4) break; picks.push(o); }
     if (!picks.length) return;
     // Reference gallery card: photo, floating match % chip, serif name, meta.
     grid.innerHTML = picks.map(o => `
@@ -162,6 +162,8 @@
         </div>
       </a>`).join('');
     wrapEl.hidden = false;
+    const seeAll = $('nearbySeeAll');
+    if (seeAll && (t.valley || t.area)) seeAll.textContent = 'See all in ' + (t.valley || t.area) + ' \u2192';
 
     // Personalise: retitle the section and fill each pick's real match %
     // chip — same scoreTrail() as everywhere else.
@@ -170,7 +172,7 @@
       window.DoloPawsAuth.getDogProfile().then(profile => {
         if (!profile) return;
         const heading = $('nearbyTitle');
-        if (heading && profile.name) heading.textContent = 'Similar trails for ' + profile.name;
+        if (heading && profile.name) heading.textContent = 'Nearby trails, ranked for ' + profile.name;
         const ov = (typeof effectiveOverrides === 'function') ? effectiveOverrides(profile, null) : profile;
         for (const o of picks) {
           const slot = grid.querySelector(`[data-near-id="${CSS.escape(o.id)}"] .near-pct`);
