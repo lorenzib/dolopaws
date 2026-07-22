@@ -717,6 +717,17 @@ function renderTrail(t){
   document.title = `${t.name} | DoloPaws`;
   document.getElementById('pageTitle').textContent = `${t.name} | DoloPaws`;
   document.getElementById('trailName').textContent = t.name;
+  // Photo-backed hero (per prototype): trail photo under a dark gradient.
+  // Trails without an image keep the flat dark hero.
+  if(t.imageIcon){
+    const heroPhoto = document.getElementById('tdHeroPhoto');
+    const heroVeil = document.getElementById('tdHeroVeil');
+    if(heroPhoto && heroVeil){
+      heroPhoto.src = t.imageIcon;
+      heroPhoto.hidden = false;
+      heroVeil.hidden = false;
+    }
+  }
   document.getElementById('trailMeta').textContent =
     `${t.area} · ${t.distance} km · ${t.elevation} m gain · ${t.hours} h · ${t.terrainType}`;
   document.getElementById('trailBadges').innerHTML =
@@ -875,6 +886,8 @@ function renderTrail(t){
       // Legacy slot — other scripts (dog card) read this text.
       const el = document.getElementById('trailMatch');
       if(el){ el.innerHTML = `<a href="index.html?profile=1">${window.t('trail.matchTeaser')}</a>`; el.hidden = false; }
+      const dogCard = document.getElementById('td2DogCard');
+      if(dogCard) dogCard.hidden = true;
     }
     function paintMatch(){
       if(typeof scoreTrail !== 'function') return;
@@ -898,6 +911,26 @@ function renderTrail(t){
           el.textContent = (t.curated === false ? '≈' : '') + n + '% ' +
             window.t('trail.matchFor', {name});
           el.hidden = false;
+        }
+        // Sidebar dog card (per prototype): avatar · name · profile line,
+        // match % with a tiered verdict of today's walk.
+        const dogCard = document.getElementById('td2DogCard');
+        if(dogCard){
+          const sizeLabel = { '5-10': 'small', '15-20': 'medium', '30-40': 'large' }[profile.weightBand] || '';
+          const heat = (Array.isArray(profile.conditions) && profile.conditions.includes('heat')) || profile.heatIssues;
+          const sub = [profile.breed, sizeLabel, heat ? 'heat-sensitive' : ''].filter(Boolean).join(' · ');
+          document.getElementById('td2DogAvatar').textContent = (name.charAt(0) || '🐾').toUpperCase();
+          document.getElementById('td2DogName').textContent = name;
+          document.getElementById('td2DogSub').textContent = sub;
+          document.getElementById('td2DogPct').textContent = (t.curated === false ? '≈' : '') + n + '%';
+          const verdict = document.getElementById('td2DogVerdict');
+          verdict.classList.remove('tier-good', 'tier-caution');
+          let verdictTxt;
+          if(n >= 85){ verdictTxt = window.t('trail.dogCardGreat', {name}); }
+          else if(n >= 65){ verdict.classList.add('tier-good'); verdictTxt = window.t('trail.dogCardGood', {name}); }
+          else { verdict.classList.add('tier-caution'); verdictTxt = window.t('trail.dogCardCheck', {name}); }
+          document.getElementById('td2DogVerdictTxt').textContent = verdictTxt;
+          dogCard.hidden = false;
         }
       });
     }
@@ -1012,6 +1045,7 @@ function renderTrail(t){
       pitch: 0, // clean, flat, label-first by default — 3D is opt-in via the toggle
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+    window._dolopawsTrailMap = map; // debug/test handle
 
     // Fullscreen map — manual ⤢ toggle, and automatic during hike mode.
     const mapBox = document.getElementById('trailMapBox');
@@ -1035,6 +1069,45 @@ function renderTrail(t){
       showUserHeading: true,
       fitBoundsOptions: { maxZoom: 15.5 },
     }), 'top-right');
+
+    // ---- Terrain / Satellite layer switch --------------------------------
+    // Bound outside the 'load' handler so the buttons respond as soon as the
+    // style is parsed, even while tiles are still streaming in on a slow
+    // connection. The imagery slots in below the basemap's text labels, so
+    // the route line, POIs and place names stay readable on top of it.
+    const layerSwitch = document.getElementById('tdLayerSwitch');
+    if (layerSwitch){
+      const ensureSatelliteLayer = () => {
+        if (map.getLayer('satellite-layer')) return true;
+        if (!map.isStyleLoaded()) return false;
+        map.addSource('satellite', {
+          type: 'raster',
+          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+          maxzoom: 19,
+          attribution: 'Imagery © Esri',
+        });
+        const firstSymbol = map.getStyle().layers.find(l => l.type === 'symbol');
+        map.addLayer({
+          id: 'satellite-layer',
+          type: 'raster',
+          source: 'satellite',
+          layout: { visibility: 'none' },
+        }, firstSymbol && firstSymbol.id);
+        return true;
+      };
+      layerSwitch.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-maplayer]');
+        if (!btn || !ensureSatelliteLayer()) return;
+        const sat = btn.getAttribute('data-maplayer') === 'satellite';
+        map.setLayoutProperty('satellite-layer', 'visibility', sat ? 'visible' : 'none');
+        layerSwitch.querySelectorAll('button').forEach(b => {
+          const on = b === btn;
+          b.classList.toggle('on', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      });
+    }
 
     map.on('load', async () => {
       let poiVisible = true;           // "Points of interest" toggle state
@@ -1080,6 +1153,7 @@ function renderTrail(t){
       map.on('sourcedata', (e) => {
         if (e.sourceId && POI_SOURCES.includes(e.sourceId) && e.isSourceLoaded) applyPoiVisibility();
       });
+
 
       // Waymarked Trails' own public hiking overlay — same underlying OSM
       // data as our base map, but with their dedicated trail-route styling
