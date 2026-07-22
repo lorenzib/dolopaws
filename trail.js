@@ -1120,6 +1120,76 @@ function renderTrail(t){
         });
       }
 
+      // ---- Other trails' routes — browse and switch without going back ----
+      // Every other trail with a real GPS route renders as a secondary line;
+      // clicking one pops up its name and a link straight to its page. Added
+      // BEFORE the main route's layers so the current trail always draws on
+      // top of its neighbours.
+      const otherTrails = (typeof trails !== 'undefined' ? trails : [])
+        .filter(x => x.id !== t.id && Array.isArray(x.path) && x.path.length > 1);
+      if(otherTrails.length){
+        map.addSource('other-trails', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: otherTrails.map(x => ({
+              type: 'Feature',
+              properties: { id: x.id, name: x.name, safetyLevel: x.safetyLevel, distance: x.distance },
+              geometry: { type: 'LineString', coordinates: x.path.map(([lat, lng]) => [lng, lat]) },
+            })),
+          },
+        });
+        map.addLayer({
+          id: 'other-trails-line',
+          type: 'line',
+          source: 'other-trails',
+          minzoom: 9,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': [
+              'match', ['get', 'safetyLevel'],
+              'low-risk', '#2C5C34',
+              'moderate', '#8A5A16',
+              'caution', '#9C3A25',
+              '#2E4034',
+            ],
+            'line-width': 3,
+            'line-opacity': 0.45,
+          },
+        });
+        // Wide invisible twin so the thin neighbour lines are easy to hit.
+        map.addLayer({
+          id: 'other-trails-hit',
+          type: 'line',
+          source: 'other-trails',
+          minzoom: 9,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#000', 'line-width': 16, 'line-opacity': 0.01 },
+        });
+        const escName = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+        map.on('click', 'other-trails-hit', (e) => {
+          // If this click also lands on the current trail's own route,
+          // let the main route win — no neighbour popup on top of it.
+          if(map.getLayer('single-trail-path-line')){
+            const onMain = map.queryRenderedFeatures(e.point, { layers: ['single-trail-path-line'] });
+            if(onMain.length) return;
+          }
+          const f = e.features && e.features[0];
+          if(!f) return;
+          const p = f.properties;
+          new maplibregl.Popup({ offset: 12, maxWidth: '260px' })
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `<div style="font:700 14px 'Source Serif 4',serif;color:#2E4034;">${escName(p.name)}</div>` +
+              `<div style="font:600 11.5px 'Inter',sans-serif;color:#6B7A6E;margin-top:3px;">${escName(String(p.distance))} km · nearby trail</div>` +
+              `<a href="trail.html?id=${encodeURIComponent(p.id)}" style="display:inline-block;margin-top:9px;font:700 12.5px 'Inter',sans-serif;color:#fff;background:#2E4034;padding:8px 14px;border-radius:9px;text-decoration:none;">Open this trail →</a>`
+            )
+            .addTo(map);
+        });
+        map.on('mouseenter', 'other-trails-hit', () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', 'other-trails-hit', () => { map.getCanvas().style.cursor = ''; });
+      }
+
       if(Array.isArray(t.path) && t.path.length > 1){
         map.addSource('single-trail-path', {
           type: 'geojson',
