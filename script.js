@@ -1269,7 +1269,8 @@ function liFillAvatar(el, profile){
 // photo upload is reflected immediately.
 function renderLiHeader(profile){
   const nameEl = document.getElementById('liAccountName');
-  if(nameEl) nameEl.textContent = (profile && profile.name) ? profile.name : t('nav.account');
+  // Same identity label the community uses for reviews: "Rufus’s human".
+  if(nameEl) nameEl.textContent = (profile && profile.name) ? `${profile.name}’s human` : t('nav.account');
   liFillAvatar(document.getElementById('liAccountAvatar'), profile);
   const manage = document.getElementById('liManageLink');
   if(manage) manage.textContent = (profile && profile.name)

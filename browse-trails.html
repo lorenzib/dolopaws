@@ -37,11 +37,11 @@
 <div class="topnav">
   <a class="brand" href="index.html"><img src="logo.svg" alt="">DoloPaws</a>
   <div class="links">
-    <a href="browse-trails.html" class="active">Trails</a>
-    <a href="journal.html">My Journal</a>
+    <a href="browse-trails.html" class="active">Browse all Trails</a>
+    <a href="browse-trails.html#collections">Collections</a>
     <a href="safety-guide.html">Safety guide</a>
-    <a href="about.html">About</a>
-    <button id="accountBtn" class="account-btn">Log in</button>
+    <a href="about.html" data-i18n="nav.about">About</a>
+    <button id="accountBtn" class="account-btn" data-i18n="nav.login">Log in</button>
   </div>
 </div>
 
@@ -77,6 +77,17 @@
 </div>
 
 <div class="wrap" style="padding-bottom:60px;">
+
+  <!-- Collections: curated cuts of the catalog. Linked from the header
+       nav (#collections); each card applies its filter to the list below. -->
+  <section class="browse-collections" id="collections" aria-labelledby="collectionsHeading">
+    <div class="browse-coll-head">
+      <h2 id="collectionsHeading">Collections</h2>
+      <p>Hand-picked sets for the days that need them — pick one to filter the trails below.</p>
+    </div>
+    <div class="browse-coll-grid" id="browseCollections"></div>
+  </section>
+
   <div class="browse-tools" aria-label="Filter trails">
     <input class="browse-search" id="browseSearch" type="search" placeholder="Search by trail, area, or valley" aria-label="Search trails">
     <select id="browseRegion" aria-label="Filter by region">
@@ -320,12 +331,29 @@
     const allowedDistances = ['all', '5', '10', '20'];
     let page = 1;
 
+    // Curated collections — same predicates as the homepage "Featured this
+    // week" themes, so a collection means the same thing everywhere.
+    const hasWater = t => Array.isArray(t.waterSources) && t.waterSources.length > 0;
+    const COLLECTIONS = {
+      'shady': { title: 'Shady lake loops', blurb: 'Cool, covered trails with water nearby',
+        filter: t => (t.shadeCoverage || 0) >= 30 && hasWater(t) },
+      'water': { title: 'Lakeside & stream walks', blurb: 'Water to drink and cool off along the way',
+        filter: hasWater },
+      'meadow': { title: 'Open meadow strolls', blurb: 'Wide, gentle paths with big views',
+        filter: t => (t.shadeCoverage || 0) < 30 && (t.terrainRank || 0) <= 1 },
+      'gentle': { title: 'Gentle short loops', blurb: 'Easy, low-climb walks under 4 km',
+        filter: t => Number(t.distance) <= 4 },
+    };
+    let collectionKey = 'all';
+    const collectionsGrid = document.getElementById('browseCollections');
+
     function applyBrowseUrl(){
       const urlParams = new URLSearchParams(window.location.search);
       search.value = urlParams.get('search') || '';
       region.value = allowedRegions.includes(urlParams.get('region')) ? urlParams.get('region') : 'all';
       risk.value = allowedRisks.includes(urlParams.get('risk')) ? urlParams.get('risk') : 'all';
       distance.value = allowedDistances.includes(urlParams.get('distance')) ? urlParams.get('distance') : 'all';
+      collectionKey = COLLECTIONS[urlParams.get('collection')] ? urlParams.get('collection') : 'all';
       page = Math.max(1, Number.parseInt(urlParams.get('page'), 10) || 1);
     }
     applyBrowseUrl();
@@ -336,6 +364,7 @@
       if(region.value !== 'all') state.set('region', region.value);
       if(risk.value !== 'all') state.set('risk', risk.value);
       if(distance.value !== 'all') state.set('distance', distance.value);
+      if(collectionKey !== 'all') state.set('collection', collectionKey);
       if(page > 1) state.set('page', String(page));
       const query = state.toString();
       return 'browse-trails.html' + (query ? '?' + query : '');
@@ -352,12 +381,36 @@
     function filteredTrails(){
       const q = search.value.trim().toLocaleLowerCase();
       const maxDistance = distance.value === 'all' ? Infinity : Number(distance.value);
+      const coll = COLLECTIONS[collectionKey];
       return trails.filter(t => {
         const searchable = [t.name, t.area, t.valley, t.region].filter(Boolean).join(' ').toLocaleLowerCase();
         return (!q || searchable.includes(q))
           && (region.value === 'all' || t.region === region.value)
           && (risk.value === 'all' || t.safetyLevel === risk.value)
-          && (!Number.isFinite(Number(t.distance)) || Number(t.distance) <= maxDistance);
+          && (!Number.isFinite(Number(t.distance)) || Number(t.distance) <= maxDistance)
+          && (!coll || coll.filter(t));
+      });
+    }
+
+    function renderCollections(){
+      if(!collectionsGrid) return;
+      collectionsGrid.innerHTML = '';
+      Object.keys(COLLECTIONS).forEach(key => {
+        const c = COLLECTIONS[key];
+        const count = trails.filter(c.filter).length;
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'browse-coll-card' + (collectionKey === key ? ' active' : '');
+        card.setAttribute('aria-pressed', collectionKey === key ? 'true' : 'false');
+        card.innerHTML = '<b>' + c.title + '</b><span>' + c.blurb + '</span>' +
+          '<em>' + count + ' trail' + (count === 1 ? '' : 's') + '</em>';
+        card.addEventListener('click', () => {
+          collectionKey = collectionKey === key ? 'all' : key;
+          page = 1;
+          renderPage('push');
+          if(collectionKey !== 'all') list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        collectionsGrid.appendChild(card);
       });
     }
 
@@ -367,8 +420,9 @@
       if(h1) h1.innerHTML = window.t('browse.h1');
       if(sub) sub.innerHTML = window.t('browse.sub');
 
+      renderCollections();
       const pool = filteredTrails();
-      const hasFilters = search.value.trim() || region.value !== 'all' || risk.value !== 'all' || distance.value !== 'all';
+      const hasFilters = search.value.trim() || region.value !== 'all' || risk.value !== 'all' || distance.value !== 'all' || collectionKey !== 'all';
       resultCount.textContent = `${pool.length} trail${pool.length === 1 ? '' : 's'} found`;
       clear.hidden = !hasFilters || pool.length === 0;
       const totalPages = Math.max(1, Math.ceil(pool.length / PER_PAGE));
@@ -457,6 +511,7 @@
     clear.addEventListener('click', () => {
       search.value = '';
       region.value = risk.value = distance.value = 'all';
+      collectionKey = 'all';
       page = 1;
       renderPage('push');
       search.focus();
