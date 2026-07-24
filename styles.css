@@ -64,8 +64,11 @@ img,svg{max-width:100%;height:auto;}
 }
 
 /* ---------- NAV ---------- */
-/* Sticky header: translucent blur bar, SVG brand lockup, 14.5px nav,
-   and a dark account chip. */
+/* Sticky header, two states:
+   · logged out (default) — dark alpine-green bar, light links, white
+     "Log in" pill (design: guest homepage hero header);
+   · logged in — `.nav-authed` added by mobile-nav.js flips it to the
+     cream member bar with bell + account pill. */
 .topnav{
   position:sticky;
   top:0;
@@ -74,14 +77,14 @@ img,svg{max-width:100%;height:auto;}
   align-items:center;
   justify-content:space-between;
   padding:15px max(32px, calc((100% - 1200px) / 2 + 32px));
-  background:rgba(247,244,235,.86);
+  background:rgba(38,53,42,.94);
   backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(27,31,25,.09);
+  border-bottom:1px solid rgba(242,238,226,.09);
 }
 .topnav .brand{
   font:600 21px 'Source Serif 4',serif;
-  color:#1b1f19;
+  color:#F2EEE2;
   text-decoration:none;
   display:inline-flex;
   align-items:center;
