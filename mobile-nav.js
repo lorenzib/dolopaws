@@ -16,8 +16,199 @@
       .observe(document.body, { childList:true, subtree:true });
   }
 
-  const nav = document.querySelector('.topnav');
-  const links = nav && nav.querySelector('.links');
+  // ================= AUTH-AWARE HEADER =================
+  // Every page ships the logged-out header statically (dark bar with a
+  // "Log in" pill). When the cached auth summary written by firebase-init.js
+  // says someone is signed in, the link row is rebuilt into the member
+  // header: Trails · Collections · My Journal · Safety · bell · account
+  // pill. The static trail/guide pages carry no Firebase by design, so the
+  // localStorage summary is the only signal there; pages with live auth
+  // re-render on `dolopaws-auth-changed`.
+  const navEl = document.querySelector('.topnav');
+  const linksEl = navEl && navEl.querySelector('.links');
+
+  // What's-new feed behind the bell. Ids are stable; a visitor's seen ids
+  // live in localStorage so the badge only counts genuinely new entries.
+  const NAV_UPDATES = [
+    { id: 'collections-2026-07', title: 'Trail collections are here',
+      body: 'Shady loops, lakeside walks and gentle strolls — grouped and ready.',
+      href: 'browse-trails.html#collections' },
+    { id: 'savoy-2026-07', title: 'Savoy valleys are live',
+      body: 'Maurienne walks join the Dolomites, every route scored for paws.',
+      href: 'browse-trails.html?region=savoy' },
+  ];
+  const SEEN_KEY = 'dolopaws-nav-seen-updates';
+
+  function seenUpdates(){
+    try {
+      const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch(e){ return []; }
+  }
+
+  function authSummary(){
+    try {
+      const raw = localStorage.getItem('dolopaws-profile-summary');
+      if(!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch(e){ return null; }
+  }
+
+  function dogPhoto(){
+    try {
+      const v = localStorage.getItem('dolopaws-dog-photo');
+      return (typeof v === 'string' && v.startsWith('data:image/')) ? v : null;
+    } catch(e){ return null; }
+  }
+
+  if(navEl && linksEl){
+    const brand = navEl.querySelector('.brand');
+    const brandHref = (brand && brand.getAttribute('href')) || 'index.html';
+    const prefix = brandHref.startsWith('../') ? '../' : '';
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const pageFile = (parts[parts.length - 1] || 'index.html').toLowerCase().endsWith('.html')
+      ? (parts[parts.length - 1] || 'index.html') : 'index.html';
+    // Path relative to the site root, used for post-login return targets.
+    const pagePath = prefix ? (parts[parts.length - 2] + '/' + pageFile) : pageFile;
+
+    // The login control (button on modal pages, anchor on static pages) is
+    // reused across renders so the listener auth-ui.js binds survives.
+    const loginEl = linksEl.querySelector('#accountBtn, a.account-btn');
+
+    function navItem(label, href, active){
+      const a = document.createElement('a');
+      a.href = prefix + href;
+      a.textContent = label;
+      if(active) a.classList.add('active');
+      return a;
+    }
+
+    function activeKey(){
+      const f = pageFile.toLowerCase();
+      if(prefix && pagePath.startsWith('trails/')) return 'trails';
+      if(prefix && pagePath.startsWith('guides/')) return 'safety';
+      if(f === 'browse-trails.html' || f === 'trail.html' || f === 'saved.html') return 'trails';
+      if(f === 'journal.html') return 'journal';
+      if(f === 'safety-guide.html') return 'safety';
+      if(f === 'about.html') return 'about';
+      return '';
+    }
+
+    function bellSvg(){
+      return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+    }
+
+    function buildBell(){
+      const wrap = document.createElement('div');
+      wrap.className = 'nav-bellwrap';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'nav-bell';
+      btn.setAttribute('aria-haspopup', 'true');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-label', "What's new");
+      btn.innerHTML = bellSvg();
+      const seen = seenUpdates();
+      const unseen = NAV_UPDATES.filter(u => !seen.includes(u.id)).length;
+      if(unseen > 0){
+        const badge = document.createElement('span');
+        badge.className = 'nav-bell-badge';
+        badge.textContent = String(unseen);
+        btn.appendChild(badge);
+      }
+      const menu = document.createElement('div');
+      menu.className = 'nav-bell-menu';
+      menu.hidden = true;
+      menu.innerHTML = '<div class="nav-bell-head">What’s new</div>' +
+        NAV_UPDATES.map(u =>
+          '<a class="nav-bell-item" href="' + prefix + u.href + '">' +
+          '<b>' + u.title + '</b><span>' + u.body + '</span></a>').join('');
+      wrap.appendChild(btn);
+      wrap.appendChild(menu);
+
+      function setOpen(open){
+        menu.hidden = !open;
+        btn.setAttribute('aria-expanded', String(open));
+        if(open){
+          try { localStorage.setItem(SEEN_KEY, JSON.stringify(NAV_UPDATES.map(u => u.id))); } catch(e){}
+          const badge = btn.querySelector('.nav-bell-badge');
+          if(badge) badge.remove();
+        }
+      }
+      btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(menu.hidden); });
+      document.addEventListener('click', (e) => { if(!wrap.contains(e.target)) setOpen(false); });
+      document.addEventListener('keydown', (e) => { if(e.key === 'Escape') setOpen(false); });
+      return wrap;
+    }
+
+    function buildAccountPill(name){
+      const a = document.createElement('a');
+      a.className = 'nav-user';
+      a.href = prefix + 'account.html?next=' + encodeURIComponent(pagePath);
+      const avatar = document.createElement('span');
+      avatar.className = 'nav-user-avatar';
+      avatar.setAttribute('aria-hidden', 'true');
+      const photo = dogPhoto();
+      if(photo) avatar.style.backgroundImage = 'url(' + photo + ')';
+      else avatar.textContent = name ? name.charAt(0).toUpperCase() : '🐾';
+      const label = document.createElement('span');
+      label.className = 'nav-user-name';
+      label.textContent = name ? name + '’s human' : 'My account';
+      a.appendChild(avatar);
+      a.appendChild(label);
+      return a;
+    }
+
+    function renderHeader(loggedIn, dogName){
+      navEl.classList.toggle('nav-authed', !!loggedIn);
+      const key = activeKey();
+      linksEl.innerHTML = '';
+      if(loggedIn){
+        linksEl.appendChild(navItem('Trails', 'browse-trails.html', key === 'trails'));
+        linksEl.appendChild(navItem('Collections', 'browse-trails.html#collections', false));
+        linksEl.appendChild(navItem('My Journal', 'journal.html', key === 'journal'));
+        linksEl.appendChild(navItem('Safety', 'safety-guide.html', key === 'safety'));
+        linksEl.appendChild(buildBell());
+        linksEl.appendChild(buildAccountPill(dogName));
+      } else {
+        linksEl.appendChild(navItem('Browse all Trails', 'browse-trails.html', key === 'trails'));
+        linksEl.appendChild(navItem('Collections', 'browse-trails.html#collections', false));
+        linksEl.appendChild(navItem('Safety guide', 'safety-guide.html', key === 'safety'));
+        linksEl.appendChild(navItem('About', 'about.html', key === 'about'));
+        if(loginEl){
+          linksEl.appendChild(loginEl);
+        } else if(pageFile.toLowerCase() !== 'account.html'){
+          const login = document.createElement('a');
+          login.className = 'account-btn';
+          login.href = prefix + 'index.html?login=1&next=' + encodeURIComponent(pagePath);
+          login.textContent = 'Log in';
+          linksEl.appendChild(login);
+        }
+      }
+    }
+
+    const summary = authSummary();
+    renderHeader(!!summary, summary && summary.name ? String(summary.name) : '');
+
+    // Pages with live Firebase re-render once real auth state resolves.
+    window.addEventListener('dolopaws-auth-changed', (e) => {
+      const user = e.detail && e.detail.user;
+      const s = authSummary();
+      renderHeader(!!user, (s && s.name) ? String(s.name) : '');
+    });
+    window.addEventListener('dolopaws-dog-profile-saved', (e) => {
+      const p = e.detail && e.detail.profile;
+      if(p && p.name && window.DoloPawsAuth && window.DoloPawsAuth.currentUser){
+        renderHeader(true, String(p.name));
+      }
+    });
+  }
+
+  // ================= MOBILE MENU TOGGLE =================
+  const nav = navEl;
+  const links = linksEl;
   if(!nav || !links || nav.querySelector('.mobile-nav-toggle')) return;
 
   if(!links.id) links.id = 'primaryNavigation';
