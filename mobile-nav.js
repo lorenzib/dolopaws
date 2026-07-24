@@ -76,11 +76,12 @@
     // reused across renders so the listener auth-ui.js binds survives.
     const loginEl = linksEl.querySelector('#accountBtn, a.account-btn');
 
-    function navItem(label, href, active){
+    function navItem(label, href, active, i18nKey){
       const a = document.createElement('a');
       a.href = prefix + href;
       a.textContent = label;
       if(active) a.classList.add('active');
+      if(i18nKey) a.setAttribute('data-i18n', i18nKey);
       return a;
     }
 
@@ -176,7 +177,7 @@
         linksEl.appendChild(navItem('Browse all Trails', 'browse-trails.html', key === 'trails'));
         linksEl.appendChild(navItem('Collections', 'browse-trails.html#collections', false));
         linksEl.appendChild(navItem('Safety guide', 'safety-guide.html', key === 'safety'));
-        linksEl.appendChild(navItem('About', 'about.html', key === 'about'));
+        linksEl.appendChild(navItem('About', 'about.html', key === 'about', 'nav.about'));
         if(loginEl){
           linksEl.appendChild(loginEl);
         } else if(pageFile.toLowerCase() !== 'account.html'){
@@ -184,6 +185,7 @@
           login.className = 'account-btn';
           login.href = prefix + 'index.html?login=1&next=' + encodeURIComponent(pagePath);
           login.textContent = 'Log in';
+          login.setAttribute('data-i18n', 'nav.login');
           linksEl.appendChild(login);
         }
       }
